@@ -395,6 +395,10 @@ canvas{width:100%!important;}
   <div class="eyebrow">✦ Command Center ✦</div>
   <h1>TitlesByTrish</h1>
   <div class="tagline">Your complete BookTok home base — 60 Day Launch Dashboard</div>
+  <div style="margin-top:14px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
+    <button class="btn btn-primary" onclick="exportData()" style="font-size:9px;padding:6px 14px;">⬇ Backup My Data</button>
+    <label class="btn" style="font-size:9px;padding:6px 14px;cursor:pointer;">⬆ Restore Backup<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
+  </div>
 </div>
 
 <!-- NAV -->
@@ -2495,6 +2499,37 @@ renderSavedIdeas();
 scheduleAlarmCheck();
 // Set today's date as default for follower log
 document.getElementById('fol-date').value=new Date().toISOString().split('T')[0];
+// ── BACKUP / RESTORE ──
+function exportData(){
+  const KEYS=['tbtrish_done','tbtrish_fol','tbtrish_eng','tbtrish_arc',
+    'tbtrish_ideas','tbtrish_savedbooks','tbtrish_alarms','tbtrish_planner',
+    'sc3_books','tbtrish_sc_goal','tbtrish_sc_streak','tbtrish_sc_notes',
+    'tbtrish_plan_init'];
+  const backup={_version:1,_date:new Date().toISOString()};
+  KEYS.forEach(k=>{const v=localStorage.getItem(k);if(v!=null)backup[k]=v;});
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='titlesbytrish-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  toast('✦ Backup downloaded!');
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(!data._version){toast('Invalid backup file');return;}
+      Object.keys(data).forEach(k=>{if(!k.startsWith('_'))localStorage.setItem(k,data[k]);});
+      toast('✦ Data restored! Reloading…');
+      setTimeout(()=>location.reload(),1200);
+    }catch{toast('Could not read file');}
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
 // Register service worker for PWA / offline support
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));
