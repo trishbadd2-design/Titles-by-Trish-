@@ -386,6 +386,45 @@ canvas{width:100%!important;}
 .sc-search{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:3px;padding:8px 12px;color:var(--text);font-family:'Playfair Display',serif;font-size:12px;outline:none;margin-bottom:12px;}
 .sc-search:focus{border-color:var(--border-hi);}
 
+/* ── CAPTION TEMPLATES ── */
+.cap-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.cap-filter-btn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.cap-filter-btn.active,.cap-filter-btn:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
+.cap-card{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.025);margin-bottom:12px;overflow:hidden;}
+.cap-card-head{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;cursor:pointer;}
+.cap-card-head:hover{background:var(--gold-faint);}
+.cap-type-badge{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:3px;padding:3px 10px;border:1px solid var(--border-hi);color:var(--gold);border-radius:2px;background:var(--gold-faint);}
+.cap-card-body{display:none;padding:0 15px 15px;border-top:1px solid var(--border);}
+.cap-card.open .cap-card-body{display:block;}
+.cap-section{margin-top:12px;}
+.cap-section-label{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:4px;color:var(--gold-dim);margin-bottom:5px;}
+.cap-text{font-size:12px;color:var(--text-dim);line-height:1.8;font-style:italic;background:rgba(255,255,255,.03);border:1px solid var(--border);border-left:2px solid var(--red);border-radius:0 3px 3px 0;padding:10px 12px;}
+.cap-copy-btn{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:4px 10px;border:1px solid var(--border);border-radius:2px;background:transparent;color:var(--text-dim);cursor:pointer;margin-top:6px;transition:all .2s;}
+.cap-copy-btn:hover{border-color:var(--border-hi);color:var(--gold);}
+.cap-copy-btn.copied{border-color:rgba(60,160,60,.4);color:#4a9a4a;}
+
+/* ── HASHTAG TRACKER ── */
+.ht-set{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.025);padding:14px 16px;margin-bottom:10px;}
+.ht-set-name{font-family:'Cinzel',serif;font-size:12px;color:#fff;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.ht-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.ht-tag{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:3px 8px;border:1px solid var(--border);color:var(--gold-dim);border-radius:2px;background:var(--gold-faint);}
+.ht-actions{display:flex;gap:6px;}
+
+/* ── WINS JOURNAL ── */
+.win-card{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.025);padding:14px 16px;margin-bottom:10px;position:relative;}
+.win-card.milestone{border-color:rgba(200,160,80,.4);background:rgba(200,160,80,.06);}
+.win-card.viral{border-color:rgba(220,60,60,.4);background:rgba(220,60,60,.06);}
+.win-card.collab{border-color:rgba(100,150,220,.4);background:rgba(100,150,220,.06);}
+.win-card.reading{border-color:rgba(60,160,60,.4);background:rgba(60,160,60,.06);}
+.win-card.brand{border-color:rgba(200,140,40,.4);background:rgba(200,140,40,.06);}
+.win-card.personal{border-color:rgba(160,80,200,.4);background:rgba(160,80,200,.06);}
+.win-emoji{font-size:22px;margin-bottom:6px;}
+.win-date{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:4px;}
+.win-title{font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:6px;}
+.win-notes{font-size:12px;color:var(--text-dim);line-height:1.7;font-style:italic;}
+.win-del{position:absolute;top:12px;right:12px;background:transparent;border:none;color:rgba(200,80,80,.4);cursor:pointer;font-size:14px;transition:color .2s;}
+.win-del:hover{color:#e06060;}
+
 </style>
 </head>
 <body>
@@ -414,6 +453,9 @@ canvas{width:100%!important;}
   <button class="nav-btn" onclick="showPanel('schedule')">⏰ Post Schedule</button>
   <button class="nav-btn" onclick="showPanel('planner')">📆 My Planner</button>
   <button class="nav-btn" onclick="showPanel('scorecard')">📖 Scorecard</button>
+  <button class="nav-btn" onclick="showPanel('captions')">✍️ Captions</button>
+  <button class="nav-btn" onclick="showPanel('hashtags')">🏷️ Hashtags</button>
+  <button class="nav-btn" onclick="showPanel('wins')">🏆 Wins Journal</button>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -1035,6 +1077,75 @@ canvas{width:100%!important;}
 </div>
 </div>
 
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PANEL 10: CAPTION TEMPLATES                 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="panel" id="panel-captions">
+  <div class="section-title">✍️ Caption Templates</div>
+  <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
+    <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">
+      Pre-written hooks, scripts, and CTAs for every video type. Tap any section to copy it. Replace the <span style="color:var(--gold);">[brackets]</span> with your details. 🖤
+    </div>
+  </div>
+  <div class="cap-filter" id="cap-filter"></div>
+  <div id="cap-list"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PANEL 11: HASHTAG TRACKER                   -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="panel" id="panel-hashtags">
+  <div class="section-title">🏷️ Hashtag Sets</div>
+
+  <div class="card-box" style="margin-bottom:16px;">
+    <div class="label-sm">Create a Hashtag Set</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+      <input type="text" id="ht-name" placeholder="Set name (e.g. Book Review Mix)">
+      <textarea id="ht-tags-input" placeholder="Paste your hashtags here — separate with spaces or commas" style="min-height:70px;"></textarea>
+      <button class="btn btn-primary" onclick="saveHashtagSet()">✦ Save Set</button>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:12px;margin-top:4px;">Saved Sets</div>
+  <div id="ht-list"><div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;">No hashtag sets saved yet</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PANEL 12: WINS JOURNAL                      -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="panel" id="panel-wins">
+  <div class="section-title">🏆 Wins Journal</div>
+
+  <div class="card-box" style="margin-bottom:16px;">
+    <div class="label-sm">Log a Win</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+      <input type="text" id="win-title-input" placeholder="What happened? (e.g. Hit 1K followers!)">
+      <div class="grid-2">
+        <div>
+          <div class="label-sm">Category</div>
+          <select id="win-category">
+            <option value="milestone">🎯 Milestone</option>
+            <option value="viral">🔥 Viral Video</option>
+            <option value="collab">🤝 Collab / ARC</option>
+            <option value="reading">📚 Reading</option>
+            <option value="brand">💰 Brand Deal</option>
+            <option value="personal">✨ Personal</option>
+          </select>
+        </div>
+        <div>
+          <div class="label-sm">Date</div>
+          <input type="date" id="win-date">
+        </div>
+      </div>
+      <textarea id="win-notes-input" placeholder="Any details you want to remember..." style="min-height:70px;"></textarea>
+      <button class="btn btn-primary" onclick="addWin()">✦ Log This Win</button>
+    </div>
+  </div>
+
+  <div id="wins-list"><div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;text-align:center;">Your wins will appear here 🖤<br>Start logging — you're doing better than you think.</div></div>
+</div>
+
 </div><!-- end app -->
 
 <!-- SCRIPT MODAL -->
@@ -1251,8 +1362,8 @@ function showPanel(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
-  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8};
-  document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
+  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11};
+  if(map[id]!==undefined)document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
   if(id==='arc')renderARC();
@@ -1260,6 +1371,9 @@ function showPanel(id){
   if(id==='schedule')renderAlarms();
   if(id==='planner'){initPlanner();renderPlanner();}
   if(id==='scorecard'){initScorecard();}
+  if(id==='captions'){initCaptions();}
+  if(id==='hashtags'){renderHashtags();}
+  if(id==='wins'){renderWins();}
 }
 
 // ═══════════════════════════════════════════════
@@ -2501,6 +2615,7 @@ renderSavedIdeas();
 scheduleAlarmCheck();
 // Set today's date as default for follower log
 document.getElementById('fol-date').value=new Date().toISOString().split('T')[0];
+document.getElementById('win-date').value=new Date().toISOString().split('T')[0];
 // ── BACKUP / RESTORE ──
 function exportData(){
   const KEYS=['tbtrish_done','tbtrish_fol','tbtrish_eng','tbtrish_arc',
@@ -2546,6 +2661,199 @@ function importData(e){
   };
   reader.readAsText(file);
   e.target.value='';
+}
+
+// ══════════════════════════════════════════
+// CAPTION TEMPLATES
+// ══════════════════════════════════════════
+const capTemplates=[
+  {type:'Book Review',genre:'psych',
+   hook:'This book broke something in my brain and I\'m not sure it\'s been fixed since',
+   body:'[Book title] by [Author]. The premise sounds simple — [one sentence]. But what actually happens is [twist/escalation]. The [best thing about the book] had me completely unraveling. This is not a comfortable read. It is a necessary one.',
+   cta:'If you\'ve read this, you KNOW. Drop a 🖤 below. If you haven\'t — what are you waiting for?',
+   hashtags:'#BookTok #BookReview #PsychologicalThriller #DarkFiction #TitlesByTrish #ThrillerBookTok #BookTokRecommendations'},
+  {type:'TBR Reveal',genre:'tbr',
+   hook:'My [month] TBR is completely unhinged and I am not even a little bit sorry',
+   body:'Here\'s what I\'m reading this month: [List each book with one dramatic sentence about why]. I don\'t know which one is going to destroy me first but statistically at least two of these are going to require a therapy session.',
+   cta:'Have you read any of these? Tell me what I\'m in for 👇',
+   hashtags:'#BookTok #TBR #TBRPile #ReadingList #ThrillerBookTok #BookRecommendations #TitlesByTrish'},
+  {type:'Author Spotlight',genre:'author',
+   hook:'If you\'ve never read [Author Name] I need you to stop whatever you\'re doing right now',
+   body:'[Author Name] writes the kind of books that make you question everyone around you. Start with [Book 1] — it will ruin you. Then [Book 2] will finish the job. What makes [Author Name] different from everyone else is [specific writing style/technique]. Nobody does [element] like they do.',
+   cta:'Which [Author Name] book hit you hardest? Mine was [your answer] and I still haven\'t recovered.',
+   hashtags:'#BookTok #AuthorSpotlight #TitlesByTrish #ThrillerBookTok #DarkFiction #MustRead'},
+  {type:'Book Haul',genre:'haul',
+   hook:'I went to [store/online] and I have zero regrets and also zero money',
+   body:'Haul time. [Show each book]. [Book 1] — [why you grabbed it]. [Book 2] — [why you grabbed it]. [Book 3] — [why you grabbed it]. My wallet is crying. My TBR pile is thriving. This is fine.',
+   cta:'Which one should I read first? Vote in the comments 👇',
+   hashtags:'#BookHaul #BookTok #BookShopping #TBR #TitlesByTrish #ThrillerBooks #BookCollection'},
+  {type:'Monthly Wrap Up',genre:'wrapup',
+   hook:'Here\'s every book I read in [month] ranked from "loved it" to "needed therapy after"',
+   body:'[Month] wrap up. I read [number] books. Starting from the bottom: [Book] — [one line reaction]. [Book] — [one line reaction]. And the book that absolutely wrecked me this month: [Book]. [Why it hit so hard].',
+   cta:'What was your best read of [month]? Drop it below — I\'m always adding to the TBR.',
+   hashtags:'#MonthlyWrapUp #BookTok #ReadingWrapUp #TitlesByTrish #BooksRead #ThrillerBookTok'},
+  {type:'Ranking',genre:'ranking',
+   hook:'I ranked [topic] by how much they destroyed my mental health and the results are alarming',
+   body:'[Number] position ranking of [topic]. Coming in at #[number]: [item] — [why]. #[number]: [item] — [why]. And the one that genuinely altered my personality: [#1 item]. [Why it\'s the top. Be dramatic. Be honest.]',
+   cta:'Do you agree with my ranking? Tell me where I\'m wrong 👇',
+   hashtags:'#BookRanking #BookTok #TitlesByTrish #ThrillerBooks #BookRecommendations #RankingBooks'},
+  {type:'Recommendations',genre:'recs',
+   hook:'If you liked [popular book] I have [number] books that will completely finish you off',
+   body:'You read [popular book] and now you need more? Here\'s your reading list: [Book 1] — [comparison + why]. [Book 2] — [comparison + why]. [Book 3] — [comparison + why]. You\'re welcome and I\'m sorry.',
+   cta:'Save this for your next reading slump. And tag a friend who needs these.',
+   hashtags:'#BookRecommendations #BookTok #TitlesByTrish #IfYouLiked #ThrillerBooks #ReadThis'},
+  {type:'Engagement',genre:'engagement',
+   hook:'This question has been living in my head rent free and I need your opinion',
+   body:'[Ask a polarizing bookish question — examples: "Would you rather have the ending spoiled or be caught completely off guard by a traumatic plot twist?" / "Which book broke you so badly you couldn\'t read for a week afterward?" / "Do you DNF or do you finish every book no matter what?"]',
+   cta:'Drop your answer below 👇 I\'m genuinely arguing about this with myself.',
+   hashtags:'#BookTok #BookQuestion #TitlesByTrish #BookCommunity #ThrillerBookTok #BookDebate'},
+];
+
+let capFilter='all';
+function initCaptions(){
+  const types=['all','Book Review','TBR Reveal','Author Spotlight','Book Haul','Monthly Wrap Up','Ranking','Recommendations','Engagement'];
+  const fb=document.getElementById('cap-filter');
+  fb.innerHTML=types.map(t=>`<button class="cap-filter-btn${t==='all'?'  active':''}" onclick="setCapFilter('${t}',this)">${t==='all'?'All Types':t}</button>`).join('');
+  renderCaptions();
+}
+function setCapFilter(f,btn){
+  capFilter=f;
+  document.querySelectorAll('.cap-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCaptions();
+}
+function renderCaptions(){
+  const list=document.getElementById('cap-list');
+  const filtered=capFilter==='all'?capTemplates:capTemplates.filter(c=>c.type===capFilter);
+  list.innerHTML=filtered.map((c,i)=>`
+    <div class="cap-card" id="cap-${i}">
+      <div class="cap-card-head" onclick="toggleCap(${i})">
+        <span class="cap-type-badge">${c.type}</span>
+        <span style="font-size:14px;color:var(--text-dim);transition:transform .2s;" id="cap-arr-${i}">▾</span>
+      </div>
+      <div class="cap-card-body">
+        <div class="cap-section"><div class="cap-section-label">Hook — Open With This</div>
+          <div class="cap-text">${c.hook}</div>
+          <button class="cap-copy-btn" onclick="copyCap(this,'${escQ(c.hook)}')">Copy Hook</button>
+        </div>
+        <div class="cap-section"><div class="cap-section-label">Script / Body</div>
+          <div class="cap-text">${c.body}</div>
+          <button class="cap-copy-btn" onclick="copyCap(this,'${escQ(c.body)}')">Copy Script</button>
+        </div>
+        <div class="cap-section"><div class="cap-section-label">CTA — End With This</div>
+          <div class="cap-text">${c.cta}</div>
+          <button class="cap-copy-btn" onclick="copyCap(this,'${escQ(c.cta)}')">Copy CTA</button>
+        </div>
+        <div class="cap-section"><div class="cap-section-label">Hashtags</div>
+          <div class="cap-text">${c.hashtags}</div>
+          <button class="cap-copy-btn" onclick="copyCap(this,'${escQ(c.hashtags)}')">Copy Hashtags</button>
+        </div>
+        <button class="btn btn-primary btn-full" style="margin-top:14px;" onclick="copyFullCap(${i})">✦ Copy Full Caption</button>
+      </div>
+    </div>`).join('');
+}
+function toggleCap(i){
+  const card=document.getElementById('cap-'+i);
+  const arr=document.getElementById('cap-arr-'+i);
+  card.classList.toggle('open');
+  arr.style.transform=card.classList.contains('open')?'rotate(180deg)':'';
+}
+function escQ(s){return s.replace(/'/g,"\\x27").replace(/"/g,"\\x22");}
+function copyCap(btn,text){
+  navigator.clipboard.writeText(text.replace(/\\x27/g,"'").replace(/\\x22/g,'"')).then(()=>{
+    btn.textContent='Copied ✓';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent=btn.textContent.includes('Hook')?'Copy Hook':btn.textContent.includes('Script')?'Copy Script':btn.textContent.includes('CTA')?'Copy CTA':btn.textContent.includes('Hash')?'Copy Hashtags':'Copy';btn.classList.remove('copied');},2000);
+  });
+}
+function copyFullCap(i){
+  const c=capTemplates[i];
+  const full=`${c.hook}\n\n${c.body}\n\n${c.cta}\n\n${c.hashtags}`;
+  navigator.clipboard.writeText(full).then(()=>toast('✦ Full caption copied!'));
+}
+
+// ══════════════════════════════════════════
+// HASHTAG TRACKER
+// ══════════════════════════════════════════
+let htSets=JSON.parse(localStorage.getItem('tbtrish_ht')||JSON.stringify([
+  {id:1,name:'Psych Thriller Review',tags:['#BookTok','#PsychologicalThriller','#ThrillerBookTok','#DarkFiction','#BookReview','#TitlesByTrish','#BookRecommendations','#ReadingCommunity']},
+  {id:2,name:'TBR & Haul',tags:['#BookTok','#TBR','#BookHaul','#BookShopping','#TitlesByTrish','#ThrillerBooks','#BookCollection','#ReadingList']},
+  {id:3,name:'True Crime',tags:['#TrueCrime','#BookTok','#TrueCrimeBookTok','#TitlesByTrish','#DarkReads','#TrueCrimeBooks','#BookRecommendations']},
+  {id:4,name:'Author Spotlight',tags:['#BookTok','#AuthorSpotlight','#TitlesByTrish','#MustRead','#ThrillerAuthor','#BookRecommendations','#DarkFiction']},
+  {id:5,name:'Engagement / Questions',tags:['#BookTok','#BookQuestion','#BookCommunity','#TitlesByTrish','#ThrillerBookTok','#BookDebate','#ReadersOfTikTok']},
+]));
+function saveHT(){localStorage.setItem('tbtrish_ht',JSON.stringify(htSets));}
+function saveHashtagSet(){
+  const name=document.getElementById('ht-name').value.trim();
+  const raw=document.getElementById('ht-tags-input').value.trim();
+  if(!name||!raw){toast('Add a name and some hashtags');return;}
+  const tags=raw.split(/[\s,]+/).filter(t=>t).map(t=>t.startsWith('#')?t:'#'+t);
+  htSets.unshift({id:Date.now(),name,tags});
+  saveHT();
+  document.getElementById('ht-name').value='';
+  document.getElementById('ht-tags-input').value='';
+  renderHashtags();
+  toast('✦ Hashtag set saved!');
+}
+function deleteHT(id){htSets=htSets.filter(s=>s.id!==id);saveHT();renderHashtags();}
+function copyHT(id,btn){
+  const s=htSets.find(s=>s.id===id);if(!s)return;
+  navigator.clipboard.writeText(s.tags.join(' ')).then(()=>{
+    btn.textContent='Copied ✓';btn.classList.add('btn-green');
+    setTimeout(()=>{btn.textContent='Copy All';btn.classList.remove('btn-green');},2000);
+    toast('✦ Hashtags copied!');
+  });
+}
+function renderHashtags(){
+  const el=document.getElementById('ht-list');
+  if(!htSets.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;">No hashtag sets saved yet</div>';return;}
+  el.innerHTML=htSets.map(s=>`
+    <div class="ht-set">
+      <div class="ht-set-name">${s.name}
+        <button class="del-btn" onclick="deleteHT(${s.id})">🗑</button>
+      </div>
+      <div class="ht-tags">${s.tags.map(t=>`<span class="ht-tag">${t}</span>`).join('')}</div>
+      <div class="ht-actions">
+        <button class="btn btn-primary" style="font-size:9px;padding:5px 14px;" id="ht-copy-${s.id}" onclick="copyHT(${s.id},this)">Copy All</button>
+        <span style="font-family:'IM Fell English SC',serif;font-size:10px;color:var(--text-dim);align-self:center;">${s.tags.length} tags</span>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// WINS JOURNAL
+// ══════════════════════════════════════════
+const WIN_EMOJI={milestone:'🎯',viral:'🔥',collab:'🤝',reading:'📚',brand:'💰',personal:'✨'};
+const WIN_LABEL={milestone:'Milestone',viral:'Viral Video',collab:'Collab / ARC',reading:'Reading',brand:'Brand Deal',personal:'Personal'};
+let wins=JSON.parse(localStorage.getItem('tbtrish_wins')||'[]');
+function saveWins(){localStorage.setItem('tbtrish_wins',JSON.stringify(wins));}
+function addWin(){
+  const title=document.getElementById('win-title-input').value.trim();
+  const cat=document.getElementById('win-category').value;
+  const date=document.getElementById('win-date').value||new Date().toISOString().split('T')[0];
+  const notes=document.getElementById('win-notes-input').value.trim();
+  if(!title){toast('Add a title for your win!');return;}
+  wins.unshift({id:Date.now(),title,category:cat,date,notes});
+  saveWins();
+  document.getElementById('win-title-input').value='';
+  document.getElementById('win-notes-input').value='';
+  renderWins();
+  toast('✦ Win logged! You earned it 🖤');
+}
+function deleteWin(id){wins=wins.filter(w=>w.id!==id);saveWins();renderWins();}
+function renderWins(){
+  const el=document.getElementById('wins-list');
+  if(!wins.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;text-align:center;">Your wins will appear here 🖤<br>Start logging — you\'re doing better than you think.</div>';return;}
+  el.innerHTML=wins.map(w=>{
+    const d=new Date(w.date+'T12:00:00');
+    const ds=d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    return `<div class="win-card ${w.category}">
+      <button class="win-del" onclick="deleteWin(${w.id})">✕</button>
+      <div class="win-emoji">${WIN_EMOJI[w.category]||'✨'}</div>
+      <div class="win-date">${ds} · ${WIN_LABEL[w.category]||'Win'}</div>
+      <div class="win-title">${w.title}</div>
+      ${w.notes?`<div class="win-notes">${w.notes}</div>`:''}
+    </div>`;
+  }).join('');
 }
 
 // Register service worker for PWA / offline support
