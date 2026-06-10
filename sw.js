@@ -1,4 +1,4 @@
-const CACHE = 'titlesbytrish-v1';
+const CACHE = 'titlesbytrish-v3';
 const CORE = [
   '/Titles-by-Trish-/',
   '/Titles-by-Trish-/index.html',
