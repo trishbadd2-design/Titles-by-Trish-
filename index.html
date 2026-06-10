@@ -454,7 +454,24 @@ canvas{width:100%!important;}
 .mp-add-tbr:hover{border-color:rgba(60,160,60,.4);color:#4a9a4a;}
 .mp-add-tbr.added{border-color:rgba(60,160,60,.4);color:#4a9a4a;background:rgba(60,160,60,.08);}
 
+/* ── BARCODE SCANNER ── */
+.scanner-overlay{position:fixed;inset:0;z-index:500;background:rgba(5,3,8,.97);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;}
+.scanner-overlay.open{display:flex;}
+.scanner-header{width:100%;max-width:480px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.scanner-title{font-family:'Cinzel',serif;font-size:14px;color:#fff;letter-spacing:2px;}
+.scanner-close{background:transparent;border:1px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:3px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+#scanner-box{width:100%;max-width:480px;border-radius:6px;overflow:hidden;border:2px solid var(--border-hi);}
+#scanner-box video{border-radius:4px;}
+.scanner-hint{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:3px;color:var(--gold-dim);margin-top:12px;text-align:center;}
+.scanner-found{background:rgba(60,160,60,.12);border:1px solid rgba(60,160,60,.4);border-radius:6px;padding:16px;width:100%;max-width:480px;margin-top:16px;display:none;}
+.scanner-found.show{display:block;}
+.scanner-found-title{font-family:'Cinzel',serif;font-size:14px;color:#fff;margin-bottom:4px;}
+.scanner-found-author{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:12px;}
+.scanner-found-actions{display:flex;gap:8px;}
+.scanner-isbn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-top:8px;}
+
 </style>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
 <div id="app">
@@ -949,6 +966,9 @@ canvas{width:100%!important;}
   <h2 id="sc-modal-title">Log a Book</h2>
   <input type="hidden" id="sc-modal-mode" value="read"/>
   <input type="hidden" id="sc-edit-id" value=""/>
+
+  <!-- Scan button -->
+  <button class="sc-add-btn" style="margin-bottom:14px;background:rgba(139,26,26,.15);border-color:rgba(139,26,26,.4);color:rgba(220,140,140,.9);" onclick="openScanner()">📷 Scan Book Barcode — Auto Fill Title & Author</button>
 
   <div id="sc-read-fields">
     <div class="sc-two-col">
@@ -3124,6 +3144,103 @@ function mpAddTBR(title,author,btn){
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));
 }
+
+// ══════════════════════════════════════════
+// BARCODE SCANNER
+// ══════════════════════════════════════════
+let qrScanner=null;
+
+function openScanner(){
+  document.getElementById('scanner-overlay').classList.add('open');
+  document.getElementById('scanner-found').classList.remove('show');
+  startScanner();
+}
+function closeScanner(){
+  stopScanner();
+  document.getElementById('scanner-overlay').classList.remove('open');
+}
+function startScanner(){
+  if(qrScanner){qrScanner.clear();}
+  qrScanner=new Html5Qrcode('scanner-box');
+  const config={fps:10,qrbox:{width:260,height:120},formatsToSupport:[
+    Html5QrcodeSupportedFormats.EAN_13,Html5QrcodeSupportedFormats.EAN_8,
+    Html5QrcodeSupportedFormats.UPC_A,Html5QrcodeSupportedFormats.UPC_E,
+    Html5QrcodeSupportedFormats.CODE_128,Html5QrcodeSupportedFormats.CODE_39,
+  ]};
+  qrScanner.start({facingMode:'environment'},config,onBarcodeDetected,()=>{}).catch(err=>{
+    document.getElementById('scanner-hint').textContent='Camera access denied — please allow camera in Safari settings.';
+  });
+}
+function stopScanner(){
+  if(qrScanner){try{qrScanner.stop().then(()=>{qrScanner.clear();qrScanner=null;});}catch(e){qrScanner=null;}}
+}
+async function onBarcodeDetected(isbn){
+  stopScanner();
+  document.getElementById('scanner-hint').textContent='Found barcode: '+isbn+' — looking up book…';
+  try{
+    const res=await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`);
+    const data=await res.json();
+    const key=`ISBN:${isbn}`;
+    if(data[key]){
+      const book=data[key];
+      const title=book.title||'';
+      const author=book.authors?book.authors.map(a=>a.name).join(', '):'';
+      showScannerResult(title,author,isbn);
+    } else {
+      document.getElementById('scanner-hint').textContent='Book not found for ISBN '+isbn+'. Try scanning again or enter manually.';
+      setTimeout(()=>startScanner(),2000);
+    }
+  }catch(e){
+    document.getElementById('scanner-hint').textContent='Lookup failed. Check your connection and try again.';
+    setTimeout(()=>startScanner(),2500);
+  }
+}
+function showScannerResult(title,author,isbn){
+  document.getElementById('scanner-result-title').textContent=title||'Unknown Title';
+  document.getElementById('scanner-result-author').textContent=author?'by '+author:'';
+  document.getElementById('scanner-result-isbn').textContent='ISBN: '+isbn;
+  document.getElementById('scanner-found').classList.add('show');
+  document.getElementById('scanner-hint').textContent='Found it! 🖤 Use this book?';
+  window._scanResult={title,author};
+}
+function acceptScan(){
+  const {title,author}=window._scanResult||{};
+  const mode=document.getElementById('sc-modal-mode').value;
+  if(mode==='tbr'){
+    if(title)document.getElementById('sc-f-tbr-title').value=title;
+    if(author)document.getElementById('sc-f-tbr-author').value=author;
+  } else {
+    if(title)document.getElementById('sc-f-title').value=title;
+    if(author)document.getElementById('sc-f-author').value=author;
+  }
+  closeScanner();
+  toast('✦ Book auto-filled! 🖤');
+}
+function rescan(){
+  document.getElementById('scanner-found').classList.remove('show');
+  document.getElementById('scanner-hint').textContent='Point your camera at the barcode on the back of the book';
+  startScanner();
+}
 </script>
+
+<!-- BARCODE SCANNER OVERLAY -->
+<div class="scanner-overlay" id="scanner-overlay">
+  <div class="scanner-header">
+    <div class="scanner-title">📷 Scan Book Barcode</div>
+    <button class="scanner-close" onclick="closeScanner()">✕</button>
+  </div>
+  <div id="scanner-box"></div>
+  <div class="scanner-hint" id="scanner-hint">Point your camera at the barcode on the back of the book</div>
+  <div class="scanner-found" id="scanner-found">
+    <div class="scanner-found-title" id="scanner-result-title"></div>
+    <div class="scanner-found-author" id="scanner-result-author"></div>
+    <div class="scanner-isbn" id="scanner-result-isbn"></div>
+    <div class="scanner-found-actions" style="margin-top:12px;">
+      <button class="btn btn-primary" style="flex:1;" onclick="acceptScan()">✦ Use This Book</button>
+      <button class="btn" onclick="rescan()">Scan Again</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
