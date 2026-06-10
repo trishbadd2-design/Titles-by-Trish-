@@ -425,6 +425,35 @@ canvas{width:100%!important;}
 .win-del{position:absolute;top:12px;right:12px;background:transparent;border:none;color:rgba(200,80,80,.4);cursor:pointer;font-size:14px;transition:color .2s;}
 .win-del:hover{color:#e06060;}
 
+/* ── SPIN THE WHEEL ── */
+.spin-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px 0;}
+.spin-pointer{width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:22px solid var(--gold);filter:drop-shadow(0 0 6px rgba(200,160,80,.6));margin-bottom:-8px;}
+#spin-canvas{border-radius:50%;box-shadow:0 0 40px rgba(139,26,26,.3),0 0 0 2px var(--border);}
+.spin-result{font-family:'Cinzel',serif;font-weight:900;font-size:16px;color:#fff;text-align:center;letter-spacing:2px;min-height:24px;}
+.spin-result-author{font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:3px;color:var(--gold-dim);text-align:center;margin-top:4px;}
+.spin-empty{font-style:italic;color:var(--text-dim);font-size:12px;text-align:center;padding:20px;}
+
+/* ── MONTHLY PICKS ── */
+.mp-month-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.mp-month-btn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.mp-month-btn.active,.mp-month-btn:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
+.mp-genre-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.mp-genre-btn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.mp-genre-btn.active,.mp-genre-btn:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
+.mp-card{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.025);padding:15px 16px;margin-bottom:10px;transition:border-color .2s;}
+.mp-card:hover{border-color:var(--border-hi);}
+.mp-genre-badge{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:3px;padding:2px 9px;border-radius:2px;border:1px solid;margin-bottom:8px;display:inline-block;}
+.mp-badge-psych{color:rgba(200,80,80,.9);border-color:rgba(200,80,80,.3);background:rgba(200,80,80,.08);}
+.mp-badge-thriller{color:rgba(200,140,40,.9);border-color:rgba(200,140,40,.3);background:rgba(200,140,40,.08);}
+.mp-badge-fantasy{color:rgba(120,60,200,.9);border-color:rgba(120,60,200,.3);background:rgba(120,60,200,.08);}
+.mp-title{font-family:'Cinzel',serif;font-weight:700;font-size:13px;color:#fff;margin-bottom:2px;}
+.mp-author{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:8px;}
+.mp-desc{font-size:12px;color:var(--text-dim);line-height:1.7;font-style:italic;margin-bottom:10px;}
+.mp-vibe{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:8px;}
+.mp-add-tbr{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border);border-radius:2px;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.mp-add-tbr:hover{border-color:rgba(60,160,60,.4);color:#4a9a4a;}
+.mp-add-tbr.added{border-color:rgba(60,160,60,.4);color:#4a9a4a;background:rgba(60,160,60,.08);}
+
 </style>
 </head>
 <body>
@@ -456,6 +485,8 @@ canvas{width:100%!important;}
   <button class="nav-btn" onclick="showPanel('captions')">✍️ Captions</button>
   <button class="nav-btn" onclick="showPanel('hashtags')">🏷️ Hashtags</button>
   <button class="nav-btn" onclick="showPanel('wins')">🏆 Wins Journal</button>
+  <button class="nav-btn" onclick="showPanel('spin')">🎡 Spin the Wheel</button>
+  <button class="nav-btn" onclick="showPanel('monthlypicks')">📚 Monthly Picks</button>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -1146,6 +1177,42 @@ canvas{width:100%!important;}
   <div id="wins-list"><div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;text-align:center;">Your wins will appear here 🖤<br>Start logging — you're doing better than you think.</div></div>
 </div>
 
+<!-- ═══════════════════════════════════════════ -->
+<!-- PANEL 13: SPIN THE WHEEL                    -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="panel" id="panel-spin">
+  <div class="section-title">🎡 Spin the Wheel — Pick Your Next Read</div>
+  <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
+    <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">
+      The wheel spins from your TBR pile in the Scorecard. Add books there first, then let fate decide. 🖤
+    </div>
+  </div>
+  <div class="spin-wrap">
+    <div class="spin-pointer"></div>
+    <canvas id="spin-canvas" width="300" height="300"></canvas>
+    <button class="btn btn-primary" style="padding:12px 40px;font-size:12px;letter-spacing:3px;margin-top:6px;" onclick="spinWheel()">✦ Spin</button>
+    <div>
+      <div class="spin-result" id="spin-result"></div>
+      <div class="spin-result-author" id="spin-result-author"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PANEL 14: MONTHLY PICKS                     -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="panel" id="panel-monthlypicks">
+  <div class="section-title">📚 Monthly Book Picks</div>
+  <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
+    <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">
+      Curated picks for every month — psychological thrillers, thrillers, and dark fantasy. Tap "Add to TBR" to save any book to your Scorecard TBR pile. 🖤
+    </div>
+  </div>
+  <div class="mp-month-row" id="mp-months"></div>
+  <div class="mp-genre-row" id="mp-genres"></div>
+  <div id="mp-grid"></div>
+</div>
+
 </div><!-- end app -->
 
 <!-- SCRIPT MODAL -->
@@ -1362,7 +1429,7 @@ function showPanel(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
-  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11};
+  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,spin:12,monthlypicks:13};
   if(map[id]!==undefined)document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
@@ -1374,6 +1441,8 @@ function showPanel(id){
   if(id==='captions'){initCaptions();}
   if(id==='hashtags'){renderHashtags();}
   if(id==='wins'){renderWins();}
+  if(id==='spin'){initSpin();}
+  if(id==='monthlypicks'){initMonthlyPicks();}
 }
 
 // ═══════════════════════════════════════════════
@@ -2854,6 +2923,201 @@ function renderWins(){
       ${w.notes?`<div class="win-notes">${w.notes}</div>`:''}
     </div>`;
   }).join('');
+}
+
+// ══════════════════════════════════════════
+// SPIN THE WHEEL
+// ══════════════════════════════════════════
+const WHEEL_COLORS=['#1f0d28','#180a20','#251030','#140820','#2a1235','#0f0718','#221028'];
+const WHEEL_BORDER='#c8a050';
+let spinAngle=0,spinVel=0,spinAF=null,spinBooks=[],spinDone=false;
+
+function initSpin(){
+  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  spinBooks=tbr.length?tbr:[
+    {title:'Still Missing',author:'Chevy Stevens'},
+    {title:'Gone Girl',author:'Gillian Flynn'},
+    {title:'The Silent Patient',author:'Alex Michaelides'},
+    {title:'Verity',author:'Colleen Hoover'},
+    {title:'Mexican Gothic',author:'Silvia Moreno-Garcia'},
+    {title:'The Push',author:'Ashley Audrain'},
+  ];
+  if(spinBooks.length>10)spinBooks=spinBooks.slice(0,10);
+  drawSpinWheel();
+  document.getElementById('spin-result').textContent='';
+  document.getElementById('spin-result-author').textContent='';
+  spinDone=false;
+}
+
+function drawSpinWheel(){
+  const canvas=document.getElementById('spin-canvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,r=cx-6;
+  ctx.clearRect(0,0,W,H);
+  const n=spinBooks.length;
+  if(!n)return;
+  const slice=(2*Math.PI)/n;
+  for(let i=0;i<n;i++){
+    const s=spinAngle+i*slice,e=s+slice;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,e);ctx.closePath();
+    ctx.fillStyle=WHEEL_COLORS[i%WHEEL_COLORS.length];ctx.fill();
+    ctx.strokeStyle=WHEEL_BORDER;ctx.lineWidth=1.5;ctx.stroke();
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(s+slice/2);
+    ctx.textAlign='right';ctx.fillStyle='#e8dcc8';ctx.font='bold 10px Georgia';
+    const lbl=spinBooks[i].title.length>16?spinBooks[i].title.slice(0,14)+'…':spinBooks[i].title;
+    ctx.fillText(lbl,r-10,4);ctx.restore();
+  }
+  // rim
+  ctx.beginPath();ctx.arc(cx,cy,r,0,2*Math.PI);ctx.strokeStyle=WHEEL_BORDER;ctx.lineWidth=2;ctx.stroke();
+  // center
+  ctx.beginPath();ctx.arc(cx,cy,24,0,2*Math.PI);ctx.fillStyle='#07050a';ctx.fill();
+  ctx.strokeStyle=WHEEL_BORDER;ctx.lineWidth=2;ctx.stroke();
+  ctx.font='16px serif';ctx.textAlign='center';ctx.fillStyle='#c8a050';ctx.fillText('🖤',cx,cy+6);
+}
+
+function spinWheel(){
+  if(spinAF)return;
+  document.getElementById('spin-result').textContent='';
+  document.getElementById('spin-result-author').textContent='';
+  spinVel=0.25+Math.random()*0.2;
+  spinDone=false;
+  animateSpin();
+}
+
+function animateSpin(){
+  spinAngle+=spinVel;
+  spinVel*=0.985;
+  drawSpinWheel();
+  if(spinVel>0.002){spinAF=requestAnimationFrame(animateSpin);}
+  else{
+    spinAF=null;
+    const n=spinBooks.length;
+    const slice=(2*Math.PI)/n;
+    const norm=(((-spinAngle%(2*Math.PI))+(2*Math.PI))%(2*Math.PI));
+    const idx=Math.floor(norm/slice)%n;
+    const picked=spinBooks[idx];
+    document.getElementById('spin-result').textContent=picked.title;
+    document.getElementById('spin-result-author').textContent=picked.author||'';
+    toast('🎡 Your next read: '+picked.title+' 🖤');
+  }
+}
+
+// ══════════════════════════════════════════
+// MONTHLY PICKS
+// ══════════════════════════════════════════
+const monthlyPicks={
+  july:[
+    {genre:'psych',title:'The Silent Patient',author:'Alex Michaelides',desc:'A famous painter shoots her husband five times and then never speaks another word. Her therapist becomes obsessed with uncovering her motive.',vibe:'🔪 Unreliable narrator · Jaw-dropping twist · Addictive'},
+    {genre:'psych',title:'The Woman in the Window',author:'A.J. Finn',desc:'An agoraphobic woman watches her neighbors through her window — and witnesses something she was never meant to see.',vibe:'👁️ Hitchcock-style · Claustrophobic · Twisty'},
+    {genre:'psych',title:'Behind Closed Doors',author:'B.A. Paris',desc:'The perfect marriage. The perfect house. The perfect lie. Behind every closed door, something is very wrong.',vibe:'😰 Domestic terror · Slow burn · Deeply unsettling'},
+    {genre:'thriller',title:'The Last Thing He Told Me',author:'Laura Dave',desc:'A woman discovers her husband has disappeared — leaving only a cryptic note. She must figure out who he really was before it\'s too late.',vibe:'🏃 Fast-paced · Page-turner · Identity thriller'},
+    {genre:'thriller',title:'In the Woods',author:'Tana French',desc:'A detective investigating a child\'s murder realizes it connects to a childhood trauma he can\'t remember — one that left him the only survivor.',vibe:'🌲 Atmospheric · Literary · Cold case obsession'},
+    {genre:'thriller',title:'The Maid',author:'Nita Prose',desc:'Molly the maid discovers a dead body in one of the hotel rooms she\'s cleaning. Nothing about this is in her training manual.',vibe:'🧹 Quirky + dark · Cozy crime · Surprising heart'},
+    {genre:'fantasy',title:'Mexican Gothic',author:'Silvia Moreno-Garcia',desc:'1950s Mexico. A glamorous socialite arrives at a remote mansion to rescue her cousin — and finds something ancient and evil waiting for her.',vibe:'🌿 Gothic horror · Atmospheric dread · Stunning prose'},
+    {genre:'fantasy',title:'The Hazel Wood',author:'Melissa Albert',desc:'A girl discovers her grandmother wrote a collection of deeply dark fairy tales — and the stories are bleeding into the real world.',vibe:'🌑 Fairy tale horror · Surreal · Dark and beautiful'},
+    {genre:'fantasy',title:'Plain Bad Heroines',author:'Emily M. Danforth',desc:'A cursed all-girls school. Two timelines. Wasps. Death. A Hollywood adaptation that may be reviving something terrible.',vibe:'🐝 Gothic horror · Queer · Layered and lush'},
+  ],
+  august:[
+    {genre:'psych',title:'Verity',author:'Colleen Hoover',desc:'A struggling writer finds an unfinished autobiography hidden in a famous author\'s home. What she reads inside will change everything.',vibe:'📓 Dark romance · Addictive · Morally complicated'},
+    {genre:'psych',title:'The Push',author:'Ashley Audrain',desc:'A mother who feared she couldn\'t love her child the way she should. A daughter who may be more than just difficult.',vibe:'🍼 Maternal horror · Raw · Devastating'},
+    {genre:'psych',title:'Gone Girl',author:'Gillian Flynn',desc:'A wife goes missing on her fifth wedding anniversary. Her husband is the prime suspect. Everyone is lying.',vibe:'💍 Iconic · Unreliable narrators · Genre-defining'},
+    {genre:'thriller',title:'Local Woman Missing',author:'Mary Kubica',desc:'A midwife disappears. Then a young girl vanishes. Years later, a child returns — but is she really who she says she is?',vibe:'🔦 Missing persons · Twisted · Gut-punch ending'},
+    {genre:'thriller',title:'The Family Upstairs',author:'Lisa Jewell',desc:'A woman inherits a house she\'s never heard of — and discovers the dark cult that once lived there left more than memories.',vibe:'🏚️ Cult dynamics · Slow revelation · Gripping'},
+    {genre:'thriller',title:'The Guest List',author:'Lucy Foley',desc:'A wedding on a remote Irish island. A storm rolls in. Someone ends up dead. Every guest had a reason.',vibe:'🌊 Locked room · Multiple POVs · Dark secrets'},
+    {genre:'fantasy',title:'Slewfoot',author:'Brom',desc:'1666 New England. A spirit awakens in the wilderness. A Puritan woman is drawn to it. What follows is folk horror at its most beautiful and brutal.',vibe:'🌲 Folk horror · Illustrated · Absolutely stunning'},
+    {genre:'fantasy',title:'The Bear and the Nightingale',author:'Katherine Arden',desc:'Medieval Russia. A girl with a gift for seeing spirits must fight to protect her village against a growing darkness — and her own family.',vibe:'❄️ Slavic folklore · Atmospheric · Immersive'},
+    {genre:'fantasy',title:'An Ember in the Ashes',author:'Sabaa Tahir',desc:'A slave and a soldier in a brutal empire. Both are forced into impossible choices. Both will change the world.',vibe:'⚔️ Epic fantasy · Brutal · Impossible to put down'},
+  ],
+  september:[
+    {genre:'psych',title:'Sharp Objects',author:'Gillian Flynn',desc:'A journalist returns to her hometown to cover the murders of two young girls — and unearths painful secrets about her own family.',vibe:'🔪 Southern Gothic · Family trauma · Deeply dark'},
+    {genre:'psych',title:'The Silent Wife',author:'A.S.A. Harrison',desc:'A marriage held together by denial and silence. When the lies run out, someone will have to pay.',vibe:'🏠 Domestic noir · Dual POV · Chilling calm'},
+    {genre:'psych',title:'Luckiest Girl Alive',author:'Jessica Knoll',desc:'A woman about to have the perfect life is haunted by something that happened to her at fifteen. The truth is worse than anyone knows.',vibe:'💎 Sharp and biting · Survivor story · Unpredictable'},
+    {genre:'thriller',title:'The Hunting Party',author:'Lucy Foley',desc:'A group of old friends rent a remote Scottish estate for New Year\'s. When a blizzard hits, one of them is found dead.',vibe:'🏔️ Closed circle · Long-buried secrets · Chilling'},
+    {genre:'thriller',title:'I Am Pilgrim',author:'Terry Hayes',desc:'A retired spy is pulled back in to stop a bioterrorist attack. Global stakes, intricate plotting, impossible odds.',vibe:'🌍 Spy thriller · Breakneck pacing · Cinematic'},
+    {genre:'thriller',title:'The Silent Companions',author:'Laura Purcell',desc:'A Victorian widow arrives at her deceased husband\'s ancestral home and finds something very wrong lurking in the locked rooms.',vibe:'🕯️ Victorian gothic · Creeping dread · Atmospheric'},
+    {genre:'fantasy',title:'The Child Thief',author:'Brom',desc:'Peter Pan — but the real version. Dark, brutal, heartbreaking, and illustrated by the author. This is not a fairy tale for children.',vibe:'🧚 Dark retelling · Violent · Illustrated brilliance'},
+    {genre:'fantasy',title:'Circe',author:'Madeline Miller',desc:'The life of the witch of mythology — outcast, powerful, dangerous, and far more human than anyone gave her credit for.',vibe:'🌊 Mythological · Feminist · Gorgeous prose'},
+    {genre:'fantasy',title:'The Witch\'s Heart',author:'Genevieve Gornichec',desc:'Angrboda is a Norse witch whose heart was stolen by Loki. Their love story is the most doomed one in all the myths.',vibe:'🔥 Norse mythology · Emotional devastation · Quiet power'},
+  ],
+  october:[
+    {genre:'psych',title:'Dark Places',author:'Gillian Flynn',desc:'A woman who survived her family\'s massacre as a child is now being paid to dig up the past. What she finds will destroy everything she believed.',vibe:'🖤 Gritty · Unreliable memory · Flynn at her darkest'},
+    {genre:'psych',title:'The Woman in the Window',author:'A.J. Finn',desc:'Agoraphobic. Isolated. Watching. When she sees something through her neighbor\'s window it might all be in her head. Or it might not.',vibe:'👁️ October perfect · Hitchcock energy · Tense'},
+    {genre:'psych',title:'The Kind Worth Killing',author:'Peter Swanson',desc:'Two strangers on a flight discuss the perfect murder. Then one of them decides to actually do it.',vibe:'✈️ Dark and clever · Cat and mouse · Sharp wit'},
+    {genre:'thriller',title:'The Sanatorium',author:'Sarah Pearse',desc:'A remote hotel in the Swiss Alps, carved from an old asylum. A guest goes missing in a snowstorm. The detective on vacation may be next.',vibe:'🏔️ Atmospheric horror · Gothic thriller · Perfect October read'},
+    {genre:'thriller',title:'A Head Full of Ghosts',author:'Paul Tremblay',desc:'A teenage girl appears to be possessed. Her family agrees to a documentary. Was any of it real?',vibe:'👻 Meta horror · Scary · Deeply unsettling'},
+    {genre:'thriller',title:'The Turn of the Screw',author:'Henry James',desc:'A governess is left in charge of two children at a remote estate. Then the ghosts start appearing.',vibe:'🕯️ Classic gothic horror · Deeply creepy · Perfect for fall'},
+    {genre:'fantasy',title:'Krampus: The Yule Lord',author:'Brom',desc:'The real Krampus — ancient, terrible, and wronged. A dark mythological horror set in West Virginia. Raw and illustrated.',vibe:'🖤 Illustrated · Folk horror · Brom at his best'},
+    {genre:'fantasy',title:'The Night Circus',author:'Erin Morgenstern',desc:'Two young magicians are pitted against each other in a competition neither of them chose. The arena is a mysterious circus that only appears at night.',vibe:'🎪 Lush and atmospheric · Romantic · Magical'},
+    {genre:'fantasy',title:'Lost Gods',author:'Brom',desc:'A man is pulled into the land of the dead and must fight his way out through Purgatory. Violent, mythological, and fully illustrated by Brom.',vibe:'💀 Dark mythology · Epic · Illustrated'},
+  ],
+  november:[
+    {genre:'psych',title:'The Good Girl',author:'Mary Kubica',desc:'A woman is taken. Her family searches for her. The truth of what really happened between them is the most disturbing part of all.',vibe:'❄️ Winter thriller · Suspenseful · Layered'},
+    {genre:'psych',title:'Behind Her Eyes',author:'Sarah Pinborough',desc:'A woman befriends her boss\'s wife. Both of them have secrets. One of them has the most disturbing secret in thriller history.',vibe:'😱 Impossible twist · Addictive · Stay off spoilers'},
+    {genre:'psych',title:'Daisy Jones and The Six',author:'Taylor Jenkins Reid',desc:'The oral history of a legendary rock band\'s rise and explosive collapse. Told entirely in interviews. You will believe every word.',vibe:'🎸 Compulsive · Character-driven · Not what you expect'},
+    {genre:'thriller',title:'The Secret History',author:'Donna Tartt',desc:'A group of elite classics students commit a murder. This is not a whodunit — we know who did it from page one. The question is why.',vibe:'📚 Dark academia · Literary · Haunting'},
+    {genre:'thriller',title:'Shutter Island',author:'Dennis Lehane',desc:'A US Marshal arrives at an asylum for the criminally insane to investigate an escaped patient. Nothing on this island is what it seems.',vibe:'🌊 Mind-bending · Atmospheric · Unforgettable ending'},
+    {genre:'thriller',title:'The Couple Next Door',author:'Shari Lapena',desc:'A dinner party next door. A baby left home alone. When something happens to the baby, every parent at that table is a suspect.',vibe:'👶 Domestic thriller · Fast · Deeply stressful'},
+    {genre:'fantasy',title:'The House in the Midnight Clocks',author:'Laura Purcell',desc:'Three women across time all connected to the same dark house and the same terrible secret buried inside it.',vibe:'🕰️ Gothic · Multi-timeline · Rich atmosphere'},
+    {genre:'fantasy',title:'Jonathan Strange and Mr Norrell',author:'Susanna Clarke',desc:'Two magicians in Napoleonic England attempt to restore magic to the country. The magic they find is nothing like what they expected.',vibe:'🎩 Slow burn · Masterful · Long and worth every page'},
+    {genre:'fantasy',title:'The Fisherman',author:'John Langan',desc:'Two grieving widowers go fishing. One of them tells a story that goes back centuries. What lives in the water is ancient and hungry.',vibe:'🎣 Lovecraftian · Grief and horror · Stunning'},
+  ],
+  december:[
+    {genre:'psych',title:'I Let You Go',author:'Clare Mackintosh',desc:'A woman flees a hit-and-run that kills a child. She tries to build a new life. The detective trying to solve the case refuses to stop.',vibe:'🌧️ Devastating · Unexpected twist · Impossible to put down'},
+    {genre:'psych',title:'Then She Was Gone',author:'Lisa Jewell',desc:'A girl disappears. A decade later, her mother meets a new man — and his daughter looks exactly like the girl who vanished.',vibe:'💔 Heartbreaking · Chilling · Perfect winter read'},
+    {genre:'psych',title:'The Couple at No 9',author:'Claire Douglas',desc:'A couple renovates an old cottage and discovers human remains buried in the garden. The secrets are older than they could have imagined.',vibe:'🏡 Cozy but dark · Dual timeline · Gripping'},
+    {genre:'thriller',title:'The Christmas Pig',author:'J.K. Rowling',desc:'A boy goes on an impossible quest to save his beloved stuffed animal on Christmas Eve. Dark, emotional, and unexpectedly devastating.',vibe:'🎄 Emotional thriller · Perfect December · Surprisingly dark'},
+    {genre:'thriller',title:'The Silent Companions',author:'Laura Purcell',desc:'Victorian England. A widow. A locked room. Painted wooden figures that seem to move. This is not a cozy Christmas read.',vibe:'🕯️ Gothic Victorian · Festive dread · Atmospheric'},
+    {genre:'thriller',title:'And Then There Were None',author:'Agatha Christie',desc:'Ten strangers are lured to an island. One by one, they begin to die. Classic for a reason — still one of the greatest plots ever written.',vibe:'🏝️ Classic perfection · Locked room · Timeless'},
+    {genre:'fantasy',title:'The Lion the Witch and the Wardrobe',author:'C.S. Lewis',desc:'Four children stumble through a wardrobe into a world of eternal winter. The White Witch will make you reconsider everything cozy.',vibe:'🦁 Dark undertones · Classic · December essential'},
+    {genre:'fantasy',title:'The Starless Sea',author:'Erin Morgenstern',desc:'A grad student falls into an underground world of libraries, bees, and impossible stories. This book is for people who love getting lost.',vibe:'📖 Lush · Labyrinthine · Pure December magic'},
+    {genre:'fantasy',title:'A Discovery of Witches',author:'Deborah Harkness',desc:'An Oxford historian discovers a bewitched manuscript and is immediately hunted by creatures from every corner of the supernatural world.',vibe:'🧪 Witches and vampires · Atmospheric · Perfect winter binge'},
+  ],
+};
+// Fill June and July from above for early access
+monthlyPicks.june=monthlyPicks.july;
+
+let mpMonth=String(new Date().getMonth()+1).padStart(2,'0');
+const MP_MONTHS=[['06','June 🌸'],['07','July ☀️'],['08','August 🌊'],['09','September 🍂'],['10','October 🎃'],['11','November 🍁'],['12','December 🎄']];
+const MP_MONTH_KEYS={june:'06',july:'07',august:'08',september:'09',october:'10',november:'11',december:'12'};
+const MP_KEY_NAMES={'06':'june','07':'july','08':'august','09':'september','10':'october','11':'november','12':'december'};
+let mpGenre='all';
+
+function initMonthlyPicks(){
+  const mRow=document.getElementById('mp-months');
+  mRow.innerHTML=MP_MONTHS.map(([k,l])=>`<button class="mp-month-btn${mpMonth===k?' active':''}" onclick="setMpMonth('${k}',this)">${l}</button>`).join('');
+  const gRow=document.getElementById('mp-genres');
+  gRow.innerHTML=['all','psych','thriller','fantasy'].map(g=>`<button class="mp-genre-btn${mpGenre===g?' active':''}" onclick="setMpGenre('${g}',this)">${g==='all'?'All Genres':g==='psych'?'Psych Thriller':g==='thriller'?'Thriller':g==='fantasy'?'Fantasy':g}</button>`).join('');
+  renderMonthlyPicks();
+}
+function setMpMonth(k,btn){mpMonth=k;document.querySelectorAll('.mp-month-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderMonthlyPicks();}
+function setMpGenre(g,btn){mpGenre=g;document.querySelectorAll('.mp-genre-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderMonthlyPicks();}
+function renderMonthlyPicks(){
+  const el=document.getElementById('mp-grid');
+  const key=MP_KEY_NAMES[mpMonth]||'july';
+  const picks=(monthlyPicks[key]||monthlyPicks.july).filter(p=>mpGenre==='all'||p.genre===mpGenre);
+  const tbrSaved=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  el.innerHTML=picks.map(p=>{
+    const inTBR=tbrSaved.some(t=>t.title===p.title);
+    const badgeClass=p.genre==='psych'?'mp-badge-psych':p.genre==='thriller'?'mp-badge-thriller':'mp-badge-fantasy';
+    const badgeLabel=p.genre==='psych'?'Psych Thriller':p.genre==='thriller'?'Thriller':'Fantasy';
+    return `<div class="mp-card">
+      <span class="mp-genre-badge ${badgeClass}">${badgeLabel}</span>
+      <div class="mp-title">${p.title}</div>
+      <div class="mp-author">by ${p.author}</div>
+      <div class="mp-desc">${p.desc}</div>
+      <div class="mp-vibe">${p.vibe}</div>
+      <button class="mp-add-tbr${inTBR?' added':''}" onclick="mpAddTBR('${p.title.replace(/'/g,"\\'")}','${p.author.replace(/'/g,"\\'")}',this)">${inTBR?'✓ In TBR':'+ Add to TBR'}</button>
+    </div>`;
+  }).join('');
+}
+function mpAddTBR(title,author,btn){
+  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  if(tbr.some(t=>t.title===title)){toast('Already in your TBR!');return;}
+  tbr.unshift({id:Date.now(),title,author,genre:'',notes:'',addedFrom:'Monthly Picks'});
+  localStorage.setItem('sc3_tbr',JSON.stringify(tbr));
+  btn.textContent='✓ In TBR';btn.classList.add('added');
+  toast('✦ Added to TBR — spin the wheel to pick your next read! 🖤');
 }
 
 // Register service worker for PWA / offline support
