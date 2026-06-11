@@ -453,6 +453,50 @@ canvas{width:100%!important;}
 .mp-add-tbr{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border);border-radius:2px;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .mp-add-tbr:hover{border-color:rgba(60,160,60,.4);color:#4a9a4a;}
 .mp-add-tbr.added{border-color:rgba(60,160,60,.4);color:#4a9a4a;background:rgba(60,160,60,.08);}
+/* ── MP VIEW TABS ── */
+.mp-view-tabs{display:flex;gap:6px;margin-bottom:16px;}
+.mp-view-btn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:7px 14px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.mp-view-btn.active,.mp-view-btn:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
+/* ── AUTHOR SERIES ── */
+.ms-genre-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.ms-genre-btn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.ms-genre-btn.active,.ms-genre-btn:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
+.ms-card{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.025);padding:16px;margin-bottom:12px;transition:border-color .2s;}
+.ms-card:hover{border-color:var(--border-hi);}
+.ms-genre-badge{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:3px;padding:2px 9px;border-radius:2px;border:1px solid;margin-bottom:10px;display:inline-block;}
+.ms-badge-fantasy{color:rgba(120,60,200,.9);border-color:rgba(120,60,200,.3);background:rgba(120,60,200,.08);}
+.ms-badge-psych{color:rgba(200,80,80,.9);border-color:rgba(200,80,80,.3);background:rgba(200,80,80,.08);}
+.ms-badge-horror{color:rgba(139,26,26,.95);border-color:rgba(139,26,26,.4);background:rgba(139,26,26,.1);}
+.ms-badge-hf{color:rgba(180,130,60,.9);border-color:rgba(180,130,60,.3);background:rgba(180,130,60,.08);}
+.ms-series-name{font-family:'Cinzel',serif;font-weight:700;font-size:14px;color:#fff;margin-bottom:2px;}
+.ms-author{font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:8px;}
+.ms-desc{font-size:12px;color:var(--text-dim);line-height:1.7;font-style:italic;margin-bottom:10px;}
+.ms-booklist{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-direction:column;gap:4px;}
+.ms-booklist li{font-size:12px;color:var(--text);display:flex;align-items:baseline;gap:7px;}
+.ms-book-num{font-family:'Cinzel',serif;font-size:9px;color:var(--gold);min-width:16px;}
+.ms-book-title{font-style:italic;}
+.ms-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.ms-add-all{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border);border-radius:2px;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.ms-add-all:hover{border-color:rgba(60,160,60,.4);color:#4a9a4a;}
+.ms-add-all.added{border-color:rgba(60,160,60,.4);color:#4a9a4a;background:rgba(60,160,60,.08);}
+.ms-content-idea{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:5px 12px;border:1px solid rgba(200,160,80,.3);border-radius:2px;background:transparent;color:var(--gold-dim);cursor:default;}
+/* ── PHOTO SCAN ── */
+.photo-overlay{position:fixed;inset:0;z-index:500;background:rgba(5,3,8,.97);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;overflow-y:auto;}
+.photo-overlay.open{display:flex;}
+.photo-header{width:100%;max-width:480px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.photo-title{font-family:'Cinzel',serif;font-size:14px;color:#fff;letter-spacing:2px;}
+.photo-close{background:transparent;border:1px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:3px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.photo-hint{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:3px;color:var(--gold-dim);margin-top:12px;text-align:center;width:100%;max-width:480px;}
+.photo-preview{width:100%;max-width:480px;border-radius:6px;overflow:hidden;border:2px solid var(--border-hi);display:none;}
+.photo-preview img{width:100%;display:block;max-height:300px;object-fit:contain;background:#000;}
+.photo-results{width:100%;max-width:480px;margin-top:16px;}
+.photo-result-card{border:1px solid var(--border);border-radius:4px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.025);}
+.photo-result-card:hover{border-color:var(--border-hi);background:rgba(200,160,80,.08);}
+.photo-result-title{font-family:'Cinzel',serif;font-size:13px;color:#fff;margin-bottom:2px;}
+.photo-result-author{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);}
+.photo-result-year{font-size:10px;color:var(--text-dim);margin-top:3px;}
+.photo-loading{text-align:center;padding:30px 0;width:100%;max-width:480px;}
+.photo-loading-text{font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:3px;color:var(--gold-dim);margin-top:12px;}
 
 /* ── BARCODE SCANNER ── */
 .scanner-overlay{position:fixed;inset:0;z-index:500;background:rgba(5,3,8,.97);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;}
@@ -1026,8 +1070,11 @@ canvas{width:100%!important;}
   <input type="hidden" id="sc-modal-mode" value="read"/>
   <input type="hidden" id="sc-edit-id" value=""/>
 
-  <!-- Scan button -->
-  <button class="sc-add-btn" style="margin-bottom:14px;background:rgba(139,26,26,.15);border-color:rgba(139,26,26,.4);color:rgba(220,140,140,.9);" onclick="openScanner()">📷 Scan Book Barcode — Auto Fill Title & Author</button>
+  <!-- Scan buttons -->
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+    <button class="sc-add-btn" style="flex:1;background:rgba(139,26,26,.15);border-color:rgba(139,26,26,.4);color:rgba(220,140,140,.9);" onclick="openScanner()">📷 Scan Barcode</button>
+    <button class="sc-add-btn" style="flex:1;background:rgba(80,60,139,.15);border-color:rgba(120,80,200,.4);color:rgba(180,140,255,.9);" onclick="openPhotoScan()">🖼️ Scan from Photo</button>
+  </div>
 
   <div id="sc-read-fields">
     <div class="sc-two-col">
@@ -1285,15 +1332,34 @@ canvas{width:100%!important;}
 <!-- PANEL 14: MONTHLY PICKS                     -->
 <!-- ═══════════════════════════════════════════ -->
 <div class="panel" id="panel-monthlypicks">
-  <div class="section-title">📚 Monthly Book Picks</div>
-  <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
-    <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">
-      Curated picks for every month — psychological thrillers, thrillers, and dark fantasy. Tap "Add to TBR" to save any book to your Scorecard TBR pile. 🖤
-    </div>
+  <div class="section-title">📚 Monthly Picks</div>
+  <div class="mp-view-tabs">
+    <button class="mp-view-btn active" id="mpvt-monthly" onclick="switchMpView('monthly',this)">📅 Monthly Picks</button>
+    <button class="mp-view-btn" id="mpvt-series" onclick="switchMpView('series',this)">📖 Author Series</button>
   </div>
-  <div class="mp-month-row" id="mp-months"></div>
-  <div class="mp-genre-row" id="mp-genres"></div>
-  <div id="mp-grid"></div>
+
+  <!-- Monthly picks view -->
+  <div id="mp-monthly-view">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
+      <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">
+        Curated picks for every month — psychological thrillers, thrillers, and dark fantasy. Tap "Add to TBR" to save any book to your Scorecard TBR pile. 🖤
+      </div>
+    </div>
+    <div class="mp-month-row" id="mp-months"></div>
+    <div class="mp-genre-row" id="mp-genres"></div>
+    <div id="mp-grid"></div>
+  </div>
+
+  <!-- Author Series view -->
+  <div id="mp-series-view" style="display:none;">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
+      <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">
+        Binge an entire author's series — books in order, ready to add to your TBR. Each one is built for a video series on BookTok. 🖤
+      </div>
+    </div>
+    <div class="ms-genre-row" id="ms-genre-row"></div>
+    <div id="ms-grid"></div>
+  </div>
 </div>
 
 </div><!-- end app -->
@@ -3179,6 +3245,7 @@ function initMonthlyPicks(){
   const gRow=document.getElementById('mp-genres');
   gRow.innerHTML=['all','psych','thriller','fantasy'].map(g=>`<button class="mp-genre-btn${mpGenre===g?' active':''}" onclick="setMpGenre('${g}',this)">${g==='all'?'All Genres':g==='psych'?'Psych Thriller':g==='thriller'?'Thriller':g==='fantasy'?'Fantasy':g}</button>`).join('');
   renderMonthlyPicks();
+  if(mpView==='series')renderSeriesView();
 }
 function setMpMonth(k,btn){mpMonth=k;document.querySelectorAll('.mp-month-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderMonthlyPicks();}
 function setMpGenre(g,btn){mpGenre=g;document.querySelectorAll('.mp-genre-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderMonthlyPicks();}
@@ -3208,6 +3275,231 @@ function mpAddTBR(title,author,btn){
   localStorage.setItem('sc3_tbr',JSON.stringify(tbr));
   btn.textContent='✓ In TBR';btn.classList.add('added');
   toast('✦ Added to TBR — spin the wheel to pick your next read! 🖤');
+}
+
+// ══════════════════════════════════════════
+// AUTHOR SERIES VIEW
+// ══════════════════════════════════════════
+let mpView='monthly';
+let msGenre='all';
+
+function switchMpView(view,btn){
+  mpView=view;
+  document.querySelectorAll('.mp-view-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('mp-monthly-view').style.display=view==='monthly'?'':'none';
+  document.getElementById('mp-series-view').style.display=view==='series'?'':'none';
+  if(view==='series')renderSeriesView();
+}
+
+const authorSeries=[
+  // ── DARK FANTASY ──
+  {id:'empyrean',genre:'fantasy',name:'The Empyrean',author:'Rebecca Yarros',
+   desc:'The series TikTok exploded over — war riders, dragons, forbidden romance and a plot that never stops. Fourth Wing alone will destroy you. Perfect for a multi-video series as you read each book.',
+   videoIdea:'🎬 "I\'m reading The Empyrean series — one video per book"',
+   books:['Fourth Wing','Iron Flame','Onyx Storm','Interlude (coming soon)']},
+  {id:'acotar',genre:'fantasy',name:'A Court of Thorns and Roses',author:'Sarah J. Maas',
+   desc:'ACOTAR is dark fantasy romance that starts as a fairy tale and ends as something completely unhinged. Each book gets darker and more complex. One of the most binged series in BookTok history.',
+   videoIdea:'🎬 "ACOTAR series — my reactions book by book"',
+   books:['A Court of Thorns and Roses','A Court of Mist and Fury','A Court of Wings and Ruin','A Court of Frost and Starlight','A Court of Silver Flames']},
+  {id:'tog',genre:'fantasy',name:'Throne of Glass',author:'Sarah J. Maas',
+   desc:'An assassin. A dark empire. A series that grows more epic and devastating with every book. Eight books that will wreck you completely by the end.',
+   videoIdea:'🎬 "I\'m reading all of Throne of Glass — hold my hand"',
+   books:['The Assassin\'s Blade (prequel)','Throne of Glass','Crown of Midnight','Heir of Fire','Queen of Shadows','Empire of Storms','Tower of Dawn','Kingdom of the Ash']},
+  {id:'grishaverse',genre:'fantasy',name:'Grishaverse — Six of Crows',author:'Leigh Bardugo',
+   desc:'Start with Six of Crows — it\'s a heist story in a fantasy world that reads like a psychological thriller. The two-book duology hits harder than most full series. Then devour the Shadow and Bone trilogy.',
+   videoIdea:'🎬 "Grishaverse reading order — doing it the right way"',
+   books:['Six of Crows','Crooked Kingdom','Shadow and Bone','Siege and Storm','Ruin and Rising','King of Scars','Rule of Wolves']},
+  {id:'folkoftheair',genre:'fantasy',name:'The Folk of the Air',author:'Holly Black',
+   desc:'Dark fae, manipulation, morally grey characters and a romance that will have you screaming. The Cruel Prince is one of the best dark fantasy openers ever written.',
+   videoIdea:'🎬 "The Folk of the Air — I didn\'t sleep through any of it"',
+   books:['The Cruel Prince','The Wicked King','The Queen of Nothing','The Stolen Heir','The Book of Night']},
+  {id:'asoiaf',genre:'fantasy',name:'A Song of Ice and Fire',author:'George R.R. Martin',
+   desc:'The books Game of Thrones was based on — and they go so much deeper, darker and more complex than the show. Five books published, two more coming. A career-defining content series waiting to happen.',
+   videoIdea:'🎬 "I\'m reading A Song of Ice and Fire — the BOOKS, not the show"',
+   books:['A Game of Thrones','A Clash of Kings','A Storm of Swords','A Feast for Crows','A Dance with Dragons','The Winds of Winter (upcoming)','A Dream of Spring (upcoming)']},
+  // ── PSYCH THRILLER ──
+  {id:'dublin',genre:'psych',name:'Dublin Murder Squad',author:'Tana French',
+   desc:'Six interconnected psychological thrillers set in Dublin — each one follows a different detective. Dark, literary, atmospheric and deeply psychological. One of the most acclaimed psych thriller series ever written.',
+   videoIdea:'🎬 "Reading all of Tana French\'s Dublin Murder Squad"',
+   books:['In the Woods','The Likeness','Faithful Place','Broken Harbor','The Secret Place','The Trespasser']},
+  {id:'willtrent',genre:'psych',name:'Will Trent Series',author:'Karin Slaughter',
+   desc:'A GBI agent with a traumatic past. Dark, brutal, psychologically complex crime fiction that doesn\'t flinch from difficult subjects. One of the most bingeable long-running thriller series out there.',
+   videoIdea:'🎬 "I\'m binge-reading the Will Trent series — Karin Slaughter breaks me every time"',
+   books:['Triptych','Fractured','Undone','Broken','Fallen','Criminal','Unseen','The Kept Woman','The Last Widow','The Silent Wife','After That Night','Girl, Forgotten','Last Breath']},
+  {id:'flynntrilogy',genre:'psych',name:'Gillian Flynn — The Complete Works',author:'Gillian Flynn',
+   desc:'Three books. All standalone. All psychologically devastating. Sharp Objects → Dark Places → Gone Girl. She only wrote three and every single one is a masterclass in dark psychological fiction.',
+   videoIdea:'🎬 "I\'m reading all of Gillian Flynn in order — which one hits hardest?"',
+   books:['Sharp Objects','Dark Places','Gone Girl']},
+  // ── HORROR ──
+  {id:'darktower',genre:'horror',name:'The Dark Tower',author:'Stephen King',
+   desc:'King\'s magnum opus. A gunslinger crossing a post-apocalyptic wasteland in pursuit of the Man in Black. Eight books that connect to almost everything else King has ever written. Ambitious doesn\'t begin to cover it.',
+   videoIdea:'🎬 "I\'m reading The Dark Tower — Stephen King\'s entire universe in one series"',
+   books:['The Gunslinger','The Drawing of the Three','The Waste Lands','Wizard and Glass','The Wind Through the Keyhole','Wolves of the Calla','Song of Susannah','The Dark Tower']},
+  // ── HISTORICAL FICTION ──
+  {id:'outlander',genre:'hf',name:'Outlander',author:'Diana Gabaldon',
+   desc:'A WWII nurse touches ancient stones in Scotland and wakes up in 1743. Time travel, historical drama, dark romance and some of the best world-building in all of historical fiction. Nine books, all massive, all worth it.',
+   videoIdea:'🎬 "I\'m reading the Outlander series — nine books of chaos and feelings"',
+   books:['Outlander','Dragonfly in Amber','Voyager','Drums of Autumn','The Fiery Cross','A Breath of Snow and Ashes','An Echo in the Bone','Written in My Own Heart\'s Blood','Go Tell the Bees That I Am Gone']},
+  {id:'kingsbridge',genre:'hf',name:'Kingsbridge',author:'Ken Follett',
+   desc:'Epic historical fiction spanning centuries — from medieval cathedral builders to Elizabethan spies. Each book stands alone but they share a location and DNA. Dark, political, deeply human.',
+   videoIdea:'🎬 "Ken Follett\'s Kingsbridge series — medieval England to the Renaissance"',
+   books:['The Evening and the Morning (900s — prequel)','The Pillars of the Earth (1100s)','World Without End (1300s)','A Column of Fire (1500s)']},
+];
+
+const msGenreLabels={all:'All',fantasy:'Dark Fantasy',psych:'Psych Thriller',horror:'Horror',hf:'Historical Fiction'};
+const msGenreBadgeClass={fantasy:'ms-badge-fantasy',psych:'ms-badge-psych',horror:'ms-badge-horror',hf:'ms-badge-hf'};
+
+function renderSeriesView(){
+  const gRow=document.getElementById('ms-genre-row');
+  const genres=['all','fantasy','psych','horror','hf'];
+  gRow.innerHTML=genres.map(g=>`<button class="ms-genre-btn${msGenre===g?' active':''}" onclick="setMsGenre('${g}',this)">${msGenreLabels[g]}</button>`).join('');
+  renderSeriesGrid();
+}
+function setMsGenre(g,btn){msGenre=g;document.querySelectorAll('.ms-genre-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSeriesGrid();}
+function renderSeriesGrid(){
+  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  const filtered=authorSeries.filter(s=>msGenre==='all'||s.genre===msGenre);
+  const el=document.getElementById('ms-grid');
+  el.innerHTML=filtered.map(s=>{
+    const badgeClass=msGenreBadgeClass[s.genre]||'ms-badge-fantasy';
+    const badgeLabel=msGenreLabels[s.genre]||s.genre;
+    const allInTBR=s.books.filter(b=>!b.includes('upcoming')).every(b=>tbr.some(t=>t.title===b));
+    const safeId=s.id;
+    const bookListHtml=s.books.map((b,i)=>`<li><span class="ms-book-num">${i+1}</span><span class="ms-book-title">${b}</span></li>`).join('');
+    return `<div class="ms-card">
+      <span class="ms-genre-badge ${badgeClass}">${badgeLabel}</span>
+      <div class="ms-series-name">${s.name}</div>
+      <div class="ms-author">by ${s.author}</div>
+      <div class="ms-desc">${s.desc}</div>
+      <ul class="ms-booklist">${bookListHtml}</ul>
+      <div class="ms-actions">
+        <button class="ms-add-all${allInTBR?' added':''}" onclick="addSeriesToTBR('${safeId}',this)">${allInTBR?'✓ All in TBR':'+ Add All to TBR'}</button>
+        <span class="ms-content-idea">${s.videoIdea}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+function addSeriesToTBR(seriesId,btn){
+  const series=authorSeries.find(s=>s.id===seriesId);
+  if(!series)return;
+  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  let added=0;
+  series.books.filter(b=>!b.includes('upcoming')).forEach(title=>{
+    if(!tbr.some(t=>t.title===title)){
+      tbr.unshift({id:Date.now()+Math.random(),title,author:series.author,genre:'',notes:'',addedFrom:'Author Series: '+series.name});
+      added++;
+    }
+  });
+  localStorage.setItem('sc3_tbr',JSON.stringify(tbr));
+  if(added>0){btn.textContent='✓ All in TBR';btn.classList.add('added');toast(`✦ Added ${added} book${added>1?'s':''} to TBR 🖤`);}
+  else{toast('Already in your TBR!');}
+}
+
+// ══════════════════════════════════════════
+// PHOTO OCR SCAN
+// ══════════════════════════════════════════
+let tesseractLoaded=false;
+
+function openPhotoScan(){
+  document.getElementById('photo-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('photo-hint').textContent='Take a photo of a book cover or screenshot — we\'ll find the title for you 🖤';
+  document.getElementById('photo-preview').style.display='none';
+  document.getElementById('photo-loading').style.display='none';
+  document.getElementById('photo-results').innerHTML='';
+  setTimeout(()=>document.getElementById('photo-file-input').click(),100);
+}
+function closePhotoScan(){
+  document.getElementById('photo-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function handlePhotoSelected(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  const url=URL.createObjectURL(file);
+  const img=document.getElementById('photo-preview-img');
+  img.src=url;
+  document.getElementById('photo-preview').style.display='';
+  document.getElementById('photo-results').innerHTML='';
+  document.getElementById('photo-loading').style.display='';
+  document.getElementById('photo-loading-text').textContent='Loading OCR engine...';
+  document.getElementById('photo-hint').textContent='';
+  runPhotoOCR(file);
+  event.target.value='';
+}
+async function loadTesseract(){
+  if(window.Tesseract)return;
+  return new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+    s.onload=resolve;s.onerror=reject;
+    document.head.appendChild(s);
+  });
+}
+async function runPhotoOCR(file){
+  try{
+    await loadTesseract();
+    document.getElementById('photo-loading-text').textContent='Reading your image...';
+    const worker=await Tesseract.createWorker('eng',1,{logger:m=>{
+      if(m.status==='recognizing text'){
+        const pct=Math.round((m.progress||0)*100);
+        document.getElementById('photo-loading-text').textContent=`Reading image... ${pct}%`;
+      }
+    }});
+    const {data:{text}}=await worker.recognize(file);
+    await worker.terminate();
+    const cleaned=text.replace(/[^a-zA-Z0-9\s',.:-]/g,' ').replace(/\s+/g,' ').trim();
+    const query=cleaned.substring(0,150);
+    document.getElementById('photo-loading-text').textContent='Searching for matches...';
+    await searchBooksByOCR(query);
+  }catch(err){
+    document.getElementById('photo-loading').style.display='none';
+    document.getElementById('photo-hint').textContent='Could not read the image. Try a clearer photo or better lighting. 🖤';
+  }
+}
+async function searchBooksByOCR(query){
+  try{
+    const res=await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6`);
+    const data=await res.json();
+    document.getElementById('photo-loading').style.display='none';
+    if(!data.items||!data.items.length){
+      document.getElementById('photo-hint').textContent='No matches found. Try a clearer photo or type the title manually.';
+      return;
+    }
+    const results=data.items.slice(0,5).map(item=>{
+      const info=item.volumeInfo||{};
+      return{title:info.title||'Unknown',author:(info.authors||[]).join(', '),year:info.publishedDate?info.publishedDate.substring(0,4):''};
+    });
+    renderPhotoResults(results);
+  }catch(e){
+    document.getElementById('photo-loading').style.display='none';
+    document.getElementById('photo-hint').textContent='Search failed — check your connection and try again.';
+  }
+}
+let _photoResults=[];
+function renderPhotoResults(results){
+  _photoResults=results;
+  document.getElementById('photo-hint').textContent='Tap the right book to fill in the form 🖤';
+  document.getElementById('photo-results').innerHTML=`<div style="font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:10px;">SELECT THE CORRECT BOOK</div>`+
+    results.map((r,i)=>`<div class="photo-result-card" onclick="selectPhotoResult(${i})">
+      <div class="photo-result-title">${r.title}</div>
+      ${r.author?`<div class="photo-result-author">by ${r.author}</div>`:''}
+      ${r.year?`<div class="photo-result-year">${r.year}</div>`:''}
+    </div>`).join('');
+}
+function selectPhotoResult(idx){
+  const r=_photoResults[idx];if(!r)return;
+  const mode=document.getElementById('sc-modal-mode').value;
+  if(mode==='tbr'){
+    if(r.title)document.getElementById('sc-f-tbr-title').value=r.title;
+    if(r.author)document.getElementById('sc-f-tbr-author').value=r.author;
+  }else{
+    if(r.title)document.getElementById('sc-f-title').value=r.title;
+    if(r.author)document.getElementById('sc-f-author').value=r.author;
+  }
+  closePhotoScan();
+  toast('✦ Book filled in — complete the details and save 🖤');
 }
 
 // ══════════════════════════════════════════
@@ -3466,6 +3758,25 @@ function rescan(){
       <button class="btn btn-primary" style="flex:1;" onclick="acceptScan()">✦ Use This Book</button>
       <button class="btn" onclick="rescan()">Scan Again</button>
     </div>
+  </div>
+</div>
+
+<!-- PHOTO SCAN OVERLAY -->
+<input type="file" id="photo-file-input" accept="image/*" style="display:none;" onchange="handlePhotoSelected(event)"/>
+<div class="photo-overlay" id="photo-overlay">
+  <div class="photo-header">
+    <div class="photo-title">🖼️ Scan from Photo</div>
+    <button class="photo-close" onclick="closePhotoScan()">✕</button>
+  </div>
+  <div class="photo-preview" id="photo-preview"><img id="photo-preview-img" src="" alt=""/></div>
+  <div class="photo-hint" id="photo-hint">Take a photo of a book cover or screenshot — we'll find the title for you 🖤</div>
+  <div class="photo-loading" id="photo-loading" style="display:none;">
+    <div style="font-size:28px;">📖</div>
+    <div class="photo-loading-text" id="photo-loading-text">Reading your image...</div>
+  </div>
+  <div class="photo-results" id="photo-results"></div>
+  <div style="margin-top:14px;width:100%;max-width:480px;">
+    <button class="btn" style="width:100%;" onclick="document.getElementById('photo-file-input').click()">📷 Choose a Different Photo</button>
   </div>
 </div>
 
