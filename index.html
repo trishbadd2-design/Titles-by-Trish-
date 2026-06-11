@@ -3084,7 +3084,7 @@ function animateSpin(){
     spinAF=null;
     const n=spinBooks.length;
     const slice=(2*Math.PI)/n;
-    const norm=(((-spinAngle%(2*Math.PI))+(2*Math.PI))%(2*Math.PI));
+    const norm=(((- Math.PI/2 - spinAngle)%(2*Math.PI))+(2*Math.PI))%(2*Math.PI);
     const idx=Math.floor(norm/slice)%n;
     const picked=spinBooks[idx];
     document.getElementById('spin-result').textContent=picked.title;
@@ -3399,8 +3399,23 @@ async function onBarcodeDetected(isbn){
       const author=book.authors?book.authors.map(a=>a.name).join(', '):'';
       showScannerResult(title,author,isbn);
     } else {
-      document.getElementById('scanner-hint').textContent='Book not found for ISBN '+isbn+'. Try scanning again or enter manually.';
-      setTimeout(()=>startScanner(),2000);
+      // Fallback: try Google Books API
+      try{
+        const gRes=await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
+        const gData=await gRes.json();
+        if(gData.items&&gData.items[0]){
+          const info=gData.items[0].volumeInfo;
+          const title=info.title||'';
+          const author=info.authors?info.authors.join(', '):'';
+          showScannerResult(title,author,isbn);
+        } else {
+          document.getElementById('scanner-hint').textContent='Book not found for ISBN '+isbn+'. Try scanning again or enter manually.';
+          setTimeout(()=>startScanner(),2000);
+        }
+      }catch(e2){
+        document.getElementById('scanner-hint').textContent='Book not found for ISBN '+isbn+'. Try scanning again or enter manually.';
+        setTimeout(()=>startScanner(),2000);
+      }
     }
   }catch(e){
     document.getElementById('scanner-hint').textContent='Lookup failed. Check your connection and try again.';
