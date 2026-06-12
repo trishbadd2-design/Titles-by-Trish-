@@ -632,8 +632,6 @@ canvas{width:100%!important;}
   <div style="margin-top:14px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
     <button class="btn btn-primary" onclick="exportData()" style="font-size:16px;padding:6px 14px;">⬇ Backup My Data</button>
     <label class="btn" style="font-size:16px;padding:6px 14px;cursor:pointer;">⬆ Restore Backup<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
-    <button class="btn" onclick="syncWidget()" style="font-size:16px;padding:6px 14px;">📱 Sync Widget</button>
-    <a class="btn" href="scriptable:///import?url=https://trishbadd2-design.github.io/Titles-by-Trish-/widget.js" style="font-size:16px;padding:6px 14px;text-decoration:none;display:inline-block;">⚙️ Install Widget</a>
   </div>
 </div>
 
@@ -3083,22 +3081,6 @@ function exportData(){
   a.download='titlesbytrish-backup-'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
   toast('✦ Backup downloaded!');
-}
-function syncWidget(){
-  const folLogsW=JSON.parse(localStorage.getItem('tbtrish_fol')||'[]');
-  const followers=folLogsW.length>0?folLogsW[folLogsW.length-1].count:0;
-  const doneArr=JSON.parse(localStorage.getItem('tbtrish_done')||'[]');
-  const scBooksW=JSON.parse(localStorage.getItem('sc3_books')||'[]');
-  const booksRead=scBooksW.filter(b=>!b.tbr).length;
-  const readingStreak=parseInt(localStorage.getItem('sc3_streak')||'0');
-  const payload={followers,videosPosted:doneArr.length,totalVideos:75,booksRead,readingStreak,
-    lastUpdated:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='titlesbytrish-widget.json';
-  a.click();
-  toast('✦ Widget data ready! Save to Files → iCloud → Scriptable');
 }
 function importData(e){
   const file=e.target.files[0];if(!file)return;
