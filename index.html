@@ -15,14 +15,14 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
   --bg:#07050a;--bg2:#0e0a12;--bg3:#130d18;
-  --gold:#c8a050;--gold-dim:rgba(200,160,80,.55);--gold-faint:rgba(200,160,80,.1);
+  --gold:#c8a050;--gold-dim:rgba(200,160,80,.85);--gold-faint:rgba(200,160,80,.1);
   --red:#8b1a1a;--red-dim:rgba(139,26,26,.4);
   --purple:#5a2080;--green:#2a7a2a;
-  --text:#e8dcc8;--text-dim:rgba(232,220,200,.55);
+  --text:#ffffff;--text-dim:rgba(255,255,255,.72);
   --border:rgba(200,160,80,.18);--border-hi:rgba(200,160,80,.45);
 }
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Playfair Display',serif;min-height:100vh;}
+body{background:var(--bg);color:var(--text);font-family:'Playfair Display',serif;font-weight:500;min-height:100vh;}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:150px;}
