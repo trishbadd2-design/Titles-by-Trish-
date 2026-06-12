@@ -495,8 +495,13 @@ canvas{width:100%!important;}
 .photo-result-title{font-family:'Cinzel',serif;font-size:13px;color:#fff;margin-bottom:2px;}
 .photo-result-author{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);}
 .photo-result-year{font-size:10px;color:var(--text-dim);margin-top:3px;}
-.photo-loading{text-align:center;padding:30px 0;width:100%;max-width:480px;}
-.photo-loading-text{font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:3px;color:var(--gold-dim);margin-top:12px;}
+.photo-loading{text-align:center;padding:16px 0;width:100%;max-width:480px;}
+.photo-loading-text{font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:3px;color:var(--gold-dim);margin-top:8px;}
+.photo-search-row{width:100%;max-width:480px;margin-top:14px;display:none;}
+.photo-search-input{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border-hi);border-radius:4px;padding:10px 14px;color:#fff;font-size:13px;font-family:'IM Fell English SC',serif;letter-spacing:1px;box-sizing:border-box;margin-bottom:8px;}
+.photo-search-input::placeholder{color:var(--text-dim);}
+.photo-search-btn{width:100%;padding:11px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;background:var(--gold-faint);border:1px solid var(--border-hi);color:var(--gold);border-radius:3px;cursor:pointer;transition:all .2s;}
+.photo-search-btn:hover{background:rgba(200,160,80,.2);}
 
 /* ── BARCODE SCANNER ── */
 .scanner-overlay{position:fixed;inset:0;z-index:500;background:rgba(5,3,8,.97);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;}
@@ -3397,16 +3402,16 @@ function addSeriesToTBR(seriesId,btn){
 }
 
 // ══════════════════════════════════════════
-// PHOTO OCR SCAN
+// PHOTO SCAN — show preview + search box
 // ══════════════════════════════════════════
-let tesseractLoaded=false;
-
 function openPhotoScan(){
   document.getElementById('photo-overlay').classList.add('open');
   document.body.style.overflow='hidden';
-  document.getElementById('photo-hint').textContent='Take a photo of a book cover or screenshot — we\'ll find the title for you 🖤';
+  document.getElementById('photo-hint').textContent='Take a photo or screenshot of a book — then type the title to search 🖤';
   document.getElementById('photo-preview').style.display='none';
   document.getElementById('photo-loading').style.display='none';
+  document.getElementById('photo-search-row').style.display='none';
+  document.getElementById('photo-search-input').value='';
   document.getElementById('photo-results').innerHTML='';
   setTimeout(()=>document.getElementById('photo-file-input').click(),100);
 }
@@ -3418,14 +3423,16 @@ function handlePhotoSelected(event){
   const file=event.target.files[0];
   if(!file)return;
   const url=URL.createObjectURL(file);
-  const img=document.getElementById('photo-preview-img');
-  img.src=url;
+  document.getElementById('photo-preview-img').src=url;
   document.getElementById('photo-preview').style.display='';
   document.getElementById('photo-results').innerHTML='';
-  document.getElementById('photo-loading').style.display='';
-  document.getElementById('photo-loading-text').textContent='Loading OCR engine...';
   document.getElementById('photo-hint').textContent='';
-  runPhotoOCR(file);
+  document.getElementById('photo-search-input').value='';
+  document.getElementById('photo-search-row').style.display='';
+  // Try OCR in background to pre-fill search box
+  document.getElementById('photo-loading').style.display='';
+  document.getElementById('photo-loading-text').textContent='Reading image text...';
+  tryOCRPrefill(file);
   event.target.value='';
 }
 async function loadTesseract(){
@@ -3433,38 +3440,42 @@ async function loadTesseract(){
   return new Promise((resolve,reject)=>{
     const s=document.createElement('script');
     s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
-    s.onload=resolve;s.onerror=reject;
+    s.onload=resolve;s.onerror=()=>resolve(); // fail silently
     document.head.appendChild(s);
   });
 }
-async function runPhotoOCR(file){
+async function tryOCRPrefill(file){
   try{
     await loadTesseract();
-    document.getElementById('photo-loading-text').textContent='Reading your image...';
-    const worker=await Tesseract.createWorker('eng',1,{logger:m=>{
-      if(m.status==='recognizing text'){
-        const pct=Math.round((m.progress||0)*100);
-        document.getElementById('photo-loading-text').textContent=`Reading image... ${pct}%`;
-      }
-    }});
+    if(!window.Tesseract){document.getElementById('photo-loading').style.display='none';return;}
+    const worker=await Tesseract.createWorker('eng');
     const {data:{text}}=await worker.recognize(file);
     await worker.terminate();
-    const cleaned=text.replace(/[^a-zA-Z0-9\s',.:-]/g,' ').replace(/\s+/g,' ').trim();
-    const query=cleaned.substring(0,150);
-    document.getElementById('photo-loading-text').textContent='Searching for matches...';
-    await searchBooksByOCR(query);
-  }catch(err){
-    document.getElementById('photo-loading').style.display='none';
-    document.getElementById('photo-hint').textContent='Could not read the image. Try a clearer photo or better lighting. 🖤';
+    // Extract the cleanest lines (likely the title/author)
+    const lines=text.split('\n').map(l=>l.replace(/[^a-zA-Z0-9\s',.-]/g,' ').replace(/\s+/g,' ').trim()).filter(l=>l.length>3);
+    const query=lines.slice(0,4).join(' ').substring(0,120);
+    if(query.length>3){
+      document.getElementById('photo-search-input').value=query;
+      document.getElementById('photo-loading-text').textContent='Text found — edit if needed, then Search ✓';
+    }else{
+      document.getElementById('photo-loading-text').textContent='Type the title above and tap Search 🖤';
+    }
+  }catch(e){
+    document.getElementById('photo-loading-text').textContent='Type the title above and tap Search 🖤';
   }
 }
-async function searchBooksByOCR(query){
+async function doPhotoSearch(){
+  const query=document.getElementById('photo-search-input').value.trim();
+  if(!query){document.getElementById('photo-loading-text').textContent='Type a title or author first 🖤';return;}
+  document.getElementById('photo-loading').style.display='';
+  document.getElementById('photo-loading-text').textContent='Searching...';
+  document.getElementById('photo-results').innerHTML='';
   try{
     const res=await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6`);
     const data=await res.json();
     document.getElementById('photo-loading').style.display='none';
     if(!data.items||!data.items.length){
-      document.getElementById('photo-hint').textContent='No matches found. Try a clearer photo or type the title manually.';
+      document.getElementById('photo-hint').textContent='No matches — try editing the title above and searching again.';
       return;
     }
     const results=data.items.slice(0,5).map(item=>{
@@ -3769,10 +3780,13 @@ function rescan(){
     <button class="photo-close" onclick="closePhotoScan()">✕</button>
   </div>
   <div class="photo-preview" id="photo-preview"><img id="photo-preview-img" src="" alt=""/></div>
-  <div class="photo-hint" id="photo-hint">Take a photo of a book cover or screenshot — we'll find the title for you 🖤</div>
+  <div class="photo-hint" id="photo-hint">Take a photo or screenshot of a book — then type the title to search 🖤</div>
   <div class="photo-loading" id="photo-loading" style="display:none;">
-    <div style="font-size:28px;">📖</div>
-    <div class="photo-loading-text" id="photo-loading-text">Reading your image...</div>
+    <div class="photo-loading-text" id="photo-loading-text">Reading image...</div>
+  </div>
+  <div class="photo-search-row" id="photo-search-row">
+    <input class="photo-search-input" id="photo-search-input" placeholder="Type title or author here..." onkeydown="if(event.key==='Enter')doPhotoSearch()"/>
+    <button class="photo-search-btn" onclick="doPhotoSearch()">✦ Search for This Book</button>
   </div>
   <div class="photo-results" id="photo-results"></div>
   <div style="margin-top:14px;width:100%;max-width:480px;">
