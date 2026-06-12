@@ -18,7 +18,7 @@
   --gold:#c8a050;--gold-dim:rgba(200,160,80,.85);--gold-faint:rgba(200,160,80,.1);
   --red:#8b1a1a;--red-dim:rgba(139,26,26,.4);
   --purple:#5a2080;--green:#2a7a2a;
-  --text:#ffffff;--text-dim:rgba(255,255,255,.72);
+  --text:#ffffff;--text-dim:rgba(255,255,255,.90);
   --border:rgba(200,160,80,.18);--border-hi:rgba(200,160,80,.45);
 }
 html{scroll-behavior:smooth;}
@@ -35,13 +35,13 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 /* ── HEADER ── */
 .site-header{text-align:center;padding:44px 0 28px;border-bottom:1px solid var(--border);margin-bottom:28px;}
-.site-header .eyebrow{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:6px;color:var(--gold-dim);margin-bottom:10px;}
+.site-header .eyebrow{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:6px;color:var(--gold-dim);margin-bottom:10px;}
 .site-header h1{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(22px,5vw,36px);letter-spacing:4px;color:#fff;text-shadow:0 0 40px rgba(139,26,26,.4);margin-bottom:4px;}
-.site-header .tagline{font-style:italic;font-size:12px;color:var(--text-dim);}
+.site-header .tagline{font-style:italic;font-size:15px;color:var(--text-dim);}
 
 /* ── NAV TABS ── */
 .nav-tabs{display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:16px;}
-.nav-btn{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;padding:8px 14px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nav-btn{font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;padding:8px 14px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;white-space:nowrap;}
 .nav-btn:hover{border-color:var(--border-hi);color:var(--text);}
 .nav-btn.active{border-color:var(--border-hi);background:var(--gold-faint);color:var(--gold);}
 
@@ -53,13 +53,13 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 /* ── SHARED ── */
 .section-title{font-family:'Cinzel',serif;font-weight:900;font-size:14px;letter-spacing:3px;color:#fff;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
 .card-box{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:4px;padding:18px 20px;margin-bottom:12px;}
-.label-sm{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:4px;color:var(--gold-dim);margin-bottom:6px;}
+.label-sm{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:4px;color:var(--gold-dim);margin-bottom:6px;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
 @media(max-width:600px){.grid-2,.grid-3{grid-template-columns:1fr;}}
 
 /* ── BUTTONS ── */
-.btn{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;padding:9px 18px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.btn{font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;padding:9px 18px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .btn:hover{border-color:var(--border-hi);color:var(--gold);}
 .btn-primary{border-color:var(--border-hi);background:var(--gold-faint);color:var(--gold);}
 .btn-primary:hover{background:rgba(200,160,80,.2);}
@@ -70,7 +70,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .btn-full{width:100%;margin-top:10px;}
 
 /* ── INPUTS ── */
-input,select,textarea{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:'Playfair Display',serif;font-size:13px;padding:9px 12px;width:100%;outline:none;transition:border-color .2s;}
+input,select,textarea{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:'Playfair Display',serif;font-size:16px;padding:9px 12px;width:100%;outline:none;transition:border-color .2s;}
 input:focus,select:focus,textarea:focus{border-color:var(--border-hi);}
 select option{background:#1a0f20;color:var(--text);}
 textarea{resize:vertical;min-height:80px;}
@@ -78,8 +78,8 @@ textarea{resize:vertical;min-height:80px;}
 /* ── PROGRESS ── */
 .progress-wrap{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:4px;padding:16px 20px;margin-bottom:20px;}
 .progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.progress-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold);}
-.progress-count{font-family:'IM Fell English SC',serif;font-size:12px;color:var(--text-dim);}
+.progress-label{font-family:'Cinzel',serif;font-size:15px;letter-spacing:3px;color:var(--gold);}
+.progress-count{font-family:'IM Fell English SC',serif;font-size:15px;color:var(--text-dim);}
 .progress-track{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
 .progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--red),var(--gold));transition:width .5s ease;box-shadow:0 0 10px rgba(139,26,26,.5);}
 
@@ -87,39 +87,39 @@ textarea{resize:vertical;min-height:80px;}
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
 .stat-box{border:1px solid var(--border);border-radius:4px;padding:14px;text-align:center;background:rgba(255,255,255,.02);}
 .stat-num{font-family:'Cinzel',serif;font-weight:900;font-size:24px;color:#fff;text-shadow:0 0 20px rgba(200,160,80,.3);margin-bottom:4px;}
-.stat-label{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:3px;color:var(--text-dim);}
+.stat-label{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:3px;color:var(--text-dim);}
 
 /* ── VIDEO CARDS ── */
 .video-card{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.025);overflow:hidden;transition:border-color .2s;margin-bottom:10px;}
 .video-card:hover{border-color:var(--border-hi);}
 .video-card.done{background:rgba(40,120,40,.1);border-color:rgba(60,160,60,.3);}
 .card-top{display:flex;align-items:center;gap:12px;padding:13px 15px;cursor:pointer;}
-.card-date{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold-dim);white-space:nowrap;min-width:86px;}
+.card-date{font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold-dim);white-space:nowrap;min-width:86px;}
 .card-info{flex:1;}
-.card-title{font-family:'Cinzel',serif;font-weight:700;font-size:12px;color:var(--text);margin-bottom:2px;line-height:1.3;}
-.card-type{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:3px;color:var(--text-dim);}
+.card-title{font-family:'Cinzel',serif;font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px;line-height:1.3;}
+.card-type{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:3px;color:var(--text-dim);}
 .card-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
-.btn-done{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.btn-done{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:15px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
 .btn-done:hover{border-color:rgba(60,160,60,.5);color:#4a9a4a;}
 .video-card.done .btn-done{background:rgba(60,160,60,.2);border-color:rgba(60,160,60,.5);color:#4a9a4a;}
-.btn-script{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:4px 10px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-script{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;padding:4px 10px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;white-space:nowrap;}
 .btn-script:hover{border-color:var(--border-hi);color:var(--gold);}
 .btn-expand{background:transparent;border:none;color:var(--text-dim);font-size:14px;cursor:pointer;transition:transform .2s;padding:4px;}
 .video-card.expanded .btn-expand{transform:rotate(180deg);}
 .card-details{display:none;padding:0 15px 14px;border-top:1px solid var(--border);}
 .video-card.expanded .card-details{display:block;}
 .detail-section{margin-top:12px;}
-.detail-label{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:4px;color:var(--gold-dim);margin-bottom:5px;}
-.detail-text{font-size:12px;color:var(--text-dim);line-height:1.7;font-style:italic;}
+.detail-label{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:4px;color:var(--gold-dim);margin-bottom:5px;}
+.detail-text{font-size:15px;color:var(--text-dim);line-height:1.7;font-style:italic;}
 .hashtag-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
-.hashtag{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:3px 8px;border:1px solid var(--border);color:var(--gold-dim);border-radius:2px;background:var(--gold-faint);}
+.hashtag{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;padding:3px 8px;border:1px solid var(--border);color:var(--gold-dim);border-radius:2px;background:var(--gold-faint);}
 .month-header{font-family:'Cinzel',serif;font-weight:900;font-size:16px;letter-spacing:4px;color:#fff;text-align:center;margin:20px 0 14px;padding:10px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
-.week-label{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:5px;color:var(--gold-dim);margin:20px 0 10px;text-align:center;}
+.week-label{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:5px;color:var(--gold-dim);margin:20px 0 10px;text-align:center;}
 
 /* ── FOLLOWER CHART ── */
 /* ── ANALYTICS ── */
 .an-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
-.an-tab{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:7px 14px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.an-tab{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;padding:7px 14px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .an-tab.active,.an-tab:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
 .an-section{display:none;}
 .an-section.active{display:block;}
@@ -127,70 +127,70 @@ textarea{resize:vertical;min-height:80px;}
 .an-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
 .an-stat{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:4px;padding:11px 8px;text-align:center;}
 .an-stat-num{font-family:'Cinzel',serif;font-size:18px;font-weight:900;color:var(--gold);}
-.an-stat-label{font-family:'IM Fell English SC',serif;font-size:8px;letter-spacing:2px;color:var(--text-dim);margin-top:2px;}
-.an-stat-sub{font-size:9px;color:rgba(100,200,100,.85);margin-top:3px;}
+.an-stat-label{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--text-dim);margin-top:2px;}
+.an-stat-sub{font-size:16px;color:rgba(100,200,100,.85);margin-top:3px;}
 .an-stat-sub.neg{color:rgba(220,100,100,.8);}
 .growth-chart-wrap{overflow-x:auto;margin-bottom:14px;padding-bottom:4px;}
 .growth-chart{display:flex;align-items:flex-end;gap:6px;height:110px;min-width:min-content;padding:0 2px;}
 .growth-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:42px;}
 .growth-bar{width:30px;border-radius:3px 3px 0 0;background:linear-gradient(0deg,var(--red),var(--gold));min-height:3px;}
-.growth-bar-val{font-family:'Cinzel',serif;font-size:8px;color:var(--gold-dim);white-space:nowrap;}
-.growth-bar-date{font-family:'IM Fell English SC',serif;font-size:7px;color:var(--text-dim);text-align:center;white-space:nowrap;}
+.growth-bar-val{font-family:'Cinzel',serif;font-size:15px;color:var(--gold-dim);white-space:nowrap;}
+.growth-bar-date{font-family:'IM Fell English SC',serif;font-size:15px;color:var(--text-dim);text-align:center;white-space:nowrap;}
 .growth-entry{border:1px solid var(--border);border-radius:4px;padding:9px 13px;margin-bottom:7px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 .growth-entry-left{min-width:0;flex:1;}
-.growth-entry-date{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);}
+.growth-entry-date{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);}
 .growth-entry-followers{font-family:'Cinzel',serif;font-size:15px;color:#fff;}
-.growth-entry-stats{font-size:10px;color:var(--text-dim);margin-top:3px;}
-.growth-delta{font-size:9px;padding:2px 7px;border-radius:2px;white-space:nowrap;}
+.growth-entry-stats{font-size:14px;color:var(--text-dim);margin-top:3px;}
+.growth-delta{font-size:16px;padding:2px 7px;border-radius:2px;white-space:nowrap;}
 .growth-delta.pos{color:rgba(100,200,100,.9);background:rgba(60,160,60,.12);}
 .growth-delta.neg{color:rgba(220,100,100,.9);background:rgba(180,40,40,.12);}
 .vp-insight{background:rgba(200,160,80,.07);border:1px solid rgba(200,160,80,.2);border-radius:4px;padding:12px 14px;margin-bottom:14px;}
-.vp-insight-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;}
-.vp-insight-text{font-size:12px;color:var(--text-dim);line-height:1.7;font-style:italic;}
+.vp-insight-title{font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;}
+.vp-insight-text{font-size:15px;color:var(--text-dim);line-height:1.7;font-style:italic;}
 .vp-card{border:1px solid var(--border);border-radius:4px;padding:11px 13px;margin-bottom:8px;}
 .vp-card:hover{border-color:var(--border-hi);}
 .vp-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;}
-.vp-title{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:#fff;}
-.vp-type{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;color:var(--gold-dim);}
+.vp-title{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:#fff;}
+.vp-type{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;color:var(--gold-dim);}
 .vp-stats{display:flex;gap:12px;flex-wrap:wrap;}
-.vp-stat{font-size:10px;color:var(--text-dim);}
+.vp-stat{font-size:14px;color:var(--text-dim);}
 .vp-stat b{color:rgba(200,160,80,.8);}
-.vp-del{background:transparent;border:none;color:rgba(200,80,80,.35);cursor:pointer;font-size:12px;flex-shrink:0;}
+.vp-del{background:transparent;border:none;color:rgba(200,80,80,.35);cursor:pointer;font-size:15px;flex-shrink:0;}
 .vp-del:hover{color:#e06060;}
 .tip-stage{margin-bottom:10px;border:1px solid var(--border);border-radius:4px;overflow:hidden;}
-.tip-stage-hdr{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:rgba(200,160,80,.05);user-select:none;}
+.tip-stage-hdr{font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;color:var(--gold);padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:rgba(200,160,80,.05);user-select:none;}
 .tip-stage-hdr:hover{background:rgba(200,160,80,.1);}
 .tip-stage-body{display:none;padding:10px 14px 12px;border-top:1px solid var(--border);}
 .tip-stage-body.open{display:block;}
-.tip-item{font-size:12px;color:var(--text-dim);line-height:1.75;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:9px;}
+.tip-item{font-size:15px;color:var(--text-dim);line-height:1.75;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:9px;}
 .tip-item:last-child{border-bottom:none;}
-.tip-bullet{color:var(--gold);flex-shrink:0;font-size:9px;padding-top:4px;}
+.tip-bullet{color:var(--gold);flex-shrink:0;font-size:16px;padding-top:4px;}
 .chart-wrap{position:relative;height:180px;margin:16px 0 8px;}
 canvas{width:100%!important;}
-.chart-no-data{text-align:center;padding:60px 20px;color:var(--text-dim);font-style:italic;font-size:13px;}
+.chart-no-data{text-align:center;padding:60px 20px;color:var(--text-dim);font-style:italic;font-size:16px;}
 .follower-log{max-height:220px;overflow-y:auto;}
 .follower-log::-webkit-scrollbar{width:3px;}
 .follower-log::-webkit-scrollbar-thumb{background:var(--border);}
 .log-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(200,160,80,.08);}
 .log-row:last-child{border-bottom:none;}
-.log-date{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--text-dim);}
+.log-date{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--text-dim);}
 .log-count{font-family:'Cinzel',serif;font-weight:700;font-size:14px;color:var(--gold);}
-.log-delta{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:1px;}
+.log-delta{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:1px;}
 .log-delta.up{color:#4a9a4a;}
 .log-delta.down{color:#e06060;}
 .log-actions{display:flex;gap:6px;}
-.del-btn{background:transparent;border:none;color:rgba(200,80,80,.5);cursor:pointer;font-size:13px;padding:2px 4px;transition:color .2s;}
+.del-btn{background:transparent;border:none;color:rgba(200,80,80,.5);cursor:pointer;font-size:16px;padding:2px 4px;transition:color .2s;}
 .del-btn:hover{color:#e06060;}
 
 /* ── ENGAGEMENT ── */
 .eng-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(200,160,80,.08);}
 .eng-row:last-child{border-bottom:none;}
-.eng-title{font-family:'Cinzel',serif;font-size:11px;color:var(--text);margin-bottom:2px;}
-.eng-meta{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);}
+.eng-title{font-family:'Cinzel',serif;font-size:15px;color:var(--text);margin-bottom:2px;}
+.eng-meta{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);}
 .eng-stats{display:flex;gap:16px;align-items:center;}
 .eng-stat{text-align:center;}
 .eng-stat-num{font-family:'Cinzel',serif;font-weight:700;font-size:15px;color:var(--gold);}
-.eng-stat-label{font-family:'IM Fell English SC',serif;font-size:8px;letter-spacing:2px;color:var(--text-dim);}
+.eng-stat-label{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--text-dim);}
 .eng-log{max-height:300px;overflow-y:auto;}
 .eng-log::-webkit-scrollbar{width:3px;}
 .eng-log::-webkit-scrollbar-thumb{background:var(--border);}
@@ -199,9 +199,9 @@ canvas{width:100%!important;}
 .arc-row{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 0;border-bottom:1px solid rgba(200,160,80,.08);}
 .arc-row:last-child{border-bottom:none;}
 .arc-info{flex:1;}
-.arc-title{font-family:'Cinzel',serif;font-size:12px;color:var(--text);margin-bottom:3px;}
-.arc-meta{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);}
-.arc-status{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:3px 10px;border-radius:2px;border:1px solid;white-space:nowrap;margin-left:10px;}
+.arc-title{font-family:'Cinzel',serif;font-size:15px;color:var(--text);margin-bottom:3px;}
+.arc-meta{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);}
+.arc-status{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;padding:3px 10px;border-radius:2px;border:1px solid;white-space:nowrap;margin-left:10px;}
 .status-pending{color:rgba(200,160,80,.8);border-color:rgba(200,160,80,.3);background:rgba(200,160,80,.08);}
 .status-reading{color:rgba(100,150,220,.8);border-color:rgba(100,150,220,.3);background:rgba(100,150,220,.08);}
 .status-posted{color:rgba(60,160,60,.8);border-color:rgba(60,160,60,.3);background:rgba(60,160,60,.08);}
@@ -212,12 +212,12 @@ canvas{width:100%!important;}
 
 /* ── IDEA GENERATOR ── */
 .idea-display{background:rgba(255,255,255,.03);border:1px solid var(--border-hi);border-radius:4px;padding:24px 20px;text-align:center;margin:16px 0;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
-.idea-genre{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:4px;color:var(--gold-dim);}
+.idea-genre{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:4px;color:var(--gold-dim);}
 .idea-text{font-family:'Cinzel',serif;font-weight:700;font-size:16px;color:#fff;line-height:1.4;}
-.idea-hook{font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.6;}
+.idea-hook{font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.6;}
 .idea-empty{font-style:italic;color:var(--text-dim);}
 .idea-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-.idea-filter-btn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.idea-filter-btn{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .idea-filter-btn:hover,.idea-filter-btn.active{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
 
 /* ── BOOK BANK ── */
@@ -225,16 +225,16 @@ canvas{width:100%!important;}
 .book-card{border:1px solid var(--border);border-radius:4px;padding:14px 16px;background:rgba(255,255,255,.02);transition:all .2s;cursor:pointer;}
 .book-card:hover{border-color:var(--border-hi);background:var(--gold-faint);}
 .book-card.saved{border-color:rgba(60,160,60,.4);background:rgba(60,160,60,.07);}
-.book-title{font-family:'Cinzel',serif;font-weight:700;font-size:12px;color:#fff;margin-bottom:3px;line-height:1.3;}
-.book-author{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:8px;}
-.book-desc{font-size:11px;color:var(--text-dim);line-height:1.6;font-style:italic;margin-bottom:8px;}
+.book-title{font-family:'Cinzel',serif;font-weight:700;font-size:15px;color:#fff;margin-bottom:3px;line-height:1.3;}
+.book-author{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:8px;}
+.book-desc{font-size:15px;color:var(--text-dim);line-height:1.6;font-style:italic;margin-bottom:8px;}
 .book-tags{display:flex;gap:5px;flex-wrap:wrap;}
-.book-tag{font-family:'IM Fell English SC',serif;font-size:8px;letter-spacing:2px;padding:2px 7px;border:1px solid var(--border);color:var(--text-dim);border-radius:2px;}
-.book-mindscale{font-family:'Cinzel',serif;font-size:11px;margin-top:8px;}
+.book-tag{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;padding:2px 7px;border:1px solid var(--border);color:var(--text-dim);border-radius:2px;}
+.book-mindscale{font-family:'Cinzel',serif;font-size:15px;margin-top:8px;}
 .book-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
-.book-filter-btn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.book-filter-btn{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .book-filter-btn:hover,.book-filter-btn.active{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
-.book-save-btn{background:transparent;border:1px solid var(--border);border-radius:2px;color:var(--text-dim);font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:4px 10px;cursor:pointer;transition:all .2s;margin-top:8px;width:100%;}
+.book-save-btn{background:transparent;border:1px solid var(--border);border-radius:2px;color:var(--text-dim);font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;padding:4px 10px;cursor:pointer;transition:all .2s;margin-top:8px;width:100%;}
 .book-save-btn:hover{border-color:var(--border-hi);color:var(--gold);}
 .book-card.saved .book-save-btn{border-color:rgba(60,160,60,.4);color:rgba(100,200,100,.8);}
 
@@ -242,18 +242,18 @@ canvas{width:100%!important;}
 .schedule-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:20px;}
 @media(max-width:600px){.schedule-grid{grid-template-columns:repeat(4,1fr);}}
 .sched-day{border:1px solid var(--border);border-radius:3px;padding:10px 6px;text-align:center;}
-.sched-day-name{font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;color:var(--gold-dim);margin-bottom:6px;}
-.sched-time{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:1px;color:var(--text);margin-bottom:3px;}
-.sched-type{font-size:10px;}
+.sched-day-name{font-family:'Cinzel',serif;font-size:16px;letter-spacing:1px;color:var(--gold-dim);margin-bottom:6px;}
+.sched-time{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:1px;color:var(--text);margin-bottom:3px;}
+.sched-type{font-size:14px;}
 .sched-day.rest{opacity:.4;}
 .sched-day.film-day{border-color:rgba(139,26,26,.5);background:rgba(139,26,26,.08);}
 .sched-day.post-day{border-color:var(--border-hi);background:var(--gold-faint);}
 .alarm-list{display:flex;flex-direction:column;gap:8px;}
 .alarm-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border:1px solid var(--border);border-radius:3px;background:rgba(255,255,255,.02);}
 .alarm-item.active-alarm{border-color:rgba(139,26,26,.5);background:rgba(139,26,26,.1);}
-.alarm-label{font-family:'Cinzel',serif;font-size:11px;color:var(--text);margin-bottom:2px;}
-.alarm-time{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);}
-.alarm-toggle{background:transparent;border:1px solid var(--border);border-radius:2px;color:var(--text-dim);font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:4px 10px;cursor:pointer;transition:all .2s;}
+.alarm-label{font-family:'Cinzel',serif;font-size:15px;color:var(--text);margin-bottom:2px;}
+.alarm-time{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);}
+.alarm-toggle{background:transparent;border:1px solid var(--border);border-radius:2px;color:var(--text-dim);font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;padding:4px 10px;cursor:pointer;transition:all .2s;}
 .alarm-toggle:hover{border-color:var(--border-hi);color:var(--gold);}
 .alarm-item.active-alarm .alarm-toggle{border-color:rgba(139,26,26,.5);color:rgba(220,100,100,.8);}
 
@@ -263,98 +263,98 @@ canvas{width:100%!important;}
 .modal{width:100%;max-width:620px;max-height:88vh;background:var(--bg2);border:1px solid var(--border-hi);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.8);}
 .modal-header{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
 .modal-title{font-family:'Cinzel',serif;font-weight:900;font-size:14px;color:#fff;letter-spacing:1px;line-height:1.3;flex:1;padding-right:14px;}
-.modal-date{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:3px;color:var(--gold-dim);margin-top:3px;}
+.modal-date{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:3px;color:var(--gold-dim);margin-top:3px;}
 .modal-close{background:transparent;border:1px solid var(--border);color:var(--text-dim);font-size:16px;cursor:pointer;width:30px;height:30px;border-radius:3px;flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center;}
 .modal-close:hover{border-color:var(--border-hi);color:var(--text);}
 .modal-body{padding:18px 22px;overflow-y:auto;flex:1;}
 .modal-body::-webkit-scrollbar{width:3px;}
 .modal-body::-webkit-scrollbar-thumb{background:var(--border);}
 .script-section{margin-bottom:18px;}
-.script-section-label{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:5px;color:var(--gold);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border);}
-.script-block{background:rgba(255,255,255,.03);border:1px solid var(--border);border-left:2px solid var(--red);border-radius:0 3px 3px 0;padding:11px 13px;margin-bottom:7px;font-size:12px;line-height:1.8;color:var(--text-dim);font-style:italic;}
-.script-block .speaker{font-family:'Cinzel',serif;font-size:8px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:5px;font-style:normal;}
+.script-section-label{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:5px;color:var(--gold);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.script-block{background:rgba(255,255,255,.03);border:1px solid var(--border);border-left:2px solid var(--red);border-radius:0 3px 3px 0;padding:11px 13px;margin-bottom:7px;font-size:15px;line-height:1.8;color:var(--text-dim);font-style:italic;}
+.script-block .speaker{font-family:'Cinzel',serif;font-size:15px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:5px;font-style:normal;}
 .modal-hashtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
-.copy-btn{width:100%;margin-top:14px;padding:10px;border-radius:3px;border:1px solid var(--border-hi);background:var(--gold-faint);color:var(--gold);font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;cursor:pointer;transition:all .2s;}
+.copy-btn{width:100%;margin-top:14px;padding:10px;border-radius:3px;border:1px solid var(--border-hi);background:var(--gold-faint);color:var(--gold);font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;cursor:pointer;transition:all .2s;}
 .copy-btn:hover{background:rgba(200,160,80,.2);}
 .copy-btn.copied{border-color:rgba(60,160,60,.5);color:#4a9a4a;background:rgba(60,160,60,.1);}
 
 /* ── TOAST ── */
-.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg2);border:1px solid var(--border-hi);border-radius:4px;padding:10px 20px;font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:3px;color:var(--gold);opacity:0;transition:all .3s;z-index:200;white-space:nowrap;}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg2);border:1px solid var(--border-hi);border-radius:4px;padding:10px 20px;font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:var(--gold);opacity:0;transition:all .3s;z-index:200;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* ── PLANNER ── */
 .plan-month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;}
-.plan-day-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:var(--gold-dim);text-align:center;padding:6px 2px;}
+.plan-day-label{font-family:'Cinzel',serif;font-size:16px;letter-spacing:2px;color:var(--gold-dim);text-align:center;padding:6px 2px;}
 .plan-cell{min-height:70px;border:1px solid var(--border);border-radius:3px;padding:4px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.02);position:relative;}
 .plan-cell:hover{border-color:var(--border-hi);background:var(--gold-faint);}
 .plan-cell.today{border-color:rgba(139,26,26,.6);background:rgba(139,26,26,.1);}
 .plan-cell.other-month{opacity:.3;}
-.plan-cell-date{font-family:'Cinzel',serif;font-size:10px;color:var(--text-dim);margin-bottom:3px;}
+.plan-cell-date{font-family:'Cinzel',serif;font-size:14px;color:var(--text-dim);margin-bottom:3px;}
 .plan-cell.today .plan-cell-date{color:var(--gold);}
-.plan-entry-dot{font-size:9px;line-height:1.4;color:var(--text);background:rgba(200,160,80,.12);border:1px solid var(--border);border-radius:2px;padding:1px 4px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.plan-entry-dot{font-size:16px;line-height:1.4;color:var(--text);background:rgba(200,160,80,.12);border:1px solid var(--border);border-radius:2px;padding:1px 4px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .plan-entry-dot.type-video{border-color:rgba(139,26,26,.4);background:rgba(139,26,26,.12);}
 .plan-entry-dot.type-personal{border-color:rgba(80,120,200,.4);background:rgba(80,120,200,.1);}
 .plan-entry-dot.type-appointment{border-color:rgba(200,160,80,.4);background:rgba(200,160,80,.1);}
 .plan-entry-dot.type-reminder{border-color:rgba(200,120,50,.4);background:rgba(200,120,50,.1);}
 .plan-entry-dot.type-reading{border-color:rgba(60,160,60,.4);background:rgba(60,160,60,.1);}
 .plan-entry-dot.type-idea{border-color:rgba(120,60,200,.4);background:rgba(120,60,200,.1);}
-.plan-more{font-family:'IM Fell English SC',serif;font-size:8px;color:var(--gold-dim);margin-top:1px;}
+.plan-more{font-family:'IM Fell English SC',serif;font-size:15px;color:var(--gold-dim);margin-top:1px;}
 
 /* Week view */
 .plan-week-grid{display:grid;grid-template-columns:50px repeat(7,1fr);gap:2px;}
-.plan-week-header{font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;color:var(--gold-dim);text-align:center;padding:6px 2px;border-bottom:1px solid var(--border);}
-.plan-week-time{font-family:'IM Fell English SC',serif;font-size:9px;color:var(--text-dim);padding:4px 4px 0 0;text-align:right;border-top:1px solid rgba(200,160,80,.06);}
+.plan-week-header{font-family:'Cinzel',serif;font-size:16px;letter-spacing:1px;color:var(--gold-dim);text-align:center;padding:6px 2px;border-bottom:1px solid var(--border);}
+.plan-week-time{font-family:'IM Fell English SC',serif;font-size:16px;color:var(--text-dim);padding:4px 4px 0 0;text-align:right;border-top:1px solid rgba(200,160,80,.06);}
 .plan-week-cell{min-height:40px;border:1px solid rgba(200,160,80,.06);border-radius:2px;padding:2px;cursor:pointer;transition:all .2s;}
 .plan-week-cell:hover{background:var(--gold-faint);}
 .plan-week-cell.today-col{background:rgba(139,26,26,.05);border-color:rgba(139,26,26,.2);}
 
 /* Day view */
 .plan-day-row{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(200,160,80,.06);}
-.plan-day-time{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:1px;color:var(--text-dim);min-width:50px;padding-top:2px;}
+.plan-day-time{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:1px;color:var(--text-dim);min-width:50px;padding-top:2px;}
 .plan-day-content{flex:1;min-height:36px;border:1px solid var(--border);border-radius:3px;padding:4px 8px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.02);}
 .plan-day-content:hover{border-color:var(--border-hi);background:var(--gold-faint);}
-.plan-day-entry{font-size:12px;color:var(--text);margin-bottom:2px;}
+.plan-day-entry{font-size:15px;color:var(--text);margin-bottom:2px;}
 
 /* Entry list in modal */
 .existing-entry{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 10px;border:1px solid var(--border);border-radius:3px;margin-bottom:6px;background:rgba(255,255,255,.02);cursor:pointer;}
 .existing-entry:hover{border-color:var(--border-hi);}
-.entry-info-title{font-family:'Cinzel',serif;font-size:11px;color:var(--text);margin-bottom:2px;}
-.entry-info-meta{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;color:var(--text-dim);}
+.entry-info-title{font-family:'Cinzel',serif;font-size:15px;color:var(--text);margin-bottom:2px;}
+.entry-info-meta{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;color:var(--text-dim);}
 
 
 /* ══ SCORECARD ══ */
 .sc-app{width:100%;}
 .sc-goal-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:16px;}
 .sc-goal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.sc-goal-title{font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:var(--gold);}
-.sc-goal-nums{font-family:'Cinzel',serif;font-size:13px;color:var(--text-dim);}
+.sc-goal-title{font-family:'Cinzel',serif;font-size:15px;letter-spacing:3px;color:var(--gold);}
+.sc-goal-nums{font-family:'Cinzel',serif;font-size:16px;color:var(--text-dim);}
 .sc-goal-nums b{color:var(--gold);}
 .sc-progress-track{background:rgba(255,255,255,.05);border-radius:20px;height:20px;overflow:hidden;position:relative;border:1px solid var(--border);}
 .sc-progress-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:20px;transition:width .6s ease;}
-.sc-progress-label{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:#fff;pointer-events:none;}
-.sc-goal-edit{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:11px;color:var(--text-dim);}
-.sc-goal-edit input{width:60px;font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.05);color:var(--text);}
-.sc-goal-edit button{background:var(--gold-faint);color:var(--gold);border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:'Cinzel',serif;letter-spacing:1px;}
+.sc-progress-label{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:#fff;pointer-events:none;}
+.sc-goal-edit{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:15px;color:var(--text-dim);}
+.sc-goal-edit input{width:60px;font-size:15px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.05);color:var(--text);}
+.sc-goal-edit button{background:var(--gold-faint);color:var(--gold);border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:15px;cursor:pointer;font-family:'Cinzel',serif;letter-spacing:1px;}
 .sc-tabs{display:flex;gap:4px;margin-bottom:16px;background:rgba(255,255,255,.03);border-radius:6px;padding:4px;flex-wrap:wrap;}
-.sc-tab{flex:1;min-width:50px;padding:7px 4px;border:none;background:transparent;border-radius:4px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;color:var(--text-dim);cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.sc-tab{flex:1;min-width:50px;padding:7px 4px;border:none;background:transparent;border-radius:4px;font-family:'Cinzel',serif;font-size:16px;letter-spacing:2px;color:var(--text-dim);cursor:pointer;transition:all .2s;text-transform:uppercase;}
 .sc-tab.active{background:var(--gold-faint);color:var(--gold);border:1px solid var(--border-hi);}
 .sc-section{display:none;}.sc-section.active{display:block;}
 .sc-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
 .sc-stat{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:4px;padding:10px;text-align:center;}
 .sc-stat-num{font-family:'Cinzel',serif;font-size:20px;color:var(--gold);font-weight:700;text-shadow:0 0 20px rgba(200,160,80,.3);}
-.sc-stat-label{font-family:'IM Fell English SC',serif;font-size:9px;color:var(--text-dim);letter-spacing:3px;margin-top:2px;}
-.sc-add-btn{width:100%;background:var(--gold-faint);color:var(--gold);border:1px solid var(--border-hi);border-radius:4px;padding:10px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;cursor:pointer;margin-bottom:12px;transition:all .2s;}
+.sc-stat-label{font-family:'IM Fell English SC',serif;font-size:16px;color:var(--text-dim);letter-spacing:3px;margin-top:2px;}
+.sc-add-btn{width:100%;background:var(--gold-faint);color:var(--gold);border:1px solid var(--border-hi);border-radius:4px;padding:10px;font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;cursor:pointer;margin-bottom:12px;transition:all .2s;}
 .sc-add-btn:hover{background:rgba(200,160,80,.2);}
 .sc-book-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 @media(max-width:500px){.sc-book-grid{grid-template-columns:1fr;}}
 .sc-book-card{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:4px;padding:12px;cursor:pointer;transition:all .2s;position:relative;}
 .sc-book-card:hover{border-color:var(--border-hi);background:var(--gold-faint);}
-.sc-book-title{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px;padding-right:54px;line-height:1.3;}
-.sc-book-author{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:5px;}
-.sc-book-genre{display:inline-block;font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:2px 8px;border-radius:2px;border:1px solid var(--border);color:var(--gold-dim);background:var(--gold-faint);margin-bottom:4px;}
-.sc-stars{font-size:12px;}
-.sc-mind{font-family:'Cinzel',serif;font-size:10px;margin-top:4px;}
-.sc-badge{display:inline-block;font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:1px;padding:2px 6px;border-radius:2px;margin:2px 2px 0 0;border:1px solid var(--border);}
+.sc-book-title{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px;padding-right:54px;line-height:1.3;}
+.sc-book-author{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);margin-bottom:5px;}
+.sc-book-genre{display:inline-block;font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;padding:2px 8px;border-radius:2px;border:1px solid var(--border);color:var(--gold-dim);background:var(--gold-faint);margin-bottom:4px;}
+.sc-stars{font-size:15px;}
+.sc-mind{font-family:'Cinzel',serif;font-size:14px;margin-top:4px;}
+.sc-badge{display:inline-block;font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:1px;padding:2px 6px;border-radius:2px;margin:2px 2px 0 0;border:1px solid var(--border);}
 .sc-badge-arc{color:rgba(100,150,220,.9);border-color:rgba(100,150,220,.3);background:rgba(100,150,220,.08);}
 .sc-badge-purchased{color:rgba(200,160,80,.9);border-color:rgba(200,160,80,.3);background:rgba(200,160,80,.08);}
 .sc-badge-suggested{color:rgba(200,100,100,.9);border-color:rgba(200,100,100,.3);background:rgba(200,100,100,.08);}
@@ -363,21 +363,21 @@ canvas{width:100%!important;}
 .sc-badge-tiktok{color:rgba(120,60,200,.9);border-color:rgba(120,60,200,.3);background:rgba(120,60,200,.08);}
 .sc-tbr-card{background:rgba(255,255,255,.025);border:1px solid var(--border);border-left:2px solid var(--red);border-radius:0 4px 4px 0;padding:10px 13px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
 .sc-month-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
-.sc-month-pill{padding:5px 11px;border-radius:2px;font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:3px;border:1px solid var(--border);cursor:pointer;color:var(--text-dim);background:transparent;transition:all .15s;}
+.sc-month-pill{padding:5px 11px;border-radius:2px;font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:3px;border:1px solid var(--border);cursor:pointer;color:var(--text-dim);background:transparent;transition:all .15s;}
 .sc-month-pill.active{background:var(--gold-faint);color:var(--gold);border-color:var(--border-hi);}
 .sc-month-pill.has-books{border-color:rgba(200,160,80,.3);color:var(--gold-dim);}
-.sc-year-sel{font-size:11px;padding:4px 8px;border:1px solid var(--border);border-radius:3px;background:rgba(255,255,255,.05);color:var(--text);font-family:'IM Fell English SC',serif;}
-.sc-month-hdr{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);padding:8px 0 5px;border-bottom:1px solid var(--border);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
-.sc-botm-banner{background:rgba(200,160,40,.08);border:1px solid rgba(200,160,40,.3);border-radius:4px;padding:8px 12px;margin-bottom:8px;display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(200,160,40,.9);}
+.sc-year-sel{font-size:15px;padding:4px 8px;border:1px solid var(--border);border-radius:3px;background:rgba(255,255,255,.05);color:var(--text);font-family:'IM Fell English SC',serif;}
+.sc-month-hdr{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);padding:8px 0 5px;border-bottom:1px solid var(--border);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.sc-botm-banner{background:rgba(200,160,40,.08);border:1px solid rgba(200,160,40,.3);border-radius:4px;padding:8px 12px;margin-bottom:8px;display:flex;align-items:center;gap:8px;font-size:15px;color:rgba(200,160,40,.9);}
 .sc-modal-bg{display:none;position:fixed;inset:0;background:rgba(5,3,8,.92);backdrop-filter:blur(8px);z-index:300;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
 .sc-modal-bg.open{display:flex;}
 .sc-modal{background:var(--bg2);border:1px solid var(--border-hi);border-radius:6px;padding:20px;width:100%;max-width:540px;margin:0 0 50px;}
 .sc-modal h2{font-family:'Cinzel',serif;font-size:15px;color:#fff;letter-spacing:2px;margin-bottom:14px;}
 .sc-msec{border-top:1px solid var(--border);padding-top:12px;margin-top:12px;}
-.sc-msec-title{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:4px;color:var(--gold);margin-bottom:8px;}
+.sc-msec-title{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:4px;color:var(--gold);margin-bottom:8px;}
 .sc-field{margin-bottom:10px;}
-.sc-field label{display:block;font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:4px;color:var(--text-dim);margin-bottom:4px;}
-.sc-field input,.sc-field textarea,.sc-field select{width:100%;border:1px solid var(--border);border-radius:3px;padding:7px 10px;font-family:'Playfair Display',serif;font-size:12px;color:var(--text);background:rgba(255,255,255,.04);outline:none;}
+.sc-field label{display:block;font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:4px;color:var(--text-dim);margin-bottom:4px;}
+.sc-field input,.sc-field textarea,.sc-field select{width:100%;border:1px solid var(--border);border-radius:3px;padding:7px 10px;font-family:'Playfair Display',serif;font-size:15px;color:var(--text);background:rgba(255,255,255,.04);outline:none;}
 .sc-field input:focus,.sc-field textarea:focus,.sc-field select:focus{border-color:var(--border-hi);}
 .sc-field textarea{resize:vertical;min-height:55px;}
 .sc-field select option{background:#1a0f20;}
@@ -386,76 +386,76 @@ canvas{width:100%!important;}
 .sc-star-pick span.lit{color:var(--gold);}
 .sc-two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .sc-pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px;}
-.sc-pill{padding:5px 11px;border:1px solid var(--border);border-radius:2px;font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:1px;color:var(--text-dim);cursor:pointer;transition:all .15s;user-select:none;}
+.sc-pill{padding:5px 11px;border:1px solid var(--border);border-radius:2px;font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:1px;color:var(--text-dim);cursor:pointer;transition:all .15s;user-select:none;}
 .sc-pill.active{background:var(--gold-faint);color:var(--gold);border-color:var(--border-hi);}
 .sc-rec-pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:3px;}
-.sc-rec-pill{padding:6px 13px;border:1px solid var(--border);border-radius:2px;font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .15s;user-select:none;color:var(--text-dim);}
+.sc-rec-pill{padding:6px 13px;border:1px solid var(--border);border-radius:2px;font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:1px;cursor:pointer;transition:all .15s;user-select:none;color:var(--text-dim);}
 .sc-rec-green{background:rgba(60,160,60,.1);color:rgba(100,200,100,.9);border-color:rgba(60,160,60,.4);}
 .sc-rec-yellow{background:rgba(200,160,40,.1);color:rgba(200,160,40,.9);border-color:rgba(200,160,40,.4);}
 .sc-rec-red{background:rgba(180,40,40,.1);color:rgba(220,100,100,.9);border-color:rgba(180,40,40,.4);}
 .sc-modal-actions{display:flex;gap:8px;margin-top:14px;}
-.sc-btn-save{flex:1;background:var(--gold-faint);color:var(--gold);border:1px solid var(--border-hi);border-radius:3px;padding:10px;font-family:'Cinzel',serif;letter-spacing:2px;font-size:11px;cursor:pointer;transition:all .2s;}
+.sc-btn-save{flex:1;background:var(--gold-faint);color:var(--gold);border:1px solid var(--border-hi);border-radius:3px;padding:10px;font-family:'Cinzel',serif;letter-spacing:2px;font-size:15px;cursor:pointer;transition:all .2s;}
 .sc-btn-save:hover{background:rgba(200,160,80,.2);}
-.sc-btn-cancel{background:transparent;color:var(--text-dim);border:1px solid var(--border);border-radius:3px;padding:10px 14px;font-family:'Cinzel',serif;font-size:11px;cursor:pointer;}
+.sc-btn-cancel{background:transparent;color:var(--text-dim);border:1px solid var(--border);border-radius:3px;padding:10px 14px;font-family:'Cinzel',serif;font-size:15px;cursor:pointer;}
 .sc-detail-bg{display:none;position:fixed;inset:0;background:rgba(5,3,8,.92);backdrop-filter:blur(8px);z-index:400;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
 .sc-detail-bg.open{display:flex;}
 .sc-detail-box{background:var(--bg2);border:1px solid var(--border-hi);border-radius:6px;padding:20px;width:100%;max-width:540px;margin:0 0 50px;}
 .sc-dl{margin-top:9px;}
-.sc-dl-label{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:4px;color:var(--gold-dim);margin-bottom:3px;}
-.sc-dl-value{font-size:12px;color:var(--text);line-height:1.7;}
+.sc-dl-label{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:4px;color:var(--gold-dim);margin-bottom:3px;}
+.sc-dl-value{font-size:15px;color:var(--text);line-height:1.7;}
 .sc-two-dl{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:9px;}
 .sc-three-dl{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:9px;}
 .sc-chart-row{display:flex;align-items:center;gap:7px;margin-bottom:6px;}
-.sc-chart-label{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:1px;color:var(--text);width:100px;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sc-chart-label{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:1px;color:var(--text);width:100px;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .sc-chart-bg{flex:1;background:rgba(255,255,255,.04);border-radius:3px;height:13px;overflow:hidden;border:1px solid var(--border);}
 .sc-chart-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:2px;transition:width .4s;}
-.sc-chart-n{font-family:'Cinzel',serif;font-size:10px;color:var(--text-dim);width:18px;}
+.sc-chart-n{font-family:'Cinzel',serif;font-size:14px;color:var(--text-dim);width:18px;}
 .sc-radio-opts{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
-.sc-radio-opt{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:var(--text);}
+.sc-radio-opt{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:15px;color:var(--text);}
 .sc-radio-opt input{accent-color:var(--gold);width:14px;height:14px;}
 .sc-mind-pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px;}
-.sc-mind-pill{padding:5px 12px;border:1px solid var(--border);border-radius:2px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;cursor:pointer;transition:all .15s;user-select:none;color:var(--text-dim);}
+.sc-mind-pill{padding:5px 12px;border:1px solid var(--border);border-radius:2px;font-family:'Cinzel',serif;font-size:16px;letter-spacing:1px;cursor:pointer;transition:all .15s;user-select:none;color:var(--text-dim);}
 .sc-mind-pill.sel-1{background:rgba(200,150,60,.15);color:#c8a060;border-color:rgba(200,150,60,.4);}
 .sc-mind-pill.sel-2{background:rgba(210,110,80,.15);color:#d47050;border-color:rgba(210,110,80,.4);}
 .sc-mind-pill.sel-3{background:rgba(200,60,60,.15);color:#e06060;border-color:rgba(200,60,60,.4);}
 .sc-mind-pill.sel-4{background:rgba(180,40,120,.15);color:#d050a0;border-color:rgba(180,40,120,.4);}
 .sc-mind-pill.sel-5{background:rgba(120,40,200,.2);color:#a060e8;border-color:rgba(120,40,200,.5);}
 .sc-tiktok-pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px;}
-.sc-tiktok-pill{padding:5px 11px;border:1px solid var(--border);border-radius:2px;font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .15s;user-select:none;color:var(--text-dim);}
+.sc-tiktok-pill{padding:5px 11px;border:1px solid var(--border);border-radius:2px;font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:1px;cursor:pointer;transition:all .15s;user-select:none;color:var(--text-dim);}
 .sc-tiktok-pill.active{background:rgba(120,40,200,.15);color:rgba(160,100,240,.9);border-color:rgba(120,40,200,.4);}
 .sc-script-box{background:rgba(139,26,26,.08);border:1px solid rgba(139,26,26,.3);border-radius:4px;padding:14px;margin-top:10px;}
-.sc-script-label{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:4px;color:rgba(200,100,100,.8);margin-bottom:8px;}
-.sc-script-line{font-size:12px;color:var(--text-dim);line-height:1.8;font-style:italic;margin-bottom:6px;}
-.sc-notes-area{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:4px;padding:14px;color:var(--text);font-family:'Playfair Display',serif;font-size:13px;line-height:1.8;resize:vertical;min-height:120px;outline:none;}
+.sc-script-label{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:4px;color:rgba(200,100,100,.8);margin-bottom:8px;}
+.sc-script-line{font-size:15px;color:var(--text-dim);line-height:1.8;font-style:italic;margin-bottom:6px;}
+.sc-notes-area{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:4px;padding:14px;color:var(--text);font-family:'Playfair Display',serif;font-size:16px;line-height:1.8;resize:vertical;min-height:120px;outline:none;}
 .sc-notes-area:focus{border-color:var(--border-hi);}
 .sc-streak-box{background:rgba(139,26,26,.08);border:1px solid rgba(139,26,26,.3);border-radius:4px;padding:12px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
 .sc-streak-num{font-family:'Cinzel',serif;font-size:32px;color:var(--gold);font-weight:900;text-shadow:0 0 20px rgba(200,160,80,.4);}
-.sc-streak-label{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:4px;color:var(--text-dim);}
-.sc-search{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:3px;padding:8px 12px;color:var(--text);font-family:'Playfair Display',serif;font-size:12px;outline:none;margin-bottom:12px;}
+.sc-streak-label{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:4px;color:var(--text-dim);}
+.sc-search{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:3px;padding:8px 12px;color:var(--text);font-family:'Playfair Display',serif;font-size:15px;outline:none;margin-bottom:12px;}
 .sc-search:focus{border-color:var(--border-hi);}
 
 /* ── CAPTION TEMPLATES ── */
 .cap-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-.cap-filter-btn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.cap-filter-btn{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .cap-filter-btn.active,.cap-filter-btn:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
 .cap-card{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.025);margin-bottom:12px;overflow:hidden;}
 .cap-card-head{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;cursor:pointer;}
 .cap-card-head:hover{background:var(--gold-faint);}
-.cap-type-badge{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:3px;padding:3px 10px;border:1px solid var(--border-hi);color:var(--gold);border-radius:2px;background:var(--gold-faint);}
+.cap-type-badge{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:3px;padding:3px 10px;border:1px solid var(--border-hi);color:var(--gold);border-radius:2px;background:var(--gold-faint);}
 .cap-card-body{display:none;padding:0 15px 15px;border-top:1px solid var(--border);}
 .cap-card.open .cap-card-body{display:block;}
 .cap-section{margin-top:12px;}
-.cap-section-label{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:4px;color:var(--gold-dim);margin-bottom:5px;}
-.cap-text{font-size:12px;color:var(--text-dim);line-height:1.8;font-style:italic;background:rgba(255,255,255,.03);border:1px solid var(--border);border-left:2px solid var(--red);border-radius:0 3px 3px 0;padding:10px 12px;}
-.cap-copy-btn{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:4px 10px;border:1px solid var(--border);border-radius:2px;background:transparent;color:var(--text-dim);cursor:pointer;margin-top:6px;transition:all .2s;}
+.cap-section-label{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:4px;color:var(--gold-dim);margin-bottom:5px;}
+.cap-text{font-size:15px;color:var(--text-dim);line-height:1.8;font-style:italic;background:rgba(255,255,255,.03);border:1px solid var(--border);border-left:2px solid var(--red);border-radius:0 3px 3px 0;padding:10px 12px;}
+.cap-copy-btn{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;padding:4px 10px;border:1px solid var(--border);border-radius:2px;background:transparent;color:var(--text-dim);cursor:pointer;margin-top:6px;transition:all .2s;}
 .cap-copy-btn:hover{border-color:var(--border-hi);color:var(--gold);}
 .cap-copy-btn.copied{border-color:rgba(60,160,60,.4);color:#4a9a4a;}
 
 /* ── HASHTAG TRACKER ── */
 .ht-set{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.025);padding:14px 16px;margin-bottom:10px;}
-.ht-set-name{font-family:'Cinzel',serif;font-size:12px;color:#fff;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.ht-set-name{font-family:'Cinzel',serif;font-size:15px;color:#fff;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
 .ht-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
-.ht-tag{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:3px 8px;border:1px solid var(--border);color:var(--gold-dim);border-radius:2px;background:var(--gold-faint);}
+.ht-tag{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;padding:3px 8px;border:1px solid var(--border);color:var(--gold-dim);border-radius:2px;background:var(--gold-faint);}
 .ht-actions{display:flex;gap:6px;}
 
 /* ── WINS JOURNAL ── */
@@ -467,9 +467,9 @@ canvas{width:100%!important;}
 .win-card.brand{border-color:rgba(200,140,40,.4);background:rgba(200,140,40,.06);}
 .win-card.personal{border-color:rgba(160,80,200,.4);background:rgba(160,80,200,.06);}
 .win-emoji{font-size:22px;margin-bottom:6px;}
-.win-date{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:4px;}
-.win-title{font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:6px;}
-.win-notes{font-size:12px;color:var(--text-dim);line-height:1.7;font-style:italic;}
+.win-date{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:4px;}
+.win-title{font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;}
+.win-notes{font-size:15px;color:var(--text-dim);line-height:1.7;font-style:italic;}
 .win-del{position:absolute;top:12px;right:12px;background:transparent;border:none;color:rgba(200,80,80,.4);cursor:pointer;font-size:14px;transition:color .2s;}
 .win-del:hover{color:#e06060;}
 
@@ -478,77 +478,77 @@ canvas{width:100%!important;}
 .spin-pointer{width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:22px solid var(--gold);filter:drop-shadow(0 0 6px rgba(200,160,80,.6));margin-bottom:-8px;}
 #spin-canvas{border-radius:50%;box-shadow:0 0 40px rgba(139,26,26,.3),0 0 0 2px var(--border);}
 .spin-result{font-family:'Cinzel',serif;font-weight:900;font-size:16px;color:#fff;text-align:center;letter-spacing:2px;min-height:24px;}
-.spin-result-author{font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:3px;color:var(--gold-dim);text-align:center;margin-top:4px;}
-.spin-empty{font-style:italic;color:var(--text-dim);font-size:12px;text-align:center;padding:20px;}
+.spin-result-author{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:var(--gold-dim);text-align:center;margin-top:4px;}
+.spin-empty{font-style:italic;color:var(--text-dim);font-size:15px;text-align:center;padding:20px;}
 
 /* ── MONTHLY PICKS ── */
 .mp-month-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-.mp-month-btn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.mp-month-btn{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .mp-month-btn.active,.mp-month-btn:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
 .mp-genre-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-.mp-genre-btn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.mp-genre-btn{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .mp-genre-btn.active,.mp-genre-btn:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
 .mp-card{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.025);padding:15px 16px;margin-bottom:10px;transition:border-color .2s;}
 .mp-card:hover{border-color:var(--border-hi);}
-.mp-genre-badge{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:3px;padding:2px 9px;border-radius:2px;border:1px solid;margin-bottom:8px;display:inline-block;}
+.mp-genre-badge{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:3px;padding:2px 9px;border-radius:2px;border:1px solid;margin-bottom:8px;display:inline-block;}
 .mp-badge-psych{color:rgba(200,80,80,.9);border-color:rgba(200,80,80,.3);background:rgba(200,80,80,.08);}
 .mp-badge-thriller{color:rgba(200,140,40,.9);border-color:rgba(200,140,40,.3);background:rgba(200,140,40,.08);}
 .mp-badge-fantasy{color:rgba(120,60,200,.9);border-color:rgba(120,60,200,.3);background:rgba(120,60,200,.08);}
-.mp-title{font-family:'Cinzel',serif;font-weight:700;font-size:13px;color:#fff;margin-bottom:2px;}
-.mp-author{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:8px;}
-.mp-desc{font-size:12px;color:var(--text-dim);line-height:1.7;font-style:italic;margin-bottom:10px;}
-.mp-vibe{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:8px;}
-.mp-add-tbr{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border);border-radius:2px;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.mp-title{font-family:'Cinzel',serif;font-weight:700;font-size:16px;color:#fff;margin-bottom:2px;}
+.mp-author{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:8px;}
+.mp-desc{font-size:15px;color:var(--text-dim);line-height:1.7;font-style:italic;margin-bottom:10px;}
+.mp-vibe{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);margin-bottom:8px;}
+.mp-add-tbr{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border);border-radius:2px;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .mp-add-tbr:hover{border-color:rgba(60,160,60,.4);color:#4a9a4a;}
 .mp-add-tbr.added{border-color:rgba(60,160,60,.4);color:#4a9a4a;background:rgba(60,160,60,.08);}
 /* ── MP VIEW TABS ── */
 .mp-view-tabs{display:flex;gap:6px;margin-bottom:16px;}
-.mp-view-btn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:7px 14px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.mp-view-btn{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;padding:7px 14px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .mp-view-btn.active,.mp-view-btn:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
 /* ── AUTHOR SERIES ── */
 .ms-genre-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-.ms-genre-btn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.ms-genre-btn{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;padding:6px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .ms-genre-btn.active,.ms-genre-btn:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
 .ms-card{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.025);padding:16px;margin-bottom:12px;transition:border-color .2s;}
 .ms-card:hover{border-color:var(--border-hi);}
-.ms-genre-badge{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:3px;padding:2px 9px;border-radius:2px;border:1px solid;margin-bottom:10px;display:inline-block;}
+.ms-genre-badge{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:3px;padding:2px 9px;border-radius:2px;border:1px solid;margin-bottom:10px;display:inline-block;}
 .ms-badge-fantasy{color:rgba(120,60,200,.9);border-color:rgba(120,60,200,.3);background:rgba(120,60,200,.08);}
 .ms-badge-psych{color:rgba(200,80,80,.9);border-color:rgba(200,80,80,.3);background:rgba(200,80,80,.08);}
 .ms-badge-horror{color:rgba(139,26,26,.95);border-color:rgba(139,26,26,.4);background:rgba(139,26,26,.1);}
 .ms-badge-hf{color:rgba(180,130,60,.9);border-color:rgba(180,130,60,.3);background:rgba(180,130,60,.08);}
 .ms-series-name{font-family:'Cinzel',serif;font-weight:700;font-size:14px;color:#fff;margin-bottom:2px;}
-.ms-author{font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:8px;}
-.ms-desc{font-size:12px;color:var(--text-dim);line-height:1.7;font-style:italic;margin-bottom:10px;}
+.ms-author{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:8px;}
+.ms-desc{font-size:15px;color:var(--text-dim);line-height:1.7;font-style:italic;margin-bottom:10px;}
 .ms-booklist{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-direction:column;gap:4px;}
-.ms-booklist li{font-size:12px;color:var(--text);display:flex;align-items:baseline;gap:7px;}
-.ms-book-num{font-family:'Cinzel',serif;font-size:9px;color:var(--gold);min-width:16px;}
+.ms-booklist li{font-size:15px;color:var(--text);display:flex;align-items:baseline;gap:7px;}
+.ms-book-num{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);min-width:16px;}
 .ms-book-title{font-style:italic;}
 .ms-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.ms-add-all{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border);border-radius:2px;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.ms-add-all{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;padding:5px 12px;border:1px solid var(--border);border-radius:2px;background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .ms-add-all:hover{border-color:rgba(60,160,60,.4);color:#4a9a4a;}
 .ms-add-all.added{border-color:rgba(60,160,60,.4);color:#4a9a4a;background:rgba(60,160,60,.08);}
-.ms-content-idea{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;padding:5px 12px;border:1px solid rgba(200,160,80,.3);border-radius:2px;background:transparent;color:var(--gold-dim);cursor:default;}
+.ms-content-idea{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;padding:5px 12px;border:1px solid rgba(200,160,80,.3);border-radius:2px;background:transparent;color:var(--gold-dim);cursor:default;}
 /* ── PHOTO SCAN ── */
 .photo-overlay{position:fixed;inset:0;z-index:500;background:rgba(5,3,8,.97);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;overflow-y:auto;}
 .photo-overlay.open{display:flex;}
 .photo-header{width:100%;max-width:480px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
 .photo-title{font-family:'Cinzel',serif;font-size:14px;color:#fff;letter-spacing:2px;}
 .photo-close{background:transparent;border:1px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:3px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.photo-hint{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:3px;color:var(--gold-dim);margin-top:12px;text-align:center;width:100%;max-width:480px;}
+.photo-hint{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:var(--gold-dim);margin-top:12px;text-align:center;width:100%;max-width:480px;}
 .photo-preview{width:100%;max-width:480px;border-radius:6px;overflow:hidden;border:2px solid var(--border-hi);display:none;}
 .photo-preview img{width:100%;display:block;max-height:300px;object-fit:contain;background:#000;}
 .photo-results{width:100%;max-width:480px;margin-top:16px;}
 .photo-result-card{border:1px solid var(--border);border-radius:4px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.025);}
 .photo-result-card:hover{border-color:var(--border-hi);background:rgba(200,160,80,.08);}
-.photo-result-title{font-family:'Cinzel',serif;font-size:13px;color:#fff;margin-bottom:2px;}
-.photo-result-author{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);}
-.photo-result-year{font-size:10px;color:var(--text-dim);margin-top:3px;}
+.photo-result-title{font-family:'Cinzel',serif;font-size:16px;color:#fff;margin-bottom:2px;}
+.photo-result-author{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--gold-dim);}
+.photo-result-year{font-size:14px;color:var(--text-dim);margin-top:3px;}
 .photo-loading{text-align:center;padding:16px 0;width:100%;max-width:480px;}
-.photo-loading-text{font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:3px;color:var(--gold-dim);margin-top:8px;}
+.photo-loading-text{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:var(--gold-dim);margin-top:8px;}
 .photo-search-row{width:100%;max-width:480px;margin-top:14px;display:none;}
-.photo-search-input{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border-hi);border-radius:4px;padding:10px 14px;color:#fff;font-size:13px;font-family:'IM Fell English SC',serif;letter-spacing:1px;box-sizing:border-box;margin-bottom:8px;}
+.photo-search-input{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border-hi);border-radius:4px;padding:10px 14px;color:#fff;font-size:16px;font-family:'IM Fell English SC',serif;letter-spacing:1px;box-sizing:border-box;margin-bottom:8px;}
 .photo-search-input::placeholder{color:var(--text-dim);}
-.photo-search-btn{width:100%;padding:11px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;background:var(--gold-faint);border:1px solid var(--border-hi);color:var(--gold);border-radius:3px;cursor:pointer;transition:all .2s;}
+.photo-search-btn{width:100%;padding:11px;font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;background:var(--gold-faint);border:1px solid var(--border-hi);color:var(--gold);border-radius:3px;cursor:pointer;transition:all .2s;}
 .photo-search-btn:hover{background:rgba(200,160,80,.2);}
 
 /* ── BARCODE SCANNER ── */
@@ -559,28 +559,28 @@ canvas{width:100%!important;}
 .scanner-close{background:transparent;border:1px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:3px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 #scanner-box{width:100%;max-width:480px;border-radius:6px;overflow:hidden;border:2px solid var(--border-hi);}
 #scanner-box video{border-radius:4px;}
-.scanner-hint{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:3px;color:var(--gold-dim);margin-top:12px;text-align:center;}
+.scanner-hint{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:var(--gold-dim);margin-top:12px;text-align:center;}
 .scanner-found{background:rgba(60,160,60,.12);border:1px solid rgba(60,160,60,.4);border-radius:6px;padding:16px;width:100%;max-width:480px;margin-top:16px;display:none;}
 .scanner-found.show{display:block;}
 .scanner-found-title{font-family:'Cinzel',serif;font-size:14px;color:#fff;margin-bottom:4px;}
-.scanner-found-author{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:12px;}
+.scanner-found-author{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:12px;}
 .scanner-found-actions{display:flex;gap:8px;}
-.scanner-isbn{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-top:8px;}
+.scanner-isbn{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);margin-top:8px;}
 
 /* ── CURRENTLY READING ── */
 .cr-card{border:1px solid var(--border-hi);border-radius:4px;background:rgba(200,160,80,.06);padding:14px 16px;margin-bottom:12px;position:relative;}
-.cr-title{font-family:'Cinzel',serif;font-weight:700;font-size:13px;color:#fff;margin-bottom:2px;}
-.cr-author{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:10px;}
+.cr-title{font-family:'Cinzel',serif;font-weight:700;font-size:16px;color:#fff;margin-bottom:2px;}
+.cr-author{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:10px;}
 .cr-progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .cr-progress-track{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;border:1px solid var(--border);}
 .cr-progress-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:4px;transition:width .4s;}
-.cr-pct{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);min-width:36px;text-align:right;}
-.cr-pages{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:10px;}
+.cr-pct{font-family:'Cinzel',serif;font-size:15px;color:var(--gold);min-width:36px;text-align:right;}
+.cr-pages{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);margin-bottom:10px;}
 .cr-actions{display:flex;gap:6px;flex-wrap:wrap;}
-.cr-del{position:absolute;top:10px;right:10px;background:transparent;border:none;color:rgba(200,80,80,.4);cursor:pointer;font-size:13px;}
+.cr-del{position:absolute;top:10px;right:10px;background:transparent;border:none;color:rgba(200,80,80,.4);cursor:pointer;font-size:16px;}
 .cr-del:hover{color:#e06060;}
 .cr-dates{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;}
-.cr-date-item{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;}
+.cr-date-item{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;}
 .cr-date-label{color:var(--text-dim);}
 .cr-date-val{color:var(--gold-dim);}
 .cr-due-ok{color:rgba(100,200,100,.8);}
@@ -592,31 +592,31 @@ canvas{width:100%!important;}
 .wl-card{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.02);padding:13px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;}
 .wl-card:hover{border-color:var(--border-hi);}
 .wl-info{flex:1;min-width:0;}
-.wl-title{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
-.wl-author{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:5px;}
-.wl-notes{font-size:11px;color:var(--text-dim);font-style:italic;line-height:1.6;}
+.wl-title{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:2px;}
+.wl-author{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);margin-bottom:5px;}
+.wl-notes{font-size:15px;color:var(--text-dim);font-style:italic;line-height:1.6;}
 .wl-actions{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
 
 /* ── DNF SHELF ── */
 .dnf-card{border:1px solid rgba(200,80,80,.3);border-radius:4px;background:rgba(200,80,80,.05);padding:14px 16px;margin-bottom:10px;position:relative;}
-.dnf-title{font-family:'Cinzel',serif;font-weight:700;font-size:13px;color:#fff;margin-bottom:2px;}
-.dnf-author{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:6px;}
-.dnf-stopped{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:rgba(220,100,100,.7);margin-bottom:5px;}
-.dnf-reason{font-size:12px;color:var(--text-dim);line-height:1.7;font-style:italic;}
-.dnf-del{position:absolute;top:10px;right:10px;background:transparent;border:none;color:rgba(200,80,80,.4);cursor:pointer;font-size:13px;}
+.dnf-title{font-family:'Cinzel',serif;font-weight:700;font-size:16px;color:#fff;margin-bottom:2px;}
+.dnf-author{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:6px;}
+.dnf-stopped{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:rgba(220,100,100,.7);margin-bottom:5px;}
+.dnf-reason{font-size:15px;color:var(--text-dim);line-height:1.7;font-style:italic;}
+.dnf-del{position:absolute;top:10px;right:10px;background:transparent;border:none;color:rgba(200,80,80,.4);cursor:pointer;font-size:16px;}
 .dnf-del:hover{color:#e06060;}
 
 /* ── SERIES TRACKER ── */
 .series-card{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.025);padding:14px 16px;margin-bottom:12px;}
-.series-name{font-family:'Cinzel',serif;font-weight:700;font-size:13px;color:#fff;margin-bottom:2px;}
-.series-author{font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:10px;}
+.series-name{font-family:'Cinzel',serif;font-weight:700;font-size:16px;color:#fff;margin-bottom:2px;}
+.series-author{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:10px;}
 .series-books{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
 .series-book-row{display:flex;align-items:center;gap:8px;}
-.series-book-num{font-family:'Cinzel',serif;font-size:10px;color:var(--gold-dim);min-width:20px;}
-.series-book-title{font-size:12px;color:var(--text);flex:1;}
+.series-book-num{font-family:'Cinzel',serif;font-size:14px;color:var(--gold-dim);min-width:20px;}
+.series-book-title{font-size:15px;color:var(--text);flex:1;}
 .series-book-status{font-size:14px;cursor:pointer;}
-.series-progress{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);}
-.series-del{background:transparent;border:none;color:rgba(200,80,80,.4);cursor:pointer;font-size:12px;float:right;}
+.series-progress{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);}
+.series-del{background:transparent;border:none;color:rgba(200,80,80,.4);cursor:pointer;font-size:15px;float:right;}
 .series-del:hover{color:#e06060;}
 
 </style>
@@ -630,10 +630,10 @@ canvas{width:100%!important;}
   <h1>TitlesByTrish</h1>
   <div class="tagline">Your complete BookTok home base — 60 Day Launch Dashboard</div>
   <div style="margin-top:14px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
-    <button class="btn btn-primary" onclick="exportData()" style="font-size:9px;padding:6px 14px;">⬇ Backup My Data</button>
-    <label class="btn" style="font-size:9px;padding:6px 14px;cursor:pointer;">⬆ Restore Backup<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
-    <button class="btn" onclick="syncWidget()" style="font-size:9px;padding:6px 14px;">📱 Sync Widget</button>
-    <a class="btn" href="scriptable:///import?url=https://trishbadd2-design.github.io/Titles-by-Trish-/widget.js" style="font-size:9px;padding:6px 14px;text-decoration:none;display:inline-block;">⚙️ Install Widget</a>
+    <button class="btn btn-primary" onclick="exportData()" style="font-size:16px;padding:6px 14px;">⬇ Backup My Data</button>
+    <label class="btn" style="font-size:16px;padding:6px 14px;cursor:pointer;">⬆ Restore Backup<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
+    <button class="btn" onclick="syncWidget()" style="font-size:16px;padding:6px 14px;">📱 Sync Widget</button>
+    <a class="btn" href="scriptable:///import?url=https://trishbadd2-design.github.io/Titles-by-Trish-/widget.js" style="font-size:16px;padding:6px 14px;text-decoration:none;display:inline-block;">⚙️ Install Widget</a>
   </div>
 </div>
 
@@ -726,7 +726,7 @@ canvas{width:100%!important;}
 
   <div class="card-box">
     <div class="label-sm">History</div>
-    <div class="follower-log" id="fol-log"><div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;">No entries yet</div></div>
+    <div class="follower-log" id="fol-log"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No entries yet</div></div>
   </div>
 </div>
 
@@ -766,7 +766,7 @@ canvas{width:100%!important;}
 
   <div class="card-box">
     <div class="label-sm">Top Performing Videos</div>
-    <div class="eng-log" id="eng-log"><div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;">No videos logged yet</div></div>
+    <div class="eng-log" id="eng-log"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No videos logged yet</div></div>
   </div>
 </div>
 
@@ -804,7 +804,7 @@ canvas{width:100%!important;}
 
   <div class="card-box">
     <div class="label-sm">Active ARCs & Collabs</div>
-    <div class="arc-list" id="arc-list"><div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;">No ARCs or collabs logged yet</div></div>
+    <div class="arc-list" id="arc-list"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No ARCs or collabs logged yet</div></div>
   </div>
 </div>
 
@@ -835,7 +835,7 @@ canvas{width:100%!important;}
 
   <div class="card-box" style="margin-top:16px;">
     <div class="label-sm">Saved Ideas</div>
-    <div id="saved-ideas" style="margin-top:8px;"><div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:8px 0;">No saved ideas yet</div></div>
+    <div id="saved-ideas" style="margin-top:8px;"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:8px 0;">No saved ideas yet</div></div>
   </div>
 </div>
 
@@ -845,7 +845,7 @@ canvas{width:100%!important;}
 <div class="panel" id="panel-books">
   <div class="section-title">🖤 Psychological Thriller Book Bank</div>
   <div class="card-box" style="margin-bottom:16px;padding:12px 16px;">
-    <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">
+    <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
       Your curated library of recommended dark reads. Click any book for content ideas. Save books you want to review next. 🖤
     </div>
   </div>
@@ -907,7 +907,7 @@ canvas{width:100%!important;}
         <div class="sched-type">✂️ Edit</div>
       </div>
     </div>
-    <div style="margin-top:10px;font-size:11px;color:var(--text-dim);font-style:italic;line-height:1.7;">
+    <div style="margin-top:10px;font-size:15px;color:var(--text-dim);font-style:italic;line-height:1.7;">
       🎬 <strong style="color:var(--text);">Film Saturday</strong> — batch record 3-4 videos in one session<br>
       ✂️ <strong style="color:var(--text);">Edit Sunday</strong> — edit, add captions, schedule the whole week<br>
       📤 <strong style="color:var(--text);">Post weekdays</strong> — TikTok scheduler does the work while you're at work
@@ -916,7 +916,7 @@ canvas{width:100%!important;}
 
   <div class="card-box">
     <div class="label-sm">Recording Reminders</div>
-    <div style="font-size:11px;color:var(--text-dim);font-style:italic;margin-bottom:12px;line-height:1.7;">
+    <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:12px;line-height:1.7;">
       Enable these reminders — your browser will notify you when it's time to film or post. Make sure notifications are allowed for this page.
     </div>
     <div class="alarm-list" id="alarm-list"></div>
@@ -1021,8 +1021,8 @@ canvas{width:100%!important;}
       <div class="sc-streak-label">Day Reading Streak 🔥</div>
     </div>
     <div style="flex:1;">
-      <div style="font-size:11px;color:var(--text-dim);font-style:italic;line-height:1.6;">Log a book or mark today as a reading day to keep your streak alive.</div>
-      <button class="btn btn-green" style="margin-top:6px;font-size:10px;padding:5px 12px;" onclick="markReadingDay()">✦ I Read Today</button>
+      <div style="font-size:15px;color:var(--text-dim);font-style:italic;line-height:1.6;">Log a book or mark today as a reading day to keep your streak alive.</div>
+      <button class="btn btn-green" style="margin-top:6px;font-size:14px;padding:5px 12px;" onclick="markReadingDay()">✦ I Read Today</button>
     </div>
   </div>
 
@@ -1040,7 +1040,7 @@ canvas{width:100%!important;}
       <span>Set goal:</span>
       <input type="number" id="sc-goal-input" value="60" min="1" max="999"/>
       <button onclick="scSetGoal()">Update</button>
-      <span id="sc-g-rem" style="margin-left:6px;font-size:11px;color:var(--gold-dim);"></span>
+      <span id="sc-g-rem" style="margin-left:6px;font-size:15px;color:var(--gold-dim);"></span>
     </div>
   </div>
 
@@ -1055,10 +1055,10 @@ canvas{width:100%!important;}
     <button class="sc-tab active" onclick="scSwitchTab('read',this)">📚 Read</button>
     <button class="sc-tab" onclick="scSwitchTab('reading',this)">📖 Reading</button>
     <button class="sc-tab" onclick="scSwitchTab('monthly',this)">🗓 Monthly</button>
-    <button class="sc-tab" onclick="scSwitchTab('tbr',this)">TBR <span id="sc-tbr-badge" style="background:var(--red);color:#fff;border-radius:10px;padding:1px 5px;font-size:8px;margin-left:2px;">0</span></button>
+    <button class="sc-tab" onclick="scSwitchTab('tbr',this)">TBR <span id="sc-tbr-badge" style="background:var(--red);color:#fff;border-radius:10px;padding:1px 5px;font-size:15px;margin-left:2px;">0</span></button>
     <button class="sc-tab" onclick="scSwitchTab('dnf',this)">💀 DNF</button>
     <button class="sc-tab" onclick="scSwitchTab('series',this)">📗 Series</button>
-    <button class="sc-tab" onclick="scSwitchTab('wishlist',this)">🛒 Wishlist <span id="sc-wishlist-badge" style="background:rgba(200,160,80,.4);color:#fff;border-radius:10px;padding:1px 5px;font-size:8px;margin-left:2px;">0</span></button>
+    <button class="sc-tab" onclick="scSwitchTab('wishlist',this)">🛒 Wishlist <span id="sc-wishlist-badge" style="background:rgba(200,160,80,.4);color:#fff;border-radius:10px;padding:1px 5px;font-size:15px;margin-left:2px;">0</span></button>
     <button class="sc-tab" onclick="scSwitchTab('stats',this)">📊 Stats</button>
     <button class="sc-tab" onclick="scSwitchTab('scripts',this)">🎬 Scripts</button>
   </div>
@@ -1071,7 +1071,7 @@ canvas{width:100%!important;}
 
   <!-- DNF -->
   <div id="sc-section-dnf" class="sc-section">
-    <div style="font-size:12px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">
+    <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">
       Books you started but didn't finish. No shame — DNF content performs really well on BookTok. 🖤
     </div>
     <button class="sc-add-btn" onclick="scOpenDNF()">✦ Log a DNF</button>
@@ -1100,9 +1100,9 @@ canvas{width:100%!important;}
   <!-- MONTHLY -->
   <div id="sc-section-monthly" class="sc-section">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:7px;">
-      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);">Books by Month</div>
+      <div style="font-family:'Cinzel',serif;font-size:16px;letter-spacing:2px;color:var(--gold);">Books by Month</div>
       <div style="display:flex;align-items:center;gap:6px;">
-        <span style="font-size:11px;color:var(--text-dim);">Year:</span>
+        <span style="font-size:15px;color:var(--text-dim);">Year:</span>
         <select class="sc-year-sel" id="sc-year-select" onchange="scRenderMonthly()"></select>
       </div>
     </div>
@@ -1118,7 +1118,7 @@ canvas{width:100%!important;}
 
   <!-- WISHLIST -->
   <div id="sc-section-wishlist" class="sc-section">
-    <div style="font-size:12px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">
+    <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">
       Books you want to buy or find — tap "→ TBR" once you have them. 🖤
     </div>
     <button class="sc-add-btn" onclick="openWishlistAdd()">✦ Add to Wishlist</button>
@@ -1147,7 +1147,7 @@ canvas{width:100%!important;}
 
   <!-- SCRIPTS -->
   <div id="sc-section-scripts" class="sc-section">
-    <div style="font-size:12px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">
+    <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">
       Books marked as "Must Feature" or "Worth a Video" automatically generate a script outline here using your Mind Scale rating. 🖤
     </div>
     <div id="sc-script-list"></div>
@@ -1271,7 +1271,7 @@ canvas{width:100%!important;}
 
     <div class="sc-msec">
       <div class="sc-msec-title">🏆 Best Book of the Month?</div>
-      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:var(--text);">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:15px;color:var(--text);">
         <input type="checkbox" id="sc-f-botm" style="accent-color:var(--gold);width:14px;height:14px;"/>
         Yes — this was my best read this month!
       </label>
@@ -1360,7 +1360,7 @@ canvas{width:100%!important;}
 <div class="panel" id="panel-captions">
   <div class="section-title">✍️ Caption Templates</div>
   <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
-    <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">
+    <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
       Pre-written hooks, scripts, and CTAs for every video type. Tap any section to copy it. Replace the <span style="color:var(--gold);">[brackets]</span> with your details. 🖤
     </div>
   </div>
@@ -1383,8 +1383,8 @@ canvas{width:100%!important;}
     </div>
   </div>
 
-  <div class="section-title" style="font-size:12px;margin-top:4px;">Saved Sets</div>
-  <div id="ht-list"><div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;">No hashtag sets saved yet</div></div>
+  <div class="section-title" style="font-size:15px;margin-top:4px;">Saved Sets</div>
+  <div id="ht-list"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No hashtag sets saved yet</div></div>
 </div>
 
 <!-- ═══════════════════════════════════════════ -->
@@ -1419,7 +1419,7 @@ canvas{width:100%!important;}
     </div>
   </div>
 
-  <div id="wins-list"><div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;text-align:center;">Your wins will appear here 🖤<br>Start logging — you're doing better than you think.</div></div>
+  <div id="wins-list"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;text-align:center;">Your wins will appear here 🖤<br>Start logging — you're doing better than you think.</div></div>
 </div>
 
 <!-- ═══════════════════════════════════════════ -->
@@ -1428,14 +1428,14 @@ canvas{width:100%!important;}
 <div class="panel" id="panel-spin">
   <div class="section-title">🎡 Spin the Wheel — Pick Your Next Read</div>
   <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
-    <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">
+    <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
       The wheel spins from your TBR pile in the Scorecard. Add books there first, then let fate decide. 🖤
     </div>
   </div>
   <div class="spin-wrap">
     <div class="spin-pointer"></div>
     <canvas id="spin-canvas" width="300" height="300"></canvas>
-    <button class="btn btn-primary" style="padding:12px 40px;font-size:12px;letter-spacing:3px;margin-top:6px;" onclick="spinWheel()">✦ Spin</button>
+    <button class="btn btn-primary" style="padding:12px 40px;font-size:15px;letter-spacing:3px;margin-top:6px;" onclick="spinWheel()">✦ Spin</button>
     <div>
       <div class="spin-result" id="spin-result"></div>
       <div class="spin-result-author" id="spin-result-author"></div>
@@ -1456,7 +1456,7 @@ canvas{width:100%!important;}
   <!-- Monthly picks view -->
   <div id="mp-monthly-view">
     <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
-      <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
         Curated picks for every month — psychological thrillers, thrillers, and dark fantasy. Tap "Add to TBR" to save any book to your Scorecard TBR pile. 🖤
       </div>
     </div>
@@ -1468,7 +1468,7 @@ canvas{width:100%!important;}
   <!-- Author Series view -->
   <div id="mp-series-view" style="display:none;">
     <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
-      <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
         Binge an entire author's series — books in order, ready to add to your TBR. Each one is built for a video series on BookTok. 🖤
       </div>
     </div>
@@ -1492,7 +1492,7 @@ canvas{width:100%!important;}
   <!-- GROWTH LOG -->
   <div id="an-section-growth" class="an-section active">
     <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
-      <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">Log your numbers once a week — see your growth over time and spot your best weeks. 🖤</div>
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">Log your numbers once a week — see your growth over time and spot your best weeks. 🖤</div>
     </div>
     <button class="sc-add-btn" onclick="openGrowthForm()">✦ Log This Week's Numbers</button>
     <div class="an-add-form" id="growth-add-form">
@@ -1524,7 +1524,7 @@ canvas{width:100%!important;}
   <!-- VIDEO STATS -->
   <div id="an-section-videos" class="an-section">
     <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
-      <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">Track how each video performs — discover which formats get the most views, comments, and followers. 🖤</div>
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">Track how each video performs — discover which formats get the most views, comments, and followers. 🖤</div>
     </div>
     <button class="sc-add-btn" onclick="openVidForm()">✦ Log a Video's Stats</button>
     <div class="an-add-form" id="vid-add-form">
@@ -1573,7 +1573,7 @@ canvas{width:100%!important;}
   <!-- GROWTH TIPS -->
   <div id="an-section-tips" class="an-section">
     <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
-      <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">BookTok-specific strategies — tap any section to expand. 🖤</div>
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">BookTok-specific strategies — tap any section to expand. 🖤</div>
     </div>
     <div id="an-tips-list"></div>
   </div>
@@ -1581,7 +1581,7 @@ canvas{width:100%!important;}
   <!-- SHOOT GUIDE -->
   <div id="an-section-shoot" class="an-section">
     <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
-      <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">Your complete filming reference — tap any section to expand. Save this and check it before you shoot. 🖤</div>
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">Your complete filming reference — tap any section to expand. Save this and check it before you shoot. 🖤</div>
     </div>
     <div id="an-shoot-list"></div>
   </div>
@@ -1939,13 +1939,13 @@ function renderFollowers(){
   }
 
   const logEl=document.getElementById('fol-log');
-  if(!folLogs.length){logEl.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;">No entries yet</div>';return;}
+  if(!folLogs.length){logEl.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No entries yet</div>';return;}
   logEl.innerHTML=[...folLogs].reverse().map((l,i,arr)=>{
     const prev=arr[i+1]?.count;
     const delta=prev!=null?l.count-prev:null;
     const deltaHtml=delta!=null?`<span class="log-delta ${delta>=0?'up':'down'}">${delta>=0?'+':''}${delta.toLocaleString()}</span>`:'';
     return `<div class="log-row">
-      <div><div class="log-date">${l.date}</div>${l.note?`<div style="font-size:10px;color:var(--text-dim);font-style:italic;margin-top:2px;">${l.note}</div>`:''}</div>
+      <div><div class="log-date">${l.date}</div>${l.note?`<div style="font-size:14px;color:var(--text-dim);font-style:italic;margin-top:2px;">${l.note}</div>`:''}</div>
       <div style="display:flex;align-items:center;gap:12px;">${deltaHtml}<div class="log-count">${l.count.toLocaleString()}</div>
       <button class="del-btn" onclick="deleteFollowerLog(${l.id})">✕</button></div>
     </div>`;
@@ -2028,7 +2028,7 @@ function renderEngagement(){
   document.getElementById('eng-best-vid').textContent=bestViews?bestViews.toLocaleString():'—';
 
   const el=document.getElementById('eng-log');
-  if(!engLogs.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;">No videos logged yet</div>';return;}
+  if(!engLogs.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No videos logged yet</div>';return;}
   el.innerHTML=engLogs.map(l=>`
     <div class="eng-row">
       <div><div class="eng-title">${l.title}</div><div class="eng-meta">${l.type} · ${l.date}</div></div>
@@ -2075,7 +2075,7 @@ function deleteARC(id){const i=arcList.findIndex(a=>a.id===id);if(i>-1)arcList.s
 
 function renderARC(){
   const el=document.getElementById('arc-list');
-  if(!arcList.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;">No ARCs or collabs yet</div>';return;}
+  if(!arcList.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No ARCs or collabs yet</div>';return;}
   const statusClass={pending:'status-pending',reading:'status-reading',posted:'status-posted',overdue:'status-overdue'};
   el.innerHTML=arcList.map(a=>{
     const isOverdue=a.deadline&&new Date(a.deadline)<new Date()&&a.status!=='posted';
@@ -2084,14 +2084,14 @@ function renderARC(){
       <div class="arc-info">
         <div class="arc-title">${a.title}</div>
         <div class="arc-meta">${a.author||'Unknown'} · ${a.type}${a.deadline?' · Due: '+a.deadline:''}</div>
-        ${a.notes?`<div style="font-size:11px;color:var(--text-dim);margin-top:4px;font-style:italic;">${a.notes}</div>`:''}
+        ${a.notes?`<div style="font-size:15px;color:var(--text-dim);margin-top:4px;font-style:italic;">${a.notes}</div>`:''}
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
-          <select style="font-size:10px;padding:3px 6px;width:auto;" onchange="updateARCStatus(${a.id},this.value)">
+          <select style="font-size:14px;padding:3px 6px;width:auto;" onchange="updateARCStatus(${a.id},this.value)">
             <option value="pending"${a.status==='pending'?' selected':''}>Pending</option>
             <option value="reading"${a.status==='reading'?' selected':''}>Reading</option>
             <option value="posted"${a.status==='posted'?' selected':''}>Posted</option>
           </select>
-          <button class="btn btn-danger" style="padding:3px 10px;font-size:9px;" onclick="deleteARC(${a.id})">Remove</button>
+          <button class="btn btn-danger" style="padding:3px 10px;font-size:16px;" onclick="deleteARC(${a.id})">Remove</button>
         </div>
       </div>
       <div class="arc-status ${statusClass[st]}">${st.charAt(0).toUpperCase()+st.slice(1)}</div>
@@ -2136,12 +2136,12 @@ function deleteSavedIdea(title){
 
 function renderSavedIdeas(){
   const el=document.getElementById('saved-ideas');
-  if(!savedIdeas.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:8px 0;">No saved ideas yet</div>';return;}
+  if(!savedIdeas.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:8px 0;">No saved ideas yet</div>';return;}
   el.innerHTML=savedIdeas.map(i=>`
     <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid rgba(200,160,80,.08);">
       <div>
-        <div style="font-family:'Cinzel',serif;font-size:11px;color:var(--text);margin-bottom:2px;">${i.title}</div>
-        <div style="font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;color:var(--gold-dim);">${i.label}</div>
+        <div style="font-family:'Cinzel',serif;font-size:15px;color:var(--text);margin-bottom:2px;">${i.title}</div>
+        <div style="font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;color:var(--gold-dim);">${i.label}</div>
       </div>
       <button class="del-btn" onclick="deleteSavedIdea('${i.title.replace(/'/g,"\\'")}')">✕</button>
     </div>`).join('');
@@ -2397,7 +2397,7 @@ function renderWeekView(el,now){
   html+='<div class="plan-week-header"></div>';
   days.forEach(d=>{
     const isToday=d.toDateString()===now.toDateString();
-    html+=`<div class="plan-week-header${isToday?' today':''}" style="${isToday?'color:var(--gold);':''}">${DAYS[d.getDay()]}<br><span style="font-size:13px;">${d.getDate()}</span></div>`;
+    html+=`<div class="plan-week-header${isToday?' today':''}" style="${isToday?'color:var(--gold);':''}">${DAYS[d.getDay()]}<br><span style="font-size:16px;">${d.getDate()}</span></div>`;
   });
 
   hours.forEach(h=>{
@@ -2412,14 +2412,14 @@ function renderWeekView(el,now){
       });
       const isToday=d.toDateString()===now.toDateString();
       html+=`<div class="plan-week-cell${isToday?' today-col':''}" onclick="openPlanModal('${k}')">
-        ${entries.map(e=>`<div class="plan-entry-dot type-${e.type}" style="font-size:9px;">${e.title}</div>`).join('')}
+        ${entries.map(e=>`<div class="plan-entry-dot type-${e.type}" style="font-size:16px;">${e.title}</div>`).join('')}
       </div>`;
     });
   });
 
   // All day row
   html='<div class="plan-week-grid">';
-  html+='<div class="plan-week-header" style="font-size:8px;">All day</div>';
+  html+='<div class="plan-week-header" style="font-size:15px;">All day</div>';
   days.forEach(d=>{
     const isToday=d.toDateString()===now.toDateString();
     html+=`<div class="plan-week-header${isToday?' today':''}" style="${isToday?'color:var(--gold);':''}">${DAYS[d.getDay()]} ${d.getDate()}</div>`;
@@ -2447,7 +2447,7 @@ function renderWeekView(el,now){
       });
       const isToday=d.toDateString()===now.toDateString();
       html+=`<div class="plan-week-cell${isToday?' today-col':''}" onclick="openPlanModal('${k}')">
-        ${entries.map(e=>`<div class="plan-entry-dot type-${e.type}" style="font-size:9px;">${e.title}</div>`).join('')}
+        ${entries.map(e=>`<div class="plan-entry-dot type-${e.type}" style="font-size:16px;">${e.title}</div>`).join('')}
       </div>`;
     });
   });
@@ -2472,7 +2472,7 @@ function renderDayView(el,now){
   if(allDay.length){
     html+=`<div class="card-box" style="margin-bottom:12px;">
       <div class="label-sm">All Day</div>
-      ${allDay.map(e=>`<div class="plan-entry-dot type-${e.type}" style="font-size:12px;padding:6px 10px;margin-top:6px;cursor:pointer;" onclick="openPlanModal('${k}',${e.id})">${e.title}${e.notes?`<div style="font-size:10px;color:var(--text-dim);margin-top:2px;">${e.notes}</div>`:''}</div>`).join('')}
+      ${allDay.map(e=>`<div class="plan-entry-dot type-${e.type}" style="font-size:15px;padding:6px 10px;margin-top:6px;cursor:pointer;" onclick="openPlanModal('${k}',${e.id})">${e.title}${e.notes?`<div style="font-size:14px;color:var(--text-dim);margin-top:2px;">${e.notes}</div>`:''}</div>`).join('')}
     </div>`;
   }
 
@@ -2482,7 +2482,7 @@ function renderDayView(el,now){
     html+=`<div class="plan-day-row">
       <div class="plan-day-time">${timeLabel}</div>
       <div class="plan-day-content" onclick="openPlanModal('${k}','${h}:00')">
-        ${hEntries.map(e=>`<div class="plan-day-entry"><span class="plan-entry-dot type-${e.type}" style="display:inline-block;cursor:pointer;" onclick="event.stopPropagation();openPlanModal('${k}',${e.id})">${e.title}</span>${e.notes?`<div style="font-size:11px;color:var(--text-dim);margin-top:2px;font-style:italic;">${e.notes}</div>`:''}</div>`).join('')}
+        ${hEntries.map(e=>`<div class="plan-day-entry"><span class="plan-entry-dot type-${e.type}" style="display:inline-block;cursor:pointer;" onclick="event.stopPropagation();openPlanModal('${k}',${e.id})">${e.title}</span>${e.notes?`<div style="font-size:15px;color:var(--text-dim);margin-top:2px;font-style:italic;">${e.notes}</div>`:''}</div>`).join('')}
       </div>
     </div>`;
   });
@@ -2542,7 +2542,7 @@ function renderPlanModalEntries(k){
         <div>
           <div class="entry-info-title">${e.title}</div>
           <div class="entry-info-meta">${e.type}${e.time?' · '+e.time:''}</div>
-          ${e.notes?`<div style="font-size:11px;color:var(--text-dim);font-style:italic;margin-top:2px;">${e.notes.slice(0,60)}${e.notes.length>60?'...':''}</div>`:''}
+          ${e.notes?`<div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-top:2px;">${e.notes.slice(0,60)}${e.notes.length>60?'...':''}</div>`:''}
         </div>
         <div style="font-size:16px;color:var(--text-dim);">›</div>
       </div>`).join('');
@@ -2696,7 +2696,7 @@ function scRenderStars(n, sz) {
 
 function scMindBadge(m) {
   if (!m) return '';
-  return `<span style="font-family:'Cinzel',serif;font-size:9px;color:${MIND_COLORS[m]};border:1px solid ${MIND_COLORS[m]}40;background:${MIND_COLORS[m]}15;padding:2px 6px;border-radius:2px;display:inline-block;margin-top:3px;">${MIND_NAMES[m]}</span>`;
+  return `<span style="font-family:'Cinzel',serif;font-size:16px;color:${MIND_COLORS[m]};border:1px solid ${MIND_COLORS[m]}40;background:${MIND_COLORS[m]}15;padding:2px 6px;border-radius:2px;display:inline-block;margin-top:3px;">${MIND_NAMES[m]}</span>`;
 }
 
 function scTiktokBadge(t) {
@@ -2714,17 +2714,17 @@ function scRenderBooks() {
   g.innerHTML = filtered.map(b => `
     <div class="sc-book-card" onclick="scOpenDetail('${b.id}')">
       <div style="position:absolute;top:8px;right:8px;display:flex;gap:3px;">
-        <button onclick="event.stopPropagation();scEditBook('${b.id}')" style="background:var(--gold-faint);color:var(--gold);border:1px solid var(--border);border-radius:2px;padding:2px 7px;font-size:9px;cursor:pointer;font-family:'IM Fell English SC',serif;">edit</button>
-        <button onclick="event.stopPropagation();scDeleteBook('${b.id}')" style="background:transparent;color:var(--text-dim);border:none;border-radius:2px;padding:2px 6px;font-size:11px;cursor:pointer;">✕</button>
+        <button onclick="event.stopPropagation();scEditBook('${b.id}')" style="background:var(--gold-faint);color:var(--gold);border:1px solid var(--border);border-radius:2px;padding:2px 7px;font-size:16px;cursor:pointer;font-family:'IM Fell English SC',serif;">edit</button>
+        <button onclick="event.stopPropagation();scDeleteBook('${b.id}')" style="background:transparent;color:var(--text-dim);border:none;border-radius:2px;padding:2px 6px;font-size:15px;cursor:pointer;">✕</button>
       </div>
-      ${b.botm ? `<div style="font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;color:rgba(200,160,40,.9);margin-bottom:3px;">🏆 Best of Month</div>` : ''}
+      ${b.botm ? `<div style="font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;color:rgba(200,160,40,.9);margin-bottom:3px;">🏆 Best of Month</div>` : ''}
       <div class="sc-book-title">${b.title}</div>
       <div class="sc-book-author">${b.author}</div>
       ${b.genre ? `<div class="sc-book-genre">${b.genre}</div>` : ''}
       <div class="sc-stars">${scRenderStars(b.rating||0)}</div>
       ${b.mind ? scMindBadge(b.mind) : ''}
       <div style="margin-top:4px;">${b.tiktok ? scTiktokBadge(b.tiktok) : ''}</div>
-      ${b.pages ? `<div style="font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;color:var(--text-dim);margin-top:3px;">${b.pages} pages</div>` : ''}
+      ${b.pages ? `<div style="font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;color:var(--text-dim);margin-top:3px;">${b.pages} pages</div>` : ''}
     </div>`).join('');
 }
 
@@ -2735,14 +2735,14 @@ function scRenderTBR() {
   l.innerHTML = scTBR.map(t => `
     <div class="sc-tbr-card">
       <div style="flex:1;min-width:0;">
-        <div style="font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--text);">${t.title}</div>
-        <div style="font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);">${t.author}</div>
-        ${t.priority ? `<div style="font-size:10px;color:var(--text-dim);margin-top:3px;">${t.priority}</div>` : ''}
-        ${t.why ? `<div style="font-size:11px;color:var(--text-dim);margin-top:4px;font-style:italic;">${t.why}</div>` : ''}
+        <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--text);">${t.title}</div>
+        <div style="font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);">${t.author}</div>
+        ${t.priority ? `<div style="font-size:14px;color:var(--text-dim);margin-top:3px;">${t.priority}</div>` : ''}
+        ${t.why ? `<div style="font-size:15px;color:var(--text-dim);margin-top:4px;font-style:italic;">${t.why}</div>` : ''}
       </div>
       <div style="display:flex;gap:5px;flex-direction:column;align-items:flex-end;">
-        <button class="btn btn-green" style="font-size:9px;padding:4px 8px;" onclick="scMoveTBR('${t.id}')">Mark Read</button>
-        <button class="btn btn-danger" style="font-size:9px;padding:4px 8px;" onclick="scDeleteTBR('${t.id}')">Remove</button>
+        <button class="btn btn-green" style="font-size:16px;padding:4px 8px;" onclick="scMoveTBR('${t.id}')">Mark Read</button>
+        <button class="btn btn-danger" style="font-size:16px;padding:4px 8px;" onclick="scDeleteTBR('${t.id}')">Remove</button>
       </div>
     </div>`).join('');
 }
@@ -2772,12 +2772,12 @@ function scShowMonth(m, yr, el) {
   const monthBooks = scBooks.filter(b => { if (!b.dateEnd) return false; const d = new Date(b.dateEnd + 'T12:00'); return d.getFullYear() === yr && d.getMonth() === m; });
   const content = document.getElementById('sc-monthly-content');
   const botm = monthBooks.find(b => b.botm);
-  let html = `<div class="sc-month-hdr"><span>${SC_MONTHS[m]} ${yr}</span><span style="font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--text-dim);">${monthBooks.length} books</span></div>`;
+  let html = `<div class="sc-month-hdr"><span>${SC_MONTHS[m]} ${yr}</span><span style="font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--text-dim);">${monthBooks.length} books</span></div>`;
   if (botm) html += `<div class="sc-botm-banner">🏆 Best of ${SC_MONTHS[m]}: <strong>${botm.title}</strong></div>`;
   if (!monthBooks.length) html += '<div style="color:var(--text-dim);font-style:italic;padding:10px 0;">No books logged this month</div>';
   else html += '<div class="sc-book-grid">' + monthBooks.map(b => `
     <div class="sc-book-card" onclick="scOpenDetail('${b.id}')">
-      ${b.botm ? `<div style="font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;color:rgba(200,160,40,.9);margin-bottom:3px;">🏆 Best</div>` : ''}
+      ${b.botm ? `<div style="font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;color:rgba(200,160,40,.9);margin-bottom:3px;">🏆 Best</div>` : ''}
       <div class="sc-book-title">${b.title}</div>
       <div class="sc-book-author">${b.author}</div>
       <div class="sc-stars">${scRenderStars(b.rating||0)}</div>
@@ -2789,7 +2789,7 @@ function scShowMonth(m, yr, el) {
 function scRenderChart(elId, data, maxVal) {
   const el = document.getElementById(elId);
   if (!el) return;
-  if (!data.length) { el.innerHTML = '<div style="color:var(--text-dim);font-style:italic;font-size:12px;">No data yet</div>'; return; }
+  if (!data.length) { el.innerHTML = '<div style="color:var(--text-dim);font-style:italic;font-size:15px;">No data yet</div>'; return; }
   el.innerHTML = data.map(([label, n]) => `
     <div class="sc-chart-row">
       <div class="sc-chart-label">${label}</div>
@@ -2829,8 +2829,8 @@ function scRenderScripts() {
     return `<div class="card-box" style="margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
         <div>
-          <div style="font-family:'Cinzel',serif;font-size:13px;color:#fff;margin-bottom:2px;">${b.title}</div>
-          <div style="font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);">by ${b.author}</div>
+          <div style="font-family:'Cinzel',serif;font-size:16px;color:#fff;margin-bottom:2px;">${b.title}</div>
+          <div style="font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);">by ${b.author}</div>
         </div>
         <div>${scTiktokBadge(b.tiktok)}</div>
       </div>
@@ -3009,7 +3009,7 @@ function scOpenDetail(id) {
   const dateStr = ds && de ? `${ds} → ${de}` : de || ds;
   document.getElementById('sc-detail-content').innerHTML = `
     <div style="font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:2px;padding-right:26px;">${b.title}</div>
-    <div style="font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:2px;color:var(--text-dim);margin-bottom:10px;">by ${b.author}</div>
+    <div style="font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--text-dim);margin-bottom:10px;">by ${b.author}</div>
     <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;"/>
     ${b.botm ? `<div class="sc-botm-banner" style="margin-bottom:8px;">🏆 Best Book of the Month</div>` : ''}
     <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">${b.genre?`<span class="sc-book-genre">${b.genre}</span>`:''}</div>
@@ -3258,7 +3258,7 @@ function copyHT(id,btn){
 }
 function renderHashtags(){
   const el=document.getElementById('ht-list');
-  if(!htSets.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;">No hashtag sets saved yet</div>';return;}
+  if(!htSets.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No hashtag sets saved yet</div>';return;}
   el.innerHTML=htSets.map(s=>`
     <div class="ht-set">
       <div class="ht-set-name">${s.name}
@@ -3266,8 +3266,8 @@ function renderHashtags(){
       </div>
       <div class="ht-tags">${s.tags.map(t=>`<span class="ht-tag">${t}</span>`).join('')}</div>
       <div class="ht-actions">
-        <button class="btn btn-primary" style="font-size:9px;padding:5px 14px;" id="ht-copy-${s.id}" onclick="copyHT(${s.id},this)">Copy All</button>
-        <span style="font-family:'IM Fell English SC',serif;font-size:10px;color:var(--text-dim);align-self:center;">${s.tags.length} tags</span>
+        <button class="btn btn-primary" style="font-size:16px;padding:5px 14px;" id="ht-copy-${s.id}" onclick="copyHT(${s.id},this)">Copy All</button>
+        <span style="font-family:'IM Fell English SC',serif;font-size:14px;color:var(--text-dim);align-self:center;">${s.tags.length} tags</span>
       </div>
     </div>`).join('');
 }
@@ -3295,7 +3295,7 @@ function addWin(){
 function deleteWin(id){wins=wins.filter(w=>w.id!==id);saveWins();renderWins();}
 function renderWins(){
   const el=document.getElementById('wins-list');
-  if(!wins.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;text-align:center;">Your wins will appear here 🖤<br>Start logging — you\'re doing better than you think.</div>';return;}
+  if(!wins.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;text-align:center;">Your wins will appear here 🖤<br>Start logging — you\'re doing better than you think.</div>';return;}
   el.innerHTML=wins.map(w=>{
     const d=new Date(w.date+'T12:00:00');
     const ds=d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
@@ -3715,7 +3715,7 @@ let _photoResults=[];
 function renderPhotoResults(results){
   _photoResults=results;
   document.getElementById('photo-hint').textContent='Tap the right book to fill in the form 🖤';
-  document.getElementById('photo-results').innerHTML=`<div style="font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:10px;">SELECT THE CORRECT BOOK</div>`+
+  document.getElementById('photo-results').innerHTML=`<div style="font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:10px;">SELECT THE CORRECT BOOK</div>`+
     results.map((r,i)=>`<div class="photo-result-card" onclick="selectPhotoResult(${i})">
       <div class="photo-result-title">${r.title}</div>
       ${r.author?`<div class="photo-result-author">by ${r.author}</div>`:''}
@@ -3792,7 +3792,7 @@ function deleteCR(id){crBooks=crBooks.filter(b=>b.id!==id);saveCR();scRenderCurr
 function scRenderCurrently(){
   const el=document.getElementById('sc-currently-list'); if(!el) return;
   if(!crBooks.length){
-    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;text-align:center;">Nothing here yet — add a book you\'re currently reading 🖤</div>';
+    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;text-align:center;">Nothing here yet — add a book you\'re currently reading 🖤</div>';
     return;
   }
   const today=new Date(); today.setHours(0,0,0,0);
@@ -3827,8 +3827,8 @@ function scRenderCurrently(){
       </div>
       <div class="cr-pages">Page ${b.current} of ${b.total}</div>`:''}
       <div class="cr-actions">
-        <button class="btn btn-primary" style="font-size:9px;padding:5px 12px;" onclick="updateCRProgress(${b.id})">Update Page</button>
-        <button class="btn btn-green" style="font-size:9px;padding:5px 12px;" onclick="finishCR(${b.id})">✓ Finished!</button>
+        <button class="btn btn-primary" style="font-size:16px;padding:5px 12px;" onclick="updateCRProgress(${b.id})">Update Page</button>
+        <button class="btn btn-green" style="font-size:16px;padding:5px 12px;" onclick="finishCR(${b.id})">✓ Finished!</button>
       </div>
     </div>`;
   }).join('');
@@ -3879,7 +3879,7 @@ function renderWishlist(){
   const badge=document.getElementById('sc-wishlist-badge');
   if(badge)badge.textContent=scWishlist.length||'';
   if(!scWishlist.length){
-    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;text-align:center;">Books you want to buy or borrow go here 🖤<br>Tap "→ TBR" once you have them.</div>';
+    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;text-align:center;">Books you want to buy or borrow go here 🖤<br>Tap "→ TBR" once you have them.</div>';
     return;
   }
   el.innerHTML=scWishlist.map(w=>`<div class="wl-card">
@@ -3889,8 +3889,8 @@ function renderWishlist(){
       ${w.notes?`<div class="wl-notes">${w.notes}</div>`:''}
     </div>
     <div class="wl-actions">
-      <button class="btn btn-green" style="font-size:9px;padding:4px 10px;white-space:nowrap;" onclick="moveWishlistToTBR(${w.id})">→ TBR</button>
-      <button class="btn btn-danger" style="font-size:9px;padding:4px 10px;" onclick="deleteWishlistItem(${w.id})">✕</button>
+      <button class="btn btn-green" style="font-size:16px;padding:4px 10px;white-space:nowrap;" onclick="moveWishlistToTBR(${w.id})">→ TBR</button>
+      <button class="btn btn-danger" style="font-size:16px;padding:4px 10px;" onclick="deleteWishlistItem(${w.id})">✕</button>
     </div>
   </div>`).join('');
 }
@@ -3912,7 +3912,7 @@ function deleteDNF(id){ dnfBooks = dnfBooks.filter(b => b.id !== id); saveDNF();
 function scRenderDNF(){
   const el = document.getElementById('sc-dnf-list'); if(!el) return;
   if(!dnfBooks.length){
-    el.innerHTML = '<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;text-align:center;">No DNFs yet — and hey, that\'s a win 🖤</div>';
+    el.innerHTML = '<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;text-align:center;">No DNFs yet — and hey, that\'s a win 🖤</div>';
     return;
   }
   el.innerHTML = dnfBooks.map(b => {
@@ -3956,7 +3956,7 @@ function deleteSeries(id){ seriesList = seriesList.filter(s => s.id !== id); sav
 function scRenderSeries(){
   const el = document.getElementById('sc-series-list'); if(!el) return;
   if(!seriesList.length){
-    el.innerHTML = '<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;text-align:center;">No series tracked yet — add one above 🖤</div>';
+    el.innerHTML = '<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;text-align:center;">No series tracked yet — add one above 🖤</div>';
     return;
   }
   el.innerHTML = seriesList.map(s => {
@@ -4075,7 +4075,7 @@ function renderGrowthStats(){
 function renderGrowthChart(){
   const el=document.getElementById('an-growth-chart'); if(!el)return;
   const data=anGrowth.slice(-10);
-  if(!data.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:11px;padding:20px;text-align:center;">Log your first week to see your chart 🖤</div>';return;}
+  if(!data.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:20px;text-align:center;">Log your first week to see your chart 🖤</div>';return;}
   const max=Math.max(...data.map(d=>d.followers));
   el.innerHTML=data.map(d=>{
     const pct=max>0?Math.max(Math.round((d.followers/max)*90),4):4;
@@ -4092,7 +4092,7 @@ function renderGrowthChart(){
 function renderGrowthList(){
   const el=document.getElementById('an-growth-list'); if(!el)return;
   if(!anGrowth.length){
-    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;text-align:center;padding:20px 0;">No entries yet — log your first week above 🖤</div>';
+    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;text-align:center;padding:20px 0;">No entries yet — log your first week above 🖤</div>';
     return;
   }
   const entries=[...anGrowth].reverse();
@@ -4108,7 +4108,7 @@ function renderGrowthList(){
         <div class="growth-entry-date">${icon} ${dt}</div>
         <div class="growth-entry-followers">${fmtNum(e.followers)} followers</div>
         ${statsStr?`<div class="growth-entry-stats">${statsStr}</div>`:''}
-        ${e.notes?`<div style="font-size:10px;color:var(--text-dim);font-style:italic;margin-top:3px;">${e.notes}</div>`:''}
+        ${e.notes?`<div style="font-size:14px;color:var(--text-dim);font-style:italic;margin-top:3px;">${e.notes}</div>`:''}
       </div>
       ${delta!==null?`<span class="growth-delta ${delta>=0?'pos':'neg'}">${delta>=0?'+':''}${fmtNum(delta)}</span>`:''}
       <button class="vp-del" onclick="deleteGrowthEntry(${e.id})">✕</button>
@@ -4186,11 +4186,11 @@ function renderVidInsight(){
 function renderVidList(){
   const el=document.getElementById('an-vid-list'); if(!el)return;
   if(!anVids.length){
-    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;text-align:center;padding:20px 0;">Log your first video stats above 🖤</div>';
+    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;text-align:center;padding:20px 0;">Log your first video stats above 🖤</div>';
     return;
   }
   const sorted=[...anVids].sort((a,b)=>b.views-a.views);
-  el.innerHTML=`<div style="font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:8px;">ALL VIDEOS — SORTED BY VIEWS</div>`+
+  el.innerHTML=`<div style="font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:8px;">ALL VIDEOS — SORTED BY VIEWS</div>`+
   sorted.map(v=>`<div class="vp-card">
     <div class="vp-card-header">
       <div>
