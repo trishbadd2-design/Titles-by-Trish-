@@ -1486,6 +1486,7 @@ canvas{width:100%!important;}
     <button class="an-tab active" id="an-tab-growth" onclick="switchAnTab('growth',this)">📈 Growth Log</button>
     <button class="an-tab" id="an-tab-videos" onclick="switchAnTab('videos',this)">🎬 Video Stats</button>
     <button class="an-tab" id="an-tab-tips" onclick="switchAnTab('tips',this)">💡 Growth Tips</button>
+    <button class="an-tab" id="an-tab-shoot" onclick="switchAnTab('shoot',this)">🎥 Shoot Guide</button>
   </div>
 
   <!-- GROWTH LOG -->
@@ -1575,6 +1576,14 @@ canvas{width:100%!important;}
       <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">BookTok-specific strategies — tap any section to expand. 🖤</div>
     </div>
     <div id="an-tips-list"></div>
+  </div>
+
+  <!-- SHOOT GUIDE -->
+  <div id="an-section-shoot" class="an-section">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
+      <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">Your complete filming reference — tap any section to expand. Save this and check it before you shoot. 🖤</div>
+    </div>
+    <div id="an-shoot-list"></div>
   </div>
 </div>
 
@@ -3989,6 +3998,7 @@ function switchAnTab(tab,btn){
   if(tab==='growth')renderGrowthLog();
   if(tab==='videos')renderVidLog();
   if(tab==='tips')renderGrowthTips();
+  if(tab==='shoot')renderShootGuide();
 }
 
 // ── Growth Log ──
@@ -4277,6 +4287,95 @@ function toggleTipSection(bodyId,hdr){
   const sid=bodyId.replace('tip-body-','');
   const arrow=document.getElementById('tip-arrow-'+sid);
   if(arrow)arrow.textContent=isOpen?'▸':'▾';
+}
+
+// ── Shoot Guide ──
+const SHOOT_GUIDE=[
+  {id:'sg-checklist',title:'✅ Pre-Shoot Checklist — Run This Every Time',tips:[
+    'Phone charged or plugged in — nothing worse than dying mid-haul.',
+    'Tripod or phone propped stable — shaky footage kills watch time faster than anything.',
+    'Lighting is on and warm — natural window light or ring light at eye level, never overhead.',
+    'Background is clean and on brand — bookshelf, dark surface, or neutral wall. No clutter in frame.',
+    'Candles placed (lit or unlit) for depth — even unlit candles add texture to the background.',
+    'Books stacked and ready in the order you want to film them.',
+    'Sound check — film 5 seconds of silence, play it back. If you hear hum or echo, move rooms.',
+    'Nails looking good if hands are in frame — dark nails are very on brand for your aesthetic.',
+    'TikTok or camera app open and recording mode set before you start — don\'t lose the first take fumbling with the phone.',
+  ]},
+  {id:'sg-haul',title:'📚 Book Haul Videos',tips:[
+    'SETUP: Lay a dark fabric, black surface, or dark wood board flat. Stack books in a slight fan or overlap — not a messy pile, not a perfect grid. Slightly messy-on-purpose looks best.',
+    'OPENING SHOT: Start with a wide top-down shot of all the books together before you pick any up. Tease the haul.',
+    'REVEAL EACH BOOK: Hold it close to camera so the cover fills most of the frame. Tilt it slightly rather than perfectly flat — catches the light better.',
+    'SPINE SHOTS: After showing the cover, turn it to show the spine against the others. Spine lines look amazing as B-roll.',
+    'BUILD A REACTION: Hold each book at different angles — flat at camera, tilt up slowly, hold against your chest. Vary the movement so it doesn\'t look repetitive.',
+    'CLOSING SHOT: Stack all books together in a neat pile and do a slow zoom out — satisfying ending shot.',
+    'LIGHTING TIP: One candle slightly out of focus in the foreground with books in the background = instant cinematic look. Free.',
+  ]},
+  {id:'sg-review',title:'📖 Book Review Videos',tips:[
+    'OPENING HOOK: Start with the book cover filling the frame, then pull back to reveal you holding it. Stronger opening than starting with your face.',
+    'HOLD POSITION: Hold the book at chest or chin level so your face and the cover are both visible. Don\'t hold it too low — it drops out of frame on some screens.',
+    'COVER CLOSE-UP: Do at least one slow zoom into the cover art mid-video. Especially for books with beautiful or dark covers.',
+    'INTERIOR PAGES (if applicable): For illustrated books like Brom, film slow page-turning close-ups — that content stops the scroll. Hold the open book slightly angled toward the light.',
+    'B-ROLL MOMENT: Prop the book on your bookshelf or a dark surface with a candle slightly blurred in the foreground. This is your "visual break" shot between talking segments.',
+    'RATING REVEAL: Build to it. Pause. Show the Mind Scale graphic or card. Don\'t rush past it — that\'s the moment people are watching for.',
+    'BACKGROUND: Your bookshelf behind you reads instantly as "book person." Make sure the most interesting spines are visible, not the plain ones.',
+  ]},
+  {id:'sg-bookstore',title:'🏪 Bookstore Videos',tips:[
+    'TIMING: Weekday mornings are best — less background noise, fewer people walking into your shot, better natural light in most stores.',
+    'OPENING SHOT: Wide shot of you walking into the section from behind. Classic, iconic, always works. Ask a friend to film or prop your phone on a shelf.',
+    'B-ROLL SEQUENCE to nail every time: (1) Wide shot of shelves → (2) Close-up of spines in a row → (3) Your hand sliding along spines → (4) Pulling a book out → (5) Cover reveal close-up.',
+    'REACTION MOMENTS: When you find something you wanted — genuinely react. Don\'t perform it. Authentic excitement reads on camera better than staged.',
+    'SPINE CLOSE-UPS: Film slow pans across shelves in your section. These make great filler B-roll and always look good.',
+    'FINDING MOMENT: If you can\'t find a book you wanted, film that too. "They didn\'t have it" content is relatable and real.',
+    'CHECKOUT: Film the books on the counter being rung up. Quick shot, always satisfying.',
+    'HAUL REVEAL: End outside or in your car — pull books out of the bag one by one. The bag-to-reveal moment is a proven format.',
+    'SOUND TIP: Bookstores have a lot of ambient noise. If recording voice, speak clearly and close to your phone. You can always add trending audio over it in edit.',
+  ]},
+  {id:'sg-broll',title:'🎬 B-Roll Ideas to Film Every Session',tips:[
+    'Books being stacked one on top of another slowly — mesmerizing to watch.',
+    'A single candle flame with a blurred book spine in the background.',
+    'Your hand turning pages slowly — sunlight or warm light catching the edges.',
+    'Spines in a row, camera panning left to right slowly.',
+    'Book cover sitting flat with steam rising from a mug of tea beside it.',
+    'Picking a book off the shelf — just the hand and book, no face needed.',
+    'Cracking open a new book for the first time — that spine creak moment.',
+    'Bookmarks, tabs, or sticky notes sticking out of a book.',
+    'Your reading setup — full wide shot of your chair, lamp, blanket, book.',
+    'Books fanned out on a dark surface from above.',
+    'Closing a book after "finishing" it — hold the closed book for a beat.',
+    'Shelf arrangement close-ups — color-coordinated or series in a row.',
+  ]},
+  {id:'sg-aesthetic',title:'🎨 Your Aesthetic — Dark & Moody Setup',tips:[
+    'COLOR PALETTE: Black, deep burgundy, warm gold, dark wood. Keep these in your background and props and everything looks cohesive.',
+    'LIGHTING: Natural window light at dusk is free and perfect for your vibe. Morning light is too bright and white. Ring light at eye level on lowest warm setting if indoors.',
+    'SIDE LIGHTING: Light coming from one side of your face or book creates shadows that feel dramatic and intentional. Flat front lighting looks flat.',
+    'CANDLES: One to three candles at different heights = instant atmosphere. You don\'t even need to light them — unlit candles still add texture.',
+    'PROPS: Dark candles, dried flowers or dark roses, a leather-bound journal, a mug of dark tea, vintage keys, reading glasses. These signal your niche before you say a word.',
+    'YOUR CLOTHING: Dark or neutral clothing in videos so the book covers pop. Black is always right. Deep jewel tones work too — burgundy, forest green, navy.',
+    'BOOKSHELF BACKGROUND: The most aesthetic shelves for your niche are NOT perfectly organized by color. Mix it up — some face-out covers, some spine-out, a candle tucked in, a small plant.',
+    'COLOR GRADING: TikTok\'s built-in "Cinematic" or "Moody" filter costs nothing and makes everything look intentional. Apply it consistently to every video.',
+  ]},
+  {id:'sg-tech',title:'📱 Technical Setup',tips:[
+    'TRIPOD: A $15–$20 phone tripod from Amazon is the single best investment you can make. Shaky footage is the #1 thing that makes content look amateur.',
+    'PORTRAIT vs LANDSCAPE: Always shoot portrait (vertical) for TikTok and Reels. Never landscape unless you\'re doing a specific cinematic effect.',
+    'RESOLUTION: Shoot at the highest resolution your phone allows. TikTok and Instagram compress video — you want to start with as much quality as possible.',
+    'FRAME RATE: 30fps looks natural and smooth for talking videos. 60fps looks more cinematic for B-roll and book shots.',
+    'SOUND: Record in the quietest room you have. Bathrooms with a towel on the door have surprisingly good acoustics. Rooms with carpet absorb echo better than hard floors.',
+    'TRANSITIONS: The "book flip" (hold book up to cover the lens, cut) is a classic. The "hands covering lens" transition works for B-roll cuts. Keep transitions simple — complex ones draw attention to the edit not the content.',
+    'EDITING APPS: CapCut (free) is what most BookTok creators use. It has templates, auto-captions, and trending transitions built in. TikTok\'s native editor is also excellent.',
+    'AUTO-CAPTIONS: Always add captions. A significant portion of TikTok is watched with no sound. TikTok and CapCut both auto-generate them in seconds.',
+  ]},
+];
+function renderShootGuide(){
+  const el=document.getElementById('an-shoot-list'); if(!el)return;
+  el.innerHTML=SHOOT_GUIDE.map(s=>`<div class="tip-stage">
+    <div class="tip-stage-hdr" onclick="toggleTipSection('tip-body-${s.id}',this)">
+      <span>${s.title}</span><span id="tip-arrow-${s.id}">▸</span>
+    </div>
+    <div class="tip-stage-body" id="tip-body-${s.id}">
+      ${s.tips.map(t=>`<div class="tip-item"><span class="tip-bullet">✦</span><span>${t}</span></div>`).join('')}
+    </div>
+  </div>`).join('');
 }
 
 // Register service worker for PWA / offline support
