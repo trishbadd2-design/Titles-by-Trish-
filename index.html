@@ -531,6 +531,23 @@ canvas{width:100%!important;}
 .cr-actions{display:flex;gap:6px;flex-wrap:wrap;}
 .cr-del{position:absolute;top:10px;right:10px;background:transparent;border:none;color:rgba(200,80,80,.4);cursor:pointer;font-size:13px;}
 .cr-del:hover{color:#e06060;}
+.cr-dates{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;}
+.cr-date-item{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;}
+.cr-date-label{color:var(--text-dim);}
+.cr-date-val{color:var(--gold-dim);}
+.cr-due-ok{color:rgba(100,200,100,.8);}
+.cr-due-warn{color:var(--gold);}
+.cr-due-urgent{color:#e06060;}
+.cr-due-overdue{color:#e06060;font-weight:bold;letter-spacing:3px;}
+/* ── WISHLIST ── */
+.wl-add-form{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:4px;padding:14px;margin-bottom:14px;display:none;}
+.wl-card{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.02);padding:13px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;}
+.wl-card:hover{border-color:var(--border-hi);}
+.wl-info{flex:1;min-width:0;}
+.wl-title{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
+.wl-author{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:5px;}
+.wl-notes{font-size:11px;color:var(--text-dim);font-style:italic;line-height:1.6;}
+.wl-actions{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
 
 /* ── DNF SHELF ── */
 .dnf-card{border:1px solid rgba(200,80,80,.3);border-radius:4px;background:rgba(200,80,80,.05);padding:14px 16px;margin-bottom:10px;position:relative;}
@@ -992,6 +1009,7 @@ canvas{width:100%!important;}
     <button class="sc-tab" onclick="scSwitchTab('tbr',this)">TBR <span id="sc-tbr-badge" style="background:var(--red);color:#fff;border-radius:10px;padding:1px 5px;font-size:8px;margin-left:2px;">0</span></button>
     <button class="sc-tab" onclick="scSwitchTab('dnf',this)">💀 DNF</button>
     <button class="sc-tab" onclick="scSwitchTab('series',this)">📗 Series</button>
+    <button class="sc-tab" onclick="scSwitchTab('wishlist',this)">🛒 Wishlist <span id="sc-wishlist-badge" style="background:rgba(200,160,80,.4);color:#fff;border-radius:10px;padding:1px 5px;font-size:8px;margin-left:2px;">0</span></button>
     <button class="sc-tab" onclick="scSwitchTab('stats',this)">📊 Stats</button>
     <button class="sc-tab" onclick="scSwitchTab('scripts',this)">🎬 Scripts</button>
   </div>
@@ -1049,6 +1067,26 @@ canvas{width:100%!important;}
     <div id="sc-tbr-list"></div>
   </div>
 
+  <!-- WISHLIST -->
+  <div id="sc-section-wishlist" class="sc-section">
+    <div style="font-size:12px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">
+      Books you want to buy or find — tap "→ TBR" once you have them. 🖤
+    </div>
+    <button class="sc-add-btn" onclick="openWishlistAdd()">✦ Add to Wishlist</button>
+    <div class="wl-add-form" id="wl-add-form">
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Book Title *</label><input id="wl-f-title" placeholder="title..."/></div>
+        <div class="sc-field"><label>Author</label><input id="wl-f-author" placeholder="author..."/></div>
+      </div>
+      <div class="sc-field"><label>Notes (where to get it, why you want it)</label><input id="wl-f-notes" placeholder="e.g. preorder on Amazon, saw on TikTok..."/></div>
+      <div class="sc-modal-actions" style="margin-top:10px;">
+        <button class="sc-btn-cancel" onclick="cancelWishlistAdd()">Cancel</button>
+        <button class="sc-btn-save" onclick="saveWishlistItem()">✦ Add to Wishlist</button>
+      </div>
+    </div>
+    <div id="sc-wishlist-list"></div>
+  </div>
+
   <!-- STATS -->
   <div id="sc-section-stats" class="sc-section">
     <div class="card-box" style="margin-bottom:10px;"><div class="label-sm" style="margin-bottom:10px;">Genres</div><div id="sc-genre-chart"></div></div>
@@ -1066,6 +1104,29 @@ canvas{width:100%!important;}
     <div id="sc-script-list"></div>
   </div>
 
+</div>
+
+<!-- CURRENTLY READING ADD MODAL -->
+<div class="sc-modal-bg" id="cr-add-modal">
+<div class="sc-modal">
+  <h2>📖 Now Reading</h2>
+  <div class="sc-two-col">
+    <div class="sc-field"><label>Book Title *</label><input id="cr-f-title" placeholder="title..."/></div>
+    <div class="sc-field"><label>Author</label><input id="cr-f-author" placeholder="author..."/></div>
+  </div>
+  <div class="sc-two-col">
+    <div class="sc-field"><label>Total Pages</label><input id="cr-f-pages" type="number" placeholder="e.g. 384"/></div>
+    <div class="sc-field"><label>Date Started</label><input id="cr-f-start" type="date"/></div>
+  </div>
+  <div class="sc-field">
+    <label>Library Due Date — Libby / Hoopla (optional)</label>
+    <input id="cr-f-due" type="date"/>
+  </div>
+  <div class="sc-modal-actions">
+    <button class="sc-btn-cancel" onclick="closeCRModal()">Cancel</button>
+    <button class="sc-btn-save" onclick="saveCRModal()">✦ Start Reading</button>
+  </div>
+</div>
 </div>
 
 <!-- SCORECARD ADD MODAL -->
@@ -2463,6 +2524,7 @@ function scSwitchTab(t, el) {
   if (t === 'reading') scRenderCurrently();
   if (t === 'dnf') scRenderDNF();
   if (t === 'series') scRenderSeries();
+  if (t === 'wishlist') renderWishlist();
 }
 
 function scRenderStars(n, sz) {
@@ -2628,6 +2690,7 @@ function scRenderScripts() {
 
 function scRenderAll() {
   scRenderBooks(); scRenderTBR(); scUpdateGoal();
+  const wb=document.getElementById('sc-wishlist-badge');if(wb)wb.textContent=scWishlist.length||'';
   document.getElementById('sc-s-total').textContent = scBooks.length;
   const rated = scBooks.filter(b => b.rating > 0);
   document.getElementById('sc-s-avg').textContent = rated.length ? (rated.reduce((a,b)=>a+b.rating,0)/rated.length).toFixed(1)+'★' : '—';
@@ -3520,48 +3583,89 @@ let crBooks = JSON.parse(localStorage.getItem('sc3_currently') || '[]');
 function saveCR(){ localStorage.setItem('sc3_currently', JSON.stringify(crBooks)); }
 
 function scOpenCurrently(){
-  const title = prompt('Book title?'); if(!title) return;
-  const author = prompt('Author?') || '';
-  const totalStr = prompt('Total pages? (optional)') || '0';
-  const total = parseInt(totalStr) || 0;
-  crBooks.unshift({ id: Date.now(), title, author, total, current: 0 });
-  saveCR(); scRenderCurrently(); toast('✦ Added to Currently Reading 🖤');
+  document.getElementById('cr-f-title').value='';
+  document.getElementById('cr-f-author').value='';
+  document.getElementById('cr-f-pages').value='';
+  document.getElementById('cr-f-start').value=new Date().toISOString().split('T')[0];
+  document.getElementById('cr-f-due').value='';
+  document.getElementById('cr-add-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeCRModal(){
+  document.getElementById('cr-add-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+function saveCRModal(){
+  const title=document.getElementById('cr-f-title').value.trim();
+  if(!title){toast('Title is required');return;}
+  const author=document.getElementById('cr-f-author').value.trim();
+  const total=parseInt(document.getElementById('cr-f-pages').value)||0;
+  const startDate=document.getElementById('cr-f-start').value;
+  const dueDate=document.getElementById('cr-f-due').value;
+  crBooks.unshift({id:Date.now(),title,author,total,current:0,startDate,dueDate});
+  saveCR(); scRenderCurrently(); closeCRModal();
+  toast('✦ Added to Currently Reading 🖤');
 }
 function updateCRProgress(id){
-  const book = crBooks.find(b => b.id === id); if(!book) return;
-  const pg = prompt(`Current page? (out of ${book.total||'?'})`); if(pg === null) return;
-  book.current = parseInt(pg) || 0;
+  const book=crBooks.find(b=>b.id===id); if(!book) return;
+  const pg=prompt(`Current page? (out of ${book.total||'?'})`); if(pg===null) return;
+  book.current=parseInt(pg)||0;
   saveCR(); scRenderCurrently();
 }
 function finishCR(id){
-  const book = crBooks.find(b => b.id === id); if(!book) return;
+  const book=crBooks.find(b=>b.id===id); if(!book) return;
   if(!confirm(`Move "${book.title}" to your Read log?`)) return;
-  crBooks = crBooks.filter(b => b.id !== id);
+  crBooks=crBooks.filter(b=>b.id!==id);
   saveCR();
-  // pre-fill the add modal
-  scOpenAdd('read', { title: book.title, author: book.author });
+  const today=new Date().toISOString().split('T')[0];
+  scOpenAdd('read',{title:book.title,author:book.author});
+  setTimeout(()=>{
+    const ds=document.getElementById('sc-f-dstart');
+    const de=document.getElementById('sc-f-dend');
+    if(ds&&book.startDate)ds.value=book.startDate;
+    if(de)de.value=today;
+  },60);
   scRenderCurrently();
-  toast('✦ Moved to Read log — fill in the rest! 🖤');
+  toast('✦ Moved to Read log — start & finish dates filled in! 🖤');
 }
-function deleteCR(id){ crBooks = crBooks.filter(b => b.id !== id); saveCR(); scRenderCurrently(); }
+function deleteCR(id){crBooks=crBooks.filter(b=>b.id!==id);saveCR();scRenderCurrently();}
 function scRenderCurrently(){
-  const el = document.getElementById('sc-currently-list'); if(!el) return;
+  const el=document.getElementById('sc-currently-list'); if(!el) return;
   if(!crBooks.length){
-    el.innerHTML = '<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;text-align:center;">Nothing here yet — add a book you\'re currently reading 🖤</div>';
+    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;text-align:center;">Nothing here yet — add a book you\'re currently reading 🖤</div>';
     return;
   }
-  el.innerHTML = crBooks.map(b => {
-    const pct = b.total > 0 ? Math.min(Math.round((b.current / b.total) * 100), 100) : 0;
+  const today=new Date(); today.setHours(0,0,0,0);
+  el.innerHTML=crBooks.map(b=>{
+    const pct=b.total>0?Math.min(Math.round((b.current/b.total)*100),100):0;
+    let dueHtml='';
+    if(b.dueDate){
+      const due=new Date(b.dueDate+'T00:00:00');
+      const diff=Math.round((due-today)/(1000*60*60*24));
+      let cls,label;
+      if(diff<0){cls='cr-due-overdue';label='⚠ OVERDUE';}
+      else if(diff===0){cls='cr-due-urgent';label='Due TODAY';}
+      else if(diff<=2){cls='cr-due-urgent';label=`Due in ${diff} day${diff===1?'':'s'} — hurry! ⚡`;}
+      else if(diff<=7){cls='cr-due-warn';label=`Due in ${diff} days`;}
+      else{const d=new Date(b.dueDate+'T00:00:00');cls='cr-due-ok';label=`Due ${d.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`;}
+      dueHtml=`<span class="cr-date-item"><span class="cr-date-label">📅 </span><span class="${cls}">${label}</span></span>`;
+    }
+    let startHtml='';
+    if(b.startDate){
+      const d=new Date(b.startDate+'T00:00:00');
+      startHtml=`<span class="cr-date-item"><span class="cr-date-label">Started </span><span class="cr-date-val">${d.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span></span>`;
+    }
     return `<div class="cr-card">
       <button class="cr-del" onclick="deleteCR(${b.id})">✕</button>
       <div class="cr-title">${b.title}</div>
-      <div class="cr-author">${b.author ? 'by ' + b.author : ''}</div>
-      ${b.total > 0 ? `
+      <div class="cr-author">${b.author?'by '+b.author:''}</div>
+      ${startHtml||dueHtml?`<div class="cr-dates">${startHtml}${dueHtml}</div>`:''}
+      ${b.total>0?`
       <div class="cr-progress-row">
         <div class="cr-progress-track"><div class="cr-progress-fill" style="width:${pct}%"></div></div>
         <div class="cr-pct">${pct}%</div>
       </div>
-      <div class="cr-pages">Page ${b.current} of ${b.total}</div>` : ''}
+      <div class="cr-pages">Page ${b.current} of ${b.total}</div>`:''}
       <div class="cr-actions">
         <button class="btn btn-primary" style="font-size:9px;padding:5px 12px;" onclick="updateCRProgress(${b.id})">Update Page</button>
         <button class="btn btn-green" style="font-size:9px;padding:5px 12px;" onclick="finishCR(${b.id})">✓ Finished!</button>
@@ -3571,6 +3675,66 @@ function scRenderCurrently(){
 }
 
 // ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// WISHLIST
+// ══════════════════════════════════════════
+let scWishlist=JSON.parse(localStorage.getItem('sc3_wishlist')||'[]');
+function saveWishlist(){localStorage.setItem('sc3_wishlist',JSON.stringify(scWishlist));}
+function openWishlistAdd(){
+  document.getElementById('wl-add-form').style.display='';
+  document.getElementById('wl-f-title').value='';
+  document.getElementById('wl-f-author').value='';
+  document.getElementById('wl-f-notes').value='';
+  setTimeout(()=>document.getElementById('wl-f-title').focus(),50);
+}
+function cancelWishlistAdd(){document.getElementById('wl-add-form').style.display='none';}
+function saveWishlistItem(){
+  const title=document.getElementById('wl-f-title').value.trim();
+  if(!title){toast('Title is required');return;}
+  const author=document.getElementById('wl-f-author').value.trim();
+  const notes=document.getElementById('wl-f-notes').value.trim();
+  scWishlist.unshift({id:Date.now(),title,author,notes});
+  saveWishlist(); renderWishlist(); cancelWishlistAdd();
+  toast('✦ Added to Wishlist 🖤');
+}
+function moveWishlistToTBR(id){
+  const item=scWishlist.find(w=>w.id===id); if(!item) return;
+  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  if(!tbr.some(t=>t.title===item.title)){
+    tbr.unshift({id:Date.now(),title:item.title,author:item.author,genre:'',notes:item.notes,addedFrom:'Wishlist'});
+    localStorage.setItem('sc3_tbr',JSON.stringify(tbr));
+    const badge=document.getElementById('sc-tbr-badge');
+    if(badge)badge.textContent=tbr.length;
+  }
+  scWishlist=scWishlist.filter(w=>w.id!==id);
+  saveWishlist(); renderWishlist();
+  toast('✦ Moved to TBR 🖤');
+}
+function deleteWishlistItem(id){
+  scWishlist=scWishlist.filter(w=>w.id!==id);
+  saveWishlist(); renderWishlist();
+}
+function renderWishlist(){
+  const el=document.getElementById('sc-wishlist-list'); if(!el) return;
+  const badge=document.getElementById('sc-wishlist-badge');
+  if(badge)badge.textContent=scWishlist.length||'';
+  if(!scWishlist.length){
+    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;padding:10px 0;text-align:center;">Books you want to buy or borrow go here 🖤<br>Tap "→ TBR" once you have them.</div>';
+    return;
+  }
+  el.innerHTML=scWishlist.map(w=>`<div class="wl-card">
+    <div class="wl-info">
+      <div class="wl-title">${w.title}</div>
+      ${w.author?`<div class="wl-author">by ${w.author}</div>`:''}
+      ${w.notes?`<div class="wl-notes">${w.notes}</div>`:''}
+    </div>
+    <div class="wl-actions">
+      <button class="btn btn-green" style="font-size:9px;padding:4px 10px;white-space:nowrap;" onclick="moveWishlistToTBR(${w.id})">→ TBR</button>
+      <button class="btn btn-danger" style="font-size:9px;padding:4px 10px;" onclick="deleteWishlistItem(${w.id})">✕</button>
+    </div>
+  </div>`).join('');
+}
+
 // DNF SHELF
 // ══════════════════════════════════════════
 let dnfBooks = JSON.parse(localStorage.getItem('sc3_dnf') || '[]');
