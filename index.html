@@ -117,6 +117,54 @@ textarea{resize:vertical;min-height:80px;}
 .week-label{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:5px;color:var(--gold-dim);margin:20px 0 10px;text-align:center;}
 
 /* ── FOLLOWER CHART ── */
+/* ── ANALYTICS ── */
+.an-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.an-tab{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;padding:7px 14px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.an-tab.active,.an-tab:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
+.an-section{display:none;}
+.an-section.active{display:block;}
+.an-add-form{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:4px;padding:14px;margin-bottom:14px;display:none;}
+.an-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.an-stat{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:4px;padding:11px 8px;text-align:center;}
+.an-stat-num{font-family:'Cinzel',serif;font-size:18px;font-weight:900;color:var(--gold);}
+.an-stat-label{font-family:'IM Fell English SC',serif;font-size:8px;letter-spacing:2px;color:var(--text-dim);margin-top:2px;}
+.an-stat-sub{font-size:9px;color:rgba(100,200,100,.85);margin-top:3px;}
+.an-stat-sub.neg{color:rgba(220,100,100,.8);}
+.growth-chart-wrap{overflow-x:auto;margin-bottom:14px;padding-bottom:4px;}
+.growth-chart{display:flex;align-items:flex-end;gap:6px;height:110px;min-width:min-content;padding:0 2px;}
+.growth-bar-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:42px;}
+.growth-bar{width:30px;border-radius:3px 3px 0 0;background:linear-gradient(0deg,var(--red),var(--gold));min-height:3px;}
+.growth-bar-val{font-family:'Cinzel',serif;font-size:8px;color:var(--gold-dim);white-space:nowrap;}
+.growth-bar-date{font-family:'IM Fell English SC',serif;font-size:7px;color:var(--text-dim);text-align:center;white-space:nowrap;}
+.growth-entry{border:1px solid var(--border);border-radius:4px;padding:9px 13px;margin-bottom:7px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.growth-entry-left{min-width:0;flex:1;}
+.growth-entry-date{font-family:'IM Fell English SC',serif;font-size:10px;letter-spacing:2px;color:var(--text-dim);}
+.growth-entry-followers{font-family:'Cinzel',serif;font-size:15px;color:#fff;}
+.growth-entry-stats{font-size:10px;color:var(--text-dim);margin-top:3px;}
+.growth-delta{font-size:9px;padding:2px 7px;border-radius:2px;white-space:nowrap;}
+.growth-delta.pos{color:rgba(100,200,100,.9);background:rgba(60,160,60,.12);}
+.growth-delta.neg{color:rgba(220,100,100,.9);background:rgba(180,40,40,.12);}
+.vp-insight{background:rgba(200,160,80,.07);border:1px solid rgba(200,160,80,.2);border-radius:4px;padding:12px 14px;margin-bottom:14px;}
+.vp-insight-title{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;}
+.vp-insight-text{font-size:12px;color:var(--text-dim);line-height:1.7;font-style:italic;}
+.vp-card{border:1px solid var(--border);border-radius:4px;padding:11px 13px;margin-bottom:8px;}
+.vp-card:hover{border-color:var(--border-hi);}
+.vp-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;}
+.vp-title{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:#fff;}
+.vp-type{font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:2px;color:var(--gold-dim);}
+.vp-stats{display:flex;gap:12px;flex-wrap:wrap;}
+.vp-stat{font-size:10px;color:var(--text-dim);}
+.vp-stat b{color:rgba(200,160,80,.8);}
+.vp-del{background:transparent;border:none;color:rgba(200,80,80,.35);cursor:pointer;font-size:12px;flex-shrink:0;}
+.vp-del:hover{color:#e06060;}
+.tip-stage{margin-bottom:10px;border:1px solid var(--border);border-radius:4px;overflow:hidden;}
+.tip-stage-hdr{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:rgba(200,160,80,.05);user-select:none;}
+.tip-stage-hdr:hover{background:rgba(200,160,80,.1);}
+.tip-stage-body{display:none;padding:10px 14px 12px;border-top:1px solid var(--border);}
+.tip-stage-body.open{display:block;}
+.tip-item{font-size:12px;color:var(--text-dim);line-height:1.75;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:9px;}
+.tip-item:last-child{border-bottom:none;}
+.tip-bullet{color:var(--gold);flex-shrink:0;font-size:9px;padding-top:4px;}
 .chart-wrap{position:relative;height:180px;margin:16px 0 8px;}
 canvas{width:100%!important;}
 .chart-no-data{text-align:center;padding:60px 20px;color:var(--text-dim);font-style:italic;font-size:13px;}
@@ -605,6 +653,7 @@ canvas{width:100%!important;}
   <button class="nav-btn" onclick="showPanel('wins')">🏆 Wins Journal</button>
   <button class="nav-btn" onclick="showPanel('spin')">🎡 Spin the Wheel</button>
   <button class="nav-btn" onclick="showPanel('monthlypicks')">📚 Monthly Picks</button>
+  <button class="nav-btn" onclick="showPanel('analytics')">📊 Analytics</button>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -1428,6 +1477,107 @@ canvas{width:100%!important;}
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════ -->
+<!-- PANEL 15: ANALYTICS                         -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="panel" id="panel-analytics">
+  <div class="section-title">📊 Analytics</div>
+  <div class="an-tabs">
+    <button class="an-tab active" id="an-tab-growth" onclick="switchAnTab('growth',this)">📈 Growth Log</button>
+    <button class="an-tab" id="an-tab-videos" onclick="switchAnTab('videos',this)">🎬 Video Stats</button>
+    <button class="an-tab" id="an-tab-tips" onclick="switchAnTab('tips',this)">💡 Growth Tips</button>
+  </div>
+
+  <!-- GROWTH LOG -->
+  <div id="an-section-growth" class="an-section active">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
+      <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">Log your numbers once a week — see your growth over time and spot your best weeks. 🖤</div>
+    </div>
+    <button class="sc-add-btn" onclick="openGrowthForm()">✦ Log This Week's Numbers</button>
+    <div class="an-add-form" id="growth-add-form">
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Date</label><input type="date" id="an-g-date"/></div>
+        <div class="sc-field"><label>Platform</label>
+          <select id="an-g-platform"><option value="tiktok">TikTok</option><option value="instagram">Instagram</option></select>
+        </div>
+      </div>
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Followers</label><input type="number" id="an-g-followers" placeholder="e.g. 1250"/></div>
+        <div class="sc-field"><label>Views This Week</label><input type="number" id="an-g-views" placeholder="e.g. 8500"/></div>
+      </div>
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Likes This Week</label><input type="number" id="an-g-likes" placeholder="e.g. 320"/></div>
+        <div class="sc-field"><label>Comments This Week</label><input type="number" id="an-g-comments" placeholder="e.g. 45"/></div>
+      </div>
+      <div class="sc-field"><label>Notes (optional)</label><input id="an-g-notes" placeholder="anything notable this week..."/></div>
+      <div class="sc-modal-actions" style="margin-top:10px;">
+        <button class="sc-btn-cancel" onclick="closeGrowthForm()">Cancel</button>
+        <button class="sc-btn-save" onclick="saveGrowthEntry()">✦ Save</button>
+      </div>
+    </div>
+    <div id="an-growth-stats" class="an-stats-row"></div>
+    <div class="growth-chart-wrap"><div class="growth-chart" id="an-growth-chart"></div></div>
+    <div id="an-growth-list"></div>
+  </div>
+
+  <!-- VIDEO STATS -->
+  <div id="an-section-videos" class="an-section">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
+      <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">Track how each video performs — discover which formats get the most views, comments, and followers. 🖤</div>
+    </div>
+    <button class="sc-add-btn" onclick="openVidForm()">✦ Log a Video's Stats</button>
+    <div class="an-add-form" id="vid-add-form">
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Video Title / Topic *</label><input id="an-v-title" placeholder="e.g. Fourth Wing Review..."/></div>
+        <div class="sc-field"><label>Date Posted</label><input type="date" id="an-v-date"/></div>
+      </div>
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Format / Type</label>
+          <select id="an-v-type">
+            <option value="Book Review">📖 Book Review</option>
+            <option value="TBR">📚 TBR Reveal</option>
+            <option value="Recommendation">✨ Recommendation List</option>
+            <option value="Book Haul">🛍 Book Haul</option>
+            <option value="Ranking">🏆 Ranking</option>
+            <option value="Reading Wrap Up">📋 Reading Wrap Up</option>
+            <option value="Engagement">💬 Engagement / Q&A</option>
+            <option value="Author Spotlight">🌟 Author Spotlight</option>
+            <option value="Educational">🎓 Educational</option>
+            <option value="Duet / Collab">🤝 Duet / Collab</option>
+            <option value="Other">📹 Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Views</label><input type="number" id="an-v-views" placeholder="0"/></div>
+        <div class="sc-field"><label>Likes</label><input type="number" id="an-v-likes" placeholder="0"/></div>
+      </div>
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Comments</label><input type="number" id="an-v-comments" placeholder="0"/></div>
+        <div class="sc-field"><label>Saves</label><input type="number" id="an-v-saves" placeholder="0"/></div>
+      </div>
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Shares</label><input type="number" id="an-v-shares" placeholder="0"/></div>
+        <div class="sc-field"><label>New Followers</label><input type="number" id="an-v-follows" placeholder="0"/></div>
+      </div>
+      <div class="sc-modal-actions" style="margin-top:10px;">
+        <button class="sc-btn-cancel" onclick="closeVidForm()">Cancel</button>
+        <button class="sc-btn-save" onclick="saveVidEntry()">✦ Save</button>
+      </div>
+    </div>
+    <div id="an-vid-insight"></div>
+    <div id="an-vid-list"></div>
+  </div>
+
+  <!-- GROWTH TIPS -->
+  <div id="an-section-tips" class="an-section">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
+      <div style="font-style:italic;font-size:12px;color:var(--text-dim);line-height:1.7;">BookTok-specific strategies — tap any section to expand. 🖤</div>
+    </div>
+    <div id="an-tips-list"></div>
+  </div>
+</div>
+
 </div><!-- end app -->
 
 <!-- SCRIPT MODAL -->
@@ -1644,7 +1794,7 @@ function showPanel(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
-  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,spin:12,monthlypicks:13};
+  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,spin:12,monthlypicks:13,analytics:14};
   if(map[id]!==undefined)document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
@@ -1658,6 +1808,7 @@ function showPanel(id){
   if(id==='wins'){renderWins();}
   if(id==='spin'){initSpin();}
   if(id==='monthlypicks'){initMonthlyPicks();}
+  if(id==='analytics'){initAnalytics();}
 }
 
 // ═══════════════════════════════════════════════
@@ -3817,6 +3968,315 @@ function scRenderSeries(){
       <div class="series-progress">${readCount} of ${s.books.length} read · ${pct}% complete</div>
     </div>`;
   }).join('');
+}
+
+// ══════════════════════════════════════════
+// ANALYTICS
+// ══════════════════════════════════════════
+let anGrowth=JSON.parse(localStorage.getItem('tbtrish_growth')||'[]');
+let anVids=JSON.parse(localStorage.getItem('tbtrish_vidperf')||'[]');
+function saveAnGrowth(){localStorage.setItem('tbtrish_growth',JSON.stringify(anGrowth));}
+function saveAnVids(){localStorage.setItem('tbtrish_vidperf',JSON.stringify(anVids));}
+
+function initAnalytics(){
+  switchAnTab('growth',document.getElementById('an-tab-growth'));
+}
+function switchAnTab(tab,btn){
+  document.querySelectorAll('.an-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.an-section').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('an-section-'+tab).classList.add('active');
+  if(tab==='growth')renderGrowthLog();
+  if(tab==='videos')renderVidLog();
+  if(tab==='tips')renderGrowthTips();
+}
+
+// ── Growth Log ──
+function openGrowthForm(){
+  document.getElementById('growth-add-form').style.display='';
+  document.getElementById('an-g-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('an-g-followers').value='';
+  document.getElementById('an-g-views').value='';
+  document.getElementById('an-g-likes').value='';
+  document.getElementById('an-g-comments').value='';
+  document.getElementById('an-g-notes').value='';
+}
+function closeGrowthForm(){document.getElementById('growth-add-form').style.display='none';}
+function saveGrowthEntry(){
+  const followers=parseInt(document.getElementById('an-g-followers').value)||0;
+  if(!followers){toast('Enter your follower count');return;}
+  const entry={
+    id:Date.now(),
+    date:document.getElementById('an-g-date').value||new Date().toISOString().split('T')[0],
+    platform:document.getElementById('an-g-platform').value,
+    followers,
+    views:parseInt(document.getElementById('an-g-views').value)||0,
+    likes:parseInt(document.getElementById('an-g-likes').value)||0,
+    comments:parseInt(document.getElementById('an-g-comments').value)||0,
+    notes:document.getElementById('an-g-notes').value.trim()
+  };
+  anGrowth.push(entry);
+  anGrowth.sort((a,b)=>a.date.localeCompare(b.date));
+  saveAnGrowth(); closeGrowthForm(); renderGrowthLog();
+  toast('✦ Growth snapshot saved 🖤');
+}
+function deleteGrowthEntry(id){
+  anGrowth=anGrowth.filter(e=>e.id!==id);
+  saveAnGrowth(); renderGrowthLog();
+}
+function renderGrowthLog(){
+  renderGrowthStats();
+  renderGrowthChart();
+  renderGrowthList();
+}
+function fmtNum(n){
+  if(n>=1000000)return(n/1000000).toFixed(1)+'M';
+  if(n>=1000)return(n/1000).toFixed(1)+'K';
+  return n.toString();
+}
+function renderGrowthStats(){
+  const el=document.getElementById('an-growth-stats'); if(!el)return;
+  if(!anGrowth.length){el.innerHTML='';return;}
+  const latest=anGrowth[anGrowth.length-1];
+  const prev=anGrowth.length>1?anGrowth[anGrowth.length-2]:null;
+  const delta=prev?latest.followers-prev.followers:null;
+  const best=anGrowth.length>1?anGrowth.reduce((best,cur,i)=>{
+    if(i===0)return best;
+    const d=cur.followers-anGrowth[i-1].followers;
+    return d>best.delta?{delta:d,date:cur.date}:best;
+  },{delta:-Infinity,date:''}):null;
+  el.innerHTML=`
+    <div class="an-stat">
+      <div class="an-stat-num">${fmtNum(latest.followers)}</div>
+      <div class="an-stat-label">Followers Now</div>
+      ${delta!==null?`<div class="an-stat-sub${delta<0?' neg':''}">${delta>=0?'+':''}${fmtNum(delta)} from last log</div>`:''}
+    </div>
+    <div class="an-stat">
+      <div class="an-stat-num">${anGrowth.length}</div>
+      <div class="an-stat-label">Weeks Logged</div>
+      <div class="an-stat-sub" style="color:var(--text-dim);">keep it up 🖤</div>
+    </div>
+    <div class="an-stat">
+      <div class="an-stat-num">${best&&best.delta>0?'+'+fmtNum(best.delta):'—'}</div>
+      <div class="an-stat-label">Best Week</div>
+      ${best&&best.date?`<div class="an-stat-sub" style="color:var(--text-dim);">${new Date(best.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>`:''}
+    </div>`;
+}
+function renderGrowthChart(){
+  const el=document.getElementById('an-growth-chart'); if(!el)return;
+  const data=anGrowth.slice(-10);
+  if(!data.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:11px;padding:20px;text-align:center;">Log your first week to see your chart 🖤</div>';return;}
+  const max=Math.max(...data.map(d=>d.followers));
+  el.innerHTML=data.map(d=>{
+    const pct=max>0?Math.max(Math.round((d.followers/max)*90),4):4;
+    const dt=new Date(d.date+'T00:00:00');
+    const lbl=dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const icon=d.platform==='instagram'?'📸':'🎵';
+    return `<div class="growth-bar-wrap">
+      <div class="growth-bar-val">${fmtNum(d.followers)}</div>
+      <div class="growth-bar" style="height:${pct}px"></div>
+      <div class="growth-bar-date">${icon} ${lbl}</div>
+    </div>`;
+  }).join('');
+}
+function renderGrowthList(){
+  const el=document.getElementById('an-growth-list'); if(!el)return;
+  if(!anGrowth.length){
+    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;text-align:center;padding:20px 0;">No entries yet — log your first week above 🖤</div>';
+    return;
+  }
+  const entries=[...anGrowth].reverse();
+  el.innerHTML=entries.map((e,i)=>{
+    const orig=anGrowth.indexOf(e);
+    const prev=orig>0?anGrowth[orig-1]:null;
+    const delta=prev?e.followers-prev.followers:null;
+    const dt=new Date(e.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});
+    const icon=e.platform==='instagram'?'📸':'🎵';
+    const statsStr=[e.views?`👁 ${fmtNum(e.views)}`:null,e.likes?`❤️ ${fmtNum(e.likes)}`:null,e.comments?`💬 ${fmtNum(e.comments)}`:null].filter(Boolean).join('  ');
+    return `<div class="growth-entry">
+      <div class="growth-entry-left">
+        <div class="growth-entry-date">${icon} ${dt}</div>
+        <div class="growth-entry-followers">${fmtNum(e.followers)} followers</div>
+        ${statsStr?`<div class="growth-entry-stats">${statsStr}</div>`:''}
+        ${e.notes?`<div style="font-size:10px;color:var(--text-dim);font-style:italic;margin-top:3px;">${e.notes}</div>`:''}
+      </div>
+      ${delta!==null?`<span class="growth-delta ${delta>=0?'pos':'neg'}">${delta>=0?'+':''}${fmtNum(delta)}</span>`:''}
+      <button class="vp-del" onclick="deleteGrowthEntry(${e.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ── Video Performance ──
+function openVidForm(){
+  document.getElementById('vid-add-form').style.display='';
+  document.getElementById('an-v-title').value='';
+  document.getElementById('an-v-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('an-v-views').value='';
+  document.getElementById('an-v-likes').value='';
+  document.getElementById('an-v-comments').value='';
+  document.getElementById('an-v-saves').value='';
+  document.getElementById('an-v-shares').value='';
+  document.getElementById('an-v-follows').value='';
+}
+function closeVidForm(){document.getElementById('vid-add-form').style.display='none';}
+function saveVidEntry(){
+  const title=document.getElementById('an-v-title').value.trim();
+  if(!title){toast('Enter a video title');return;}
+  const entry={
+    id:Date.now(),
+    title,
+    date:document.getElementById('an-v-date').value||new Date().toISOString().split('T')[0],
+    type:document.getElementById('an-v-type').value,
+    views:parseInt(document.getElementById('an-v-views').value)||0,
+    likes:parseInt(document.getElementById('an-v-likes').value)||0,
+    comments:parseInt(document.getElementById('an-v-comments').value)||0,
+    saves:parseInt(document.getElementById('an-v-saves').value)||0,
+    shares:parseInt(document.getElementById('an-v-shares').value)||0,
+    follows:parseInt(document.getElementById('an-v-follows').value)||0
+  };
+  anVids.unshift(entry);
+  saveAnVids(); closeVidForm(); renderVidLog();
+  toast('✦ Video stats saved 🖤');
+}
+function deleteVidEntry(id){
+  anVids=anVids.filter(v=>v.id!==id);
+  saveAnVids(); renderVidLog();
+}
+function renderVidLog(){
+  renderVidInsight();
+  renderVidList();
+}
+function renderVidInsight(){
+  const el=document.getElementById('an-vid-insight'); if(!el)return;
+  if(anVids.length<2){el.innerHTML='';return;}
+  // group by type, average views
+  const typeMap={};
+  anVids.forEach(v=>{
+    if(!typeMap[v.type])typeMap[v.type]={total:0,count:0,comments:0,follows:0};
+    typeMap[v.type].total+=v.views;
+    typeMap[v.type].count++;
+    typeMap[v.type].comments+=v.comments;
+    typeMap[v.type].follows+=v.follows;
+  });
+  const types=Object.entries(typeMap).map(([t,d])=>({type:t,avgViews:Math.round(d.total/d.count),avgComments:Math.round(d.comments/d.count),avgFollows:Math.round(d.follows/d.count)}));
+  types.sort((a,b)=>b.avgViews-a.avgViews);
+  const best=types[0];
+  const topByComments=[...types].sort((a,b)=>b.avgComments-a.avgComments)[0];
+  const topByFollows=[...types].sort((a,b)=>b.avgFollows-a.avgFollows)[0];
+  el.innerHTML=`<div class="vp-insight">
+    <div class="vp-insight-title">✦ Your Top Insights</div>
+    <div class="vp-insight-text">
+      📈 <strong style="color:var(--gold-dim);">${best.type}</strong> videos average the most views (${fmtNum(best.avgViews)} avg).<br>
+      ${topByComments.type!==best.type?`💬 <strong style="color:var(--gold-dim);">${topByComments.type}</strong> videos get the most comments (${fmtNum(topByComments.avgComments)} avg).<br>`:''}
+      ${topByFollows.avgFollows>0?`🚀 <strong style="color:var(--gold-dim);">${topByFollows.type}</strong> videos bring in the most new followers (${fmtNum(topByFollows.avgFollows)} avg).<br>`:''}
+      Post more of what's working — double down on ${best.type} content.
+    </div>
+  </div>`;
+}
+function renderVidList(){
+  const el=document.getElementById('an-vid-list'); if(!el)return;
+  if(!anVids.length){
+    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:12px;text-align:center;padding:20px 0;">Log your first video stats above 🖤</div>';
+    return;
+  }
+  const sorted=[...anVids].sort((a,b)=>b.views-a.views);
+  el.innerHTML=`<div style="font-family:'IM Fell English SC',serif;font-size:9px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:8px;">ALL VIDEOS — SORTED BY VIEWS</div>`+
+  sorted.map(v=>`<div class="vp-card">
+    <div class="vp-card-header">
+      <div>
+        <div class="vp-title">${v.title}</div>
+        <div class="vp-type">${v.type} · ${new Date(v.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>
+      </div>
+      <button class="vp-del" onclick="deleteVidEntry(${v.id})">✕</button>
+    </div>
+    <div class="vp-stats">
+      ${v.views?`<span class="vp-stat">👁 <b>${fmtNum(v.views)}</b> views</span>`:''}
+      ${v.likes?`<span class="vp-stat">❤️ <b>${fmtNum(v.likes)}</b></span>`:''}
+      ${v.comments?`<span class="vp-stat">💬 <b>${fmtNum(v.comments)}</b></span>`:''}
+      ${v.saves?`<span class="vp-stat">🔖 <b>${fmtNum(v.saves)}</b> saves</span>`:''}
+      ${v.shares?`<span class="vp-stat">↗️ <b>${fmtNum(v.shares)}</b> shares</span>`:''}
+      ${v.follows?`<span class="vp-stat">➕ <b>${fmtNum(v.follows)}</b> new followers</span>`:''}
+    </div>
+  </div>`).join('');
+}
+
+// ── Growth Tips ──
+const GROWTH_TIPS=[
+  {id:'start',title:'🌱 Starting Out — 0 to 500 Followers',tips:[
+    'Post 3–5x per week for your first 90 days. Consistency matters more than perfection at this stage.',
+    'Your hook is everything — you have 2 seconds. Lead with the most shocking or interesting thing first.',
+    'Use 3–5 niche hashtags (#BookTok #PsychologicalThriller #DarkFiction) plus 1–2 broad ones. More than 8 hashtags actually hurts reach.',
+    'Reply to every single comment within the first hour. TikTok uses early engagement velocity to decide how far to push a video.',
+    'Show your physical books — bookshelf shots and haul videos outperform talking-head videos for new accounts.',
+    '"Rating reveal" videos (building to a Mind Scale reveal) are highly shareable and perform well early.',
+    'Stitch or duet a popular BookTok video with your take — it borrows that video\'s existing audience.',
+    'Your bio should tell people exactly what you do in one sentence. "Psychological thrillers, dark fiction & true crime — honest reviews, no spoilers" is better than anything vague.',
+  ]},
+  {id:'grow',title:'🌿 Building Up — 500 to 5K Followers',tips:[
+    'Find your signature format — the one video type that keeps getting saves and shares — and make more of it.',
+    'Series content outperforms one-offs. If you start a series, people follow to see the next installment.',
+    'Reply to comments WITH a video response — TikTok heavily promotes comment-reply content.',
+    'Go live at least once a week. TikTok gives significant reach boosts to live creators, even small ones.',
+    'Jump on trending sounds in the first 24 hours — early adopters get pushed by the algorithm.',
+    'Collab with creators at a similar size (not bigger). Similar-sized collabs grow both accounts; reaching out to big accounts usually gets ignored.',
+    'Post at your audience\'s peak time — check TikTok Analytics under "Followers" to see when your people are online.',
+    '"Controversial take" videos — disagreeing with a hyped book, unpopular opinions — drive massive comments and shares.',
+  ]},
+  {id:'scale',title:'🌳 Scaling Up — 5K to 50K Followers',tips:[
+    'Pin your 3 best-performing videos to your profile. New visitors decide in seconds whether to follow.',
+    '"Part 2" content is your biggest lever — your most viewed video should always have a follow-up.',
+    'Batch film to stay consistent during busy weeks. Film 5 videos in one sitting every 2 weeks.',
+    'Engage meaningfully with bigger BookTok creators by leaving thoughtful comments (not just "great video!"). Visibility in their comments section brings you their audience.',
+    'Use your own viral audio — if a clip of your voice goes viral, reuse that audio in future videos.',
+    'Create "conversation starter" content — ranking videos, hot takes, "defend your favorite book in 3 words" challenges.',
+    'Your older content is still being discovered. Check which older videos are still getting views and make updated versions.',
+  ]},
+  {id:'comments',title:'💬 Getting More Comments',tips:[
+    'End every video with a SPECIFIC question, not "let me know what you think." Bad: "Thoughts?" Good: "Comment the last book that kept you up past 2am."',
+    '"Tell me if you\'ve read this and whether you saw the twist coming" — low barrier, high response rate.',
+    '"Guess my Mind Scale rating before I reveal it" — people commit to an answer, then have to comment when they\'re wrong.',
+    'Controversial DNF videos perform extremely well. "I DNF\'d this 5-star BookTok darling and here\'s exactly why" always generates debate.',
+    '"Comment your TBR and I\'ll tell you what to read first" — personalised replies drive huge comment threads.',
+    'Reply to comments with a question back. A conversation thread counts as multiple comments to the algorithm.',
+    'Wrong-answer-only prompts: "Describe your favorite book using only emojis. Wrong answers only." These run for days.',
+  ]},
+  {id:'viral',title:'🚀 Getting More Views & Saves',tips:[
+    '"Save this for later" content is your most powerful growth tool. Reading lists, book rec lists by mood or trope — anything someone would want to reference later.',
+    '"If you liked X, read Y" comparisons are the most-shared format in BookTok. Make at least one a week.',
+    'Top 5 / Top 10 lists consistently outperform single-book reviews in raw views.',
+    '"Books that made me [emotion]" — "books that destroyed me," "books I couldn\'t stop thinking about for weeks" — are highly shareable because people tag their friends.',
+    'Seasonal content gets enormous boosts from TikTok\'s topic clustering. October horror content, summer beach reads, dark academia September — lean into the season.',
+    'The algorithm rewards rewatch rate. If someone watches your video twice, that\'s a massive positive signal. Build in a pause moment — a shocking reveal, a visual, a number — that makes people rewatch.',
+    'Use text overlays that tease what\'s coming. "Wait for the Mind Scale reveal 🖤" on screen keeps people watching to the end.',
+  ]},
+  {id:'instagram',title:'📸 Instagram-Specific Tips',tips:[
+    'Reels follow the same rules as TikTok — hook in 2 seconds, strong CTA at the end.',
+    'Stories keep you at the top of followers\' feeds. Post to Stories daily even if you don\'t post a Reel.',
+    'Carousels (swipeable posts) get more saves than any other Instagram format. Book recommendation lists as carousels are your best growth tool on IG.',
+    'Cross-post your TikToks to Reels — but remove the TikTok watermark first (Instagram suppresses watermarked content).',
+    'Instagram engagement is about relationships more than TikTok. Reply to every DM, reply to every story reply.',
+    'Aesthetic grid matters more on Instagram. A cohesive dark/moody look gets follow-through when people land on your profile.',
+    'Use Instagram\'s "Add Topic" feature on Reels — pick your niche topic (Books, Thriller, etc.) for better discovery.',
+  ]},
+];
+function renderGrowthTips(){
+  const el=document.getElementById('an-tips-list'); if(!el)return;
+  el.innerHTML=GROWTH_TIPS.map(s=>`<div class="tip-stage">
+    <div class="tip-stage-hdr" onclick="toggleTipSection('tip-body-${s.id}',this)">
+      <span>${s.title}</span><span id="tip-arrow-${s.id}">▸</span>
+    </div>
+    <div class="tip-stage-body" id="tip-body-${s.id}">
+      ${s.tips.map(t=>`<div class="tip-item"><span class="tip-bullet">✦</span><span>${t}</span></div>`).join('')}
+    </div>
+  </div>`).join('');
+}
+function toggleTipSection(bodyId,hdr){
+  const body=document.getElementById(bodyId);
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  const sid=bodyId.replace('tip-body-','');
+  const arrow=document.getElementById('tip-arrow-'+sid);
+  if(arrow)arrow.textContent=isOpen?'▸':'▾';
 }
 
 // Register service worker for PWA / offline support
