@@ -3985,7 +3985,7 @@ function switchAnTab(tab,btn){
 
 // ── Growth Log ──
 function openGrowthForm(){
-  document.getElementById('growth-add-form').style.display='';
+  document.getElementById('growth-add-form').style.display='block';
   document.getElementById('an-g-date').value=new Date().toISOString().split('T')[0];
   document.getElementById('an-g-followers').value='';
   document.getElementById('an-g-views').value='';
@@ -4100,7 +4100,7 @@ function renderGrowthList(){
 
 // ── Video Performance ──
 function openVidForm(){
-  document.getElementById('vid-add-form').style.display='';
+  document.getElementById('vid-add-form').style.display='block';
   document.getElementById('an-v-title').value='';
   document.getElementById('an-v-date').value=new Date().toISOString().split('T')[0];
   document.getElementById('an-v-views').value='';
