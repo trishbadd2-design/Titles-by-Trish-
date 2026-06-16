@@ -335,8 +335,9 @@ canvas{width:100%!important;}
 .sc-goal-edit{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:15px;color:var(--text-dim);}
 .sc-goal-edit input{width:60px;font-size:15px;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.05);color:var(--text);}
 .sc-goal-edit button{background:var(--gold-faint);color:var(--gold);border:1px solid var(--border);border-radius:4px;padding:4px 12px;font-size:15px;cursor:pointer;font-family:'Cinzel',serif;letter-spacing:1px;}
-.sc-tabs{display:flex;gap:4px;margin-bottom:16px;background:rgba(255,255,255,.03);border-radius:6px;padding:4px;flex-wrap:wrap;}
-.sc-tab{flex:1;min-width:50px;padding:7px 4px;border:none;background:transparent;border-radius:4px;font-family:'Cinzel',serif;font-size:16px;letter-spacing:2px;color:var(--text-dim);cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.sc-tabs{display:flex;gap:4px;margin-bottom:16px;background:rgba(255,255,255,.03);border-radius:6px;padding:4px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.sc-tabs::-webkit-scrollbar{display:none;}
+.sc-tab{flex:0 0 auto;padding:7px 10px;border:none;background:transparent;border-radius:4px;font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.5px;color:var(--text-dim);cursor:pointer;transition:all .2s;text-transform:uppercase;white-space:nowrap;}
 .sc-tab.active{background:var(--gold-faint);color:var(--gold);border:1px solid var(--border-hi);}
 .sc-section{display:none;}.sc-section.active{display:block;}
 .sc-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
@@ -3629,11 +3630,11 @@ function handlePhotoSelected(event){
   if(!file)return;
   const url=URL.createObjectURL(file);
   document.getElementById('photo-preview-img').src=url;
-  document.getElementById('photo-preview').style.display='';
+  document.getElementById('photo-preview').style.display='block';
   document.getElementById('photo-results').innerHTML='';
   document.getElementById('photo-hint').textContent='';
   document.getElementById('photo-search-input').value='';
-  document.getElementById('photo-search-row').style.display='';
+  document.getElementById('photo-search-row').style.display='flex';
   // Try OCR in background to pre-fill search box
   document.getElementById('photo-loading').style.display='';
   document.getElementById('photo-loading-text').textContent='Reading image text...';
