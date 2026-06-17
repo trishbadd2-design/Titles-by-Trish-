@@ -1488,6 +1488,8 @@ canvas{width:100%!important;}
     <button class="an-tab" id="an-tab-tips" onclick="switchAnTab('tips',this)">💡 Growth Tips</button>
     <button class="an-tab" id="an-tab-shoot" onclick="switchAnTab('shoot',this)">🎥 Shoot Guide</button>
     <button class="an-tab" id="an-tab-capcut" onclick="switchAnTab('capcut',this)">✂️ CapCut</button>
+    <button class="an-tab" id="an-tab-pr" onclick="switchAnTab('pr',this)">📬 PR & Deals</button>
+    <button class="an-tab" id="an-tab-collabs" onclick="switchAnTab('collabs',this)">🤝 Collabs</button>
   </div>
 
   <!-- GROWTH LOG -->
@@ -1593,6 +1595,91 @@ canvas{width:100%!important;}
       <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">Your CapCut editing reference — transitions, text, color grading, and checklists by video type. Tap any section to expand. 🖤</div>
     </div>
     <div id="an-capcut-list"></div>
+  </div>
+
+  <!-- PR & DEALS -->
+  <div id="an-section-pr" class="an-section">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">Track publisher ARCs, brand deals, gifted books, and sponsorship offers all in one place. 🖤</div>
+    </div>
+    <button class="sc-add-btn" onclick="openPRForm()">✦ Log a PR Contact or Deal</button>
+    <div class="an-add-form" id="pr-add-form">
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Publisher / Brand *</label><input id="pr-f-brand" placeholder="e.g. Macmillan, Audible..."/></div>
+        <div class="sc-field"><label>Contact Name</label><input id="pr-f-contact" placeholder="optional"/></div>
+      </div>
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Type</label>
+          <select id="pr-f-type">
+            <option value="ARC">📚 ARC (Advanced Copy)</option>
+            <option value="Gifted">🎁 Gifted Book</option>
+            <option value="Sponsorship">💰 Sponsorship</option>
+            <option value="Affiliate">🔗 Affiliate Program</option>
+            <option value="Collab Request">🤝 Collab Request</option>
+            <option value="Other">📌 Other</option>
+          </select>
+        </div>
+        <div class="sc-field"><label>Date Received</label><input type="date" id="pr-f-date"/></div>
+      </div>
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Book / Product</label><input id="pr-f-item" placeholder="title or product name..."/></div>
+        <div class="sc-field"><label>Deadline / Post By</label><input type="date" id="pr-f-deadline"/></div>
+      </div>
+      <div class="sc-field"><label>Status</label>
+        <select id="pr-f-status">
+          <option value="Pending">🟡 Pending — deciding</option>
+          <option value="Accepted">🟢 Accepted</option>
+          <option value="Declined">🔴 Declined</option>
+          <option value="Posted">✅ Posted / Done</option>
+        </select>
+      </div>
+      <div class="sc-field"><label>Notes</label><input id="pr-f-notes" placeholder="terms, what they want, your thoughts..."/></div>
+      <div class="sc-modal-actions" style="margin-top:10px;">
+        <button class="sc-btn-cancel" onclick="closePRForm()">Cancel</button>
+        <button class="sc-btn-save" onclick="savePREntry()">✦ Save</button>
+      </div>
+    </div>
+    <div id="pr-list"></div>
+  </div>
+
+  <!-- COLLABS -->
+  <div id="an-section-collabs" class="an-section">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">Keep track of BookTokers you want to collab with — who you've reached out to and where things stand. 🖤</div>
+    </div>
+    <button class="sc-add-btn" onclick="openCollabForm()">✦ Add a Collab</button>
+    <div class="an-add-form" id="collab-add-form">
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Username / Handle *</label><input id="col-f-handle" placeholder="@username"/></div>
+        <div class="sc-field"><label>Platform</label>
+          <select id="col-f-platform">
+            <option value="TikTok">TikTok</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Both">Both</option>
+          </select>
+        </div>
+      </div>
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Approx. Followers</label><input id="col-f-size" placeholder="e.g. 12K"/></div>
+        <div class="sc-field"><label>Niche / Vibe</label><input id="col-f-niche" placeholder="e.g. dark fiction, thrillers..."/></div>
+      </div>
+      <div class="sc-field"><label>Status</label>
+        <select id="col-f-status">
+          <option value="Want to reach out">💭 Want to reach out</option>
+          <option value="Reached out">📨 Reached out — awaiting reply</option>
+          <option value="In talks">💬 In talks</option>
+          <option value="Collab planned">📅 Collab planned</option>
+          <option value="Done">✅ Done — collabed!</option>
+          <option value="Not interested">❌ Not interested / No reply</option>
+        </select>
+      </div>
+      <div class="sc-field"><label>Notes</label><input id="col-f-notes" placeholder="collab idea, their content style, how you know them..."/></div>
+      <div class="sc-modal-actions" style="margin-top:10px;">
+        <button class="sc-btn-cancel" onclick="closeCollabForm()">Cancel</button>
+        <button class="sc-btn-save" onclick="saveCollabEntry()">✦ Save</button>
+      </div>
+    </div>
+    <div id="collab-list"></div>
   </div>
 </div>
 
@@ -3993,6 +4080,8 @@ function switchAnTab(tab,btn){
   if(tab==='tips')renderGrowthTips();
   if(tab==='shoot')renderShootGuide();
   if(tab==='capcut')renderCapCutGuide();
+  if(tab==='pr')renderPRList();
+  if(tab==='collabs')renderCollabList();
 }
 
 // ── Growth Log ──
@@ -4459,6 +4548,125 @@ function renderCapCutGuide(){
     </div>
     <div class="tip-stage-body" id="tip-body-${s.id}">
       ${s.tips.map(t=>`<div class="tip-item"><span class="tip-bullet">✦</span><span>${t}</span></div>`).join('')}
+    </div>
+  </div>`).join('');
+}
+
+// ── PR & Deals ──
+let prEntries=JSON.parse(localStorage.getItem('tbtrish_pr')||'[]');
+function savePR(){localStorage.setItem('tbtrish_pr',JSON.stringify(prEntries));}
+function openPRForm(){
+  document.getElementById('pr-add-form').style.display='block';
+  document.getElementById('pr-f-brand').value='';
+  document.getElementById('pr-f-contact').value='';
+  document.getElementById('pr-f-item').value='';
+  document.getElementById('pr-f-notes').value='';
+  document.getElementById('pr-f-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('pr-f-deadline').value='';
+  document.getElementById('pr-f-type').value='ARC';
+  document.getElementById('pr-f-status').value='Pending';
+}
+function closePRForm(){document.getElementById('pr-add-form').style.display='none';}
+function savePREntry(){
+  const brand=document.getElementById('pr-f-brand').value.trim();
+  if(!brand){toast('Enter the publisher or brand name');return;}
+  prEntries.unshift({
+    id:Date.now(),
+    brand,
+    contact:document.getElementById('pr-f-contact').value.trim(),
+    type:document.getElementById('pr-f-type').value,
+    item:document.getElementById('pr-f-item').value.trim(),
+    date:document.getElementById('pr-f-date').value,
+    deadline:document.getElementById('pr-f-deadline').value,
+    status:document.getElementById('pr-f-status').value,
+    notes:document.getElementById('pr-f-notes').value.trim()
+  });
+  savePR(); closePRForm(); renderPRList();
+  toast('✦ PR entry saved 🖤');
+}
+function deletePREntry(id){prEntries=prEntries.filter(e=>e.id!==id);savePR();renderPRList();}
+function updatePRStatus(id,val){const e=prEntries.find(e=>e.id===id);if(e){e.status=val;savePR();renderPRList();}}
+const PR_STATUS_COLOR={Pending:'rgba(200,160,80,.25)','Accepted':'rgba(42,122,42,.25)','Declined':'rgba(139,26,26,.25)','Posted':'rgba(42,80,160,.25)'};
+const PR_STATUS_LABEL={Pending:'🟡 Pending','Accepted':'🟢 Accepted','Declined':'🔴 Declined','Posted':'✅ Posted'};
+function renderPRList(){
+  const el=document.getElementById('pr-list'); if(!el)return;
+  if(!prEntries.length){el.innerHTML='<div style="color:var(--text-dim);font-style:italic;padding:14px 0;">No PR contacts logged yet — tap the button above to add one.</div>';return;}
+  const statusOrder={Pending:0,Accepted:1,'Collab planned':1,Posted:2,'In talks':1,Done:2,Declined:3,'Not interested':3};
+  const sorted=[...prEntries].sort((a,b)=>(statusOrder[a.status]||0)-(statusOrder[b.status]||0));
+  el.innerHTML=sorted.map(e=>`<div class="card-box" style="margin-bottom:10px;border-left:3px solid rgba(200,160,80,.4);padding:12px 14px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:15px;color:#fff;letter-spacing:1px;">${e.brand}${e.contact?' <span style="font-size:13px;color:var(--text-dim);font-family:inherit;">· ${e.contact}</span>':''}</div>
+        <div style="font-size:13px;color:var(--gold-dim);margin-top:2px;">${e.type}${e.item?' — '+e.item:''}</div>
+        ${e.date?`<div style="font-size:13px;color:var(--text-dim);margin-top:2px;">Received: ${e.date}${e.deadline?' &nbsp;|&nbsp; Due: <span style="color:'+(new Date(e.deadline)<new Date()?'#e06060':'var(--text-dim)')+';">'+e.deadline+'</span>':''}</div>`:''}
+        ${e.notes?`<div style="font-size:13px;color:var(--text-dim);margin-top:4px;font-style:italic;">${e.notes}</div>`:''}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <select style="background:var(--bg3);border:1px solid var(--border);color:#fff;font-size:13px;padding:3px 6px;border-radius:3px;" onchange="updatePRStatus(${e.id},this.value)">
+          <option value="Pending"${e.status==='Pending'?' selected':''}>🟡 Pending</option>
+          <option value="Accepted"${e.status==='Accepted'?' selected':''}>🟢 Accepted</option>
+          <option value="Declined"${e.status==='Declined'?' selected':''}>🔴 Declined</option>
+          <option value="Posted"${e.status==='Posted'?' selected':''}>✅ Posted</option>
+        </select>
+        <button onclick="deletePREntry(${e.id})" style="background:none;border:none;color:var(--text-dim);font-size:13px;cursor:pointer;padding:0;">✕ remove</button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+// ── Collabs ──
+let collabEntries=JSON.parse(localStorage.getItem('tbtrish_collabs')||'[]');
+function saveCollabs(){localStorage.setItem('tbtrish_collabs',JSON.stringify(collabEntries));}
+function openCollabForm(){
+  document.getElementById('collab-add-form').style.display='block';
+  document.getElementById('col-f-handle').value='';
+  document.getElementById('col-f-size').value='';
+  document.getElementById('col-f-niche').value='';
+  document.getElementById('col-f-notes').value='';
+  document.getElementById('col-f-platform').value='TikTok';
+  document.getElementById('col-f-status').value='Want to reach out';
+}
+function closeCollabForm(){document.getElementById('collab-add-form').style.display='none';}
+function saveCollabEntry(){
+  const handle=document.getElementById('col-f-handle').value.trim();
+  if(!handle){toast('Enter the username');return;}
+  collabEntries.unshift({
+    id:Date.now(),
+    handle:handle.startsWith('@')?handle:'@'+handle,
+    platform:document.getElementById('col-f-platform').value,
+    size:document.getElementById('col-f-size').value.trim(),
+    niche:document.getElementById('col-f-niche').value.trim(),
+    status:document.getElementById('col-f-status').value,
+    notes:document.getElementById('col-f-notes').value.trim()
+  });
+  saveCollabs(); closeCollabForm(); renderCollabList();
+  toast('✦ Collab saved 🖤');
+}
+function deleteCollabEntry(id){collabEntries=collabEntries.filter(e=>e.id!==id);saveCollabs();renderCollabList();}
+function updateCollabStatus(id,val){const e=collabEntries.find(e=>e.id===id);if(e){e.status=val;saveCollabs();renderCollabList();}}
+function renderCollabList(){
+  const el=document.getElementById('collab-list'); if(!el)return;
+  if(!collabEntries.length){el.innerHTML='<div style="color:var(--text-dim);font-style:italic;padding:14px 0;">No collabs logged yet — tap the button above to add one.</div>';return;}
+  const statusOrder={'Want to reach out':0,'Reached out':1,'In talks':2,'Collab planned':3,Done:4,'Not interested':5};
+  const sorted=[...collabEntries].sort((a,b)=>(statusOrder[a.status]||0)-(statusOrder[b.status]||0));
+  el.innerHTML=sorted.map(e=>`<div class="card-box" style="margin-bottom:10px;border-left:3px solid rgba(90,32,128,.6);padding:12px 14px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:15px;color:#fff;letter-spacing:1px;">${e.handle} <span style="font-size:13px;color:var(--text-dim);font-family:inherit;">${e.platform}${e.size?' · '+e.size:''}</span></div>
+        ${e.niche?`<div style="font-size:13px;color:var(--gold-dim);margin-top:2px;">${e.niche}</div>`:''}
+        ${e.notes?`<div style="font-size:13px;color:var(--text-dim);margin-top:4px;font-style:italic;">${e.notes}</div>`:''}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+        <select style="background:var(--bg3);border:1px solid var(--border);color:#fff;font-size:13px;padding:3px 6px;border-radius:3px;" onchange="updateCollabStatus(${e.id},this.value)">
+          <option value="Want to reach out"${e.status==='Want to reach out'?' selected':''}>💭 Want to reach out</option>
+          <option value="Reached out"${e.status==='Reached out'?' selected':''}>📨 Reached out</option>
+          <option value="In talks"${e.status==='In talks'?' selected':''}>💬 In talks</option>
+          <option value="Collab planned"${e.status==='Collab planned'?' selected':''}>📅 Planned</option>
+          <option value="Done"${e.status==='Done'?' selected':''}>✅ Done!</option>
+          <option value="Not interested"${e.status==='Not interested'?' selected':''}>❌ No reply</option>
+        </select>
+        <button onclick="deleteCollabEntry(${e.id})" style="background:none;border:none;color:var(--text-dim);font-size:13px;cursor:pointer;padding:0;">✕ remove</button>
+      </div>
     </div>
   </div>`).join('');
 }
