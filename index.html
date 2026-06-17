@@ -118,8 +118,9 @@ textarea{resize:vertical;min-height:80px;}
 
 /* ── FOLLOWER CHART ── */
 /* ── ANALYTICS ── */
-.an-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
-.an-tab{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;padding:7px 14px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.an-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.an-tabs::-webkit-scrollbar{display:none;}
+.an-tab{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:1px;padding:7px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;flex:0 0 auto;white-space:nowrap;}
 .an-tab.active,.an-tab:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
 .an-section{display:none;}
 .an-section.active{display:block;}
@@ -1486,6 +1487,7 @@ canvas{width:100%!important;}
     <button class="an-tab" id="an-tab-videos" onclick="switchAnTab('videos',this)">🎬 Video Stats</button>
     <button class="an-tab" id="an-tab-tips" onclick="switchAnTab('tips',this)">💡 Growth Tips</button>
     <button class="an-tab" id="an-tab-shoot" onclick="switchAnTab('shoot',this)">🎥 Shoot Guide</button>
+    <button class="an-tab" id="an-tab-capcut" onclick="switchAnTab('capcut',this)">✂️ CapCut</button>
   </div>
 
   <!-- GROWTH LOG -->
@@ -1583,6 +1585,14 @@ canvas{width:100%!important;}
       <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">Your complete filming reference — tap any section to expand. Save this and check it before you shoot. 🖤</div>
     </div>
     <div id="an-shoot-list"></div>
+  </div>
+
+  <!-- CAPCUT GUIDE -->
+  <div id="an-section-capcut" class="an-section">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">Your CapCut editing reference — transitions, text, color grading, and checklists by video type. Tap any section to expand. 🖤</div>
+    </div>
+    <div id="an-capcut-list"></div>
   </div>
 </div>
 
@@ -3982,6 +3992,7 @@ function switchAnTab(tab,btn){
   if(tab==='videos')renderVidLog();
   if(tab==='tips')renderGrowthTips();
   if(tab==='shoot')renderShootGuide();
+  if(tab==='capcut')renderCapCutGuide();
 }
 
 // ── Growth Log ──
@@ -4352,6 +4363,97 @@ const SHOOT_GUIDE=[
 function renderShootGuide(){
   const el=document.getElementById('an-shoot-list'); if(!el)return;
   el.innerHTML=SHOOT_GUIDE.map(s=>`<div class="tip-stage">
+    <div class="tip-stage-hdr" onclick="toggleTipSection('tip-body-${s.id}',this)">
+      <span>${s.title}</span><span id="tip-arrow-${s.id}">▸</span>
+    </div>
+    <div class="tip-stage-body" id="tip-body-${s.id}">
+      ${s.tips.map(t=>`<div class="tip-item"><span class="tip-bullet">✦</span><span>${t}</span></div>`).join('')}
+    </div>
+  </div>`).join('');
+}
+
+// ── CapCut Guide ──
+const CAPCUT_GUIDE=[
+  {id:'cc-hook',title:'⚡ Hook Edit — Your First 3 Seconds',tips:[
+    'Cut straight into action — no intro music build-up. The first frame should already be interesting.',
+    'Use a text overlay on the very first clip: bold, centered, 4–6 words max. This is your scroll-stopper.',
+    'CapCut transitions for a strong opening: "Flash" for drama, "Zoom In" for intensity, "Slide" for smooth. Pick one and be consistent.',
+    'Never start with you talking. Start with the book, the shelf, the cover — then cut to you speaking.',
+    'If you have a shocking stat or opinion, put it on screen in text within the first 2 seconds even before you say it out loud.',
+    'Speed ramp: film your opening moment at normal speed, then ramp to slow motion on the key frame (CapCut → Speed → Curve). Creates instant drama.',
+  ]},
+  {id:'cc-transitions',title:'🔀 Transitions by Video Type',tips:[
+    'BOOK REVIEW: Keep it clean — "Slide Left/Right" or a simple cut on beat. Flashy transitions pull focus from your words.',
+    'BOOK HAUL: Cut hard on the beat when revealing each new book. "Whip Pan" between books gives energy. Match the music tempo.',
+    'B-ROLL / AESTHETIC: "Fade to Black" between clips. Slow dissolves. Let each shot breathe — 2–3 seconds each.',
+    'RECOMMENDATION LIST: "Zoom Out" to reveal each title. Satisfying and consistent when done for every entry.',
+    'RANKINGS / REVEALS: Build with fast cuts, then a "Freeze Frame" or "Zoom In" on the reveal. Pause for effect.',
+    'TBR REVEAL: Same book after book — vary your ANGLE not your transition. Front, side, tilted, held against chest. Let the transition be simple so the books are the focus.',
+    'RULE: Pick 1–2 transitions per video and stick to them. Mixing 6 different transitions looks amateur.',
+  ]},
+  {id:'cc-text',title:'✍️ Text & Font Style (Dark Aesthetic)',tips:[
+    'TITLE TEXT: Use "Cinzel," "Trajan," or any serif font in CapCut. White or gold (#C8A050) on dark backgrounds.',
+    'CAPTIONS: Clean, slightly bold sans-serif. Keep them in the lower third. Size 28–34 in CapCut.',
+    'MOOD TEXT: Italicized, slightly transparent (opacity ~80%), center screen. Use sparingly for effect.',
+    'AVOID: Bubble fonts, neon colors, rainbow text, anything with a heavy drop shadow that looks cartoonish.',
+    'OUTLINE OR GLOW: Add a thin dark outline to white text so it reads against both dark and light backgrounds.',
+    'AUTO CAPTIONS: Always turn on auto captions, then edit the errors. CapCut → Captions → Auto Captions. This increases watch time significantly.',
+    'KEYWORD TEXT: When you say the book title, put it on screen at the same moment. Viewers retain it better and it makes your video look polished.',
+  ]},
+  {id:'cc-color',title:'🎨 Color Grading for Your Dark Aesthetic',tips:[
+    'START POINT in CapCut: Adjust → Brightness -10 to -20, Contrast +15 to +25, Saturation -10 to -15.',
+    'WARM (candlelight feel): Temperature +5 to +10. Works great for shelf shots, hauls, cozy reading setups.',
+    'COOL (thriller/dark atmosphere): Temperature -5 to -15. Works for book covers with dark art, horror month content.',
+    'VIGNETTE: Add a slight vignette (Adjust → Vignette +15) — darkens the edges and draws the eye to the center. Makes everything look more cinematic.',
+    'CAPCUT FILTERS that fit your aesthetic: "Dark," "Fade," "Matte," "Gloom." Apply at 50–70% strength — full strength usually looks overdone.',
+    'CONSISTENCY: Once you find your color grade, save it as a CapCut preset (tap the checkmark → Save Style). Apply it to every video so your content looks cohesive on your profile grid.',
+    'SKIN TONES: Don\'t go so dark that your face loses detail. Check your face after grading — if it looks too shadowy, bring brightness back up slightly just on face clips.',
+  ]},
+  {id:'cc-audio',title:'🎵 Audio & Music Tips',tips:[
+    'TRENDING SOUNDS: Check TikTok Discover → Sounds before editing. Use sounds trending in the last 48 hours for the biggest reach boost.',
+    'MUSIC VOLUME: For voiceover videos, set background music to 10–20% volume. Your voice should always be clearest.',
+    'SYNC TO BEAT: In CapCut, tap "Auto Beat" under audio — it marks the beat drops so you can cut exactly on them.',
+    'SOUND EFFECTS: A single subtle page-turn SFX when you reveal a book title costs nothing and adds production value.',
+    'NO MUSIC HOOK: Sometimes starting with 0.5 seconds of silence before the music hits creates more impact than music from frame 1.',
+    'ORIGINAL AUDIO: If your voice or a clip of you goes viral, download that audio and reuse it on future videos. Your own viral sounds build brand recognition.',
+    'REMOVE WATERMARK AUDIO: If cross-posting to Instagram Reels, use CapCut\'s in-app sounds (not TikTok-only sounds) to avoid the audio getting muted on IG.',
+  ]},
+  {id:'cc-checklist-review',title:'✅ Edit Checklist — Book Review',tips:[
+    'Hook clip is under 3 seconds and doesn\'t start with you talking.',
+    'Book cover shown clearly within the first 5 seconds.',
+    'Text overlay with book title appears when you first say the title.',
+    'Voiceover is clean — no echo, no background hum (record in a small room or with a blanket behind you).',
+    'Background music is at 10–20% — your voice is louder than the music.',
+    'Mind Scale rating reveal is a visual moment — zoom in, text on screen, pause.',
+    'Auto captions are on and edited for errors.',
+    'CTA text on screen in the last 3 seconds: "Follow for more dark reads 🖤" or your specific question.',
+    'Video is between 45 seconds and 90 seconds — sweet spot for review content.',
+  ]},
+  {id:'cc-checklist-haul',title:'✅ Edit Checklist — Book Haul',tips:[
+    'Opening shot is the full stack or pile — tease the whole haul before revealing individual books.',
+    'Each book gets 2–4 seconds of screen time. If you have 10+ books, keep it tighter.',
+    'Cuts land on the beat — sync your edits to the audio.',
+    'Hold each book cover clearly toward camera — cover fills most of the frame.',
+    'The most anticipated book is last. Build to it.',
+    'Text overlay shows title and author of each book as you hold it up.',
+    'Closing shot: all books together, zoom out slowly.',
+    'Outro CTA: "Which would you read first? Comment below."',
+    'Total length: 30–75 seconds. Hauls longer than 90 seconds lose viewers unless you\'re very established.',
+  ]},
+  {id:'cc-checklist-broll',title:'✅ Edit Checklist — B-Roll / Aesthetic',tips:[
+    'Each clip is 2–4 seconds. No single clip longer than 5 seconds unless it\'s a slow-mo hero shot.',
+    'All clips are color-graded consistently (use your saved preset).',
+    'Music carries the whole video — pick something that feels like your aesthetic from the first note.',
+    'No talking needed — let the visuals and music do the work.',
+    'Slow motion on at least 1–2 clips (CapCut → Speed → 0.5x).',
+    'Text overlays are minimal — 1–2 words or a short phrase, not sentences.',
+    'Ends on your strongest visual — the most beautiful or dramatic clip goes last.',
+    'Length: 15–30 seconds. Short aesthetic reels get looped more, which boosts completion rate.',
+  ]},
+];
+function renderCapCutGuide(){
+  const el=document.getElementById('an-capcut-list'); if(!el)return;
+  el.innerHTML=CAPCUT_GUIDE.map(s=>`<div class="tip-stage">
     <div class="tip-stage-hdr" onclick="toggleTipSection('tip-body-${s.id}',this)">
       <span>${s.title}</span><span id="tip-arrow-${s.id}">▸</span>
     </div>
