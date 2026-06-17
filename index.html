@@ -620,6 +620,18 @@ canvas{width:100%!important;}
 .series-progress{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);}
 .series-del{background:transparent;border:none;color:rgba(200,80,80,.4);cursor:pointer;font-size:15px;float:right;}
 .series-del:hover{color:#e06060;}
+/* Mood Picker */
+.mood-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.mood-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);font-family:'Cinzel',serif;font-size:13px;letter-spacing:1px;padding:12px 10px;cursor:pointer;transition:all .2s;text-align:center;line-height:1.4;}
+.mood-btn:hover{border-color:var(--gold);color:var(--gold);}
+.mood-btn.sel{background:var(--gold-faint);border-color:var(--gold);color:var(--gold);}
+/* Goals Bingo */
+.goals-bingo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px;}
+.bingo-cell{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px 8px;text-align:center;font-family:'Cinzel',serif;font-size:12px;letter-spacing:1px;color:var(--text-dim);cursor:pointer;transition:all .2s;line-height:1.4;}
+.bingo-cell.done{background:rgba(200,160,80,.15);border-color:var(--gold);color:var(--gold);}
+/* Custom goals */
+.goal-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;margin-bottom:8px;}
+.goal-item.done-goal .goal-text{text-decoration:line-through;color:var(--text-dim);}
 
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -660,6 +672,14 @@ canvas{width:100%!important;}
 <!-- PANEL 1: CALENDAR          -->
 <!-- ═══════════════════════════ -->
 <div class="panel active" id="panel-calendar">
+
+  <div id="countdown-widget" style="background:rgba(200,160,80,.07);border:1px solid var(--border-hi);border-radius:6px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+    <div>
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);">✦ NEXT POST</div>
+      <div id="countdown-label" style="font-size:15px;color:#fff;margin-top:3px;">Loading...</div>
+    </div>
+    <div id="countdown-timer" style="font-family:'Cinzel',serif;font-size:22px;color:var(--gold);letter-spacing:2px;text-align:right;"></div>
+  </div>
 
   <div class="stats-row">
     <div class="stat-box"><div class="stat-num" id="stat-total">75</div><div class="stat-label">Total Videos</div></div>
@@ -1060,6 +1080,7 @@ canvas{width:100%!important;}
     <button class="sc-tab" onclick="scSwitchTab('series',this)">📗 Series</button>
     <button class="sc-tab" onclick="scSwitchTab('wishlist',this)">🛒 Wishlist <span id="sc-wishlist-badge" style="background:rgba(200,160,80,.4);color:#fff;border-radius:10px;padding:1px 5px;font-size:15px;margin-left:2px;">0</span></button>
     <button class="sc-tab" onclick="scSwitchTab('stats',this)">📊 Stats</button>
+    <button class="sc-tab" onclick="scSwitchTab('goals',this)">🎯 Goals</button>
     <button class="sc-tab" onclick="scSwitchTab('scripts',this)">🎬 Scripts</button>
   </div>
 
@@ -1146,6 +1167,21 @@ canvas{width:100%!important;}
   </div>
 
   <!-- SCRIPTS -->
+  <!-- GOALS TAB -->
+  <div id="sc-section-goals" class="sc-section">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">Set monthly genre challenges and custom reading goals. Tap a genre to check it off as you read. 🖤</div>
+    </div>
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">✦ MONTHLY GENRE BINGO</div>
+    <div class="goals-bingo-grid" id="goals-bingo-grid"></div>
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin:16px 0 10px;">✦ CUSTOM GOALS</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <input id="goal-input" placeholder="e.g. Read 3 horror books this month..." style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;"/>
+      <button class="sc-btn-save" onclick="addGoal()" style="white-space:nowrap;">✦ Add</button>
+    </div>
+    <div id="goals-custom-list"></div>
+  </div>
+
   <div id="sc-section-scripts" class="sc-section">
     <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">
       Books marked as "Must Feature" or "Worth a Video" automatically generate a script outline here using your Mind Scale rating. 🖤
@@ -1426,19 +1462,59 @@ canvas{width:100%!important;}
 <!-- PANEL 13: SPIN THE WHEEL                    -->
 <!-- ═══════════════════════════════════════════ -->
 <div class="panel" id="panel-spin">
-  <div class="section-title">🎡 Spin the Wheel — Pick Your Next Read</div>
-  <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
-    <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
-      The wheel spins from your TBR pile in the Scorecard. Add books there first, then let fate decide. 🖤
+  <div class="section-title">🎡 What Should I Read Next?</div>
+  <div class="an-tabs" style="margin-bottom:14px;">
+    <button class="an-tab active" id="spin-tab-wheel" onclick="switchSpinTab('wheel',this)">🎡 Spin the Wheel</button>
+    <button class="an-tab" id="spin-tab-mood" onclick="switchSpinTab('mood',this)">🎭 Mood Picker</button>
+  </div>
+
+  <!-- WHEEL -->
+  <div id="spin-section-wheel" class="an-section active">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
+        The wheel spins from your TBR pile in the Scorecard. Add books there first, then let fate decide. 🖤
+      </div>
+    </div>
+    <div class="spin-wrap">
+      <div class="spin-pointer"></div>
+      <canvas id="spin-canvas" width="300" height="300"></canvas>
+      <button class="btn btn-primary" style="padding:12px 40px;font-size:15px;letter-spacing:3px;margin-top:6px;" onclick="spinWheel()">✦ Spin</button>
+      <div>
+        <div class="spin-result" id="spin-result"></div>
+        <div class="spin-result-author" id="spin-result-author"></div>
+      </div>
     </div>
   </div>
-  <div class="spin-wrap">
-    <div class="spin-pointer"></div>
-    <canvas id="spin-canvas" width="300" height="300"></canvas>
-    <button class="btn btn-primary" style="padding:12px 40px;font-size:15px;letter-spacing:3px;margin-top:6px;" onclick="spinWheel()">✦ Spin</button>
-    <div>
-      <div class="spin-result" id="spin-result"></div>
-      <div class="spin-result-author" id="spin-result-author"></div>
+
+  <!-- MOOD PICKER -->
+  <div id="spin-section-mood" class="an-section">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
+        Answer two quick questions and I'll pick a book from your TBR that matches your mood right now. 🖤
+      </div>
+    </div>
+    <div id="mood-step-1">
+      <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">HOW ARE YOU FEELING?</div>
+      <div class="mood-grid" id="mood-vibe-grid">
+        <button class="mood-btn" onclick="selectMoodVibe('dark-twisted',this)">🖤 Dark &amp; Twisted</button>
+        <button class="mood-btn" onclick="selectMoodVibe('sad-emotional',this)">😢 Sad &amp; Emotional</button>
+        <button class="mood-btn" onclick="selectMoodVibe('curious-tense',this)">🔍 Curious &amp; Tense</button>
+        <button class="mood-btn" onclick="selectMoodVibe('adventure-magic',this)">✨ Adventure &amp; Magic</button>
+        <button class="mood-btn" onclick="selectMoodVibe('fast-thrilling',this)">⚡ Fast &amp; Thrilling</button>
+        <button class="mood-btn" onclick="selectMoodVibe('dark-cozy',this)">🕯️ Dark &amp; Cozy</button>
+      </div>
+    </div>
+    <div id="mood-step-2" style="display:none;margin-top:16px;">
+      <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">HOW MUCH TIME DO YOU HAVE?</div>
+      <div class="mood-grid">
+        <button class="mood-btn" onclick="selectMoodLength('short',this)">📖 Quick Read<br><span style="font-size:12px;color:var(--text-dim);">Under 300 pages</span></button>
+        <button class="mood-btn" onclick="selectMoodLength('medium',this)">📚 A Good Read<br><span style="font-size:12px;color:var(--text-dim);">300–500 pages</span></button>
+        <button class="mood-btn" onclick="selectMoodLength('any',this)">🌑 Doesn't Matter<br><span style="font-size:12px;color:var(--text-dim);">Any length</span></button>
+      </div>
+    </div>
+    <div id="mood-result" style="display:none;margin-top:16px;"></div>
+    <div id="mood-reset-btn" style="display:none;margin-top:12px;">
+      <button class="btn" onclick="resetMoodPicker()" style="width:100%;">↩ Start Over</button>
     </div>
   </div>
 </div>
@@ -1490,6 +1566,7 @@ canvas{width:100%!important;}
     <button class="an-tab" id="an-tab-capcut" onclick="switchAnTab('capcut',this)">✂️ CapCut</button>
     <button class="an-tab" id="an-tab-pr" onclick="switchAnTab('pr',this)">📬 PR & Deals</button>
     <button class="an-tab" id="an-tab-collabs" onclick="switchAnTab('collabs',this)">🤝 Collabs</button>
+    <button class="an-tab" id="an-tab-biolink" onclick="switchAnTab('biolink',this)">🔗 Bio Link</button>
   </div>
 
   <!-- GROWTH LOG -->
@@ -1681,6 +1758,22 @@ canvas{width:100%!important;}
     </div>
     <div id="collab-list"></div>
   </div>
+
+  <!-- BIO LINK -->
+  <div id="an-section-biolink" class="an-section">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">Track what's in your TikTok and Instagram bio link right now — and log changes so you always know what you last promoted. 🖤</div>
+    </div>
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">✦ CURRENT BIO LINKS</div>
+    <div class="sc-two-col" style="margin-bottom:14px;">
+      <div class="sc-field"><label>TikTok Bio Link</label><input id="bio-tiktok" placeholder="paste your current link..." style="font-size:13px;"/></div>
+      <div class="sc-field"><label>Instagram Bio Link</label><input id="bio-instagram" placeholder="paste your current link..." style="font-size:13px;"/></div>
+    </div>
+    <div class="sc-field" style="margin-bottom:10px;"><label>What's it promoting?</label><input id="bio-label" placeholder="e.g. July TBR video, affiliate link, Linktree..."/></div>
+    <button class="sc-add-btn" onclick="saveBioLink()" style="margin-bottom:16px;">✦ Save &amp; Log This Change</button>
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">✦ CHANGE LOG</div>
+    <div id="biolink-log"></div>
+  </div>
 </div>
 
 </div><!-- end app -->
@@ -1697,6 +1790,23 @@ canvas{width:100%!important;}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- FLOATING QUICK NOTES BUTTON -->
+<button id="qnote-fab" onclick="openQuickNotes()" title="Quick Notes" style="position:fixed;bottom:28px;right:18px;z-index:250;width:50px;height:50px;border-radius:50%;background:var(--bg3);border:1px solid var(--border-hi);color:var(--gold);font-size:22px;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;transition:transform .15s;">✏️</button>
+
+<!-- QUICK NOTES OVERLAY -->
+<div id="qnote-overlay" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(5,3,8,.96);padding:20px;flex-direction:column;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <div style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:3px;color:var(--gold);">✏️ QUICK NOTES</div>
+    <button onclick="closeQuickNotes()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;">✕</button>
+  </div>
+  <div style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">Jot down anything — book thoughts, video ideas, quotes, reminders. Auto-saves as you type. 🖤</div>
+  <textarea id="qnote-area" oninput="saveQuickNotes()" placeholder="Start typing..." style="flex:1;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px;color:#fff;font-family:'Playfair Display',serif;font-size:15px;line-height:1.7;resize:none;min-height:60vh;"></textarea>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+    <div id="qnote-count" style="font-size:13px;color:var(--text-dim);"></div>
+    <button onclick="clearQuickNotes()" style="background:none;border:1px solid var(--border);border-radius:3px;color:var(--text-dim);font-size:13px;padding:5px 12px;cursor:pointer;">Clear All</button>
+  </div>
+</div>
 
 <script>
 // ═══════════════════════════════════════════════
@@ -2781,6 +2891,7 @@ function scSwitchTab(t, el) {
   if (t === 'dnf') scRenderDNF();
   if (t === 'series') scRenderSeries();
   if (t === 'wishlist') renderWishlist();
+  if (t === 'goals') renderGoals();
 }
 
 function scRenderStars(n, sz) {
@@ -4082,6 +4193,7 @@ function switchAnTab(tab,btn){
   if(tab==='capcut')renderCapCutGuide();
   if(tab==='pr')renderPRList();
   if(tab==='collabs')renderCollabList();
+  if(tab==='biolink')renderBioLink();
 }
 
 // ── Growth Log ──
@@ -4670,6 +4782,248 @@ function renderCollabList(){
     </div>
   </div>`).join('');
 }
+
+// ══════════════════════════════════════════
+// COUNTDOWN WIDGET
+// ══════════════════════════════════════════
+const POST_DAYS=[1,2,3,4,5]; // Mon–Fri
+const POST_TIMES={1:'19:00',2:'19:00',3:'19:30',4:'19:00',5:'20:00'};
+function getNextPostDate(){
+  const now=new Date();
+  for(let d=0;d<=7;d++){
+    const candidate=new Date(now);
+    candidate.setDate(now.getDate()+d);
+    const dow=candidate.getDay();
+    if(POST_DAYS.includes(dow)){
+      const [h,m]=POST_TIMES[dow].split(':').map(Number);
+      candidate.setHours(h,m,0,0);
+      if(candidate>now)return candidate;
+    }
+  }
+  return null;
+}
+function updateCountdown(){
+  const lbl=document.getElementById('countdown-label');
+  const tmr=document.getElementById('countdown-timer');
+  if(!lbl||!tmr)return;
+  const next=getNextPostDate();
+  if(!next){lbl.textContent='No upcoming post day found';tmr.textContent='';return;}
+  const now=new Date();
+  const diff=next-now;
+  const days=Math.floor(diff/86400000);
+  const hrs=Math.floor((diff%86400000)/3600000);
+  const mins=Math.floor((diff%3600000)/60000);
+  const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  lbl.textContent=`${dayNames[next.getDay()]} at ${next.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}`;
+  if(days===0&&hrs===0&&mins<30){
+    tmr.textContent='🔴 POST NOW!';
+    tmr.style.color='#e06060';
+  } else if(days===0){
+    tmr.textContent=`${hrs}h ${mins}m`;
+    tmr.style.color='var(--gold)';
+  } else {
+    tmr.textContent=`${days}d ${hrs}h`;
+    tmr.style.color='var(--gold)';
+  }
+}
+setInterval(updateCountdown,60000);
+document.addEventListener('DOMContentLoaded',updateCountdown);
+setTimeout(updateCountdown,500);
+
+// ══════════════════════════════════════════
+// SPIN PANEL TABS
+// ══════════════════════════════════════════
+function switchSpinTab(tab,btn){
+  document.querySelectorAll('#panel-spin .an-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#panel-spin .an-section').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('spin-section-'+tab).classList.add('active');
+  if(tab==='wheel'){initSpin();}
+  if(tab==='mood'){resetMoodPicker();}
+}
+
+// ══════════════════════════════════════════
+// MOOD PICKER
+// ══════════════════════════════════════════
+const MOOD_GENRE_MAP={
+  'dark-twisted':['Psychological Thriller','Horror','Folk Horror','Dark Fiction'],
+  'sad-emotional':['Literary Fiction','Historical Fiction','Dark Fiction'],
+  'curious-tense':['True Crime','Mystery','Thriller','Psychological Thriller'],
+  'adventure-magic':['Dark Fantasy','Historical Fiction','Fantasy'],
+  'fast-thrilling':['Psychological Thriller','Thriller','Mystery'],
+  'dark-cozy':['Dark Fantasy','Dark Fiction','Folk Horror','Historical Fiction']
+};
+let _moodVibe='';
+function selectMoodVibe(vibe,btn){
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  _moodVibe=vibe;
+  document.getElementById('mood-step-2').style.display='block';
+}
+function selectMoodLength(len,btn){
+  document.querySelectorAll('#mood-step-2 .mood-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  const genres=MOOD_GENRE_MAP[_moodVibe]||[];
+  let matches=tbr.filter(b=>{
+    const genreMatch=!b.genre||genres.some(g=>b.genre.toLowerCase().includes(g.toLowerCase())||g.toLowerCase().includes(b.genre.toLowerCase()));
+    if(len==='short')return genreMatch&&(!b.pages||b.pages<300);
+    if(len==='medium')return genreMatch&&(!b.pages||(b.pages>=300&&b.pages<=500));
+    return genreMatch;
+  });
+  if(!matches.length)matches=tbr;
+  if(!matches.length){
+    document.getElementById('mood-result').innerHTML='<div class="card-box" style="padding:14px;text-align:center;color:var(--text-dim);font-style:italic;">Your TBR is empty — add some books to the Scorecard first! 🖤</div>';
+  } else {
+    const pick=matches[Math.floor(Math.random()*matches.length)];
+    document.getElementById('mood-result').innerHTML=`<div class="card-box" style="padding:16px;text-align:center;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">✦ YOUR NEXT READ</div>
+      <div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:4px;">${pick.title}</div>
+      ${pick.author?`<div style="font-size:15px;color:var(--text-dim);">by ${pick.author}</div>`:''}
+      ${pick.genre?`<div style="font-size:13px;color:var(--gold-dim);margin-top:6px;">${pick.genre}</div>`:''}
+      <div style="font-size:13px;color:var(--text-dim);margin-top:8px;font-style:italic;">From your TBR pile 🖤</div>
+    </div>`;
+  }
+  document.getElementById('mood-result').style.display='block';
+  document.getElementById('mood-reset-btn').style.display='block';
+}
+function resetMoodPicker(){
+  _moodVibe='';
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('mood-step-2').style.display='none';
+  document.getElementById('mood-result').style.display='none';
+  document.getElementById('mood-reset-btn').style.display='none';
+}
+
+// ══════════════════════════════════════════
+// BOOKSHELF GOALS
+// ══════════════════════════════════════════
+const BINGO_GENRES=[
+  {id:'bg-psych',label:'Psych\nThriller'},
+  {id:'bg-horror',label:'Horror'},
+  {id:'bg-truecrime',label:'True\nCrime'},
+  {id:'bg-darkfantasy',label:'Dark\nFantasy'},
+  {id:'bg-historical',label:'Historical\nFiction'},
+  {id:'bg-folkhror',label:'Folk\nHorror'},
+  {id:'bg-mystery',label:'Mystery'},
+  {id:'bg-thriller',label:'Thriller'},
+  {id:'bg-literary',label:'Literary\nFiction'},
+  {id:'bg-nonfiction',label:'Non-\nFiction'},
+  {id:'bg-darkfic',label:'Dark\nFiction'},
+  {id:'bg-series',label:'Book in\na Series'},
+];
+let bingoDone=JSON.parse(localStorage.getItem('tbtrish_bingo')||'[]');
+let customGoals=JSON.parse(localStorage.getItem('tbtrish_goals')||'[]');
+function saveBingo(){localStorage.setItem('tbtrish_bingo',JSON.stringify(bingoDone));}
+function saveGoals(){localStorage.setItem('tbtrish_goals',JSON.stringify(customGoals));}
+function renderGoals(){
+  const grid=document.getElementById('goals-bingo-grid');
+  if(grid){
+    grid.innerHTML=BINGO_GENRES.map(g=>`<div class="bingo-cell${bingoDone.includes(g.id)?' done':''}" onclick="toggleBingo('${g.id}',this)">${g.label.replace('\n','<br>')}</div>`).join('');
+  }
+  const list=document.getElementById('goals-custom-list');
+  if(list){
+    if(!customGoals.length){list.innerHTML='<div style="color:var(--text-dim);font-style:italic;font-size:14px;">No custom goals yet.</div>';return;}
+    list.innerHTML=customGoals.map(g=>`<div class="goal-item${g.done?' done-goal':''}">
+      <input type="checkbox"${g.done?' checked':''} onchange="toggleGoal(${g.id},this)" style="width:18px;height:18px;accent-color:var(--gold);flex-shrink:0;cursor:pointer;"/>
+      <span class="goal-text" style="flex:1;font-size:14px;color:#fff;">${g.text}</span>
+      <button onclick="deleteGoal(${g.id})" style="background:none;border:none;color:var(--text-dim);font-size:13px;cursor:pointer;">✕</button>
+    </div>`).join('');
+  }
+}
+function toggleBingo(id,el){
+  if(bingoDone.includes(id)){bingoDone=bingoDone.filter(x=>x!==id);el.classList.remove('done');}
+  else{bingoDone.push(id);el.classList.add('done');}
+  saveBingo();
+  const count=bingoDone.length;
+  toast(count===12?'✦ Full Genre Bingo! 🖤🎉':`✦ ${count}/12 genres read`);
+}
+function addGoal(){
+  const inp=document.getElementById('goal-input');
+  const text=inp.value.trim();
+  if(!text)return;
+  customGoals.push({id:Date.now(),text,done:false});
+  inp.value='';
+  saveGoals();renderGoals();
+  toast('✦ Goal added 🖤');
+}
+function toggleGoal(id,cb){
+  const g=customGoals.find(g=>g.id===id);
+  if(g){g.done=cb.checked;saveGoals();renderGoals();}
+}
+function deleteGoal(id){
+  customGoals=customGoals.filter(g=>g.id!==id);
+  saveGoals();renderGoals();
+}
+
+// ══════════════════════════════════════════
+// QUICK NOTES
+// ══════════════════════════════════════════
+function openQuickNotes(){
+  const overlay=document.getElementById('qnote-overlay');
+  overlay.style.display='flex';
+  document.body.style.overflow='hidden';
+  const area=document.getElementById('qnote-area');
+  area.value=localStorage.getItem('tbtrish_quicknotes')||'';
+  updateNoteCount();
+  setTimeout(()=>area.focus(),100);
+}
+function closeQuickNotes(){
+  document.getElementById('qnote-overlay').style.display='none';
+  document.body.style.overflow='';
+}
+function saveQuickNotes(){
+  localStorage.setItem('tbtrish_quicknotes',document.getElementById('qnote-area').value);
+  updateNoteCount();
+}
+function clearQuickNotes(){
+  if(!confirm('Clear all quick notes?'))return;
+  document.getElementById('qnote-area').value='';
+  localStorage.removeItem('tbtrish_quicknotes');
+  updateNoteCount();
+}
+function updateNoteCount(){
+  const val=document.getElementById('qnote-area').value;
+  const words=val.trim()?val.trim().split(/\s+/).length:0;
+  document.getElementById('qnote-count').textContent=`${words} word${words!==1?'s':''}`;
+}
+
+// ══════════════════════════════════════════
+// BIO LINK TRACKER
+// ══════════════════════════════════════════
+let bioLinkLog=JSON.parse(localStorage.getItem('tbtrish_biolinks')||'[]');
+function saveBioLinkLog(){localStorage.setItem('tbtrish_biolinks',JSON.stringify(bioLinkLog));}
+function renderBioLink(){
+  const el=document.getElementById('biolink-log');if(!el)return;
+  const current=bioLinkLog[0];
+  if(current){
+    document.getElementById('bio-tiktok').value=current.tiktok||'';
+    document.getElementById('bio-instagram').value=current.instagram||'';
+    document.getElementById('bio-label').value=current.label||'';
+  }
+  if(!bioLinkLog.length){el.innerHTML='<div style="color:var(--text-dim);font-style:italic;font-size:14px;">No changes logged yet.</div>';return;}
+  el.innerHTML=bioLinkLog.map(e=>`<div class="card-box" style="margin-bottom:8px;padding:10px 14px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <div style="font-size:13px;color:var(--gold-dim);font-family:'Cinzel',serif;letter-spacing:1px;">${e.label||'—'}</div>
+        ${e.tiktok?`<div style="font-size:13px;color:var(--text-dim);margin-top:3px;">📱 TikTok: ${e.tiktok}</div>`:''}
+        ${e.instagram?`<div style="font-size:13px;color:var(--text-dim);">📸 Instagram: ${e.instagram}</div>`:''}
+        <div style="font-size:12px;color:var(--text-dim);margin-top:3px;">${e.date}</div>
+      </div>
+      <button onclick="deleteBioEntry(${e.id})" style="background:none;border:none;color:var(--text-dim);font-size:13px;cursor:pointer;">✕</button>
+    </div>
+  </div>`).join('');
+}
+function saveBioLink(){
+  const tiktok=document.getElementById('bio-tiktok').value.trim();
+  const instagram=document.getElementById('bio-instagram').value.trim();
+  const label=document.getElementById('bio-label').value.trim();
+  if(!tiktok&&!instagram){toast('Enter at least one link');return;}
+  bioLinkLog.unshift({id:Date.now(),tiktok,instagram,label,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})});
+  saveBioLinkLog();renderBioLink();
+  toast('✦ Bio link logged 🖤');
+}
+function deleteBioEntry(id){bioLinkLog=bioLinkLog.filter(e=>e.id!==id);saveBioLinkLog();renderBioLink();}
 
 // Register service worker for PWA / offline support
 if('serviceWorker' in navigator){
