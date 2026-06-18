@@ -1140,6 +1140,7 @@ canvas{width:100%!important;}
   <!-- TBR -->
   <div id="sc-section-tbr" class="sc-section">
     <button class="sc-add-btn" onclick="scOpenAdd('tbr')">✦ Add to My TBR Pile</button>
+    <div id="tbr-genre-filters" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;margin-top:4px;"></div>
     <div id="sc-tbr-list"></div>
   </div>
 
@@ -1376,6 +1377,16 @@ canvas{width:100%!important;}
       <div class="sc-field"><label>Why Do I Want to Read It?</label><textarea id="sc-f-why" placeholder="what's the vibe?"></textarea></div>
       <div class="sc-field"><label>Priority</label>
         <select id="sc-f-priority"><option value="">—</option><option>🔴 High — need it now</option><option>🟡 Medium — soon</option><option>🟢 Low — eventually</option></select>
+      </div>
+      <div class="sc-field"><label>Category / Genre</label>
+        <select id="sc-f-tbr-genre">
+          <option value="">— Select —</option>
+          <option>Horror</option><option>Psychological Thriller</option><option>True Crime</option>
+          <option>Dark Fantasy</option><option>Historical Fiction</option><option>Romance</option>
+          <option>Dark Romance</option><option>Folk Horror</option><option>Mystery</option>
+          <option>Thriller</option><option>Literary Fiction</option><option>Dark Fiction</option>
+          <option>Non-Fiction</option><option>Fantasy</option><option>Sci-Fi</option><option>Other</option>
+        </select>
       </div>
     </div>
   </div>
@@ -2967,25 +2978,36 @@ function scRenderBooks() {
     </div>`).join('');
 }
 
+let tbrGenreFilter='all';
 function scRenderTBR() {
   const l = document.getElementById('sc-tbr-list');
   document.getElementById('sc-tbr-badge').textContent = scTBR.length;
+  // Build genre filter chips
+  const filterEl = document.getElementById('tbr-genre-filters');
+  if(filterEl){
+    const genres=['all',...[...new Set(scTBR.map(t=>t.genre||'').filter(Boolean))].sort()];
+    filterEl.innerHTML=genres.map(g=>`<button onclick="setTBRGenre('${g}',this)" style="padding:5px 12px;border-radius:20px;border:1px solid ${tbrGenreFilter===g?'var(--gold)':'var(--border)'};background:${tbrGenreFilter===g?'var(--gold-faint)':'transparent'};color:${tbrGenreFilter===g?'var(--gold)':'var(--text-dim)'};font-size:13px;cursor:pointer;white-space:nowrap;">${g==='all'?'All':g}</button>`).join('');
+  }
   if (!scTBR.length) { l.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">TBR pile is empty!</div>'; return; }
-  l.innerHTML = scTBR.map(t => `
+  const filtered = tbrGenreFilter==='all' ? scTBR : scTBR.filter(t=>(t.genre||'')=== tbrGenreFilter);
+  if(!filtered.length){l.innerHTML=`<div style="text-align:center;padding:20px;color:var(--text-dim);font-style:italic;">No ${tbrGenreFilter} books in your TBR yet.</div>`;return;}
+  l.innerHTML = filtered.map(t => `
     <div class="sc-tbr-card">
       ${t.coverUrl?`<img src="${t.coverUrl}" style="width:52px;height:76px;object-fit:cover;border-radius:3px;flex-shrink:0;border:1px solid var(--border);" onerror="this.style.display='none'"/>`:''}
       <div style="flex:1;min-width:0;">
         <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--text);">${t.title}</div>
         <div style="font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);">${t.author}</div>
-        ${t.priority ? `<div style="font-size:14px;color:var(--text-dim);margin-top:3px;">${t.priority}</div>` : ''}
-        ${t.why ? `<div style="font-size:15px;color:var(--text-dim);margin-top:4px;font-style:italic;">${t.why}</div>` : ''}
+        ${t.genre?`<div style="display:inline-block;font-size:12px;padding:2px 8px;border-radius:10px;background:rgba(200,160,80,.12);color:var(--gold-dim);border:1px solid var(--border);margin-top:4px;">${t.genre}</div>`:''}
+        ${t.priority ? `<div style="font-size:13px;color:var(--text-dim);margin-top:3px;">${t.priority}</div>` : ''}
+        ${t.why ? `<div style="font-size:14px;color:var(--text-dim);margin-top:4px;font-style:italic;">${t.why}</div>` : ''}
       </div>
       <div style="display:flex;gap:5px;flex-direction:column;align-items:flex-end;">
-        <button class="btn btn-green" style="font-size:16px;padding:4px 8px;" onclick="scMoveTBR('${t.id}')">Mark Read</button>
-        <button class="btn btn-danger" style="font-size:16px;padding:4px 8px;" onclick="scDeleteTBR('${t.id}')">Remove</button>
+        <button class="btn btn-green" style="font-size:15px;padding:4px 8px;" onclick="scMoveTBR('${t.id}')">Mark Read</button>
+        <button class="btn btn-danger" style="font-size:15px;padding:4px 8px;" onclick="scDeleteTBR('${t.id}')">Remove</button>
       </div>
     </div>`).join('');
 }
+function setTBRGenre(g){tbrGenreFilter=g;scRenderTBR();}
 
 function scPopulateYears() {
   const sel = document.getElementById('sc-year-select');
@@ -3199,7 +3221,7 @@ function scSaveBook() {
     const title = document.getElementById('sc-f-tbr-title').value.trim();
     const author = document.getElementById('sc-f-tbr-author').value.trim();
     if (!title || !author) { toast('Title and author are required!'); return; }
-    const item = { id: eid || Date.now().toString(), title, author, interest: scSelectedInterest, why: document.getElementById('sc-f-why').value, priority: document.getElementById('sc-f-priority').value, coverUrl: _pendingCoverUrl||'' };
+    const item = { id: eid || Date.now().toString(), title, author, interest: scSelectedInterest, why: document.getElementById('sc-f-why').value, priority: document.getElementById('sc-f-priority').value, genre: document.getElementById('sc-f-tbr-genre').value, coverUrl: _pendingCoverUrl||'' };
     if (eid) { const i = scTBR.findIndex(x => x.id === eid); if (i > -1) scTBR[i] = item; } else scTBR.unshift(item);
   }
   _pendingCoverUrl='';
@@ -3818,9 +3840,14 @@ const authorSeries=[
    desc:'Epic historical fiction spanning centuries — from medieval cathedral builders to Elizabethan spies. Each book stands alone but they share a location and DNA. Dark, political, deeply human.',
    videoIdea:'🎬 "Ken Follett\'s Kingsbridge series — medieval England to the Renaissance"',
    books:['The Evening and the Morning (900s — prequel)','The Pillars of the Earth (1100s)','World Without End (1300s)','A Column of Fire (1500s)']},
+  // ── DO NOT READ ALONE ──
+  {id:'dnra',genre:'horror',name:'Do Not Read Alone',author:'Curated by TitlesByTrish',
+   desc:'Ten of the darkest, most disturbing books Trish has ever encountered. Each one earned a 4 or 5 on the Mind Scale. The warning is the hook — read at your own risk.',
+   videoIdea:'🎬 "Do Not Read Alone — the series where every book might break you"',
+   books:['The Troop — Nick Cutter','Tender is the Flesh — Agustina Bazterrica','The Only Good Indians — Stephen Graham Jones','Mexican Gothic — Silvia Moreno-Garcia','The Silent Companions — Laura Purcell','Little Heaven — Nick Cutter','The Haunting of Hill House — Shirley Jackson','Ring — Koji Suzuki','Plain Bad Heroines — Emily M. Danforth','The Fisherman — John Langan']},
 ];
 
-const msGenreLabels={all:'All',fantasy:'Dark Fantasy',psych:'Psych Thriller',horror:'Horror',hf:'Historical Fiction'};
+const msGenreLabels={all:'All',fantasy:'Dark Fantasy',psych:'Psych Thriller',horror:'🖤 Horror / Dark',hf:'Historical Fiction'};
 const msGenreBadgeClass={fantasy:'ms-badge-fantasy',psych:'ms-badge-psych',horror:'ms-badge-horror',hf:'ms-badge-hf'};
 
 function renderSeriesView(){
@@ -4844,6 +4871,31 @@ function renderCollabList(){
     </div>
   </div>`).join('');
 }
+
+// ══════════════════════════════════════════
+// DO NOT READ ALONE — load 10 books into TBR once
+// ══════════════════════════════════════════
+(function loadDNRABooks(){
+  if(localStorage.getItem('tbtrish_dnra_loaded'))return;
+  const dnraBooks=[
+    {title:'The Troop',author:'Nick Cutter',genre:'Horror',why:'Do Not Read Alone series — body horror so extreme it stays with you for weeks'},
+    {title:'Tender is the Flesh',author:'Agustina Bazterrica',genre:'Horror',why:'Do Not Read Alone series — dystopian horror. Mind Scale 5/5.'},
+    {title:'The Only Good Indians',author:'Stephen Graham Jones',genre:'Horror',why:'Do Not Read Alone series — Native horror, devastating'},
+    {title:'Mexican Gothic',author:'Silvia Moreno-Garcia',genre:'Horror',why:'Do Not Read Alone series — 1950s gothic body horror'},
+    {title:'The Silent Companions',author:'Laura Purcell',genre:'Horror',why:'Do Not Read Alone series — Victorian gothic, wooden figures that move'},
+    {title:'Little Heaven',author:'Nick Cutter',genre:'Folk Horror',why:'Do Not Read Alone series — cult in New Mexico, something in the dark'},
+    {title:'The Haunting of Hill House',author:'Shirley Jackson',genre:'Horror',why:'Do Not Read Alone series — the original psychological haunted house'},
+    {title:'Ring',author:'Koji Suzuki',genre:'Horror',why:'Do Not Read Alone series — the Japanese novel, far darker than the film'},
+    {title:'Plain Bad Heroines',author:'Emily M. Danforth',genre:'Horror',why:'Do Not Read Alone series — cursed girls school, wasps, rot'},
+    {title:'The Fisherman',author:'John Langan',genre:'Horror',why:'Do Not Read Alone series — cosmic horror masterpiece'},
+  ];
+  const existing=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  const existingTitles=new Set(existing.map(b=>b.title.toLowerCase()));
+  const toAdd=dnraBooks.filter(b=>!existingTitles.has(b.title.toLowerCase()));
+  const newTBR=[...toAdd.map(b=>({id:Date.now()+Math.random(),title:b.title,author:b.author,genre:b.genre,why:b.why,interest:5,priority:'🔴 High — need it now',coverUrl:''})),...existing];
+  localStorage.setItem('sc3_tbr',JSON.stringify(newTBR));
+  localStorage.setItem('tbtrish_dnra_loaded','1');
+})();
 
 // ══════════════════════════════════════════
 // COUNTDOWN WIDGET
