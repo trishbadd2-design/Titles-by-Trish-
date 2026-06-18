@@ -646,6 +646,7 @@ canvas{width:100%!important;}
   <div style="margin-top:14px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
     <button class="btn btn-primary" onclick="exportData()" style="font-size:16px;padding:6px 14px;">⬇ Backup My Data</button>
     <label class="btn" style="font-size:16px;padding:6px 14px;cursor:pointer;">⬆ Restore Backup<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
+    <button class="btn" onclick="shareData()" style="font-size:16px;padding:6px 14px;background:rgba(90,32,128,.25);border-color:rgba(150,80,220,.4);color:rgba(200,160,255,.9);">📡 Share to Other Device</button>
   </div>
 </div>
 
@@ -3276,20 +3277,40 @@ scheduleAlarmCheck();
 document.getElementById('fol-date').value=new Date().toISOString().split('T')[0];
 document.getElementById('win-date').value=new Date().toISOString().split('T')[0];
 // ── BACKUP / RESTORE ──
+const ALL_BACKUP_KEYS=[
+  'tbtrish_done','tbtrish_fol','tbtrish_eng','tbtrish_arc',
+  'tbtrish_ideas','tbtrish_savedbooks','tbtrish_alarms','tbtrish_planner',
+  'sc3_books','sc3_tbr','sc3_goal','sc3_notes','sc3_streak','sc3_lastread',
+  'sc3_currently','sc3_dnf','sc3_series','sc3_wishlist','sc3_mp',
+  'tbtrish_ht','tbtrish_wins','tbtrish_plan_init',
+  'tbtrish_growth','tbtrish_vidperf','tbtrish_pr','tbtrish_collabs',
+  'tbtrish_biolinks','tbtrish_bingo','tbtrish_goals','tbtrish_quicknotes'
+];
+function buildBackupBlob(){
+  const backup={_version:2,_date:new Date().toISOString()};
+  ALL_BACKUP_KEYS.forEach(k=>{const v=localStorage.getItem(k);if(v!=null)backup[k]=v;});
+  return new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+}
 function exportData(){
-  const KEYS=['tbtrish_done','tbtrish_fol','tbtrish_eng','tbtrish_arc',
-    'tbtrish_ideas','tbtrish_savedbooks','tbtrish_alarms','tbtrish_planner',
-    'sc3_books','sc3_tbr','sc3_goal','sc3_notes','sc3_streak','sc3_lastread',
-    'sc3_currently','sc3_dnf','sc3_series',
-    'tbtrish_ht','tbtrish_wins','tbtrish_plan_init'];
-  const backup={_version:1,_date:new Date().toISOString()};
-  KEYS.forEach(k=>{const v=localStorage.getItem(k);if(v!=null)backup[k]=v;});
-  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+  const blob=buildBackupBlob();
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='titlesbytrish-backup-'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
   toast('✦ Backup downloaded!');
+}
+async function shareData(){
+  const blob=buildBackupBlob();
+  const file=new File([blob],'titlesbytrish-backup-'+new Date().toISOString().slice(0,10)+'.json',{type:'application/json'});
+  if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+    try{
+      await navigator.share({files:[file],title:'TitlesByTrish Backup',text:'My TitlesByTrish app data'});
+      toast('✦ Shared! Open on your other device and tap Restore Backup 🖤');
+    }catch(e){if(e.name!=='AbortError')exportData();}
+  } else {
+    exportData();
+    toast('✦ Backup saved — move it to your other device via iCloud or Files 🖤');
+  }
 }
 function importData(e){
   const file=e.target.files[0];if(!file)return;
