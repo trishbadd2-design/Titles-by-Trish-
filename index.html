@@ -858,6 +858,11 @@ canvas{width:100%!important;}
     <div class="label-sm">Saved Ideas</div>
     <div id="saved-ideas" style="margin-top:8px;"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:8px 0;">No saved ideas yet</div></div>
   </div>
+
+  <div class="card-box" style="margin-top:16px;">
+    <div class="label-sm" style="margin-bottom:12px;">📺 Content Series Ideas — Keep People Coming Back</div>
+    <div id="series-ideas-list"></div>
+  </div>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -2315,6 +2320,32 @@ function setIdeaFilter(f,btn){
   btn.classList.add('active');
 }
 
+const SERIES_IDEAS=[
+  {id:'si1',title:'📊 The Mind Scale Files',desc:'A recurring deep-dive where you assign a book an official Mind Scale rating with evidence — like a "case file." Post one every 2 weeks.',hook:'"Opening the case file on [Book]. Evidence of psychological damage follows."',why:'Builds brand identity around your rating system. Viewers tune in to see how you rate the next one.'},
+  {id:'si2',title:'📚 Dark Book Club',desc:'Pick one book per month for you and your audience to read together. Do check-in videos at 25%, 50%, 75%, then a finale reaction. Ask viewers to comment their chapter reactions.',hook:'"This month\'s Dark Book Club pick is [Book]. You have 30 days. No excuses."',why:'Drives consistent engagement for a full month. People follow to see your reactions.'},
+  {id:'si3',title:'🔬 Author Autopsy',desc:'Go deep on one author\'s full catalog — rank all their books, find patterns in their writing style, talk about what makes them genius or messy.',hook:'"I read every single book [Author] has ever written. Here\'s my verdict."',why:'Long-form content that positions you as the expert. Fans of that author flood your comments.'},
+  {id:'si4',title:'🆚 BookTok vs Trish',desc:'A series where you read the most hyped BookTok books and give your completely honest verdict. Did the hype lie? Did it deliver? The rating reveal IS the series.',hook:'"BookTok said this was a 5 star masterpiece. I read it. Here\'s the truth."',why:'Controversy drives comments. People defend their favorites — your comments go crazy.'},
+  {id:'si5',title:'😈 Villain Era',desc:'One video per villain — analyzing what makes the best villains in dark fiction tick. What\'s their psychology? Why do they work? Could you relate to them?',hook:'"Today we\'re diagnosing [Villain]. Spoiler: I completely understand their choices."',why:'Niche enough to feel special, broad enough to cover many books. Highly shareable.'},
+  {id:'si6',title:'⛓️ The Recommendation Chain',desc:'"If you liked [Book], read [Book], then [Book]." Build chains of 3–4 books that escalate in darkness. Each chain is one video.',hook:'"Start here. Then it gets worse. You asked for this."',why:'"If you liked X" is the most-shared format on BookTok. People tag friends constantly.'},
+  {id:'si7',title:'💀 Trauma Tier List',desc:'Rank books from "I\'m fine" to "Need Therapy" using your Mind Scale. Do it by genre, by author, by trope. Update it as you read more.',hook:'"Updating my trauma tier list. New victims have been added."',why:'Tier lists go viral. The format is designed to generate debate in comments.'},
+  {id:'si8',title:'🕵️ The Backlist Dig',desc:'Find underrated dark fiction published before BookTok existed — books that deserve an audience but never got one. You\'re the one bringing them back.',hook:'"This book came out in [year], nobody talked about it, and it is genuinely unhinged."',why:'Sets you apart from everyone covering the same 10 hyped books. Builds a reputation for taste.'},
+];
+function renderSeriesIdeas(){
+  const el=document.getElementById('series-ideas-list');if(!el)return;
+  el.innerHTML=SERIES_IDEAS.map(s=>`<div class="tip-stage">
+    <div class="tip-stage-hdr" onclick="toggleTipSection('si-body-${s.id}',this)">
+      <span>${s.title}</span><span id="tip-arrow-si-body-${s.id}">▸</span>
+    </div>
+    <div class="tip-stage-body" id="si-body-${s.id}">
+      <div style="font-size:15px;color:#fff;margin-bottom:8px;line-height:1.6;">${s.desc}</div>
+      <div style="font-size:14px;color:var(--gold-dim);font-style:italic;margin-bottom:8px;">Hook: ${s.hook}</div>
+      <div style="font-size:13px;color:var(--text-dim);border-top:1px solid var(--border);padding-top:8px;"><strong style="color:var(--text);">Why it works:</strong> ${s.why}</div>
+    </div>
+  </div>`).join('');
+}
+document.addEventListener('DOMContentLoaded',renderSeriesIdeas);
+setTimeout(renderSeriesIdeas,800);
+
 function generateIdea(){
   const pool=ideaFilter==='all'?ideas:ideas.filter(i=>i.genre===ideaFilter);
   if(!pool.length)return;
@@ -2942,6 +2973,7 @@ function scRenderTBR() {
   if (!scTBR.length) { l.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">TBR pile is empty!</div>'; return; }
   l.innerHTML = scTBR.map(t => `
     <div class="sc-tbr-card">
+      ${t.coverUrl?`<img src="${t.coverUrl}" style="width:52px;height:76px;object-fit:cover;border-radius:3px;flex-shrink:0;border:1px solid var(--border);" onerror="this.style.display='none'"/>`:''}
       <div style="flex:1;min-width:0;">
         <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--text);">${t.title}</div>
         <div style="font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);">${t.author}</div>
@@ -3167,9 +3199,10 @@ function scSaveBook() {
     const title = document.getElementById('sc-f-tbr-title').value.trim();
     const author = document.getElementById('sc-f-tbr-author').value.trim();
     if (!title || !author) { toast('Title and author are required!'); return; }
-    const item = { id: eid || Date.now().toString(), title, author, interest: scSelectedInterest, why: document.getElementById('sc-f-why').value, priority: document.getElementById('sc-f-priority').value };
+    const item = { id: eid || Date.now().toString(), title, author, interest: scSelectedInterest, why: document.getElementById('sc-f-why').value, priority: document.getElementById('sc-f-priority').value, coverUrl: _pendingCoverUrl||'' };
     if (eid) { const i = scTBR.findIndex(x => x.id === eid); if (i > -1) scTBR[i] = item; } else scTBR.unshift(item);
   }
+  _pendingCoverUrl='';
   scSave(); scRenderAll(); scCloseModal(); toast('✦ Book saved!');
 }
 
@@ -3842,13 +3875,14 @@ function addSeriesToTBR(seriesId,btn){
 function openPhotoScan(){
   document.getElementById('photo-overlay').classList.add('open');
   document.body.style.overflow='hidden';
-  document.getElementById('photo-hint').textContent='Take a photo or screenshot of a book — then type the title to search 🖤';
+  document.getElementById('photo-initial').style.display='block';
   document.getElementById('photo-preview').style.display='none';
   document.getElementById('photo-loading').style.display='none';
   document.getElementById('photo-search-row').style.display='none';
   document.getElementById('photo-search-input').value='';
   document.getElementById('photo-results').innerHTML='';
-  setTimeout(()=>document.getElementById('photo-file-input').click(),100);
+  document.getElementById('photo-hint').textContent='';
+  document.getElementById('photo-change-wrap').style.display='none';
 }
 function closePhotoScan(){
   document.getElementById('photo-overlay').classList.remove('open');
@@ -3859,13 +3893,14 @@ function handlePhotoSelected(event){
   if(!file)return;
   const url=URL.createObjectURL(file);
   document.getElementById('photo-preview-img').src=url;
+  document.getElementById('photo-initial').style.display='none';
   document.getElementById('photo-preview').style.display='block';
   document.getElementById('photo-results').innerHTML='';
   document.getElementById('photo-hint').textContent='';
   document.getElementById('photo-search-input').value='';
   document.getElementById('photo-search-row').style.display='flex';
-  // Try OCR in background to pre-fill search box
-  document.getElementById('photo-loading').style.display='';
+  document.getElementById('photo-change-wrap').style.display='block';
+  document.getElementById('photo-loading').style.display='block';
   document.getElementById('photo-loading-text').textContent='Reading image text...';
   tryOCRPrefill(file);
   event.target.value='';
@@ -3915,7 +3950,8 @@ async function doPhotoSearch(){
     }
     const results=data.items.slice(0,5).map(item=>{
       const info=item.volumeInfo||{};
-      return{title:info.title||'Unknown',author:(info.authors||[]).join(', '),year:info.publishedDate?info.publishedDate.substring(0,4):''};
+      const thumb=(info.imageLinks||{}).thumbnail||'';
+      return{title:info.title||'Unknown',author:(info.authors||[]).join(', '),year:info.publishedDate?info.publishedDate.substring(0,4):'',coverUrl:thumb.replace('http://','https://')};
     });
     renderPhotoResults(results);
   }catch(e){
@@ -3924,18 +3960,23 @@ async function doPhotoSearch(){
   }
 }
 let _photoResults=[];
+let _pendingCoverUrl='';
 function renderPhotoResults(results){
   _photoResults=results;
   document.getElementById('photo-hint').textContent='Tap the right book to fill in the form 🖤';
   document.getElementById('photo-results').innerHTML=`<div style="font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:10px;">SELECT THE CORRECT BOOK</div>`+
-    results.map((r,i)=>`<div class="photo-result-card" onclick="selectPhotoResult(${i})">
-      <div class="photo-result-title">${r.title}</div>
-      ${r.author?`<div class="photo-result-author">by ${r.author}</div>`:''}
-      ${r.year?`<div class="photo-result-year">${r.year}</div>`:''}
+    results.map((r,i)=>`<div class="photo-result-card" onclick="selectPhotoResult(${i})" style="display:flex;gap:10px;align-items:center;">
+      ${r.coverUrl?`<img src="${r.coverUrl}" style="width:44px;height:64px;object-fit:cover;border-radius:2px;flex-shrink:0;" onerror="this.style.display='none'"/>`:''}
+      <div>
+        <div class="photo-result-title">${r.title}</div>
+        ${r.author?`<div class="photo-result-author">by ${r.author}</div>`:''}
+        ${r.year?`<div class="photo-result-year">${r.year}</div>`:''}
+      </div>
     </div>`).join('');
 }
 function selectPhotoResult(idx){
   const r=_photoResults[idx];if(!r)return;
+  _pendingCoverUrl=r.coverUrl||'';
   const mode=document.getElementById('sc-modal-mode').value;
   if(mode==='tbr'){
     if(r.title)document.getElementById('sc-f-tbr-title').value=r.title;
@@ -5091,7 +5132,8 @@ async function onBarcodeDetected(isbn){
       const book=data[key];
       const title=book.title||'';
       const author=book.authors?book.authors.map(a=>a.name).join(', '):'';
-      showScannerResult(title,author,isbn);
+      const coverUrl=book.cover?book.cover.medium||book.cover.small||'':'';
+      showScannerResult(title,author,isbn,coverUrl);
     } else {
       // Fallback: try Google Books API
       try{
@@ -5101,7 +5143,8 @@ async function onBarcodeDetected(isbn){
           const info=gData.items[0].volumeInfo;
           const title=info.title||'';
           const author=info.authors?info.authors.join(', '):'';
-          showScannerResult(title,author,isbn);
+          const thumb=(info.imageLinks||{}).thumbnail||'';
+          showScannerResult(title,author,isbn,thumb.replace('http://','https://'));
         } else {
           document.getElementById('scanner-hint').textContent='Book not found for ISBN '+isbn+'. Try scanning again or enter manually.';
           setTimeout(()=>startScanner(),2000);
@@ -5116,16 +5159,17 @@ async function onBarcodeDetected(isbn){
     setTimeout(()=>startScanner(),2500);
   }
 }
-function showScannerResult(title,author,isbn){
+function showScannerResult(title,author,isbn,coverUrl){
   document.getElementById('scanner-result-title').textContent=title||'Unknown Title';
   document.getElementById('scanner-result-author').textContent=author?'by '+author:'';
   document.getElementById('scanner-result-isbn').textContent='ISBN: '+isbn;
   document.getElementById('scanner-found').classList.add('show');
   document.getElementById('scanner-hint').textContent='Found it! 🖤 Use this book?';
-  window._scanResult={title,author};
+  window._scanResult={title,author,coverUrl:coverUrl||''};
 }
 function acceptScan(){
-  const {title,author}=window._scanResult||{};
+  const {title,author,coverUrl}=window._scanResult||{};
+  _pendingCoverUrl=coverUrl||'';
   const mode=document.getElementById('sc-modal-mode').value;
   if(mode==='tbr'){
     if(title)document.getElementById('sc-f-tbr-title').value=title;
@@ -5170,8 +5214,13 @@ function rescan(){
     <div class="photo-title">🖼️ Scan from Photo</div>
     <button class="photo-close" onclick="closePhotoScan()">✕</button>
   </div>
+  <!-- Initial state shown before any photo is picked -->
+  <div id="photo-initial" style="text-align:center;padding:30px 0 20px;">
+    <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;margin-bottom:24px;">Take a screenshot or photo of a book cover, then search for it. 🖤</div>
+    <label for="photo-file-input" class="btn btn-primary" style="font-size:16px;padding:14px 30px;display:inline-block;cursor:pointer;letter-spacing:2px;">📷 Choose a Photo</label>
+  </div>
   <div class="photo-preview" id="photo-preview"><img id="photo-preview-img" src="" alt=""/></div>
-  <div class="photo-hint" id="photo-hint">Take a photo or screenshot of a book — then type the title to search 🖤</div>
+  <div class="photo-hint" id="photo-hint"></div>
   <div class="photo-loading" id="photo-loading" style="display:none;">
     <div class="photo-loading-text" id="photo-loading-text">Reading image...</div>
   </div>
@@ -5180,9 +5229,10 @@ function rescan(){
     <button class="photo-search-btn" onclick="doPhotoSearch()">✦ Search for This Book</button>
   </div>
   <div class="photo-results" id="photo-results"></div>
-  <div style="margin-top:14px;width:100%;max-width:480px;">
-    <button class="btn" style="width:100%;" onclick="document.getElementById('photo-file-input').click()">📷 Choose a Different Photo</button>
+  <div id="photo-change-wrap" style="margin-top:14px;width:100%;max-width:480px;display:none;">
+    <label for="photo-file-input" class="btn" style="width:100%;display:block;text-align:center;cursor:pointer;">📷 Choose a Different Photo</label>
   </div>
+  <input type="file" id="photo-file-input" accept="image/*" capture="environment" style="display:none;" onchange="handlePhotoSelected(event)"/>
 </div>
 
 </body>
