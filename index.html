@@ -632,6 +632,31 @@ canvas{width:100%!important;}
 /* Custom goals */
 .goal-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;margin-bottom:8px;}
 .goal-item.done-goal .goal-text{text-decoration:line-through;color:var(--text-dim);}
+/* Favorite Quotes */
+.quote-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:10px;position:relative;}
+.quote-text{font-style:italic;font-size:15px;color:var(--text);line-height:1.7;margin-bottom:8px;}
+.quote-book{font-size:13px;color:var(--gold);font-family:'Cinzel',serif;letter-spacing:1px;}
+.quote-del{position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(200,80,80,.4);cursor:pointer;font-size:18px;line-height:1;padding:0;}
+.quote-del:hover{color:#e06060;}
+/* Stats Card Overlay */
+.stats-card-overlay{display:none;position:fixed;inset:0;z-index:750;background:rgba(5,3,8,.97);padding:24px;overflow-y:auto;flex-direction:column;align-items:center;}
+.stats-card-overlay.open{display:flex;}
+#stats-card-inner{background:linear-gradient(145deg,#0d0819,#1a0f2e);border:2px solid var(--gold);border-radius:16px;padding:28px 24px;max-width:340px;width:100%;text-align:center;}
+.scard-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+.scard-item{background:rgba(200,160,80,.06);border:1px solid rgba(200,160,80,.2);border-radius:8px;padding:12px 8px;}
+.scard-num{font-family:'Cinzel',serif;font-size:26px;color:var(--gold);margin-bottom:2px;}
+.scard-lbl{font-size:12px;color:var(--text-dim);}
+.scard-divider{width:60px;height:1px;background:var(--gold);margin:0 auto 14px;}
+/* Content Calendar */
+.ccal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:4px;}
+.ccal-dow{font-size:10px;color:var(--text-dim);text-align:center;padding:4px 0;font-family:'Cinzel',serif;letter-spacing:.3px;}
+.ccal-day{min-height:52px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:4px;cursor:pointer;transition:.15s;overflow:hidden;}
+.ccal-day:hover{border-color:var(--gold-dim);}
+.ccal-day.has-content{border-color:rgba(200,160,80,.5);background:rgba(200,160,80,.05);}
+.ccal-day.posted{border-color:rgba(80,200,80,.5);background:rgba(80,200,80,.05);}
+.ccal-day.empty-slot{background:transparent;border-color:transparent;cursor:default;}
+.ccal-daynum{font-size:11px;color:var(--text-dim);margin-bottom:2px;}
+.ccal-text{font-size:10px;color:var(--gold);line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;}
 
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -1089,6 +1114,7 @@ canvas{width:100%!important;}
     <button class="sc-tab" onclick="scSwitchTab('stats',this)">📊 Stats</button>
     <button class="sc-tab" onclick="scSwitchTab('goals',this)">🎯 Goals</button>
     <button class="sc-tab" onclick="scSwitchTab('scripts',this)">🎬 Scripts</button>
+    <button class="sc-tab" onclick="scSwitchTab('quotes',this)">💬 Quotes</button>
   </div>
 
   <!-- CURRENTLY READING -->
@@ -1141,6 +1167,7 @@ canvas{width:100%!important;}
   <!-- TBR -->
   <div id="sc-section-tbr" class="sc-section">
     <button class="sc-add-btn" onclick="scOpenAdd('tbr')">✦ Add to My TBR Pile</button>
+    <input class="sc-search" id="sc-tbr-search" placeholder="Search TBR..." oninput="scRenderTBR()" style="margin-top:8px;margin-bottom:4px;"/>
     <div id="tbr-genre-filters" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;margin-top:4px;"></div>
     <div id="sc-tbr-list"></div>
   </div>
@@ -1167,6 +1194,7 @@ canvas{width:100%!important;}
 
   <!-- STATS -->
   <div id="sc-section-stats" class="sc-section">
+    <button class="sc-add-btn" onclick="openStatsCard()" style="margin-bottom:14px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);">✨ View My Stats Card</button>
     <div class="card-box" style="margin-bottom:10px;"><div class="label-sm" style="margin-bottom:10px;">Genres</div><div id="sc-genre-chart"></div></div>
     <div class="card-box" style="margin-bottom:10px;"><div class="label-sm" style="margin-bottom:10px;">Star Ratings</div><div id="sc-rating-chart"></div></div>
     <div class="card-box" style="margin-bottom:10px;"><div class="label-sm" style="margin-bottom:10px;">Mind Scale Ratings</div><div id="sc-mind-chart"></div></div>
@@ -1195,6 +1223,13 @@ canvas{width:100%!important;}
       Books marked as "Must Feature" or "Worth a Video" automatically generate a script outline here using your Mind Scale rating. 🖤
     </div>
     <div id="sc-script-list"></div>
+  </div>
+
+  <!-- QUOTES -->
+  <div id="sc-section-quotes" class="sc-section">
+    <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">Save your favorite lines from any book — perfect for BookTok captions and story posts. 🖤</div>
+    <button class="sc-add-btn" onclick="openAddQuote()">✦ Add a Quote</button>
+    <div id="sc-quotes-list" style="margin-top:12px;"></div>
   </div>
 
 </div>
@@ -1585,6 +1620,7 @@ canvas{width:100%!important;}
     <button class="an-tab" id="an-tab-pr" onclick="switchAnTab('pr',this)">📬 PR & Deals</button>
     <button class="an-tab" id="an-tab-collabs" onclick="switchAnTab('collabs',this)">🤝 Collabs</button>
     <button class="an-tab" id="an-tab-biolink" onclick="switchAnTab('biolink',this)">🔗 Bio Link</button>
+    <button class="an-tab" id="an-tab-contentcal" onclick="switchAnTab('contentcal',this)">📅 Content Cal</button>
   </div>
 
   <!-- GROWTH LOG -->
@@ -1791,6 +1827,25 @@ canvas{width:100%!important;}
     <button class="sc-add-btn" onclick="saveBioLink()" style="margin-bottom:16px;">✦ Save &amp; Log This Change</button>
     <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">✦ CHANGE LOG</div>
     <div id="biolink-log"></div>
+  </div>
+
+  <!-- CONTENT CALENDAR -->
+  <div id="an-section-contentcal" class="an-section">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);">✦ CONTENT CALENDAR</div>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <button onclick="ccalPrev()" style="background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer;padding:4px 8px;">‹</button>
+        <span id="ccal-month-label" style="font-family:'Cinzel',serif;font-size:13px;color:var(--text);letter-spacing:1px;min-width:130px;text-align:center;"></span>
+        <button onclick="ccalNext()" style="background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer;padding:4px 8px;">›</button>
+      </div>
+    </div>
+    <div style="font-size:14px;color:var(--text-dim);margin-bottom:10px;line-height:1.6;">Tap any day to plan content. Long-tap a planned day to mark it posted. 🖤</div>
+    <div class="ccal-grid" id="ccal-dow-row"></div>
+    <div class="ccal-grid" id="ccal-grid"></div>
+    <div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-dim);"><div style="width:12px;height:12px;border-radius:2px;border:1px solid rgba(200,160,80,.5);background:rgba(200,160,80,.08);"></div>Planned</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-dim);"><div style="width:12px;height:12px;border-radius:2px;border:1px solid rgba(80,200,80,.5);background:rgba(80,200,80,.08);"></div>Posted ✓</div>
+    </div>
   </div>
 </div>
 
@@ -2042,6 +2097,8 @@ function showPanel(id){
   if(id==='spin'){initSpin();}
   if(id==='monthlypicks'){initMonthlyPicks();}
   if(id==='analytics'){initAnalytics();}
+  _currentPanel=id;
+  localStorage.setItem('tbtrish_lastpanel',id);
 }
 
 // ═══════════════════════════════════════════════
@@ -2927,6 +2984,7 @@ function scSwitchTab(t, el) {
   document.querySelectorAll('.sc-tab').forEach(e => e.classList.remove('active'));
   document.querySelectorAll('.sc-section').forEach(e => e.classList.remove('active'));
   el.classList.add('active');
+  if(t==='quotes')renderQuotes();
   document.getElementById('sc-section-' + t).classList.add('active');
   if (t === 'stats') scRenderStats();
   if (t === 'monthly') { scPopulateYears(); scRenderMonthly(); }
@@ -2990,7 +3048,10 @@ function scRenderTBR() {
     filterEl.innerHTML=genres.map(g=>`<button onclick="setTBRGenre('${g}',this)" style="padding:5px 12px;border-radius:20px;border:1px solid ${tbrGenreFilter===g?'var(--gold)':'var(--border)'};background:${tbrGenreFilter===g?'var(--gold-faint)':'transparent'};color:${tbrGenreFilter===g?'var(--gold)':'var(--text-dim)'};font-size:13px;cursor:pointer;white-space:nowrap;">${g==='all'?'All':g}</button>`).join('');
   }
   if (!scTBR.length) { l.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">TBR pile is empty!</div>'; return; }
-  const filtered = tbrGenreFilter==='all' ? scTBR : scTBR.filter(t=>(t.genre||'')=== tbrGenreFilter);
+  const tbrQ=(document.getElementById('sc-tbr-search')||{}).value||'';
+  const tbrSearchTerm=tbrQ.trim().toLowerCase();
+  let filtered = tbrGenreFilter==='all' ? scTBR : scTBR.filter(t=>(t.genre||'')=== tbrGenreFilter);
+  if(tbrSearchTerm)filtered=filtered.filter(t=>(t.title||'').toLowerCase().includes(tbrSearchTerm)||(t.author||'').toLowerCase().includes(tbrSearchTerm));
   if(!filtered.length){l.innerHTML=`<div style="text-align:center;padding:20px;color:var(--text-dim);font-style:italic;">No ${tbrGenreFilter} books in your TBR yet.</div>`;return;}
   l.innerHTML = filtered.map(t => `
     <div class="sc-tbr-card">
@@ -3332,6 +3393,8 @@ scheduleAlarmCheck();
 // Set today's date as default for follower log
 document.getElementById('fol-date').value=new Date().toISOString().split('T')[0];
 document.getElementById('win-date').value=new Date().toISOString().split('T')[0];
+// Restore last visited panel
+(function(){const lp=localStorage.getItem('tbtrish_lastpanel');if(lp&&document.getElementById('panel-'+lp))showPanel(lp);})();
 // ── BACKUP / RESTORE ──
 const ALL_BACKUP_KEYS=[
   'tbtrish_done','tbtrish_fol','tbtrish_eng','tbtrish_arc',
@@ -3340,7 +3403,8 @@ const ALL_BACKUP_KEYS=[
   'sc3_currently','sc3_dnf','sc3_series','sc3_wishlist','sc3_mp',
   'tbtrish_ht','tbtrish_wins','tbtrish_plan_init',
   'tbtrish_growth','tbtrish_vidperf','tbtrish_pr','tbtrish_collabs',
-  'tbtrish_biolinks','tbtrish_bingo','tbtrish_goals','tbtrish_quicknotes'
+  'tbtrish_biolinks','tbtrish_bingo','tbtrish_goals','tbtrish_quicknotes',
+  'tbtrish_quotes','tbtrish_contentcal'
 ];
 function buildBackupBlob(){
   const backup={_version:2,_date:new Date().toISOString()};
@@ -3457,6 +3521,154 @@ async function loadSyncCode(){
     stat.textContent='Couldn\'t find that code — double-check and try again.';
   }
 }
+
+// ══════════════════════════════════════════
+// FAVORITE QUOTES
+// ══════════════════════════════════════════
+let scQuotes=JSON.parse(localStorage.getItem('tbtrish_quotes')||'[]');
+function saveQuotes(){localStorage.setItem('tbtrish_quotes',JSON.stringify(scQuotes));}
+function openAddQuote(){
+  document.getElementById('q-text').value='';
+  document.getElementById('q-book').value='';
+  document.getElementById('q-author').value='';
+  document.getElementById('quote-add-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+  setTimeout(()=>document.getElementById('q-text').focus(),100);
+}
+function closeAddQuote(){
+  document.getElementById('quote-add-modal').style.display='none';
+  document.body.style.overflow='';
+}
+function saveQuote(){
+  const text=document.getElementById('q-text').value.trim();
+  if(!text){toast('Please enter a quote first');return;}
+  scQuotes.unshift({id:'q'+Date.now(),text,book:document.getElementById('q-book').value.trim(),author:document.getElementById('q-author').value.trim(),date:new Date().toLocaleDateString()});
+  saveQuotes();renderQuotes();closeAddQuote();toast('✦ Quote saved! 🖤');
+}
+function deleteQuote(id){scQuotes=scQuotes.filter(q=>q.id!==id);saveQuotes();renderQuotes();}
+function renderQuotes(){
+  const l=document.getElementById('sc-quotes-list');if(!l)return;
+  if(!scQuotes.length){l.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No quotes saved yet — add your first favorite line! 🖤</div>';return;}
+  l.innerHTML=scQuotes.map(q=>`
+    <div class="quote-card">
+      <button class="quote-del" onclick="deleteQuote('${q.id}')">✕</button>
+      <div class="quote-text">"${q.text.replace(/"/g,'&quot;')}"</div>
+      ${q.book?`<div class="quote-book">— ${q.author?q.author+', ':''}${q.book}</div>`:''}
+      <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:6px;">${q.date}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// STATS CARD
+// ══════════════════════════════════════════
+function openStatsCard(){
+  const ratings=scBooks.filter(b=>b.stars>0).map(b=>b.stars);
+  const avg=ratings.length?(Math.round(ratings.reduce((a,b)=>a+b,0)/ratings.length*10)/10):'—';
+  const gc={};scBooks.forEach(b=>{if(b.genre)gc[b.genre]=(gc[b.genre]||0)+1;});
+  const topGenre=Object.keys(gc).sort((a,b)=>gc[b]-gc[a])[0]||'—';
+  const curReading=JSON.parse(localStorage.getItem('sc3_currently')||'[]');
+  const curText=curReading.length?curReading.map(b=>b.title).join(' · '):'Nothing at the moment';
+  document.getElementById('scard-read').textContent=scBooks.length;
+  document.getElementById('scard-rating').textContent=avg!=='—'?avg+'⭐':avg;
+  document.getElementById('scard-streak').textContent=scStreak;
+  document.getElementById('scard-5star').textContent=scBooks.filter(b=>b.stars===5).length;
+  document.getElementById('scard-genre').textContent=topGenre;
+  document.getElementById('scard-reading').textContent=curText;
+  document.getElementById('stats-card-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeStatsCard(){
+  document.getElementById('stats-card-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+async function shareStatsCard(){
+  const readEl=document.getElementById('scard-read').textContent;
+  const ratingEl=document.getElementById('scard-rating').textContent;
+  const streakEl=document.getElementById('scard-streak').textContent;
+  const genreEl=document.getElementById('scard-genre').textContent;
+  const shareText=`📚 ${readEl} books read | ⭐ ${ratingEl} avg | 🔥 ${streakEl} day streak\nTop genre: ${genreEl}\n\nTracked with TitlesByTrish Command Center 🖤`;
+  if(navigator.share){try{await navigator.share({title:'My Reading Stats 🖤',text:shareText});}catch(e){}}
+  else{toast('📱 Screenshot the card to share!');}
+}
+
+// ══════════════════════════════════════════
+// CONTENT CALENDAR
+// ══════════════════════════════════════════
+let ccalData=JSON.parse(localStorage.getItem('tbtrish_contentcal')||'{}');
+let ccalYear=new Date().getFullYear(), ccalMonth=new Date().getMonth();
+let ccalSelectedDay=null;
+const CCAL_MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const CCAL_DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function saveCCalData(){localStorage.setItem('tbtrish_contentcal',JSON.stringify(ccalData));}
+function ccalKey(){return ccalYear+'-'+String(ccalMonth+1).padStart(2,'0');}
+function renderCCal(){
+  const monthData=ccalData[ccalKey()]||{};
+  document.getElementById('ccal-month-label').textContent=CCAL_MONTHS[ccalMonth]+' '+ccalYear;
+  document.getElementById('ccal-dow-row').innerHTML=CCAL_DAYS.map(d=>`<div class="ccal-dow">${d}</div>`).join('');
+  const firstDay=new Date(ccalYear,ccalMonth,1).getDay();
+  const days=new Date(ccalYear,ccalMonth+1,0).getDate();
+  let cells='';
+  for(let i=0;i<firstDay;i++)cells+=`<div class="ccal-day empty-slot"></div>`;
+  for(let d=1;d<=days;d++){
+    const dd=monthData[d];
+    const cls=dd?(dd.posted?'ccal-day posted':'ccal-day has-content'):'ccal-day';
+    cells+=`<div class="${cls}" onclick="openCCalDay(${d})"><div class="ccal-daynum">${d}</div>${dd?`<div class="ccal-text">${dd.text}</div>`:''}</div>`;
+  }
+  document.getElementById('ccal-grid').innerHTML=cells;
+}
+function ccalPrev(){if(ccalMonth===0){ccalMonth=11;ccalYear--;}else ccalMonth--;renderCCal();}
+function ccalNext(){if(ccalMonth===11){ccalMonth=0;ccalYear++;}else ccalMonth++;renderCCal();}
+function openCCalDay(day){
+  ccalSelectedDay=day;
+  const dd=(ccalData[ccalKey()]||{})[day];
+  document.getElementById('ccal-modal-title').textContent='📅 '+CCAL_MONTHS[ccalMonth]+' '+day;
+  document.getElementById('ccal-content-text').value=dd?dd.text:'';
+  document.getElementById('ccal-clear-btn').style.display=dd?'block':'none';
+  const pb=document.getElementById('ccal-posted-btn');
+  pb.style.display=dd?'block':'none';
+  if(dd){pb.textContent=dd.posted?'✓ Posted — Tap to Unmark':'✓ Mark as Posted';pb.style.background=dd.posted?'rgba(80,200,80,.25)':'';}
+  document.getElementById('ccal-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+  setTimeout(()=>document.getElementById('ccal-content-text').focus(),100);
+}
+function closeCCalModal(){document.getElementById('ccal-modal').style.display='none';document.body.style.overflow='';}
+function saveCCalDay(){
+  const text=document.getElementById('ccal-content-text').value.trim();
+  if(!text){toast('What are you posting?');return;}
+  const k=ccalKey();
+  if(!ccalData[k])ccalData[k]={};
+  const existing=ccalData[k][ccalSelectedDay]||{};
+  ccalData[k][ccalSelectedDay]={text,posted:existing.posted||false};
+  saveCCalData();renderCCal();closeCCalModal();toast('✦ Content planned! 🖤');
+}
+function clearCCalDay(){
+  const k=ccalKey();
+  if(ccalData[k])delete ccalData[k][ccalSelectedDay];
+  saveCCalData();renderCCal();closeCCalModal();
+}
+function toggleCCalPosted(){
+  const k=ccalKey();
+  if(!ccalData[k]||!ccalData[k][ccalSelectedDay])return;
+  ccalData[k][ccalSelectedDay].posted=!ccalData[k][ccalSelectedDay].posted;
+  saveCCalData();renderCCal();
+  toast(ccalData[k][ccalSelectedDay].posted?'✦ Marked as posted! 🎉':'Unmarked');
+  closeCCalModal();
+}
+
+// ══════════════════════════════════════════
+// SWIPE GESTURES (between panels)
+// ══════════════════════════════════════════
+const PANEL_ORDER=['calendar','followers','engagement','arc','ideas','books','schedule','planner','scorecard','captions','hashtags','wins','spin','monthlypicks','analytics'];
+let _currentPanel='calendar', _touchX=0, _touchY=0;
+document.addEventListener('touchstart',e=>{_touchX=e.touches[0].clientX;_touchY=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-_touchX;
+  const dy=e.changedTouches[0].clientY-_touchY;
+  if(Math.abs(dx)<90||Math.abs(dy)>Math.abs(dx)*0.65)return;
+  const cur=PANEL_ORDER.indexOf(_currentPanel);
+  const next=dx<0?Math.min(cur+1,PANEL_ORDER.length-1):Math.max(cur-1,0);
+  if(next!==cur)showPanel(PANEL_ORDER[next]);
+},{passive:true});
 
 // ══════════════════════════════════════════
 // CAPTION TEMPLATES
@@ -4358,6 +4570,7 @@ function switchAnTab(tab,btn){
   if(tab==='pr')renderPRList();
   if(tab==='collabs')renderCollabList();
   if(tab==='biolink')renderBioLink();
+  if(tab==='contentcal')renderCCal();
 }
 
 // ── Growth Log ──
@@ -5360,6 +5573,68 @@ function rescan(){
     <label for="photo-file-input" class="btn" style="width:100%;display:block;text-align:center;cursor:pointer;">📷 Choose a Different Photo</label>
   </div>
   <input type="file" id="photo-file-input" accept="image/*" capture="environment" style="display:none;" onchange="handlePhotoSelected(event)"/>
+</div>
+
+<!-- QUOTE ADD MODAL -->
+<div id="quote-add-modal" style="display:none;position:fixed;inset:0;z-index:650;background:rgba(5,3,8,.95);padding:24px;overflow-y:auto;flex-direction:column;align-items:center;">
+  <div style="width:100%;max-width:480px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;color:var(--gold);">💬 ADD A QUOTE</div>
+      <button onclick="closeAddQuote()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;">✕</button>
+    </div>
+    <div class="sc-field">
+      <label>The Quote</label>
+      <textarea id="q-text" rows="4" placeholder="Type the quote here..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;font-style:italic;resize:vertical;line-height:1.6;font-family:inherit;"></textarea>
+    </div>
+    <div class="sc-field"><label>Book Title</label><input id="q-book" type="text" placeholder="Book title..."/></div>
+    <div class="sc-field"><label>Author</label><input id="q-author" type="text" placeholder="Author name..."/></div>
+    <button class="btn btn-primary" onclick="saveQuote()" style="width:100%;padding:12px;font-size:15px;margin-top:8px;">✦ Save Quote</button>
+  </div>
+</div>
+
+<!-- STATS CARD OVERLAY -->
+<div id="stats-card-overlay" class="stats-card-overlay">
+  <div style="width:100%;max-width:380px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold);">✨ MY STATS CARD</div>
+      <button onclick="closeStatsCard()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;">✕</button>
+    </div>
+    <div id="stats-card-inner">
+      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;color:var(--gold);margin-bottom:4px;">✦ BOOKWORM ✦</div>
+      <div style="font-family:'IM Fell English SC',serif;font-size:26px;color:#fff;margin-bottom:18px;">TitlesByTrish</div>
+      <div class="scard-grid">
+        <div class="scard-item"><div class="scard-num" id="scard-read">0</div><div class="scard-lbl">Books Read</div></div>
+        <div class="scard-item"><div class="scard-num" id="scard-rating">—</div><div class="scard-lbl">Avg Rating ⭐</div></div>
+        <div class="scard-item"><div class="scard-num" id="scard-streak">0</div><div class="scard-lbl">Day Streak 🔥</div></div>
+        <div class="scard-item"><div class="scard-num" id="scard-5star">0</div><div class="scard-lbl">5-Star Books</div></div>
+      </div>
+      <div class="scard-divider"></div>
+      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;">TOP GENRE</div>
+      <div id="scard-genre" style="font-size:14px;color:var(--text);margin-bottom:14px;">—</div>
+      <div class="scard-divider"></div>
+      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;">CURRENTLY READING</div>
+      <div id="scard-reading" style="font-size:13px;color:var(--text-dim);font-style:italic;line-height:1.6;">—</div>
+      <div style="margin-top:18px;font-size:10px;color:rgba(200,160,80,.3);letter-spacing:1px;">TitlesByTrish Command Center 🖤</div>
+    </div>
+    <div style="margin-top:12px;text-align:center;font-size:13px;color:var(--text-dim);line-height:1.6;">📱 Screenshot this card and post it to your stories!</div>
+    <button class="btn" onclick="shareStatsCard()" style="width:100%;margin-top:10px;padding:12px;font-size:15px;background:rgba(200,160,80,.12);border-color:rgba(200,160,80,.35);color:var(--gold);">📤 Share Card</button>
+  </div>
+</div>
+
+<!-- CONTENT CALENDAR DAY MODAL -->
+<div id="ccal-modal" style="display:none;position:fixed;inset:0;z-index:650;background:rgba(5,3,8,.92);padding:24px;overflow-y:auto;flex-direction:column;align-items:center;">
+  <div style="width:100%;max-width:400px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;color:var(--gold);" id="ccal-modal-title">📅 PLAN CONTENT</div>
+      <button onclick="closeCCalModal()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;">✕</button>
+    </div>
+    <div class="sc-field"><label>What are you posting?</label><input id="ccal-content-text" type="text" placeholder="e.g. Review: Haunting of Hill House, TBR haul..."/></div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="btn btn-primary" onclick="saveCCalDay()" style="flex:1;padding:12px;font-size:15px;">✦ Save</button>
+      <button class="btn btn-danger" id="ccal-clear-btn" onclick="clearCCalDay()" style="padding:12px;font-size:15px;display:none;">🗑</button>
+    </div>
+    <button class="btn btn-green" id="ccal-posted-btn" onclick="toggleCCalPosted()" style="width:100%;margin-top:8px;padding:10px;font-size:15px;display:none;">✓ Mark as Posted</button>
+  </div>
 </div>
 
 <!-- SYNC CODE MODAL -->
