@@ -647,6 +647,7 @@ canvas{width:100%!important;}
     <button class="btn btn-primary" onclick="exportData()" style="font-size:16px;padding:6px 14px;">⬇ Backup My Data</button>
     <label class="btn" style="font-size:16px;padding:6px 14px;cursor:pointer;">⬆ Restore Backup<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
     <button class="btn" onclick="shareData()" style="font-size:16px;padding:6px 14px;background:rgba(90,32,128,.25);border-color:rgba(150,80,220,.4);color:rgba(200,160,255,.9);">📡 Share to Other Device</button>
+    <button class="btn" onclick="openSyncModal()" style="font-size:16px;padding:6px 14px;background:rgba(42,122,42,.2);border-color:rgba(80,200,80,.35);color:rgba(140,220,140,.95);">🔄 Sync Code</button>
   </div>
 </div>
 
@@ -3384,6 +3385,80 @@ function importData(e){
 }
 
 // ══════════════════════════════════════════
+// SYNC CODE (JSONBlob)
+// ══════════════════════════════════════════
+let _syncCode='';
+function openSyncModal(){
+  document.getElementById('sync-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+  document.getElementById('sync-code-result').style.display='none';
+  document.getElementById('sync-code-display').textContent='';
+  document.getElementById('sync-code-input').value='';
+  document.getElementById('sync-load-status').textContent='';
+  const btn=document.getElementById('sync-send-btn');
+  btn.disabled=false;btn.textContent='✦ Generate My Sync Code';
+  _syncCode='';
+}
+function closeSyncModal(){
+  document.getElementById('sync-modal').style.display='none';
+  document.body.style.overflow='';
+}
+async function createSyncCode(){
+  const btn=document.getElementById('sync-send-btn');
+  btn.disabled=true;btn.textContent='Uploading…';
+  try{
+    const backup={_version:2,_date:new Date().toISOString()};
+    ALL_BACKUP_KEYS.forEach(k=>{const v=localStorage.getItem(k);if(v!=null)backup[k]=v;});
+    const res=await fetch('https://jsonblob.com/api/jsonBlob',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify(backup)
+    });
+    if(!res.ok)throw new Error('upload failed');
+    const loc=res.headers.get('Location');
+    _syncCode=loc.split('/').pop();
+    document.getElementById('sync-code-display').textContent=_syncCode;
+    document.getElementById('sync-code-result').style.display='block';
+    btn.textContent='✦ Regenerate Code';btn.disabled=false;
+  }catch(e){
+    btn.disabled=false;btn.textContent='✦ Generate My Sync Code';
+    toast('Upload failed — check your connection');
+  }
+}
+function copySyncCode(){
+  if(!_syncCode)return;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(_syncCode).then(()=>toast('✦ Code copied!')).catch(fallbackCopy);
+  } else { fallbackCopy(); }
+  function fallbackCopy(){
+    const el=document.getElementById('sync-code-display');
+    const r=document.createRange();r.selectNode(el);
+    window.getSelection().removeAllRanges();window.getSelection().addRange(r);
+    try{document.execCommand('copy');toast('✦ Code copied!');}catch(e){toast('Tap and hold the code to copy');}
+  }
+}
+async function loadSyncCode(){
+  const code=document.getElementById('sync-code-input').value.trim();
+  const stat=document.getElementById('sync-load-status');
+  if(!code){stat.textContent='Please paste your sync code first.';return;}
+  stat.textContent='Loading your data…';
+  try{
+    const res=await fetch('https://jsonblob.com/api/jsonBlob/'+code,{
+      headers:{'Accept':'application/json'}
+    });
+    if(!res.ok)throw new Error('not found');
+    const data=await res.json();
+    if(!data._version){stat.textContent='That doesn\'t look like a valid sync code.';return;}
+    Object.keys(data).forEach(k=>{if(!k.startsWith('_'))localStorage.setItem(k,data[k]);});
+    stat.style.color='var(--gold)';
+    stat.textContent='✦ All synced! Reloading in a moment…';
+    setTimeout(()=>location.reload(),1500);
+  }catch(e){
+    stat.textContent='Couldn\'t find that code — double-check and try again.';
+  }
+}
+
+// ══════════════════════════════════════════
 // CAPTION TEMPLATES
 // ══════════════════════════════════════════
 const capTemplates=[
@@ -5285,6 +5360,39 @@ function rescan(){
     <label for="photo-file-input" class="btn" style="width:100%;display:block;text-align:center;cursor:pointer;">📷 Choose a Different Photo</label>
   </div>
   <input type="file" id="photo-file-input" accept="image/*" capture="environment" style="display:none;" onchange="handlePhotoSelected(event)"/>
+</div>
+
+<!-- SYNC CODE MODAL -->
+<div id="sync-modal" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(5,3,8,.97);padding:24px;overflow-y:auto;flex-direction:column;align-items:center;">
+  <div style="width:100%;max-width:480px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div style="font-family:'Cinzel',serif;font-size:16px;letter-spacing:3px;color:var(--gold);">🔄 SYNC BETWEEN DEVICES</div>
+      <button onclick="closeSyncModal()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;">✕</button>
+    </div>
+
+    <!-- SEND -->
+    <div class="card-box" style="margin-bottom:16px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:8px;">📤 STEP 1 — ON THIS DEVICE</div>
+      <div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:14px;">Tap below to upload your data and get a sync code. Then enter that code on your iPad.</div>
+      <button onclick="createSyncCode()" id="sync-send-btn" class="btn btn-primary" style="width:100%;padding:12px;font-size:15px;">✦ Generate My Sync Code</button>
+      <div id="sync-code-result" style="display:none;margin-top:16px;text-align:center;">
+        <div style="font-size:13px;color:var(--text-dim);margin-bottom:8px;">Your sync code — tap to copy:</div>
+        <div id="sync-code-display" onclick="copySyncCode()" style="font-family:'Cinzel',serif;font-size:28px;letter-spacing:6px;color:var(--gold);background:var(--bg3);border:2px solid var(--gold);border-radius:6px;padding:14px;cursor:pointer;word-break:break-all;"></div>
+        <div style="font-size:13px;color:var(--text-dim);margin-top:8px;">⚠️ This code expires in 24 hours.</div>
+      </div>
+    </div>
+
+    <!-- RECEIVE -->
+    <div class="card-box">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:8px;">📥 STEP 2 — ON YOUR iPAD</div>
+      <div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:14px;">Open the app on your iPad, tap 🔄 Sync Code, then paste the code here and tap Load.</div>
+      <div style="display:flex;gap:8px;">
+        <input id="sync-code-input" placeholder="Paste code here..." style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;font-family:'Cinzel',serif;letter-spacing:2px;"/>
+        <button onclick="loadSyncCode()" class="btn" style="padding:10px 16px;font-size:15px;white-space:nowrap;">✦ Load</button>
+      </div>
+      <div id="sync-load-status" style="margin-top:10px;font-size:14px;color:var(--text-dim);"></div>
+    </div>
+  </div>
 </div>
 
 </body>
