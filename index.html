@@ -3078,6 +3078,7 @@ function scRenderBooks() {
   g.innerHTML = filtered.map(b => `
     <div class="sc-book-card" onclick="scOpenDetail('${b.id}')">
       <div style="position:absolute;top:8px;right:8px;display:flex;gap:3px;">
+        <button onclick="event.stopPropagation();openRatingCard('${b.id}')" style="background:rgba(200,160,80,.12);color:var(--gold);border:1px solid rgba(200,160,80,.3);border-radius:2px;padding:2px 7px;font-size:14px;cursor:pointer;" title="Show Rating Card">📊</button>
         <button onclick="event.stopPropagation();scEditBook('${b.id}')" style="background:var(--gold-faint);color:var(--gold);border:1px solid var(--border);border-radius:2px;padding:2px 7px;font-size:16px;cursor:pointer;font-family:'IM Fell English SC',serif;">edit</button>
         <button onclick="event.stopPropagation();scDeleteBook('${b.id}')" style="background:transparent;color:var(--text-dim);border:none;border-radius:2px;padding:2px 6px;font-size:15px;cursor:pointer;">✕</button>
       </div>
@@ -3205,6 +3206,51 @@ function toggleBlueprint(){
   const open=body.style.display==='block';
   body.style.display=open?'none':'block';
   arrow.textContent=open?'▼':'▲';
+}
+
+// ══════════════════════════════════════════
+// RATING CARD
+// ══════════════════════════════════════════
+const MIND_SUBS=['','It made me think twice','Something feels off and I can\'t shake it','I\'m questioning everything I know','It rewired my entire brain','I need to talk to someone immediately'];
+function openRatingCard(id){
+  const b=scBooks.find(x=>x.id===id);if(!b)return;
+  const mindColor=b.mind?MIND_COLORS[b.mind]:'var(--gold)';
+  document.getElementById('rc-title').textContent=b.title;
+  document.getElementById('rc-author').textContent='by '+(b.author||'Unknown');
+  const mindEl=document.getElementById('rc-mind-name');
+  if(b.mind){
+    mindEl.textContent=MIND_NAMES[b.mind];
+    mindEl.style.color=mindColor;
+  } else {
+    mindEl.textContent='Not Yet Rated';
+    mindEl.style.color='rgba(255,255,255,.3)';
+  }
+  document.getElementById('rc-mind-sub').textContent=b.mind?MIND_SUBS[b.mind]:'';
+  document.getElementById('rc-stars').textContent=b.rating?'★'.repeat(b.rating)+'☆'.repeat(5-b.rating):'';
+  document.getElementById('rc-genre').textContent=(b.genre||'').toUpperCase();
+  // Tint the card border to the mind color
+  if(b.mind){
+    document.getElementById('rating-card-inner').style.border='2px solid '+mindColor;
+    document.getElementById('rating-card-inner').style.boxShadow='0 0 30px '+mindColor+'22';
+  } else {
+    document.getElementById('rating-card-inner').style.border='2px solid var(--gold)';
+    document.getElementById('rating-card-inner').style.boxShadow='none';
+  }
+  document.getElementById('rating-card-overlay').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeRatingCard(){
+  document.getElementById('rating-card-overlay').style.display='none';
+  document.body.style.overflow='';
+}
+async function shareRatingCard(){
+  const title=document.getElementById('rc-title').textContent;
+  const mind=document.getElementById('rc-mind-name').textContent;
+  const stars=document.getElementById('rc-stars').textContent;
+  const genre=document.getElementById('rc-genre').textContent;
+  const text=`📚 ${title}\n⚖️ Mind Scale: ${mind}\n${stars?'⭐ '+stars+'\n':''}📖 ${genre}\n\n#BookTok #TitlesByTrish #MindScale`;
+  if(navigator.share){try{await navigator.share({title:'My Rating — '+title,text});}catch(e){}}
+  else toast('📱 Screenshot the card to share it!');
 }
 
 // ══════════════════════════════════════════
@@ -3580,7 +3626,8 @@ function scOpenDetail(id) {
     ${b.similar?`<div class="sc-dl"><div class="sc-dl-label">Reminds Me Of</div><div class="sc-dl-value">${b.similar}</div></div>`:''}
     ${b.rec?`<div class="sc-dl"><div class="sc-dl-label">Would Trish Recommend?</div><div class="sc-dl-value">${b.rec}</div></div>`:''}
     ${b.review?`<div class="sc-dl"><div class="sc-dl-label">My Review</div><div class="sc-dl-value" style="font-style:italic;background:rgba(255,255,255,.03);padding:10px;border-radius:4px;border-left:2px solid var(--red);line-height:1.7;">"${b.review}"</div></div>`:''}
-    <div style="display:flex;gap:8px;margin-top:14px;">
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+      <button class="btn" style="flex:1;padding:10px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);font-size:15px;" onclick="scCloseDetail();openRatingCard('${b.id}')">📊 Rating Card</button>
       <button class="sc-btn-save" style="flex:1;" onclick="scCloseDetail();scEditBook('${b.id}')">Edit</button>
       <button class="sc-btn-cancel" onclick="scCloseDetail()">Close</button>
     </div>`;
@@ -5894,6 +5941,32 @@ function rescan(){
       <button class="btn btn-primary" onclick="saveCCalDay()" style="flex:1;padding:12px;font-size:15px;">✦ Save</button>
       <button class="btn btn-danger" id="ccal-clear-btn" onclick="clearCCalDay()" style="padding:12px;font-size:15px;display:none;">🗑</button>
     </div>
+  </div>
+</div>
+
+<!-- RATING CARD OVERLAY -->
+<div id="rating-card-overlay" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(5,3,8,.98);flex-direction:column;align-items:center;justify-content:center;padding:24px;">
+  <div style="width:100%;max-width:360px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);">📊 RATING CARD</div>
+      <button onclick="closeRatingCard()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;">✕</button>
+    </div>
+    <!-- THE CARD — screenshot this area -->
+    <div id="rating-card-inner" style="background:linear-gradient(160deg,#0c0818,#1c0f30,#0c0818);border:2px solid var(--gold);border-radius:12px;padding:28px 22px;text-align:center;position:relative;overflow:hidden;">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(200,160,80,.08),transparent 70%);pointer-events:none;"></div>
+      <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;color:rgba(200,160,80,.5);margin-bottom:16px;">✦ TitlesByTrish ✦</div>
+      <div id="rc-title" style="font-family:'Cinzel',serif;font-size:20px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:6px;"></div>
+      <div id="rc-author" style="font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:rgba(255,255,255,.55);margin-bottom:18px;"></div>
+      <div style="width:40px;height:1px;background:var(--gold);margin:0 auto 18px;opacity:.4;"></div>
+      <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:rgba(200,160,80,.6);margin-bottom:10px;">MIND SCALE RATING</div>
+      <div id="rc-mind-name" style="font-family:'Cinzel',serif;font-size:22px;letter-spacing:2px;margin-bottom:6px;"></div>
+      <div id="rc-mind-sub" style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:16px;font-style:italic;"></div>
+      <div id="rc-stars" style="font-size:22px;letter-spacing:3px;margin-bottom:18px;"></div>
+      <div style="width:40px;height:1px;background:var(--gold);margin:0 auto 14px;opacity:.4;"></div>
+      <div id="rc-genre" style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:rgba(200,160,80,.5);"></div>
+    </div>
+    <div style="margin-top:12px;text-align:center;font-size:13px;color:var(--text-dim);line-height:1.6;">📱 Screenshot the card above — then show it on camera or drop it into CapCut as a cut-in.</div>
+    <button class="btn" onclick="shareRatingCard()" style="width:100%;margin-top:10px;padding:12px;font-size:15px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);">📤 Share Card</button>
   </div>
 </div>
 
