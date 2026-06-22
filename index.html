@@ -3119,6 +3119,7 @@ function scRenderTBR() {
         ${t.why ? `<div style="font-size:14px;color:var(--text-dim);margin-top:4px;font-style:italic;">${t.why}</div>` : ''}
       </div>
       <div style="display:flex;gap:5px;flex-direction:column;align-items:flex-end;">
+        <button class="btn" style="font-size:13px;padding:4px 8px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);" onclick="openTBRScript('${t.id}')">📋 Script</button>
         <button class="btn btn-green" style="font-size:15px;padding:4px 8px;" onclick="scMoveTBR('${t.id}')">Mark Read</button>
         <button class="btn btn-danger" style="font-size:15px;padding:4px 8px;" onclick="scDeleteTBR('${t.id}')">Remove</button>
       </div>
@@ -3204,6 +3205,168 @@ function toggleBlueprint(){
   const open=body.style.display==='block';
   body.style.display=open?'none':'block';
   arrow.textContent=open?'▼':'▲';
+}
+
+// ══════════════════════════════════════════
+// TBR VIDEO SCRIPT GENERATOR
+// ══════════════════════════════════════════
+let _tbrScriptText='';
+function openTBRScript(id){
+  const book=scTBR.find(t=>t.id===id);
+  if(!book)return;
+  document.getElementById('tbr-script-title').textContent='📋 SCRIPT — '+book.title.toUpperCase();
+  const script=buildTBRScript(book);
+  _tbrScriptText=script.plain;
+  document.getElementById('tbr-script-body').innerHTML=script.html;
+  document.getElementById('tbr-script-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeTBRScript(){
+  document.getElementById('tbr-script-modal').style.display='none';
+  document.body.style.overflow='';
+}
+function copyTBRScript(){
+  if(navigator.clipboard){navigator.clipboard.writeText(_tbrScriptText).then(()=>toast('📋 Script copied!'));}
+  else{toast('Select all text and copy manually');}
+}
+function buildTBRScript(book){
+  const g=(book.genre||'').toLowerCase();
+  const T=book.title, A=book.author||'the author', G=book.genre||'dark fiction';
+  // Genre detection
+  const isHorror=g.includes('horror')||g.includes('folk horror');
+  const isThriller=g.includes('thriller')||g.includes('psychological');
+  const isTrueCrime=g.includes('true crime');
+  const isDarkFantasy=g.includes('fantasy');
+  const isHistorical=g.includes('historical');
+  const isRomance=g.includes('romance');
+  const isDNRA=book.series==='dnra';
+
+  // Hook options
+  let hooks=[];
+  if(isHorror)hooks=[
+    `"I just added a book to my TBR that I'm already scared to read and I need you to know about it."`,
+    `"This one has been recommended to me so many times and the reason why is genuinely disturbing."`,
+    `"I found my next book and something about it is already unsettling me before I've even opened it."`
+  ];
+  else if(isThriller)hooks=[
+    `"My next read is a psychological thriller and the premise alone has already given me trust issues."`,
+    `"I need to warn you — this book sounds like it will completely mess with my head and I'm adding it anyway."`,
+    `"POV: Me finding a thriller that sounds like it'll ruin me and immediately adding it to my TBR."`
+  ];
+  else if(isTrueCrime)hooks=[
+    `"I just found out about this case and I cannot stop thinking about it."`,
+    `"This true crime book has been sitting on my list and the details are genuinely unbelievable."`,
+    `"The story behind this book is something that should not have happened and yet here we are."`
+  ];
+  else if(isDarkFantasy)hooks=[
+    `"This dark fantasy just made it to the top of my TBR and the world-building sounds like nothing I've ever read."`,
+    `"I found my next fantasy read and it is dark, it is strange, and I am absolutely not okay with how excited I am."`,
+    `"A dark fantasy with [one wild premise element] just landed on my TBR and I need to talk about it."`
+  ];
+  else if(isHistorical)hooks=[
+    `"This historical fiction takes place in [era] and the premise is darker than anything I expected."`,
+    `"History is genuinely disturbing sometimes — this book is proof of that and it just made my TBR."`,
+    `"I found a historical fiction that sounds like it should not have been allowed to exist and it's perfect."`
+  ];
+  else if(isRomance)hooks=[
+    `"My next dark romance just made my TBR and the red flags in this synopsis are actually selling it to me."`,
+    `"This dark romance has been recommended to me multiple times and I finally understand why."`,
+    `"The romance in this book sounds chaotic and I am completely here for it."`
+  ];
+  else hooks=[
+    `"My next read just made it to my TBR and I need to tell you exactly why."`,
+    `"I just found a book that immediately jumped to the top of my reading list and here's why."`,
+    `"Adding this to my TBR right now and I genuinely cannot wait to get to it."`
+  ];
+
+  // Setup
+  const setup=`Title: ${T}\nAuthor: ${A}\nGenre: ${G}`;
+
+  // Points to cover
+  let points=[];
+  if(isHorror)points=[
+    `What the premise is — keep it to one sentence, just the disturbing core of it`,
+    `Why it's on your horror TBR specifically (author, recommendation, cover, vibes)`,
+    `What you're expecting — psychological, creature, atmospheric, survival horror?`,
+    `Whether it's based on anything real, a debut, or part of a series`,
+    `The ONE thing about it that already has you nervous`
+  ];
+  else if(isThriller)points=[
+    `The premise — specifically what makes it a psychological thriller (unreliable narrator, twist, gaslighting?)`,
+    `Why you picked it up — what pulled you in first (cover, synopsis, rec?)`,
+    `What kind of thrills you're expecting — slow burn, fast-paced, mind-bending?`,
+    `Any comp titles — "if you liked X you'll probably like this"`,
+    `Your prediction — do you think it'll hit or disappoint? Be honest`
+  ];
+  else if(isTrueCrime)points=[
+    `What happened — a brief factual summary of the case or story, no full deep dive`,
+    `Why this one affected you enough to add it to your list`,
+    `What angle the book takes — victim-focused, investigator POV, perpetrator psychology?`,
+    `Whether this is a well-known case or something more obscure`,
+    `What you hope to understand better after reading it`
+  ];
+  else if(isDarkFantasy)points=[
+    `The world — what's the setting and what makes it uniquely dark`,
+    `The magic system or supernatural element (briefly)`,
+    `The tone — grimdark, fairy tale gone wrong, mythological?`,
+    `Why this one over other fantasy reads on your list`,
+    `What you're hoping it delivers that typical fantasy doesn't`
+  ];
+  else if(isHistorical)points=[
+    `The era and setting — when, where, what was happening historically`,
+    `The dark element — what makes this more than just a history lesson`,
+    `Whether it's based on real events, real people, or entirely fictional`,
+    `Why this period of history specifically draws you in`,
+    `What you think it'll do emotionally — sad, disturbing, rage-inducing?`
+  ];
+  else points=[
+    `The premise — what's this book actually about in one sentence`,
+    `Why it made your TBR — what pulled you in first`,
+    `Genre and vibe — what should viewers expect emotionally`,
+    `Who recommended it or where you found it`,
+    `What you're hoping to feel after you finish it`
+  ];
+
+  // CTA options
+  const ctas=[
+    `"Have you read ${T}? Tell me in the comments — should I move it to the top of my TBR?"`,
+    `"What's on your TBR right now? Drop it below — I want to know what you're planning to read."`,
+    `"Follow to see my review when I actually read this — and hold me accountable to actually reading it."`,
+    `"If you've read this, NO SPOILERS but give me a one-word reaction in the comments."`
+  ];
+
+  // Haul note
+  const haulSection=`\n── BOOK HAUL FORMAT ──\nIf this is part of a haul:\n• Show all books first without revealing titles (hold them face down or fanned)\n• Reveal one at a time — cover toward camera, slight tilt\n• For each book: cover → one-sentence premise → why you got it\n• End line: "Which one should I read first? Vote in the comments."`;
+
+  const plain=`📋 VIDEO SCRIPT — ${T.toUpperCase()}\n\n`+
+    `── HOOK (pick one) ──\n${hooks.map((h,i)=>`Option ${i+1}: ${h}`).join('\n')}\n\n`+
+    `── SETUP ──\n${setup}\n\n`+
+    `── 5 THINGS TO COVER ──\n${points.map((p,i)=>`${i+1}. ${p}`).join('\n')}\n\n`+
+    `── MIND SCALE REVEAL ──\n[After you read it — show your rating card on screen. Pause. Let it land.]\n"Official TitlesByTrish Mind Scale rating for ${T}: [your rating]"\n\n`+
+    `── CTA (pick one) ──\n${ctas.join('\n')}`+
+    haulSection;
+
+  const secStyle=`font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin:14px 0 8px;`;
+  const lineStyle=`font-size:14px;color:var(--text-dim);padding:8px 12px;background:rgba(200,160,80,.04);border-left:2px solid var(--border);border-radius:0 3px 3px 0;margin-bottom:4px;line-height:1.6;`;
+  const optStyle=`font-size:14px;color:var(--text);padding:8px 12px;background:rgba(200,160,80,.07);border:1px solid var(--border);border-radius:4px;margin-bottom:6px;line-height:1.6;cursor:pointer;`;
+
+  const html=`
+    <div style="${secStyle}">HOOK — pick one, use as your first line</div>
+    ${hooks.map((h,i)=>`<div style="${optStyle}" onclick="navigator.clipboard&&navigator.clipboard.writeText(${JSON.stringify(h)}).then(()=>toast('Hook copied!'))">${i+1}. ${h}</div>`).join('')}
+    <div style="${secStyle}">SETUP — say this after your hook</div>
+    <div style="${lineStyle}">"${T} by ${A}. Genre: ${G}."</div>
+    <div style="${secStyle}">5 THINGS TO COVER</div>
+    ${points.map((p,i)=>`<div style="${lineStyle}"><b style="color:var(--text);">${i+1}.</b> ${p}</div>`).join('')}
+    <div style="${secStyle}">MIND SCALE REVEAL</div>
+    <div style="${lineStyle}">[After you read it — show your rating card on screen. Pause on it. Let it land.] <em>"Official TitlesByTrish Mind Scale rating for ${T}: ____"</em></div>
+    <div style="${secStyle}">CTA — pick one to end on</div>
+    ${ctas.map(c=>`<div style="${optStyle}" onclick="navigator.clipboard&&navigator.clipboard.writeText(${JSON.stringify(c)}).then(()=>toast('CTA copied!'))">${c}</div>`).join('')}
+    <div style="${secStyle}">BOOK HAUL FORMAT</div>
+    <div style="${lineStyle}">Show all books first without revealing titles → reveal one at a time, cover toward camera → for each: <em>cover reveal → one-sentence premise → why you got it</em> → End: <b style="color:var(--text);">"Which one should I read first?"</b></div>
+    <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:10px;text-align:center;">Tap any hook or CTA to copy it individually</div>
+  `;
+
+  return {plain,html};
 }
 function scRenderScripts() {
   const el = document.getElementById('sc-script-list');
@@ -5731,6 +5894,18 @@ function rescan(){
       <button class="btn btn-primary" onclick="saveCCalDay()" style="flex:1;padding:12px;font-size:15px;">✦ Save</button>
       <button class="btn btn-danger" id="ccal-clear-btn" onclick="clearCCalDay()" style="padding:12px;font-size:15px;display:none;">🗑</button>
     </div>
+  </div>
+</div>
+
+<!-- TBR VIDEO SCRIPT MODAL -->
+<div id="tbr-script-modal" style="display:none;position:fixed;inset:0;z-index:650;background:rgba(5,3,8,.96);padding:20px;overflow-y:auto;flex-direction:column;align-items:center;">
+  <div style="width:100%;max-width:520px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;color:var(--gold);" id="tbr-script-title">📋 VIDEO SCRIPT</div>
+      <button onclick="closeTBRScript()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;">✕</button>
+    </div>
+    <div id="tbr-script-body"></div>
+    <button class="btn" onclick="copyTBRScript()" style="width:100%;margin-top:14px;padding:12px;font-size:15px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);">📋 Copy Full Script</button>
   </div>
 </div>
 
