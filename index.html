@@ -3728,40 +3728,59 @@ function openSyncModal(){
   document.getElementById('sync-modal').style.display='flex';
   document.body.style.overflow='hidden';
   document.getElementById('sync-code-result').style.display='none';
+  document.getElementById('sync-code-error').style.display='none';
   document.getElementById('sync-code-display').textContent='';
   document.getElementById('sync-code-input').value='';
   document.getElementById('sync-load-status').textContent='';
   const btn=document.getElementById('sync-send-btn');
-  btn.disabled=false;btn.textContent='✦ Generate My Sync Code';
+  btn.disabled=false;btn.textContent='✦ Generate Sync Code';
   _syncCode='';
 }
 function closeSyncModal(){
   document.getElementById('sync-modal').style.display='none';
   document.body.style.overflow='';
 }
+async function syncViaAirdrop(){
+  const blob=buildBackupBlob();
+  const file=new File([blob],'titlesbytrish-sync-'+new Date().toISOString().slice(0,10)+'.json',{type:'application/json'});
+  if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+    try{
+      await navigator.share({files:[file],title:'TitlesByTrish Sync',text:'Open this on your iPad and tap Restore Backup 🖤'});
+    }catch(e){if(e.name!=='AbortError')toast('Sharing cancelled');}
+  } else {
+    // Fallback: download the file
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='titlesbytrish-sync.json';
+    a.click();
+    toast('Backup saved — move it to your iPad via iCloud Files');
+  }
+}
 async function createSyncCode(){
   const btn=document.getElementById('sync-send-btn');
+  const errEl=document.getElementById('sync-code-error');
   btn.disabled=true;btn.textContent='Uploading…';
+  errEl.style.display='none';
   try{
     const backup={_version:2,_date:new Date().toISOString()};
     ALL_BACKUP_KEYS.forEach(k=>{const v=localStorage.getItem(k);if(v!=null)backup[k]=v;});
-    // Generate a short memorable 6-char code (no 0/O/I/1 to avoid confusion)
-    const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let code='';for(let i=0;i<6;i++)code+=chars[Math.floor(Math.random()*chars.length)];
-    const res=await fetch('https://www.jsonstore.io/'+code,{
+    const body=JSON.stringify(backup);
+    // Try hastebin (reliable CORS, returns key in body)
+    const res=await fetch('https://hastebin.skyra.pw/documents',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(backup)
+      headers:{'Content-Type':'text/plain'},
+      body
     });
+    if(!res.ok)throw new Error('failed');
     const json=await res.json();
-    if(!json.ok)throw new Error('Storage failed');
-    _syncCode=code;
-    document.getElementById('sync-code-display').textContent=code;
+    if(!json.key)throw new Error('no key');
+    _syncCode=json.key;
+    document.getElementById('sync-code-display').textContent=json.key;
     document.getElementById('sync-code-result').style.display='block';
     btn.textContent='✦ Generate New Code';btn.disabled=false;
   }catch(e){
-    btn.disabled=false;btn.textContent='✦ Generate My Sync Code';
-    toast('Upload failed — check your connection and try again');
+    btn.disabled=false;btn.textContent='✦ Try Again';
+    errEl.style.display='block';
   }
 }
 function copySyncCode(){
@@ -3777,22 +3796,22 @@ function copySyncCode(){
   }
 }
 async function loadSyncCode(){
-  const code=document.getElementById('sync-code-input').value.trim().toUpperCase();
+  const code=document.getElementById('sync-code-input').value.trim().toLowerCase();
   const stat=document.getElementById('sync-load-status');
   if(!code){stat.textContent='Please enter your sync code first.';return;}
   stat.textContent='Loading your data…';stat.style.color='var(--text-dim)';
   try{
-    const res=await fetch('https://www.jsonstore.io/'+code,{headers:{'Accept':'application/json'}});
+    const res=await fetch('https://hastebin.skyra.pw/raw/'+code);
     if(!res.ok)throw new Error('not found');
-    const json=await res.json();
-    const data=json.result;
-    if(!data||!data._version){stat.textContent='Code not found — make sure you typed it correctly.';return;}
+    const text=await res.text();
+    const data=JSON.parse(text);
+    if(!data._version){stat.textContent='Code not found — double-check or generate a new one.';return;}
     Object.keys(data).forEach(k=>{if(!k.startsWith('_'))localStorage.setItem(k,data[k]);});
     stat.style.color='var(--gold)';
     stat.textContent='✦ All synced! Reloading…';
     setTimeout(()=>location.reload(),1500);
   }catch(e){
-    stat.textContent='Couldn\'t find that code — double-check and try again.';
+    stat.textContent='Code not found — double-check it, or use AirDrop instead.';
   }
 }
 
@@ -5990,24 +6009,37 @@ function rescan(){
       <button onclick="closeSyncModal()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;">✕</button>
     </div>
 
-    <!-- SEND -->
+    <!-- AIRDROP — PRIMARY METHOD -->
+    <div class="card-box" style="margin-bottom:16px;border-color:rgba(200,160,80,.4);background:rgba(200,160,80,.04);">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;">📡 METHOD 1 — AIRDROP (ALWAYS WORKS)</div>
+      <div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+        <b style="color:var(--text);">On your phone:</b> Tap the button below → your iPhone will show AirDrop. Tap your iPad name.<br>
+        <b style="color:var(--text);">On your iPad:</b> A file arrives — tap it → it opens the app → tap <b>⬆ Restore Backup</b>.
+      </div>
+      <button onclick="syncViaAirdrop()" class="btn btn-primary" style="width:100%;padding:12px;font-size:15px;">📡 Send to iPad via AirDrop</button>
+    </div>
+
+    <!-- CODE METHOD — SECONDARY -->
     <div class="card-box" style="margin-bottom:16px;">
-      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:8px;">📤 STEP 1 — ON THIS DEVICE</div>
-      <div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:14px;">Tap below to upload your data and get a sync code. Then enter that code on your iPad.</div>
-      <button onclick="createSyncCode()" id="sync-send-btn" class="btn btn-primary" style="width:100%;padding:12px;font-size:15px;">✦ Generate My Sync Code</button>
-      <div id="sync-code-result" style="display:none;margin-top:16px;text-align:center;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;">🔢 METHOD 2 — SYNC CODE</div>
+      <div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">Generate a code on this device, then type it on your iPad.</div>
+      <button onclick="createSyncCode()" id="sync-send-btn" class="btn" style="width:100%;padding:12px;font-size:15px;background:rgba(255,255,255,.04);border-color:var(--border);">✦ Generate Sync Code</button>
+      <div id="sync-code-result" style="display:none;margin-top:14px;text-align:center;">
         <div style="font-size:13px;color:var(--text-dim);margin-bottom:8px;">Your sync code — tap to copy:</div>
         <div id="sync-code-display" onclick="copySyncCode()" style="font-family:'Cinzel',serif;font-size:28px;letter-spacing:6px;color:var(--gold);background:var(--bg3);border:2px solid var(--gold);border-radius:6px;padding:14px;cursor:pointer;word-break:break-all;"></div>
-        <div style="font-size:13px;color:var(--text-dim);margin-top:8px;">⚠️ This code expires in 24 hours.</div>
+        <div style="font-size:13px;color:var(--text-dim);margin-top:8px;">⚠️ Expires in 24 hours. Open the app on iPad, tap 🔄 Sync Code, enter this code below.</div>
+      </div>
+      <div id="sync-code-error" style="display:none;margin-top:10px;font-size:14px;color:rgba(220,80,80,.9);line-height:1.6;padding:10px;background:rgba(220,80,80,.07);border-radius:4px;border:1px solid rgba(220,80,80,.2);">
+        ⚠️ Code generation failed — your connection may be blocking it. <b style="color:#fff;">Use AirDrop above</b> — it's guaranteed to work on iPhone + iPad.
       </div>
     </div>
 
     <!-- RECEIVE -->
     <div class="card-box">
-      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:8px;">📥 STEP 2 — ON YOUR iPAD</div>
-      <div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:14px;">Open the app on your iPad, tap 🔄 Sync Code, then paste the code here and tap Load.</div>
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:8px;">📥 LOAD A CODE (on your iPad)</div>
+      <div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">Already have a sync code? Enter it here.</div>
       <div style="display:flex;gap:8px;">
-        <input id="sync-code-input" placeholder="Paste code here..." style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;font-family:'Cinzel',serif;letter-spacing:2px;"/>
+        <input id="sync-code-input" placeholder="Enter code..." style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:16px;font-family:'Cinzel',serif;letter-spacing:3px;text-transform:uppercase;"/>
         <button onclick="loadSyncCode()" class="btn" style="padding:10px 16px;font-size:15px;white-space:nowrap;">✦ Load</button>
       </div>
       <div id="sync-load-status" style="margin-top:10px;font-size:14px;color:var(--text-dim);"></div>
