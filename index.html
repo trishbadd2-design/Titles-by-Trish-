@@ -657,6 +657,9 @@ canvas{width:100%!important;}
 .ccal-day.empty-slot{background:transparent;border-color:transparent;cursor:default;}
 .ccal-daynum{font-size:11px;color:var(--text-dim);margin-bottom:2px;}
 .ccal-text{font-size:10px;color:var(--gold);line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;}
+.ccal-status-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:3px;}
+.ccal-status-btn{padding:7px 10px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:13px;cursor:pointer;transition:.15s;}
+.ccal-status-btn.active{border-color:var(--gold);background:var(--gold-faint);color:var(--gold);}
 
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -1219,8 +1222,58 @@ canvas{width:100%!important;}
   </div>
 
   <div id="sc-section-scripts" class="sc-section">
+    <!-- REVIEW BLUEPRINT (always visible reference) -->
+    <div class="card-box" style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:2px 0;" onclick="toggleBlueprint()">
+        <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);">📋 REVIEW VIDEO BLUEPRINT</div>
+        <span id="blueprint-arrow" style="color:var(--gold);font-size:16px;">▼</span>
+      </div>
+      <div id="blueprint-body" style="display:none;margin-top:14px;">
+        <div style="font-size:13px;color:var(--text-dim);margin-bottom:12px;font-style:italic;">Hit these 5 things in every review — in this order:</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="background:rgba(200,160,80,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:10px 12px;">
+            <div style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:1px;margin-bottom:3px;">① HOOK — first 3 seconds</div>
+            <div style="font-size:14px;color:var(--text-dim);line-height:1.6;">One line that makes them stop scrolling. Lead with the emotion, not the plot. <em>"This book made me feel genuinely unsafe and I loved every second of it."</em></div>
+          </div>
+          <div style="background:rgba(200,160,80,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:10px 12px;">
+            <div style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:1px;margin-bottom:3px;">② SETUP — 10 seconds</div>
+            <div style="font-size:14px;color:var(--text-dim);line-height:1.6;">Title + author + genre + one-sentence premise. Keep it punchy. No synopsis recapping — just the vibe.</div>
+          </div>
+          <div style="background:rgba(200,160,80,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:10px 12px;">
+            <div style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:1px;margin-bottom:3px;">③ THE MOMENT — 15 seconds</div>
+            <div style="font-size:14px;color:var(--text-dim);line-height:1.6;">One specific scene, line, or twist that made you react (no spoilers). This is what drives saves and shares — people want to know what got you.</div>
+          </div>
+          <div style="background:rgba(200,160,80,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:10px 12px;">
+            <div style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:1px;margin-bottom:3px;">④ MIND SCALE RATING — 5 seconds</div>
+            <div style="font-size:14px;color:var(--text-dim);line-height:1.6;">Show your rating card. Pause on it. Let the number land. <em>"Official TitlesByTrish rating: Completely Unhinged."</em></div>
+          </div>
+          <div style="background:rgba(200,160,80,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:10px 12px;">
+            <div style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:1px;margin-bottom:3px;">⑤ CTA — last 5 seconds</div>
+            <div style="font-size:14px;color:var(--text-dim);line-height:1.6;">Ask ONE question. "Have you read this? What's your Mind Scale?" or "What genre do you want me to wreck next?" — drives comments.</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px;">
+          <div style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:1px;margin-bottom:8px;">GENRE-SPECIFIC TIPS</div>
+          <div style="font-size:14px;color:var(--text-dim);line-height:1.8;">
+            <b style="color:var(--text);">Psych Thriller:</b> Lead with the unreliable narrator or the moment you stopped trusting the protagonist.<br>
+            <b style="color:var(--text);">Horror:</b> Describe the physical feeling — did you feel sick? Scared? Unsafe? That reaction IS the content.<br>
+            <b style="color:var(--text);">True Crime:</b> Open with one fact that floors the viewer. Everything else is context.<br>
+            <b style="color:var(--text);">Dark Fantasy:</b> The world-building hook — one sentence about the setting that sounds like nothing else.<br>
+            <b style="color:var(--text);">Historical Fiction:</b> The era + the dark twist. <em>"1800s England + secret society + body count."</em>
+          </div>
+        </div>
+        <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
+          <div style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:1px;margin-bottom:8px;">BOOK HAUL FORMULA</div>
+          <div style="font-size:14px;color:var(--text-dim);line-height:1.7;">
+            Hook: show all books, don't reveal titles yet.<br>
+            For each book: cover reveal → one-sentence premise → why you got it.<br>
+            End with: "which one should I read first?" — best engagement driver for hauls.
+          </div>
+        </div>
+      </div>
+    </div>
     <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">
-      Books marked as "Must Feature" or "Worth a Video" automatically generate a script outline here using your Mind Scale rating. 🖤
+      Books marked "Must Feature!" or "Worth a Video" auto-generate script outlines below. 🖤
     </div>
     <div id="sc-script-list"></div>
   </div>
@@ -1842,9 +1895,11 @@ canvas{width:100%!important;}
     <div style="font-size:14px;color:var(--text-dim);margin-bottom:10px;line-height:1.6;">Tap any day to plan content. Long-tap a planned day to mark it posted. 🖤</div>
     <div class="ccal-grid" id="ccal-dow-row"></div>
     <div class="ccal-grid" id="ccal-grid"></div>
-    <div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;">
-      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-dim);"><div style="width:12px;height:12px;border-radius:2px;border:1px solid rgba(200,160,80,.5);background:rgba(200,160,80,.08);"></div>Planned</div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-dim);"><div style="width:12px;height:12px;border-radius:2px;border:1px solid rgba(80,200,80,.5);background:rgba(80,200,80,.08);"></div>Posted ✓</div>
+    <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-dim);"><div style="width:8px;height:8px;border-radius:50%;background:rgba(200,160,80,.7);"></div>Planning</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-dim);"><div style="width:8px;height:8px;border-radius:50%;background:rgba(80,140,220,.7);"></div>Filming</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-dim);"><div style="width:8px;height:8px;border-radius:50%;background:rgba(160,80,220,.7);"></div>Editing</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-dim);"><div style="width:8px;height:8px;border-radius:50%;background:rgba(80,200,80,.8);"></div>Posted</div>
     </div>
   </div>
 </div>
@@ -3143,6 +3198,13 @@ function scRenderStats() {
   scRenderChart('sc-source-chart', Object.entries(srcs).sort((a,b)=>b[1]-a[1]), Object.values(srcs)[0] || 1);
 }
 
+function toggleBlueprint(){
+  const body=document.getElementById('blueprint-body');
+  const arrow=document.getElementById('blueprint-arrow');
+  const open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  arrow.textContent=open?'▼':'▲';
+}
 function scRenderScripts() {
   const el = document.getElementById('sc-script-list');
   const featured = scBooks.filter(b => b.tiktok === 'Must Feature!' || b.tiktok === 'Worth a Video');
@@ -3473,20 +3535,23 @@ async function createSyncCode(){
   try{
     const backup={_version:2,_date:new Date().toISOString()};
     ALL_BACKUP_KEYS.forEach(k=>{const v=localStorage.getItem(k);if(v!=null)backup[k]=v;});
-    const res=await fetch('https://jsonblob.com/api/jsonBlob',{
+    // Generate a short memorable 6-char code (no 0/O/I/1 to avoid confusion)
+    const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code='';for(let i=0;i<6;i++)code+=chars[Math.floor(Math.random()*chars.length)];
+    const res=await fetch('https://www.jsonstore.io/'+code,{
       method:'POST',
-      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify(backup)
     });
-    if(!res.ok)throw new Error('upload failed');
-    const loc=res.headers.get('Location');
-    _syncCode=loc.split('/').pop();
-    document.getElementById('sync-code-display').textContent=_syncCode;
+    const json=await res.json();
+    if(!json.ok)throw new Error('Storage failed');
+    _syncCode=code;
+    document.getElementById('sync-code-display').textContent=code;
     document.getElementById('sync-code-result').style.display='block';
-    btn.textContent='✦ Regenerate Code';btn.disabled=false;
+    btn.textContent='✦ Generate New Code';btn.disabled=false;
   }catch(e){
     btn.disabled=false;btn.textContent='✦ Generate My Sync Code';
-    toast('Upload failed — check your connection');
+    toast('Upload failed — check your connection and try again');
   }
 }
 function copySyncCode(){
@@ -3498,24 +3563,23 @@ function copySyncCode(){
     const el=document.getElementById('sync-code-display');
     const r=document.createRange();r.selectNode(el);
     window.getSelection().removeAllRanges();window.getSelection().addRange(r);
-    try{document.execCommand('copy');toast('✦ Code copied!');}catch(e){toast('Tap and hold the code to copy');}
+    try{document.execCommand('copy');toast('✦ Code copied!');}catch(e){toast('Tap and hold the code to copy it');}
   }
 }
 async function loadSyncCode(){
-  const code=document.getElementById('sync-code-input').value.trim();
+  const code=document.getElementById('sync-code-input').value.trim().toUpperCase();
   const stat=document.getElementById('sync-load-status');
-  if(!code){stat.textContent='Please paste your sync code first.';return;}
-  stat.textContent='Loading your data…';
+  if(!code){stat.textContent='Please enter your sync code first.';return;}
+  stat.textContent='Loading your data…';stat.style.color='var(--text-dim)';
   try{
-    const res=await fetch('https://jsonblob.com/api/jsonBlob/'+code,{
-      headers:{'Accept':'application/json'}
-    });
+    const res=await fetch('https://www.jsonstore.io/'+code,{headers:{'Accept':'application/json'}});
     if(!res.ok)throw new Error('not found');
-    const data=await res.json();
-    if(!data._version){stat.textContent='That doesn\'t look like a valid sync code.';return;}
+    const json=await res.json();
+    const data=json.result;
+    if(!data||!data._version){stat.textContent='Code not found — make sure you typed it correctly.';return;}
     Object.keys(data).forEach(k=>{if(!k.startsWith('_'))localStorage.setItem(k,data[k]);});
     stat.style.color='var(--gold)';
-    stat.textContent='✦ All synced! Reloading in a moment…';
+    stat.textContent='✦ All synced! Reloading…';
     setTimeout(()=>location.reload(),1500);
   }catch(e){
     stat.textContent='Couldn\'t find that code — double-check and try again.';
@@ -3601,6 +3665,7 @@ const CCAL_MONTHS=['January','February','March','April','May','June','July','Aug
 const CCAL_DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function saveCCalData(){localStorage.setItem('tbtrish_contentcal',JSON.stringify(ccalData));}
 function ccalKey(){return ccalYear+'-'+String(ccalMonth+1).padStart(2,'0');}
+const CCAL_STATUS_COLOR={Planning:'rgba(200,160,80,.7)',Filming:'rgba(80,140,220,.7)',Editing:'rgba(160,80,220,.7)',Posted:'rgba(80,200,80,.8)'};
 function renderCCal(){
   const monthData=ccalData[ccalKey()]||{};
   document.getElementById('ccal-month-label').textContent=CCAL_MONTHS[ccalMonth]+' '+ccalYear;
@@ -3611,48 +3676,55 @@ function renderCCal(){
   for(let i=0;i<firstDay;i++)cells+=`<div class="ccal-day empty-slot"></div>`;
   for(let d=1;d<=days;d++){
     const dd=monthData[d];
-    const cls=dd?(dd.posted?'ccal-day posted':'ccal-day has-content'):'ccal-day';
-    cells+=`<div class="${cls}" onclick="openCCalDay(${d})"><div class="ccal-daynum">${d}</div>${dd?`<div class="ccal-text">${dd.text}</div>`:''}</div>`;
+    const statusCls=dd?(dd.status==='Posted'?'posted':'has-content'):'';
+    const dotColor=dd&&dd.status?CCAL_STATUS_COLOR[dd.status]||'var(--gold)':'';
+    cells+=`<div class="ccal-day ${statusCls}" onclick="openCCalDay(${d})">
+      <div class="ccal-daynum">${d}${dd&&dd.status?`<span style="float:right;width:7px;height:7px;border-radius:50%;background:${dotColor};display:inline-block;margin-top:1px;"></span>`:''}</div>
+      ${dd?`<div class="ccal-text">${dd.type?dd.type.split(' ').slice(0,2).join(' ')+'<br>':''}<span style="color:var(--text-dim);">${dd.book||dd.text||''}</span></div>`:''}
+    </div>`;
   }
   document.getElementById('ccal-grid').innerHTML=cells;
 }
 function ccalPrev(){if(ccalMonth===0){ccalMonth=11;ccalYear--;}else ccalMonth--;renderCCal();}
 function ccalNext(){if(ccalMonth===11){ccalMonth=0;ccalYear++;}else ccalMonth++;renderCCal();}
+let _ccalSelectedStatus='Planning';
+function setCCalStatus(btn){
+  _ccalSelectedStatus=btn.dataset.s;
+  document.querySelectorAll('.ccal-status-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
 function openCCalDay(day){
   ccalSelectedDay=day;
+  _ccalSelectedStatus='Planning';
   const dd=(ccalData[ccalKey()]||{})[day];
   document.getElementById('ccal-modal-title').textContent='📅 '+CCAL_MONTHS[ccalMonth]+' '+day;
-  document.getElementById('ccal-content-text').value=dd?dd.text:'';
+  document.getElementById('ccal-type').value=dd?dd.type||'':'';
+  document.getElementById('ccal-book').value=dd?dd.book||'':'';
+  document.getElementById('ccal-hook').value=dd?dd.hook||'':'';
+  document.querySelectorAll('.ccal-status-btn').forEach(b=>{
+    b.classList.toggle('active',dd&&b.dataset.s===dd.status);
+  });
+  if(dd&&dd.status)_ccalSelectedStatus=dd.status;
   document.getElementById('ccal-clear-btn').style.display=dd?'block':'none';
-  const pb=document.getElementById('ccal-posted-btn');
-  pb.style.display=dd?'block':'none';
-  if(dd){pb.textContent=dd.posted?'✓ Posted — Tap to Unmark':'✓ Mark as Posted';pb.style.background=dd.posted?'rgba(80,200,80,.25)':'';}
   document.getElementById('ccal-modal').style.display='flex';
   document.body.style.overflow='hidden';
-  setTimeout(()=>document.getElementById('ccal-content-text').focus(),100);
+  setTimeout(()=>document.getElementById('ccal-type').focus(),100);
 }
 function closeCCalModal(){document.getElementById('ccal-modal').style.display='none';document.body.style.overflow='';}
 function saveCCalDay(){
-  const text=document.getElementById('ccal-content-text').value.trim();
-  if(!text){toast('What are you posting?');return;}
+  const type=document.getElementById('ccal-type').value;
+  const book=document.getElementById('ccal-book').value.trim();
+  const hook=document.getElementById('ccal-hook').value.trim();
+  if(!type&&!book){toast('Add at least a content type or book title');return;}
   const k=ccalKey();
   if(!ccalData[k])ccalData[k]={};
-  const existing=ccalData[k][ccalSelectedDay]||{};
-  ccalData[k][ccalSelectedDay]={text,posted:existing.posted||false};
+  ccalData[k][ccalSelectedDay]={type,book,hook,status:_ccalSelectedStatus,text:type||book};
   saveCCalData();renderCCal();closeCCalModal();toast('✦ Content planned! 🖤');
 }
 function clearCCalDay(){
   const k=ccalKey();
   if(ccalData[k])delete ccalData[k][ccalSelectedDay];
-  saveCCalData();renderCCal();closeCCalModal();
-}
-function toggleCCalPosted(){
-  const k=ccalKey();
-  if(!ccalData[k]||!ccalData[k][ccalSelectedDay])return;
-  ccalData[k][ccalSelectedDay].posted=!ccalData[k][ccalSelectedDay].posted;
-  saveCCalData();renderCCal();
-  toast(ccalData[k][ccalSelectedDay].posted?'✦ Marked as posted! 🎉':'Unmarked');
-  closeCCalModal();
+  saveCCalData();renderCCal();closeCCalModal();toast('Day cleared');
 }
 
 // ══════════════════════════════════════════
@@ -5623,17 +5695,42 @@ function rescan(){
 
 <!-- CONTENT CALENDAR DAY MODAL -->
 <div id="ccal-modal" style="display:none;position:fixed;inset:0;z-index:650;background:rgba(5,3,8,.92);padding:24px;overflow-y:auto;flex-direction:column;align-items:center;">
-  <div style="width:100%;max-width:400px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+  <div style="width:100%;max-width:420px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
       <div style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;color:var(--gold);" id="ccal-modal-title">📅 PLAN CONTENT</div>
       <button onclick="closeCCalModal()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;">✕</button>
     </div>
-    <div class="sc-field"><label>What are you posting?</label><input id="ccal-content-text" type="text" placeholder="e.g. Review: Haunting of Hill House, TBR haul..."/></div>
-    <div style="display:flex;gap:8px;margin-top:10px;">
+    <div class="sc-field">
+      <label>Content Type</label>
+      <select id="ccal-type" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;">
+        <option value="">— Choose type —</option>
+        <option>📖 Book Review</option>
+        <option>📚 TBR / Haul</option>
+        <option>💬 Discussion / Hot Take</option>
+        <option>✨ Recommendation</option>
+        <option>📬 ARC Review</option>
+        <option>🎬 B-Roll / Aesthetic</option>
+        <option>📊 Wrap-Up / Stats</option>
+        <option>❓ Q&amp;A / Story Time</option>
+        <option>📝 Unboxing</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="sc-field"><label>Book / Topic</label><input id="ccal-book" type="text" placeholder="Which book or topic?"/></div>
+    <div class="sc-field"><label>Hook Idea</label><input id="ccal-hook" type="text" placeholder="First line or concept to open with..."/></div>
+    <div class="sc-field">
+      <label>Status</label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;" id="ccal-status-btns">
+        <button class="ccal-status-btn" data-s="Planning" onclick="setCCalStatus(this)">💭 Planning</button>
+        <button class="ccal-status-btn" data-s="Filming" onclick="setCCalStatus(this)">🎥 Filming</button>
+        <button class="ccal-status-btn" data-s="Editing" onclick="setCCalStatus(this)">✂️ Editing</button>
+        <button class="ccal-status-btn" data-s="Posted" onclick="setCCalStatus(this)">✅ Posted</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
       <button class="btn btn-primary" onclick="saveCCalDay()" style="flex:1;padding:12px;font-size:15px;">✦ Save</button>
       <button class="btn btn-danger" id="ccal-clear-btn" onclick="clearCCalDay()" style="padding:12px;font-size:15px;display:none;">🗑</button>
     </div>
-    <button class="btn btn-green" id="ccal-posted-btn" onclick="toggleCCalPosted()" style="width:100%;margin-top:8px;padding:10px;font-size:15px;display:none;">✓ Mark as Posted</button>
   </div>
 </div>
 
