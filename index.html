@@ -660,6 +660,9 @@ canvas{width:100%!important;}
 .ccal-status-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:3px;}
 .ccal-status-btn{padding:7px 10px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:13px;cursor:pointer;transition:.15s;}
 .ccal-status-btn.active{border-color:var(--gold);background:var(--gold-faint);color:var(--gold);}
+.haul-src-btn{padding:7px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:13px;cursor:pointer;transition:.15s;white-space:nowrap;}
+.haul-src-btn:hover{border-color:var(--gold-dim);color:var(--text);}
+.haul-src-btn.active{border-color:var(--gold);background:var(--gold-faint);color:var(--gold);}
 
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -1501,6 +1504,39 @@ canvas{width:100%!important;}
 <!-- ═══════════════════════════════════════════ -->
 <div class="panel" id="panel-captions">
   <div class="section-title">✍️ Caption Templates</div>
+
+  <!-- BOOK HAUL GENERATOR -->
+  <div class="card-box" style="margin-bottom:16px;border-color:rgba(200,160,80,.35);background:rgba(200,160,80,.04);">
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">📚 BOOK HAUL CAPTION GENERATOR</div>
+    <div class="sc-field" style="margin-bottom:8px;">
+      <label>Where did you get the books?</label>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;" id="haul-source-btns">
+        <button class="haul-src-btn" data-src="Barnes &amp; Noble" onclick="setHaulSource(this)">🏪 Barnes &amp; Noble</button>
+        <button class="haul-src-btn" data-src="Book Outlet" onclick="setHaulSource(this)">📦 Book Outlet</button>
+        <button class="haul-src-btn" data-src="the library" onclick="setHaulSource(this)">🏛️ Library</button>
+        <button class="haul-src-btn" data-src="ThriftBooks" onclick="setHaulSource(this)">♻️ ThriftBooks</button>
+        <button class="haul-src-btn" data-src="Amazon" onclick="setHaulSource(this)">📬 Amazon</button>
+        <button class="haul-src-btn" data-src="a thrift store" onclick="setHaulSource(this)">🛍️ Thrift Store</button>
+        <button class="haul-src-btn" data-src="a used bookstore" onclick="setHaulSource(this)">📖 Used Bookstore</button>
+        <button class="haul-src-btn" data-src="Book of the Month" onclick="setHaulSource(this)">📬 Book of the Month</button>
+        <button class="haul-src-btn" data-src="an online order" onclick="setHaulSource(this)">🌐 Online Order</button>
+      </div>
+    </div>
+    <div class="sc-field" style="margin-bottom:10px;">
+      <label>How many books? (optional)</label>
+      <input id="haul-count" type="number" min="1" max="50" placeholder="e.g. 5" style="width:100px;"/>
+    </div>
+    <button class="btn btn-primary" onclick="generateHaulCaption()" style="width:100%;padding:12px;font-size:15px;">✦ Generate My Haul Caption</button>
+    <div id="haul-result" style="display:none;margin-top:14px;">
+      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;">CAPTION</div>
+      <div id="haul-caption-text" style="font-size:14px;color:var(--text);line-height:1.8;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px;white-space:pre-wrap;margin-bottom:8px;"></div>
+      <button class="btn" onclick="copyHaulCaption()" style="width:100%;margin-bottom:10px;padding:10px;font-size:15px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);">📋 Copy Caption</button>
+      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;">HASHTAGS</div>
+      <div id="haul-hashtag-text" style="font-size:14px;color:var(--text-dim);line-height:1.8;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px;white-space:pre-wrap;margin-bottom:8px;"></div>
+      <button class="btn" onclick="copyHaulHashtags()" style="width:100%;padding:10px;font-size:15px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);">🏷️ Copy Hashtags</button>
+    </div>
+  </div>
+
   <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
     <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
       Pre-written hooks, scripts, and CTAs for every video type. Tap any section to copy it. Replace the <span style="color:var(--gold);">[brackets]</span> with your details. 🖤
@@ -4077,6 +4113,124 @@ function copyFullCap(i){
   const c=capTemplates[i];
   const full=`${c.hook}\n\n${c.body}\n\n${c.cta}\n\n${c.hashtags}`;
   navigator.clipboard.writeText(full).then(()=>toast('✦ Full caption copied!'));
+}
+
+// ══════════════════════════════════════════
+// BOOK HAUL CAPTION GENERATOR
+// ══════════════════════════════════════════
+let _haulSource='';
+function setHaulSource(btn){
+  _haulSource=btn.dataset.src;
+  document.querySelectorAll('.haul-src-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function generateHaulCaption(){
+  if(!_haulSource){toast('Pick where you got the books first!');return;}
+  const count=parseInt(document.getElementById('haul-count').value)||0;
+  const countStr=count>0?`${count} book${count===1?'':'s'}`:'some books';
+  const src=_haulSource;
+
+  // Source-specific hooks & captions
+  const hooks={
+    'Barnes & Noble':[
+      `went to Barnes & Noble for ONE book. came out with ${countStr}. this is fine. 🖤`,
+      `me telling myself I'd just browse Barnes & Noble: 🤥\nme walking out with ${countStr}: 🛍️`,
+      `Barnes & Noble said come in. I said okay. They did not say how long. 📚`
+    ],
+    'Book Outlet':[
+      `Book Outlet said ${countStr} for the price of one and I said yes immediately. no hesitation. 📦`,
+      `I placed one Book Outlet order. ${count>4?`It was ${countStr}.`:'It was more books than I planned for.'} I regret nothing.`,
+      `new Book Outlet haul just dropped and my wallet is crying but my shelves are thriving 📦🖤`
+    ],
+    'the library':[
+      `reminder that the library exists and it's free and I got ${countStr} today and you should too 🏛️`,
+      `free books hit different. library haul — ${countStr} and zero dollars spent. 🖤`,
+      `the library understood the assignment. ${countStr} and not a single regret.`
+    ],
+    'ThriftBooks':[
+      `ThriftBooks haul just arrived — ${countStr} for basically nothing and the packaging was perfect 📦`,
+      `if you're not using ThriftBooks you are genuinely wasting money. ${countStr} arrived today. 🖤`,
+      `ThriftBooks said here are ${countStr} for the price of a coffee. I said thank you. 📚`
+    ],
+    'Amazon':[
+      `Amazon delivered ${countStr} and I may have a problem. a beautiful, well-curated problem. 📬`,
+      `the Amazon box arrived. it was heavier than expected. it was ${countStr}. I'm not sorry.`,
+      `one Amazon order. ${countStr}. my TBR is out of control and I'm at peace with that. 🖤`
+    ],
+    'a thrift store':[
+      `thrift store haul — ${countStr} and they were practically giving them away 🛍️🖤`,
+      `found ${countStr} at the thrift store today and the universe wants me to read dark fiction apparently`,
+      `thrift store said dark academia aesthetic for under $10 and I said absolutely 🖤`
+    ],
+    'a used bookstore':[
+      `used bookstore found — ${countStr} — and I could have stayed for hours honestly 📖`,
+      `there's a used bookstore near me and it is genuinely dangerous for my TBR. picked up ${countStr}. 🖤`,
+      `used bookstore haul — ${countStr} — the kind of place you go in for one thing and leave a different person`
+    ],
+    'Book of the Month':[
+      `Book of the Month pick just arrived and I cannot wait 📬🖤`,
+      `this month's Book of the Month selection is here and the cover alone sold me`,
+      `BOTM delivery day is genuinely my favorite day. let's talk about what I picked. 📚`
+    ],
+    'an online order':[
+      `online book haul — ${countStr} — and they're everything I wanted 📦🖤`,
+      `my online order arrived. ${countStr}. the TBR grows. I am not stopping.`,
+      `${countStr} arrived from my online haul and they all look incredible 🖤`
+    ]
+  };
+
+  const bodies={
+    'Barnes & Noble':`Here's what I got and why each one made it into my hands:\n\n[Book 1] — [one sentence on why you grabbed it]\n[Book 2] — [one sentence]\n[Book 3] — [one sentence]\n\nWas I supposed to leave with this many? No. Am I upset about it? Also no.`,
+    'Book Outlet':`Book Outlet is genuinely the best kept secret in the book community and I will not stop talking about it. Here's the haul:\n\n[Book 1] — [why you picked it]\n[Book 2] — [why you picked it]\n[Book 3] — [why you picked it]\n\nAll of these were discounted. All of them. 🖤`,
+    'the library':`Library card is doing the most right now. Here's what I checked out:\n\n[Book 1] — [why it caught your eye]\n[Book 2] — [why it caught your eye]\n[Book 3] — [why it caught your eye]\n\nFree. All free. The library wins every time.`,
+    'ThriftBooks':`ThriftBooks delivery = my version of a shopping spree. Here's what came in:\n\n[Book 1] — [brief reason]\n[Book 2] — [brief reason]\n[Book 3] — [brief reason]\n\nThe condition was great and they got here fast. 10/10 as always.`,
+    'Amazon':`The box arrived. Here's what was in it:\n\n[Book 1] — [why you ordered it]\n[Book 2] — [why you ordered it]\n[Book 3] — [why you ordered it]\n\nMy TBR said it didn't need more books. My Amazon cart disagreed. 🖤`,
+    'a thrift store':`Thrift store book sections are so underrated. Look what I found:\n\n[Book 1] — [where you found it / why you grabbed it]\n[Book 2] — [same]\n[Book 3] — [same]\n\nThrifted books just have a different energy. You know what I mean.`,
+    'a used bookstore':`Used bookstores are a whole experience and I found ${countStr} that needed to come home with me:\n\n[Book 1] — [what drew you to it]\n[Book 2] — [what drew you to it]\n[Book 3] — [what drew you to it]\n\nThis is why I can never just "browse."`,
+    'Book of the Month':`This month's pick is here and I need to talk about it.\n\n[Book title] — [one sentence on the premise and why you picked it over the other options]\n\nIf you're not on Book of the Month yet, the link is in my bio. 🖤`,
+    'an online order':`The package arrived and I'm obsessed with everything in it. Here's the full haul:\n\n[Book 1] — [why you ordered it]\n[Book 2] — [why you ordered it]\n[Book 3] — [why you ordered it]\n\nAll of these are going directly to the top of my TBR. 🖤`
+  };
+
+  const ctas=[
+    `Which one should I read first? Tell me in the comments. 👇`,
+    `Have you read any of these? No spoilers but give me one word. 🖤`,
+    `Follow for the reviews when I actually get to them — and hold me accountable. 📚`,
+    `Drop a 📚 if you want a full review of any of these.`
+  ];
+
+  const sourceHashtags={
+    'Barnes & Noble':'#BarnesAndNoble #BNFinds',
+    'Book Outlet':'#BookOutlet #BookOutletHaul',
+    'the library':'#LibraryHaul #LibraryFinds #FreeBooks',
+    'ThriftBooks':'#ThriftBooks #ThriftBooksHaul',
+    'Amazon':'#AmazonBooks #AmazonBookHaul',
+    'a thrift store':'#ThriftedBooks #ThriftStoreFinds #BookThrifting',
+    'a used bookstore':'#UsedBooks #UsedBookstore #SecondhandBooks',
+    'Book of the Month':'#BookOfTheMonth #BOTM #BookOfTheMonthClub',
+    'an online order':'#OnlineBookHaul #BookDelivery'
+  };
+
+  const haulHooks=hooks[src]||hooks['an online order'];
+  const hook=haulHooks[Math.floor(Math.random()*haulHooks.length)];
+  const body=bodies[src]||bodies['an online order'];
+  const cta=ctas[Math.floor(Math.random()*ctas.length)];
+  const srcTags=sourceHashtags[src]||'';
+
+  const caption=`${hook}\n\n${body}\n\n${cta}`;
+  const hashtags=`#BookTok #BookHaul #BookTokRecommendations ${srcTags} #DarkFiction #TitlesByTrish #BookstoreTour #BookCommunity #DarkBookTok #HorrorBookTok #ThrillerBookTok #NewBooks #BookstagramTok`;
+
+  document.getElementById('haul-caption-text').textContent=caption;
+  document.getElementById('haul-hashtag-text').textContent=hashtags;
+  document.getElementById('haul-result').style.display='block';
+  document.getElementById('haul-result').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function copyHaulCaption(){
+  const text=document.getElementById('haul-caption-text').textContent;
+  navigator.clipboard.writeText(text).then(()=>toast('📋 Caption copied!'));
+}
+function copyHaulHashtags(){
+  const text=document.getElementById('haul-hashtag-text').textContent;
+  navigator.clipboard.writeText(text).then(()=>toast('🏷️ Hashtags copied!'));
 }
 
 // ══════════════════════════════════════════
