@@ -1,0 +1,167 @@
+
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║           ShelfControl — BookTok Command Center              ║
+║                      Setup Guide                             ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+Welcome! You're about to have your own personal BookTok Command
+Center — all your books, content, hashtags, and captions in one
+place, working like a real app on your phone.
+
+This takes about 10 minutes. No coding needed.
+
+──────────────────────────────────────────────────────────────
+  STEP 1 — Download the file
+──────────────────────────────────────────────────────────────
+
+You should have received one file: ShelfControl.html
+
+Save it somewhere easy to find on your computer.
+
+
+──────────────────────────────────────────────────────────────
+  STEP 2 — Test it on your computer first
+──────────────────────────────────────────────────────────────
+
+Double-click ShelfControl.html. It will open in your browser
+(Chrome, Safari, Firefox — any of them work).
+
+A welcome screen will appear asking for your BookTok name and
+your hashtag. Fill those in and tap "Set Up My App."
+
+That's it — your app is now personalized. Take a look around!
+
+
+──────────────────────────────────────────────────────────────
+  STEP 3 — Put it online so you can use it on your phone
+──────────────────────────────────────────────────────────────
+
+GitHub Pages hosts your app for free. Here's how:
+
+  1. Go to github.com and create a free account
+     (use any email — you just need to be signed in)
+
+  2. Click the "+" button in the top right corner
+     → Select "New repository"
+
+  3. Name it anything you want (example: my-booktok-app)
+     → Set it to Public
+     → Click "Create repository"
+
+  4. Click "uploading an existing file"
+     → Drag your ShelfControl.html file into the upload box
+     → IMPORTANT: Before saving, rename it to:  index.html
+       (click the file name in the upload box and change it)
+     → Scroll down and click "Commit changes"
+
+  5. Go to Settings (top menu of your repository)
+     → Click "Pages" in the left sidebar
+     → Under "Branch" select "main" → click Save
+
+  6. Wait about 60 seconds, then refresh the page.
+     You'll see a green box with your app's link — something
+     like:  yourusername.github.io/my-booktok-app
+
+     That link is your app. Bookmark it!
+
+
+──────────────────────────────────────────────────────────────
+  STEP 4 — Add it to your phone home screen
+──────────────────────────────────────────────────────────────
+
+  On iPhone / iPad:
+  1. Open your app link in Safari (must be Safari, not Chrome)
+  2. Tap the Share button (the box with an arrow pointing up)
+  3. Scroll down and tap "Add to Home Screen"
+  4. Give it a name and tap "Add"
+
+  On Android:
+  1. Open your app link in Chrome
+  2. Tap the three dots menu (top right)
+  3. Tap "Add to Home screen"
+  4. Tap "Add"
+
+  Your app now lives on your home screen like a real app.
+  It works offline too — no wifi needed once it's installed.
+
+
+──────────────────────────────────────────────────────────────
+  STEP 5 — Sync to a second device (iPad, phone, etc.)
+──────────────────────────────────────────────────────────────
+
+Your app saves everything locally on your device. To move your
+data to another device:
+
+  1. Open your app and tap "Backup My Data"
+     → This downloads a small file with all your books,
+       content calendar, notes, and everything else
+
+  2. Use AirDrop (iPhone/iPad) or email/messages to send
+     that file to your other device
+
+  3. On the other device, open your app link and tap
+     "Restore Backup" → select the file
+
+  Done! Both devices now have the same data.
+
+
+──────────────────────────────────────────────────────────────
+  FREQUENTLY ASKED QUESTIONS
+──────────────────────────────────────────────────────────────
+
+Q: Will I lose my data if I clear my browser?
+A: Yes — your data is saved on your device, not the cloud.
+   Use "Backup My Data" regularly, just like saving a document.
+   Once a week is a good habit.
+
+Q: Can I change my name or hashtag later?
+A: Yes! Tap the small ⚙️ gear icon in the bottom right corner
+   of the app anytime.
+
+Q: Does this cost anything to keep running?
+A: No. GitHub Pages is free forever for public files like this.
+
+Q: Can I use this without putting it online?
+A: Yes! Just open the file directly in your browser on your
+   computer. The only downside is you can't use it on your
+   phone that way.
+
+Q: Something looks wrong / a feature isn't working.
+A: Try clearing your browser cache and reloading.
+   If that doesn't fix it, reach out to the creator.
+
+
+──────────────────────────────────────────────────────────────
+  WHAT'S INSIDE YOUR APP
+──────────────────────────────────────────────────────────────
+
+  📅  Content Calendar    — plan every video through year end
+  📖  Scorecard           — log every book with ratings,
+                            Mind Scale, genre, review & more
+  📚  TBR Pile            — your to-be-read list with
+                            auto-generated video scripts
+  📖  Where to Read       — tag books as Kindle, Audible,
+                            Spotify, Hoopla, Libby, or Physical
+  ✍️  Caption Generator   — ready-made captions for reviews,
+                            hauls, discussions & more
+  📦  Book Haul Captions  — source-tagged captions for Barnes
+                            & Noble, Book Outlet, Library, etc.
+  🏷️  Hashtag Sets        — curated tags by content type
+  📈  Follower Tracker    — log and watch your growth
+  🎯  Engagement Tracker  — track your video performance
+  📬  ARC & Collab Log    — manage every pitch and deadline
+  💡  Idea Generator      — never run out of content ideas
+  🏆  Wins Journal        — celebrate your milestones
+  🎡  Spin the Wheel      — let the app pick your next read
+  📊  Analytics           — monthly stats and growth charts
+  🔄  Backup & Sync       — export and restore your data
+
+
+──────────────────────────────────────────────────────────────
+
+  Created by TitlesByTrish
+  Questions? Find me on TikTok @TitlesByTrish 🖤
+
+──────────────────────────────────────────────────────────────
