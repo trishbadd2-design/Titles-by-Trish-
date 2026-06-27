@@ -697,6 +697,12 @@ canvas{width:100%!important;}
 .setup-go-btn:hover{background:rgba(200,160,80,.2);}
 .setup-note{font-size:12px;color:rgba(255,255,255,.35);margin-top:20px;line-height:1.6;}
 .setup-edit-btn{position:fixed;bottom:24px;right:20px;z-index:800;background:var(--bg3);border:1px solid var(--border);border-radius:50%;width:38px;height:38px;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-dim);}
+/* Theme swatches */
+.setup-theme-label{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:var(--gold-dim);display:block;margin-bottom:10px;text-align:left;}
+.theme-swatches{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:20px;}
+.theme-swatch{width:38px;height:38px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.15s;position:relative;}
+.theme-swatch.selected{border-color:#fff;transform:scale(1.15);}
+.theme-swatch span{display:none;}
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
@@ -717,6 +723,18 @@ canvas{width:100%!important;}
       <div class="setup-tag-row">
         <div class="setup-tag-prefix">#</div>
         <input id="setup-tag" type="text" placeholder="e.g. DarkReadsWithSarah" autocomplete="off" />
+      </div>
+    </div>
+    <div style="margin-bottom:4px;">
+      <span class="setup-theme-label">Choose Your Color</span>
+      <div class="theme-swatches" id="theme-swatches">
+        <div class="theme-swatch selected" data-theme="gold"     style="background:#c8a050;" title="Dark Gold"><span>Dark Gold</span></div>
+        <div class="theme-swatch"          data-theme="crimson"  style="background:#cc4444;" title="Dark Crimson"><span>Dark Crimson</span></div>
+        <div class="theme-swatch"          data-theme="amethyst" style="background:#9b59b6;" title="Dark Amethyst"><span>Dark Amethyst</span></div>
+        <div class="theme-swatch"          data-theme="teal"     style="background:#2ab5b5;" title="Dark Teal"><span>Dark Teal</span></div>
+        <div class="theme-swatch"          data-theme="rose"     style="background:#c45c8a;" title="Dark Rose"><span>Dark Rose</span></div>
+        <div class="theme-swatch"          data-theme="silver"   style="background:#a0a8b8;" title="Dark Silver"><span>Dark Silver</span></div>
+        <div class="theme-swatch"          data-theme="emerald"  style="background:#3a9a5c;" title="Dark Emerald"><span>Dark Emerald</span></div>
       </div>
     </div>
     <button class="setup-go-btn" onclick="completeSetup()">✦ Set Up My App</button>
@@ -5977,6 +5995,43 @@ function rescan(){
   startScanner();
 }
 
+/* ── THEME ENGINE ── */
+const THEMES = {
+  gold:     { gold:'200,160,80',  red:'139,26,26',   purple:'90,32,128'  },
+  crimson:  { gold:'204,68,68',   red:'160,30,30',   purple:'120,40,40'  },
+  amethyst: { gold:'155,89,182',  red:'100,40,160',  purple:'80,30,140'  },
+  teal:     { gold:'42,181,181',  red:'20,120,130',  purple:'30,100,120' },
+  rose:     { gold:'196,92,138',  red:'160,50,100',  purple:'130,40,90'  },
+  silver:   { gold:'160,168,184', red:'100,110,130', purple:'80,90,120'  },
+  emerald:  { gold:'58,154,92',   red:'30,110,60',   purple:'40,100,70'  },
+};
+let APP_THEME = localStorage.getItem('booktok_setup_theme') || 'gold';
+
+function applyTheme(t) {
+  const c = THEMES[t] || THEMES.gold;
+  const r = document.documentElement.style;
+  r.setProperty('--gold',      `rgb(${c.gold})`);
+  r.setProperty('--gold-dim',  `rgba(${c.gold},.85)`);
+  r.setProperty('--gold-faint',`rgba(${c.gold},.1)`);
+  r.setProperty('--border',    `rgba(${c.gold},.18)`);
+  r.setProperty('--border-hi', `rgba(${c.gold},.45)`);
+  r.setProperty('--red',       `rgb(${c.red})`);
+  r.setProperty('--red-dim',   `rgba(${c.red},.4)`);
+  r.setProperty('--purple',    `rgb(${c.purple})`);
+}
+function selectTheme(el) {
+  document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  APP_THEME = el.dataset.theme;
+  applyTheme(APP_THEME);
+}
+// Wire up swatch clicks
+document.querySelectorAll('.theme-swatch').forEach(s => s.addEventListener('click', () => selectTheme(s)));
+// Apply saved theme on load
+applyTheme(APP_THEME);
+// Mark saved swatch as selected
+document.querySelectorAll('.theme-swatch').forEach(s => s.classList.toggle('selected', s.dataset.theme === APP_THEME));
+
 /* ── SETUP FUNCTIONS ── */
 function completeSetup() {
   const name = document.getElementById('setup-name').value.trim();
@@ -5984,8 +6039,9 @@ function completeSetup() {
   if (!name) { document.getElementById('setup-name').focus(); return; }
   APP_NAME = name;
   APP_TAG  = tag;
-  localStorage.setItem('booktok_setup_name', name);
-  localStorage.setItem('booktok_setup_tag',  tag);
+  localStorage.setItem('booktok_setup_name',  name);
+  localStorage.setItem('booktok_setup_tag',   tag);
+  localStorage.setItem('booktok_setup_theme', APP_THEME);
   document.getElementById('setup-overlay').classList.add('hidden');
   document.getElementById('setup-edit-btn').style.display = 'flex';
   applyBranding();
@@ -5994,6 +6050,7 @@ function completeSetup() {
 function openSetup() {
   document.getElementById('setup-name').value = APP_NAME;
   document.getElementById('setup-tag').value  = APP_TAG;
+  document.querySelectorAll('.theme-swatch').forEach(s => s.classList.toggle('selected', s.dataset.theme === APP_THEME));
   document.getElementById('setup-overlay').classList.remove('hidden');
 }
 (function initSetup() {
