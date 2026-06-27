@@ -678,10 +678,56 @@ canvas{width:100%!important;}
 .haul-src-btn:hover{border-color:var(--gold-dim);color:var(--text);}
 .haul-src-btn.active{border-color:var(--gold);background:var(--gold-faint);color:var(--gold);}
 
+
+/* ── SETUP OVERLAY (template first-run) ── */
+#setup-overlay{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px;overflow-y:auto;}
+#setup-overlay.hidden{display:none;}
+#setup-box{background:linear-gradient(145deg,#0d0819,#1a0f2e);border:2px solid var(--gold);border-radius:16px;padding:36px 28px;max-width:420px;width:100%;text-align:center;}
+.setup-eyebrow{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:5px;color:var(--gold-dim);margin-bottom:10px;}
+.setup-title{font-family:'Cinzel',serif;font-weight:900;font-size:26px;color:#fff;margin-bottom:8px;letter-spacing:3px;}
+.setup-sub{font-style:italic;font-size:14px;color:var(--text-dim);margin-bottom:28px;line-height:1.6;}
+.setup-field{text-align:left;margin-bottom:18px;}
+.setup-field label{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:var(--gold-dim);display:block;margin-bottom:6px;}
+.setup-field input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border-hi);border-radius:4px;color:#fff;font-family:'Playfair Display',serif;font-size:16px;padding:10px 14px;outline:none;}
+.setup-field input:focus{border-color:var(--gold);}
+.setup-tag-row{display:flex;align-items:center;gap:0;}
+.setup-tag-prefix{background:rgba(200,160,80,.12);border:1px solid var(--border-hi);border-right:none;border-radius:4px 0 0 4px;padding:10px 12px;font-family:'Cinzel',serif;font-size:15px;color:var(--gold);white-space:nowrap;}
+.setup-tag-row input{border-radius:0 4px 4px 0;}
+.setup-go-btn{width:100%;margin-top:8px;padding:14px;font-family:'Cinzel',serif;font-size:15px;letter-spacing:3px;border:1px solid var(--gold);border-radius:4px;background:var(--gold-faint);color:var(--gold);cursor:pointer;transition:.2s;}
+.setup-go-btn:hover{background:rgba(200,160,80,.2);}
+.setup-note{font-size:12px;color:rgba(255,255,255,.35);margin-top:20px;line-height:1.6;}
+.setup-edit-btn{position:fixed;bottom:24px;right:20px;z-index:800;background:var(--bg3);border:1px solid var(--border);border-radius:50%;width:38px;height:38px;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-dim);}
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
+
+<!-- SETUP OVERLAY — shown on first run -->
+<div id="setup-overlay">
+  <div id="setup-box">
+    <div class="setup-eyebrow">✦ Welcome ✦</div>
+    <div class="setup-title">BookTok Command Center</div>
+    <div class="setup-sub">Let's personalize your app.<br>Takes 30 seconds — no code needed.</div>
+    <div class="setup-field">
+      <label>Your BookTok Name</label>
+      <input id="setup-name" type="text" placeholder="e.g. DarkReadsWithSarah" autocomplete="off" />
+    </div>
+    <div class="setup-field">
+      <label>Your Hashtag</label>
+      <div class="setup-tag-row">
+        <div class="setup-tag-prefix">#</div>
+        <input id="setup-tag" type="text" placeholder="e.g. DarkReadsWithSarah" autocomplete="off" />
+      </div>
+    </div>
+    <button class="setup-go-btn" onclick="completeSetup()">✦ Set Up My App</button>
+    <div class="setup-note">
+      If someone shared this file with you, support the creator who built it —<br>
+      grab your own copy at the original link 🖤
+    </div>
+  </div>
+</div>
+<button class="setup-edit-btn" id="setup-edit-btn" title="Edit your name & hashtag" onclick="openSetup()" style="display:none;">⚙️</button>
+
 <div id="app">
 
 <div class="site-header">
@@ -1262,7 +1308,7 @@ canvas{width:100%!important;}
           </div>
           <div style="background:rgba(200,160,80,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:10px 12px;">
             <div style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:1px;margin-bottom:3px;">④ MIND SCALE RATING — 5 seconds</div>
-            <div style="font-size:14px;color:var(--text-dim);line-height:1.6;">Show your rating card. Pause on it. Let the number land. <em>"Official [YOUR NAME] rating: Completely Unhinged."</em></div>
+            <div style="font-size:14px;color:var(--text-dim);line-height:1.6;">Show your rating card. Pause on it. Let the number land. <em>"Official [your name] rating: Completely Unhinged."</em></div>
           </div>
           <div style="background:rgba(200,160,80,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:10px 12px;">
             <div style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:1px;margin-bottom:3px;">⑤ CTA — last 5 seconds</div>
@@ -1991,88 +2037,7 @@ canvas{width:100%!important;}
 // VIDEOS DATA
 // ═══════════════════════════════════════════════
 const videos=[
-{id:1,date:"Tue Jul 1",week:"July — Week 1: Reintroduction",month:"july",title:"Who Is [YOUR NAME]",type:"Reintroduction",thumbnail:"Let me reintroduce myself 🖤",hook:"Let me reintroduce myself because I've been holding back and that stops right now",body:"My name is [YOUR NAME] and this is [YOUR CHANNEL] — your home for psychological thrillers, dark fiction, true crime, dark fantasy and historical fiction that messes with your mind.\n\nIf a book makes me uncomfortable, keeps me up at night, makes me question everything or destroys me emotionally — I'm reading it and I'm telling you about it.\n\nI rate every book on my Mind Scale — ranging from Mildly Suspicious all the way up to Need Therapy — and I will always be honest with you even when the popular opinion disagrees with me.\n\nI'm not here to be everyone's cup of tea. I'm here for the readers who want books that actually do something to them.\n\nSo if that's you — follow along because we're just getting started and July is going to be unhinged in the best possible way.",cta:"Drop a comment and tell me — what's the darkest book you've ever read?",hashtags:["#BookTok","#PsychologicalThriller","#DarkFiction","#ThrillerBookTok","#YOUR_HASHTAG"]},
-{id:2,date:"Thu Jul 3",week:"July — Week 1: Reintroduction",month:"july",title:"July TBR Reveal",type:"TBR",thumbnail:"July TBR 📚🖤",hook:"My July reading list is completely unhinged and I am not even a little bit sorry",body:"Show every book on your July TBR. For each book share the title, one sentence on why you chose it, and your excitement level out of 5 on the Mind Scale.\n\nBuild to your most anticipated read and tease that it might destroy you.",cta:"Have you read any of these? Tell me in the comments if I should be scared",hashtags:["#TBR","#BookTok","#PsychologicalThriller","#DarkFiction","#ReadingList"]},
-{id:3,date:"Sat Jul 5",week:"July — Week 1: Reintroduction",month:"july",title:"Authors BookTok Sleeps On — Chevy Stevens",type:"Author Spotlight",thumbnail:"BookTok sleeps on her 😤📚",hook:"BookTok has been sleeping on this author for YEARS and I am genuinely mad about it",body:"Her name is Chevy Stevens and if you love psychological thrillers that get completely under your skin and stay there — she needs to be on your shelf immediately.\n\nI started with Hitchhiker and I genuinely could not put it down. The psychological manipulation, the tension, the way she writes trauma — it felt so real it was uncomfortable.\n\nI'm giving Hitchhiker a 4 out of 5 on my Mind Scale — full Completely Unhinged rating — and I'm starting Still Missing this week so follow along.",cta:"Drop a comment if you've read her and tell me your favorite",hashtags:["#ChevyStevens","#BookTok","#PsychologicalThriller","#DarkFiction","#ThrillerBooks"]},
-{id:4,date:"Mon Jul 7",week:"July — Week 2: Chevy Stevens",month:"july",title:"Chevy Stevens Full Catalog Ranked",type:"Ranking",thumbnail:"Ranking Chevy Stevens 🖤",hook:"I am ranking every single Chevy Stevens book by how much they will destroy you",body:"Rank all her books from least to most destructive on your Mind Scale:\n• The Devil's Rose — hardest to find, most underrated\n• Never Knowing — psychological complexity with family trauma\n• Those Girls — darker than anything else on this list\n• Hitchhiker — Mind Scale 4/5 Completely Unhinged\n• Still Missing — her most acclaimed, potentially Need Therapy territory",cta:"Which Chevy Stevens book have you read and where would YOU put it on the Mind Scale?",hashtags:["#ChevyStevens","#BookTok","#PsychologicalThriller","#ThrillerBookTok","#DarkFiction"]},
-{id:5,date:"Wed Jul 9",week:"July — Week 2: Chevy Stevens",month:"july",title:"Hitchhiker Deep Dive — No Spoilers",type:"Book Review",thumbnail:"This book unsettled me 😰🖤",hook:"This book made me uncomfortable in the best possible way and I need to talk about it",body:"No spoilers — just my completely honest reaction.\n\nWhat makes this book psychologically brilliant is the way it handles manipulation and trauma. It never feels cheap or exploitative. It feels horribly real.\n\nThe pacing is relentless. There were moments where I had to put it down and just sit with what I had just read.\n\nOfficial Mind Scale rating — 4 out of 5 — Completely Unhinged.",cta:"Have you read Hitchhiker? Tell me your Mind Scale rating and whether you saw the ending coming",hashtags:["#Hitchhiker","#ChevyStevens","#PsychologicalThriller","#BookTok","#ThrillerReview"]},
-{id:6,date:"Fri Jul 11",week:"July — Week 2: Chevy Stevens",month:"july",title:"If You Liked Gone Girl Read These",type:"Recommendations",thumbnail:"Read Gone Girl? Start here 📚",hook:"You've read Gone Girl and now nothing else hits the same — I have your entire next reading list",body:"Gone Girl works because of three things — unreliable narrator, dark secrets, a twist that reframes everything.\n\nYour list should include Hitchhiker by Chevy Stevens plus 4 other psych thrillers with the same DNA:\n• Unreliable narrators\n• Dark secrets\n• Twists that earn it\n\nRate each on the Mind Scale.",cta:"Tell me which Gone Girl replacement hit hardest for you",hashtags:["#GoneGirl","#PsychologicalThriller","#BookTok","#ThrillerRecommendations","#DarkFiction"]},
-{id:7,date:"Sun Jul 13",week:"July — Week 2: Chevy Stevens",month:"july",title:"Week 1 & 2 Reading Wrap Up",type:"Wrap Up",thumbnail:"Week 1 & 2 wrap up 📚🖤",hook:"Two weeks into July and I already have thoughts — let's do a quick wrap up",body:"For each book you read give a Mind Scale rating and 1-2 honest sentences.\n\nHighlight your standout of the first two weeks.\n\nBe honest about any disappointments.\n\nTease Brom week coming up in weeks 3 & 4.",cta:"What are you reading right now — drop it in the comments and I'll tell you where it lands on the Mind Scale",hashtags:["#BookTok","#ReadingWrapUp","#PsychologicalThriller","#DarkFiction","#YOUR_HASHTAG"]},
-{id:8,date:"Tue Jul 15",week:"July — Week 3: Brom Week",month:"july",title:"Authors BookTok Sleeps On — Brom",type:"Author Spotlight",thumbnail:"This book should not exist 😳🖤",hook:"This book should not exist and I mean that as the absolute highest compliment I can give",body:"Slewfoot by Brom is one of those books that genuinely lives in my head and refuses to leave.\n\nDark historical fiction meets folk horror meets psychological menace — and the artwork inside — because Brom illustrates every single one of his own books — makes it feel forbidden.\n\nHold up the book and show the interior illustrations on camera. This is a huge visual moment.\n\nMind Scale rating — 4 out of 5 — Completely Unhinged.",cta:"Has anyone else read Brom — tell me in the comments because I need to talk about this ending",hashtags:["#Slewfoot","#Brom","#DarkFiction","#BookTok","#FolkHorror"]},
-{id:9,date:"Thu Jul 17",week:"July — Week 3: Brom Week",month:"july",title:"Slewfoot Deep Dive",type:"Book Review",thumbnail:"Slewfoot destroyed me 🖤😳",hook:"I need to talk about Slewfoot by Brom in more detail because one video was not enough",body:"From the first page Brom creates an atmosphere that feels suffocating in the best possible way.\n\nWhat separates this from other dark historical fiction is the moral complexity. Nothing is purely good or evil.\n\nShow specific illustration pages on camera — the art is part of the story.\n\nFinal Mind Scale rating — 4 out of 5 — Completely Unhinged — flirting with a 5.",cta:"If you've read Slewfoot tell me your rating — and if you haven't tell me what's stopping you",hashtags:["#Slewfoot","#Brom","#DarkHistoricalFiction","#BookTok","#FolkHorror"]},
-{id:10,date:"Sat Jul 19",week:"July — Week 3: Brom Week",month:"july",title:"The Child Thief — Peter Pan Ruined Forever",type:"Book Review",thumbnail:"Peter Pan will never be the same 😰",hook:"This book took everything you ever loved about Peter Pan and made it deeply disturbing",body:"The Child Thief by Brom — no spoilers.\n\nIn this retelling Peter Pan is not magical — he preys on vulnerable children.\n\nShow the cover and interior illustrations on camera. Huge visual moment.\n\nBrom makes you understand every character's choices — even the ones that horrify you. That moral ambiguity is what makes it stick.\n\nMind Scale rating — 4 out of 5 — Completely Unhinged — some elements push toward a 5.",cta:"Tell me — could you handle a dark Peter Pan retelling or is that a hard no?",hashtags:["#TheChildThief","#Brom","#DarkFantasy","#BookTok","#DarkFiction"]},
-{id:11,date:"Mon Jul 21",week:"July — Week 4: True Crime Crossover",month:"july",title:"True Crime Books That Scared Me More Than Fiction",type:"Recommendations",thumbnail:"Scarier because it's real 😰📚",hook:"These books scared me more than any thriller I have ever read and that's because they actually happened",body:"Share your top 5 true crime books. For each:\n• One sentence on what it covers\n• Why it's particularly disturbing\n• Mind Scale rating\n\nSave your most personally affecting one for last and give it the full Need Therapy rating.",cta:"What true crime book messed you up the most? Drop it in the comments",hashtags:["#TrueCrime","#TrueCrimeBooks","#BookTok","#DarkNonfiction","#YOUR_HASHTAG"]},
-{id:12,date:"Wed Jul 23",week:"July — Week 4: True Crime Crossover",month:"july",title:"Real Cases That Inspired Psychological Thrillers",type:"Educational",thumbnail:"Your fav thriller is based on THIS 😳",hook:"Your favorite psychological thriller might be based on something that actually happened",body:"For each thriller you feature:\n• Brief non-spoiler description\n• The real case or event that inspired it\n• How knowing this changes the reading experience\n\nThe reason psych thrillers feel so real is because the best authors study real cases and real criminal psychology.",cta:"Did you know any of these were based on real cases? Tell me which one shocked you most",hashtags:["#TrueCrime","#PsychologicalThriller","#BookTok","#DarkFiction","#TrueCrimeBooks"]},
-{id:13,date:"Fri Jul 25",week:"July — Week 4: True Crime Crossover",month:"july",title:"True Crime Docs to Watch Then Books to Read",type:"Recommendations",thumbnail:"Watch this. Then read this 📺📚",hook:"Finished your true crime documentary and need to go deeper — I have your complete reading list",body:"Pair 4-5 Netflix or HBO true crime docs with the book that goes even deeper.\n\nFor each pairing:\n• Doc title\n• Book recommendation\n• Why they pair perfectly\n• What the book covers that the doc left out\n\nThe documentary shows you the story. The book makes you understand it.",cta:"Tell me what true crime doc you're watching right now and I'll recommend the book that goes with it",hashtags:["#TrueCrime","#BookTok","#TrueCrimeBooks","#DarkNonfiction","#YOUR_HASHTAG"]},
-{id:14,date:"Sun Jul 27",week:"July — Week 4: True Crime Crossover",month:"july",title:"Week 3 & 4 Reading Wrap Up",type:"Wrap Up",thumbnail:"Weeks 3 & 4 — it got dark 🖤",hook:"Weeks three and four of July got significantly darker and I have a lot of feelings about it",body:"Quick honest ratings for everything read in weeks 3 and 4.\n\nHighlight the Brom reads and the true crime books.\n\nShare your surprise and your disappointment honestly.\n\nTease the July 31 monthly wrap up and book of the month reveal.",cta:"Which of my reads this month are you most curious about?",hashtags:["#ReadingWrapUp","#BookTok","#DarkFiction","#PsychologicalThriller","#YOUR_HASHTAG"]},
-{id:15,date:"Thu Jul 31",week:"July — Finale",month:"july",title:"JULY MONTHLY WRAP UP + Favorite Book of the Month",type:"Monthly Wrap Up",thumbnail:"July wrap up + my fav book 🖤📚",hook:"I read [X] books in July and one of them absolutely destroyed me — let's talk about the whole month",body:"Full July breakdown:\n• Quick Mind Scale rating for every book read\n• The disappointment of the month\n• The surprise of the month\n• Most discussed video of the month\n\nBuild to FAVORITE BOOK OF JULY reveal — pause for effect then give it 3-4 sentences on why it stood above everything else.\n\nClose by teasing August TBR coming Tuesday.",cta:"Tell me your favorite book of July in the comments",hashtags:["#MonthlyWrapUp","#BookTok","#FavoriteBook","#DarkFiction","#YOUR_HASHTAG"]},
-{id:16,date:"Fri Aug 1",week:"August — Week 1: Haul Week",month:"august",title:"July Book Haul",type:"Book Haul",thumbnail:"I have a book buying problem 📚🖤",hook:"I have a book buying problem and July proved it — here's everything I bought",body:"Show every book you bought or received in July. For each:\n• Hold it up to camera\n• One sentence on why you bought it\n• Excitement rating out of 5\n\nClose by revealing your most anticipated read from the haul.",cta:"Tell me which book from my haul you'd read first",hashtags:["#BookHaul","#BookTok","#DarkFiction","#ThrillerBooks","#YOUR_HASHTAG"]},
-{id:17,date:"Sun Aug 3",week:"August — Week 1: Haul Week",month:"august",title:"Books I Bought Because of BookTok — Were They Worth It?",type:"Review",thumbnail:"BookTok told me to buy these 👀",hook:"BookTok told me to buy these — here's my completely honest verdict",body:"Rate books you bought based on BookTok recommendations.\n\nFor each: the recommendation, whether it lived up to hype, honest Mind Scale rating, and whether you'd recommend it yourself.\n\nBe genuinely honest — this drives massive comment engagement.",cta:"Did BookTok lead you astray on any of these?",hashtags:["#BookTok","#BookReview","#PsychologicalThriller","#DarkFiction","#ThrillerBookTok"]},
-{id:18,date:"Tue Aug 5",week:"August — Week 2: Psych Thriller Deep Dive",month:"august",title:"My All Time Top 5 Psychological Thrillers",type:"Recommendations",thumbnail:"My top 5 psych thrillers ever 🖤",hook:"If you only ever take one recommendation from me make it one of these five books",body:"Your definitive top 5 psychological thrillers of all time.\n\nFor each: why it earns its place, what makes it psychologically brilliant, Mind Scale rating, and who it's perfect for.\n\nBuild excitement throughout — save your #1 for last.",cta:"Tell me your all time favorite psychological thriller",hashtags:["#PsychologicalThriller","#BookTok","#ThrillerBooks","#DarkFiction","#BookRecommendations"]},
-{id:19,date:"Thu Aug 7",week:"August — Week 2: Psych Thriller Deep Dive",month:"august",title:"Psychological Thriller vs Regular Thriller — The Difference",type:"Educational",thumbnail:"Not all thrillers are equal 📚",hook:"Not all thrillers are the same and here's why it matters for your reading list",body:"Explain:\n• What makes a thriller psychological specifically\n• The role of the unreliable narrator\n• Internal vs external conflict\n• Why psych thrillers stay with you longer\n\nUse specific book examples for each point.",cta:"Now that you know the difference — which type do you prefer?",hashtags:["#PsychologicalThriller","#BookTok","#ThrillerBooks","#BookEducation","#YOUR_HASHTAG"]},
-{id:20,date:"Sat Aug 9",week:"August — Week 2: Psych Thriller Deep Dive",month:"august",title:"Best Unreliable Narrators in Fiction Ranked",type:"Ranking",thumbnail:"These characters lied to my face 😤🖤",hook:"These characters lied to my face the entire book and I loved every single second of it",body:"Rank your favorite unreliable narrators across all your genres.\n\nFor each: why they're unreliable, how well-executed it is, whether the reveal earned it, and Mind Scale rating for the book.",cta:"Who is your favorite unreliable narrator in fiction?",hashtags:["#UnreliableNarrator","#PsychologicalThriller","#BookTok","#DarkFiction","#ThrillerBookTok"]},
-{id:21,date:"Sun Aug 10",week:"August — Week 2: Psych Thriller Deep Dive",month:"august",title:"Week 1 & 2 August Reading Wrap Up",type:"Wrap Up",thumbnail:"August weeks 1 & 2 📚",hook:"Two weeks into August and the reading has been relentless",body:"Quick Mind Scale ratings for all week 1 and 2 reads.\n\nShare what surprised you, what disappointed you, and tease weeks 3 & 4.",cta:"What are you reading in August?",hashtags:["#ReadingWrapUp","#BookTok","#PsychologicalThriller","#DarkFiction","#YOUR_HASHTAG"]},
-{id:22,date:"Mon Aug 11",week:"August — Week 3: Engagement Week",month:"august",title:"Controversial Book Opinions — Come Fight Me",type:"Engagement",thumbnail:"My controversial book opinions 😤📚",hook:"These are my most controversial book opinions and I stand by every single one of them",body:"Share 4-5 genuinely unpopular opinions about popular books or BookTok trends.\n\nBe specific and confident. Don't apologize for your opinion.\n\nEnd each one with 'come fight me in the comments' — this consistently drives the highest comment counts.",cta:"Which of these do you disagree with the most?",hashtags:["#BookTok","#BookOpinions","#PsychologicalThriller","#DarkFiction","#YOUR_HASHTAG"]},
-{id:23,date:"Wed Aug 13",week:"August — Week 3: Engagement Week",month:"august",title:"Guess This Book From My 3 Word Description",type:"Engagement",thumbnail:"3 words. Guess the book 🤔📚",hook:"Three words. Can you guess the book? Let's see how well you know your dark fiction",body:"Describe 5-7 books in exactly 3 words each.\n\nCapture the vibe not the plot. Make them cryptic enough to be challenging.\n\nExample: 'marriage. lies. woodchipper.' — Gone Girl\n\nTell people to guess in comments and reply to correct answers.",cta:"Drop your guesses in the comments — first to get all of them right wins my respect forever",hashtags:["#BookTok","#BookGame","#PsychologicalThriller","#DarkFiction","#ThrillerBookTok"]},
-{id:24,date:"Fri Aug 15",week:"August — Week 3: Engagement Week",month:"august",title:"Tell Me Your Fav Thriller and I'll Rate It",type:"Engagement",thumbnail:"Tell me your fav. I'll rate it 🖤",hook:"Tell me your favorite thriller and I will give it an official Mind Scale rating — no mercy",body:"Ask people to drop their favorite thrillers in comments. You'll rate each one on the Mind Scale.\n\nFollow up with a Part 2 video going through all the comments with ratings.\n\nThis format builds community fast and gives you automatic follow-up content.",cta:"Drop your favorite thriller in the comments — I'm rating everything",hashtags:["#BookTok","#ThrillerBooks","#MindScale","#PsychologicalThriller","#YOUR_HASHTAG"]},
-{id:25,date:"Sun Aug 17",week:"August — Week 3: Engagement Week",month:"august",title:"Books I DNF'd and Why — No Shame",type:"Engagement",thumbnail:"Books I did not finish 📚😤",hook:"I did not finish these books and I absolutely refuse to apologize for it",body:"Share 4-5 books you DNF'd with honest reasons.\n\nFor each: how far you got, the specific reason you stopped, whether you'd try again, and what you'd recommend instead.",cta:"Tell me a book you DNF'd — no judgment here",hashtags:["#DNF","#BookTok","#BookReview","#DarkFiction","#YOUR_HASHTAG"]},
-{id:26,date:"Tue Aug 19",week:"August — Week 4: Dark Fiction Variety",month:"august",title:"Dark Fantasy With Psychological Thriller Energy",type:"Recommendations",thumbnail:"Dark fantasy that hits like a thriller 🖤",hook:"If you love psychological thrillers but you want some magic in your darkness — this is your list",body:"For each book: what makes it feel like a psych thriller despite being fantasy, the psychological element, Mind Scale rating, and who it's perfect for.\n\nInclude Brom books as the anchor recommendation.",cta:"Are you a fantasy reader who loves thrillers or a thriller reader dabbling in fantasy?",hashtags:["#DarkFantasy","#PsychologicalThriller","#BookTok","#DarkFiction","#FantasyBooks"]},
-{id:27,date:"Thu Aug 21",week:"August — Week 4: Dark Fiction Variety",month:"august",title:"Historical Fiction That Reads Like a Thriller",type:"Recommendations",thumbnail:"HF with no business being this tense 😰",hook:"These historical fiction books have absolutely no business being this tense and I am not complaining",body:"For each book: the historical setting, what gives it thriller energy, the psychological element, Mind Scale rating, and a comparable thriller for crossover readers.",cta:"Are you a historical fiction reader or did thrillers bring you here?",hashtags:["#HistoricalFiction","#ThrillerBooks","#BookTok","#DarkFiction","#BookRecommendations"]},
-{id:28,date:"Sat Aug 23",week:"August — Week 4: Dark Fiction Variety",month:"august",title:"Still Missing by Chevy Stevens — Full Review",type:"Book Review",thumbnail:"Still Missing broke me 💀📚",hook:"I finally read Still Missing and I need to talk about it right now",body:"Full no-spoiler review of Still Missing by Chevy Stevens.\n\nCover: first impressions, what makes it psychologically brilliant, pacing, how it handles the subject matter, how it compares to Hitchhiker, and your emotional reaction to the ending.\n\nOfficial Mind Scale rating with full reveal card shown on screen.",cta:"Have you read Still Missing? Tell me your Mind Scale rating",hashtags:["#StillMissing","#ChevyStevens","#PsychologicalThriller","#BookTok","#ThrillerReview"]},
-{id:29,date:"Sun Aug 24",week:"August — Week 4: Dark Fiction Variety",month:"august",title:"Week 3 & 4 August Reading Wrap Up",type:"Wrap Up",thumbnail:"August weeks 3 & 4 🖤",hook:"The final stretch of August and I have a lot to say",body:"Mind Scale ratings for all week 3 and 4 reads.\n\nHighlight the best crossover read, the biggest surprise, and quick Still Missing reaction.\n\nTease August monthly wrap up and book of the month reveal.",cta:"What was your best read of August so far?",hashtags:["#ReadingWrapUp","#BookTok","#DarkFiction","#PsychologicalThriller","#YOUR_HASHTAG"]},
-{id:30,date:"Thu Aug 28",week:"August — Finale",month:"august",title:"August Book Haul",type:"Book Haul",thumbnail:"August haul & my wallet is crying 📚💸",hook:"August haul is here and my wallet is crying but my shelf is absolutely thriving",body:"Every book bought in August shown on camera.\n\nFor each: hold it up, one sentence on why you got it, excitement rating.\n\nClose with your most anticipated read and why it might be a Need Therapy situation.",cta:"Tell me which book from my August haul you're most interested in",hashtags:["#BookHaul","#BookTok","#DarkFiction","#ThrillerBooks","#YOUR_HASHTAG"]},
-{id:31,date:"Sun Aug 31",week:"August — Finale",month:"august",title:"AUGUST MONTHLY WRAP UP + Favorite Book of the Month",type:"Monthly Wrap Up",thumbnail:"August wrap up + book of the month 🖤",hook:"August reading wrap up — one of these books completely broke me and I need to talk about it",body:"Full August breakdown:\n• Mind Scale rating for every book read\n• The disappointment of August\n• The surprise of August\n• Most commented video of the month\n• September TBR preview\n\nBuild to FAVORITE BOOK OF AUGUST reveal — make it a full moment.\n\nClose with: '60 days in. This is just the beginning.'",cta:"Tell me your favorite book of August",hashtags:["#MonthlyWrapUp","#BookTok","#FavoriteBook","#DarkFiction","#YOUR_HASHTAG"]},
-,
-// JUNE
-{id:101,date:"Thu Jun 4",week:"June — Launch Week",month:"june",title:"Introducing [YOUR NAME]",type:"Reintroduction",thumbnail:"Dark fiction is my whole personality 🖤📚",hook:"I read books that mess with your mind and I'm finally talking about them on here",body:"Quick intro — who I am, what I read, and why I started this account.\n\nShow your shelf backdrop. Tell people your niche is psychological thrillers, dark fiction, true crime and dark fantasy.\n\nTease the Mind Scale rating system — every book you review gets a rating.\n\nThis is your soft launch before the July 1st full relaunch.",cta:"Follow along — July is going to be unhinged",hashtags:["#BookTok","#PsychologicalThriller","#DarkFiction","#NewBookTok","#YOUR_HASHTAG"]},
-{id:102,date:"Sat Jun 6",week:"June — Launch Week",month:"june",title:"June Book Haul",type:"Book Haul",thumbnail:"June book haul 📚🖤",hook:"I may have gone a little overboard at Barnes and Noble and I regret absolutely nothing",body:"Show every book you picked up in June. For each:\n• Hold it up to camera\n• One sentence on why you got it\n• Excitement rating out of 5 on the Mind Scale\n\nClose with your most anticipated read from the haul.",cta:"Tell me which one you'd read first — drop it in the comments",hashtags:["#BookHaul","#BookTok","#DarkFiction","#ThrillerBooks","#YOUR_HASHTAG"]},
-{id:103,date:"Tue Jun 9",week:"June — Week 2",month:"june",title:"Book Review #1",type:"Book Review",thumbnail:"This one messed me up 🖤😰",hook:"I need to talk about this book because I have not stopped thinking about it",body:"Your first full review. No spoilers:\n• What made you pick it up\n• The vibe and atmosphere\n• What the book does psychologically\n• What surprised you\n• Who it's perfect for\n\nClose with your official Mind Scale rating reveal.",cta:"Have you read this one? Tell me your rating in the comments",hashtags:["#BookReview","#BookTok","#PsychologicalThriller","#DarkFiction","#YOUR_HASHTAG"]},
-{id:104,date:"Thu Jun 11",week:"June — Week 2",month:"june",title:"Book Review #2",type:"Book Review",thumbnail:"Mind Scale rating reveal 📊🖤",hook:"This book had no right to be this good and I need everyone to read it immediately",body:"Second review — keep building momentum.\n\nFocus on the psychological element specifically.\n\nUse your Mind Scale reveal card on screen when you announce the rating.\n\nEnd with a recommendation for who this book is perfect for.",cta:"Drop your current read in the comments and I'll tell you if it's on my list",hashtags:["#BookReview","#BookTok","#MindScale","#DarkFiction","#ThrillerBooks"]},
-{id:105,date:"Sat Jun 13",week:"June — Week 2",month:"june",title:"Book Review #3",type:"Book Review",thumbnail:"3 word review 🤔📚",hook:"I am going to describe this book in three words and you are going to want to read it immediately",body:"Describe the book in 3 words first as your hook then expand into the full review.\n\nThis format is very shareable and drives comments.\n\nMind Scale rating reveal at the end with your graphic on screen.",cta:"Describe YOUR current read in 3 words in the comments",hashtags:["#BookReview","#BookTok","#PsychologicalThriller","#DarkFiction","#YOUR_HASHTAG"]},
-{id:106,date:"Tue Jun 16",week:"June — Week 3",month:"june",title:"Book Review #4",type:"Book Review",thumbnail:"I stayed up until 3AM for this 😴📚",hook:"This book made me stay up until 3AM and I have no regrets and several feelings",body:"Review focused on pacing and readability.\n\nTalk about the experience of reading it — when you couldn't put it down, what made you keep going, the moment it hooked you.\n\nMind Scale rating with full card reveal.",cta:"What's the last book that kept you up way too late?",hashtags:["#BookReview","#BookTok","#DarkFiction","#CantPutItDown","#YOUR_HASHTAG"]},
-{id:107,date:"Thu Jun 18",week:"June — Week 3",month:"june",title:"Book Review #5",type:"Book Review",thumbnail:"Final June review 🖤📚",hook:"Wrapping up June with this book and I saved the most unhinged one for last",body:"Your fifth and final June review.\n\nMake this one your most enthusiastic review of the month.\n\nTease that July is coming and it's going to be a whole different level.\n\nMind Scale rating reveal.",cta:"Follow for July — it's going to be completely unhinged",hashtags:["#BookReview","#BookTok","#PsychologicalThriller","#DarkFiction","#YOUR_HASHTAG"]},
-{id:108,date:"Sat Jun 20",week:"June — Launch Month Finale",month:"june",title:"June Wrap Up + Tease for July",type:"Wrap Up",thumbnail:"June wrap up 📚🖤",hook:"June is almost done and I read some things that absolutely changed me — let's talk",body:"Quick Mind Scale rating for every book read in June.\n\nHighlight your favorite of the month.\n\nBig tease for July relaunch — tell people something big is coming July 1st.",cta:"Follow now — July 1st is a full relaunch and you don't want to miss it",hashtags:["#ReadingWrapUp","#BookTok","#DarkFiction","#PsychologicalThriller","#YOUR_HASHTAG"]},
-// SEPTEMBER
-{id:201,date:"Tue Sep 1",week:"September — Week 1",month:"september",title:"September TBR — Dark Academia Season",type:"TBR",thumbnail:"Dark academia season starts NOW 🍂🖤",hook:"September is officially dark academia season and my TBR reflects that completely",body:"September TBR reveal with a dark academia theme.\n\nFrame this as the start of cozy dark reading season — shorter days, longer nights, perfect for psychological thrillers.\n\nFor each book: title, one sentence, excitement rating on Mind Scale.\n\nTease that October is going to be full horror month.",cta:"What are you reading this September? Drop it in the comments",hashtags:["#TBR","#DarkAcademia","#BookTok","#DarkFiction","#YOUR_HASHTAG"]},
-{id:202,date:"Thu Sep 3",week:"September — Week 1",month:"september",title:"Best Psych Thrillers to Read This Fall",type:"Recommendations",thumbnail:"Fall thriller reading list 🍂📚",hook:"Fall is the perfect season for psychological thrillers and here is your complete reading list",body:"Curated list of psych thrillers perfect for autumn reading.\n\nFor each: why it fits the fall vibe, the atmospheric quality, Mind Scale rating.\n\nInclude books with dark moody settings, unreliable narrators and devastating twists.",cta:"Which fall thriller is already on your TBR?",hashtags:["#FallReads","#PsychologicalThriller","#BookTok","#DarkFiction","#ThrillerBooks"]},
-{id:203,date:"Sat Sep 5",week:"September — Week 1",month:"september",title:"September Book Haul",type:"Book Haul",thumbnail:"September haul 🍂📚🖤",hook:"September haul is here and I went full dark academia this month",body:"Show every book bought in September. For each: hold up, one sentence, excitement rating.\n\nClose with most anticipated and tease October horror month.",cta:"Tell me which book from this haul you'd grab first",hashtags:["#BookHaul","#BookTok","#DarkFiction","#FallReads","#YOUR_HASHTAG"]},
-{id:204,date:"Tue Sep 8",week:"September — Week 2",month:"september",title:"Still Missing by Chevy Stevens — Full Review",type:"Book Review",thumbnail:"Still Missing broke me 💀📚",hook:"I finally finished Still Missing and I need to process this out loud with all of you",body:"Full no-spoiler review of Still Missing by Chevy Stevens.\n\nFirst impressions vs final feelings.\n\nCompare to Hitchhiker — which one hit harder?\n\nOfficial Mind Scale rating with card reveal on screen.",cta:"Have you read Still Missing? Tell me your Mind Scale rating",hashtags:["#StillMissing","#ChevyStevens","#PsychologicalThriller","#BookTok","#ThrillerReview"]},
-{id:205,date:"Thu Sep 10",week:"September — Week 2",month:"september",title:"Authors Who Write Darkness Better Than Anyone",type:"Recommendations",thumbnail:"These authors write darkness perfectly 🖤",hook:"Some authors understand darkness in a way that makes everything else feel shallow",body:"Feature 4-5 authors who consistently write dark psychological fiction brilliantly.\n\nInclude Chevy Stevens and Brom as your anchor picks.\n\nFor each: what makes their darkness different, their best book to start with, Mind Scale rating.",cta:"Who is your favorite dark fiction author?",hashtags:["#DarkFiction","#BookTok","#AuthorRecommendations","#PsychologicalThriller","#YOUR_HASHTAG"]},
-{id:206,date:"Sat Sep 12",week:"September — Week 2",month:"september",title:"September Book Review Spotlight",type:"Book Review",thumbnail:"September read of the month 🍂🖤",hook:"This book completely consumed my September and I need to talk about every single thing it did to me",body:"Full review of your most impactful September read.\n\nFocus on the psychological impact specifically.\n\nMind Scale rating reveal with card on screen.\n\nTease October horror month.",cta:"Read this before October — you'll need to recover before horror month starts",hashtags:["#BookReview","#BookTok","#PsychologicalThriller","#DarkFiction","#YOUR_HASHTAG"]},
-{id:207,date:"Tue Sep 15",week:"September — Week 3",month:"september",title:"Psychological Thrillers With the Best Atmosphere",type:"Recommendations",thumbnail:"Atmosphere so thick you could cut it 🖤",hook:"These books don't just tell you a story — they put you inside a feeling you can't escape",body:"Recommend 5 psych thrillers with exceptional atmosphere.\n\nFor each: describe the atmosphere in 2 sentences, why it elevates the psychological element, Mind Scale rating.",cta:"What's the most atmospheric book you've ever read?",hashtags:["#PsychologicalThriller","#BookTok","#DarkFiction","#Atmosphere","#ThrillerBooks"]},
-{id:208,date:"Thu Sep 17",week:"September — Week 3",month:"september",title:"Brom — Lost Gods Review",type:"Book Review",thumbnail:"Lost Gods by Brom 🖤😰",hook:"Brom did it again and I am not even a little bit surprised that it destroyed me",body:"Full review of Lost Gods by Brom.\n\nCompare to Slewfoot and The Child Thief — where does it rank in his catalog?\n\nShow the interior illustrations on camera.\n\nMind Scale rating reveal.",cta:"Which Brom book should I read next?",hashtags:["#LostGods","#Brom","#DarkFantasy","#BookTok","#DarkFiction"]},
-{id:209,date:"Sat Sep 26",week:"September — Finale",month:"september",title:"September Wrap Up + Book of the Month",type:"Monthly Wrap Up",thumbnail:"September wrap up 🍂🖤📚",hook:"September reading wrap up — dark academia season delivered and I have a lot of feelings",body:"Full September breakdown:\n• Mind Scale rating for every book read\n• Disappointment of the month\n• Surprise of the month\n• Favorite book of September reveal\n\nBig tease for October — full horror month, every video is horror themed.",cta:"Are you ready for October horror month?",hashtags:["#MonthlyWrapUp","#BookTok","#DarkFiction","#FallReads","#YOUR_HASHTAG"]},
-// OCTOBER — HORROR MONTH
-{id:301,date:"Thu Oct 1",week:"October — 🎃 Horror Month Week 1",month:"october",title:"Welcome to Horror Month — October TBR",type:"TBR",thumbnail:"Horror month is HERE 🎃🖤💀",hook:"October is horror month on [YOUR CHANNEL] and I am coming for every single one of your comfort zones",body:"October TBR reveal — every book is horror themed.\n\nAnnounce that every video this month will be horror or dark fiction focused.\n\nFor each book: title, one sentence on why it terrifies you, pre-reading Mind Scale prediction.\n\nBuild maximum anticipation — this is your biggest content month of the year.",cta:"Follow along for the darkest October BookTok has ever seen",hashtags:["#HorrorMonth","#HorrorBooks","#BookTok","#OctoberReads","#YOUR_HASHTAG"]},
-{id:302,date:"Sat Oct 3",week:"October — 🎃 Horror Month Week 1",month:"october",title:"Horror Books That Actually Scared Me",type:"Recommendations",thumbnail:"Books that actually scared me 😱🖤",hook:"I read a lot of dark books but these are the ones that genuinely made me scared",body:"List horror books that created genuine fear — not just darkness but actual dread.\n\nFor each: what specifically made it scary, the type of fear it created, Mind Scale rating.\n\nDistinguish between psychological, supernatural and visceral horror.",cta:"What is the scariest book you have ever read?",hashtags:["#HorrorBooks","#BookTok","#HorrorMonth","#ScaryBooks","#YOUR_HASHTAG"]},
-{id:303,date:"Tue Oct 6",week:"October — 🎃 Horror Month Week 1",month:"october",title:"October Book Haul — Horror Edition",type:"Book Haul",thumbnail:"Horror haul 🎃📚💀",hook:"I went to Barnes and Noble specifically for horror books and I have absolutely no regrets",body:"October haul — all horror and dark fiction.\n\nFor each: hold up, one sentence on what makes it horrifying, excitement rating.\n\nThis is your most dramatic haul video of the year — lean into the horror aesthetic.",cta:"Tell me your must-read horror book",hashtags:["#BookHaul","#HorrorBooks","#BookTok","#HorrorMonth","#YOUR_HASHTAG"]},
-{id:304,date:"Thu Oct 8",week:"October — 🎃 Horror Month Week 2",month:"october",title:"Slewfoot — The Perfect October Read",type:"Book Review",thumbnail:"Slewfoot is PERFECT for October 🌿🖤",hook:"I have been waiting all year to tell you that Slewfoot by Brom is the most perfect October read in existence",body:"Revisit Slewfoot in the context of October and horror season.\n\nFocus on the folk horror elements, colonial atmosphere and the darkness of the story.\n\nShow the illustrations on camera — new followers won't have seen them.\n\nMind Scale rating remind — 4 out of 5 Completely Unhinged.",cta:"Is Slewfoot already on your October TBR? It needs to be",hashtags:["#Slewfoot","#Brom","#FolkHorror","#OctoberReads","#HorrorMonth"]},
-{id:305,date:"Sat Oct 10",week:"October — 🎃 Horror Month Week 2",month:"october",title:"Horror Books Ranked by How Much They Disturbed Me",type:"Ranking",thumbnail:"Ranked by how disturbed I was 😱💀",hook:"I am ranking these horror books by how deeply they disturbed me",body:"Rank 5-7 horror books from mildly unsettling to full Need Therapy on your Mind Scale.\n\nFor each: brief non-spoiler description of the disturbing element, Mind Scale rating, who can handle it.",cta:"Tell me the most disturbing book you've ever read",hashtags:["#HorrorBooks","#BookTok","#HorrorMonth","#DarkFiction","#YOUR_HASHTAG"]},
-{id:306,date:"Tue Oct 13",week:"October — 🎃 Horror Month Week 2",month:"october",title:"Folk Horror Books — The Creepiest Subgenre",type:"Recommendations",thumbnail:"Folk horror will ruin you 🌿😱",hook:"Folk horror is the most underrated and genuinely creepy subgenre in all of dark fiction",body:"Introduce folk horror as a subgenre.\n\nRecommend 4-5 folk horror books including Slewfoot.\n\nFor each: the folk horror element, the atmosphere, Mind Scale rating.",cta:"Had you heard of folk horror before this video?",hashtags:["#FolkHorror","#HorrorBooks","#BookTok","#DarkFiction","#OctoberReads"]},
-{id:307,date:"Thu Oct 15",week:"October — 🎃 Horror Month Week 3",month:"october",title:"True Crime Books Perfect for Halloween Season",type:"Recommendations",thumbnail:"True crime Halloween edition 🎃😰",hook:"Halloween season true crime hits completely differently and these books prove it",body:"True crime recommendations suited to Halloween season.\n\nFor each: why it fits the Halloween vibe, the chilling element, Mind Scale rating.",cta:"What true crime case gives you the most Halloween energy?",hashtags:["#TrueCrime","#HorrorMonth","#BookTok","#Halloween","#YOUR_HASHTAG"]},
-{id:308,date:"Sat Oct 17",week:"October — 🎃 Horror Month Week 3",month:"october",title:"Horror Book Review — October Spotlight",type:"Book Review",thumbnail:"This horror book broke me 💀🎃",hook:"This is the horror book I have been saving for October and it delivered on every single terrifying promise",body:"Full review of your most anticipated horror read of the month.\n\nFocus on the fear factor specifically — what type of horror it is and how it creates dread.\n\nMind Scale rating reveal — this should be a 4 or 5.",cta:"Is this on your October TBR? Tell me if you're brave enough",hashtags:["#HorrorBooks","#BookReview","#BookTok","#OctoberReads","#YOUR_HASHTAG"]},
-{id:309,date:"Tue Oct 20",week:"October — 🎃 Horror Month Week 3",month:"october",title:"Books to Read on Halloween Night",type:"Recommendations",thumbnail:"Read THIS on Halloween night 🎃🖤",hook:"If you are spending Halloween night reading — and honestly that is the correct choice — here is your list",body:"Short list of perfect Halloween night reads — atmospheric, creepy, page-turning.\n\nFor each: why it's perfect for Halloween specifically, the vibe, Mind Scale rating.\n\nMake this fun and seasonal — one of your biggest viral opportunities of the year.",cta:"Are you spending Halloween reading or going out?",hashtags:["#Halloween","#HorrorBooks","#BookTok","#HalloweenReads","#YOUR_HASHTAG"]},
-{id:310,date:"Sat Oct 31",week:"October — 🎃 Halloween Finale",month:"october",title:"OCTOBER WRAP UP — Horror Month Recap + Book of the Month",type:"Monthly Wrap Up",thumbnail:"Halloween wrap up 🎃💀🖤",hook:"Happy Halloween — horror month is done and it was the darkest most wonderful month of reading I have ever had",body:"Full October breakdown on Halloween itself — make this your most dramatic video of the year.\n\n• Mind Scale rating for every horror book read\n• Book that scared you most\n• Favorite book of October — dramatic reveal\n\nTease November and December dark holiday reads.",cta:"Happy Halloween — tell me the scariest book you read this October",hashtags:["#Halloween","#HorrorMonth","#MonthlyWrapUp","#BookTok","#YOUR_HASHTAG"]},
-// NOVEMBER
-{id:401,date:"Tue Nov 3",week:"November — Week 1",month:"november",title:"November TBR — Post Horror Month Recovery",type:"TBR",thumbnail:"Post horror month TBR 🍂📚",hook:"October destroyed me and November is where I try to recover — key word try",body:"November TBR — transition from horror month back to psychological thrillers and dark fiction.\n\nAcknowledge the October hangover.\n\nFor each book: title, one sentence, Mind Scale prediction.",cta:"What are you reading to recover from October?",hashtags:["#TBR","#BookTok","#DarkFiction","#PsychologicalThriller","#YOUR_HASHTAG"]},
-{id:402,date:"Thu Nov 5",week:"November — Week 1",month:"november",title:"November Book Haul",type:"Book Haul",thumbnail:"November haul 🍂📚🖤",hook:"November haul is here and I went dark historical fiction heavy this month",body:"November book haul — lean into dark historical fiction and psych thrillers for fall.\n\nFor each: hold up, one sentence, excitement rating.\n\nTease Christmas dark reads haul coming in December.",cta:"Tell me your most anticipated read of November",hashtags:["#BookHaul","#BookTok","#DarkFiction","#FallReads","#YOUR_HASHTAG"]},
-{id:403,date:"Sat Nov 7",week:"November — Week 1",month:"november",title:"Krampus by Brom — Starting the Dark Holiday Reads",type:"Book Review",thumbnail:"Getting dark holiday ready 🎄🖤",hook:"It is November which means it is completely acceptable to start reading Krampus by Brom",body:"Review of Krampus by Brom — position it as the perfect bridge between horror month and Christmas season.\n\nExplain the mythology, the darkness level, why Brom's version goes places the legend doesn't.\n\nShow the cover and interior illustrations.\n\nMind Scale rating reveal.",cta:"Are you a dark holiday reads person or do you prefer cozy Christmas books?",hashtags:["#Krampus","#Brom","#DarkFantasy","#HolidayReads","#BookTok"]},
-{id:404,date:"Tue Nov 10",week:"November — Week 2",month:"november",title:"Historical Fiction That Destroys You Emotionally",type:"Recommendations",thumbnail:"HF that will ruin your week 💀📚",hook:"These historical fiction books will devastate you emotionally and I am recommending them anyway",body:"Top historical fiction picks that hit hardest emotionally.\n\nFor each: the historical setting, the emotional gut punch, Mind Scale rating.\n\nInclude WW2 fiction, colonial dark fiction and any HF with thriller energy.",cta:"What historical fiction book destroyed you most?",hashtags:["#HistoricalFiction","#BookTok","#DarkFiction","#BookRecommendations","#YOUR_HASHTAG"]},
-{id:405,date:"Thu Nov 12",week:"November — Week 2",month:"november",title:"November Book Review Spotlight",type:"Book Review",thumbnail:"November read of the month 🍂🖤",hook:"This book was exactly what I needed after October and also it still wrecked me so nothing has changed",body:"Full review of your most impactful November read.\n\nFocus on how it differs from horror — psychological vs visceral fear.\n\nMind Scale rating reveal with card on screen.",cta:"Tell me what you're reading this November",hashtags:["#BookReview","#BookTok","#PsychologicalThriller","#DarkFiction","#YOUR_HASHTAG"]},
-{id:406,date:"Sat Nov 14",week:"November — Week 2",month:"november",title:"Books I'm Thankful For This Year",type:"Engagement",thumbnail:"Books I'm thankful for 📚🖤",hook:"It is almost Thanksgiving and I am spending it being grateful for the books that absolutely destroyed me",body:"Reflect on the best books you've read all year — the ones you're genuinely grateful for.\n\nFor each: what it gave you, why you're grateful for it, Mind Scale rating.\n\nWarm personal video that builds parasocial connection.",cta:"Tell me a book you are genuinely grateful you read this year",hashtags:["#BookTok","#Thanksgiving","#BooksILove","#DarkFiction","#YOUR_HASHTAG"]},
-{id:407,date:"Sat Nov 28",week:"November — Finale",month:"november",title:"November Wrap Up + Book of the Month",type:"Monthly Wrap Up",thumbnail:"November wrap up 🍂📚",hook:"November reading wrap up — the post horror month recovery went exactly as chaotically as expected",body:"Full November breakdown:\n• Mind Scale rating for every book read\n• Disappointment of the month\n• Surprise of the month\n• Favorite book of November reveal\n\nBig tease for December dark holiday reads month.",cta:"Tell me your favorite book of November",hashtags:["#MonthlyWrapUp","#BookTok","#DarkFiction","#FallReads","#YOUR_HASHTAG"]},
-// DECEMBER — DARK CHRISTMAS
-{id:501,date:"Tue Dec 1",week:"December — 🎄 Dark Christmas Week 1",month:"december",title:"December TBR — Dark Holiday Reads",type:"TBR",thumbnail:"Dark Christmas reading season 🎄🖤",hook:"December on [YOUR CHANNEL] means dark holiday reads and I have planned the most unhinged Christmas TBR",body:"December TBR reveal — all dark holiday adjacent reads.\n\nMix of: Krampus mythology, dark winter folklore, psych thrillers set in winter, cozy dark mysteries.\n\nAnnounce this is dark holiday month on your channel.",cta:"Are you a dark Christmas reader or do you prefer cozy?",hashtags:["#DarkChristmas","#HolidayReads","#BookTok","#DarkFiction","#YOUR_HASHTAG"]},
-{id:502,date:"Thu Dec 3",week:"December — 🎄 Dark Christmas Week 1",month:"december",title:"December Book Haul — Dark Holiday Edition",type:"Book Haul",thumbnail:"Dark holiday haul 🎄📚🖤",hook:"I went book shopping specifically for dark holiday reads and my wallet will never forgive me",body:"December haul — all dark winter and holiday themed reads.\n\nFor each: hold up, one sentence, excitement rating.\n\nFilm with Christmas lights and dark moody atmosphere for maximum aesthetic.",cta:"Tell me your favorite dark holiday read",hashtags:["#BookHaul","#DarkChristmas","#BookTok","#HolidayReads","#YOUR_HASHTAG"]},
-{id:503,date:"Sat Dec 5",week:"December — 🎄 Dark Christmas Week 1",month:"december",title:"Dark Books to Read by the Christmas Tree",type:"Recommendations",thumbnail:"Dark reads by the Christmas tree 🎄🖤",hook:"Nothing says Christmas like a dark psychological thriller by the tree and I will not be taking questions",body:"Recommend dark reads perfect for the Christmas season.\n\nFor each: the cozy dark vibe, why it works for Christmas reading, Mind Scale rating.\n\nInclude books with winter settings, dark mysteries and gothic holiday vibes.",cta:"Are you reading anything dark this Christmas season?",hashtags:["#ChristmasReads","#DarkFiction","#BookTok","#HolidayBooks","#YOUR_HASHTAG"]},
-{id:504,date:"Tue Dec 8",week:"December — 🎄 Dark Christmas Week 2",month:"december",title:"Krampus by Brom — Full Review",type:"Book Review",thumbnail:"Krampus by Brom is everything 🎄💀",hook:"Krampus by Brom is the book that should be under every dark fiction reader's Christmas tree",body:"Full review of Krampus by Brom.\n\nExplain the mythology battle between Krampus and Santa.\n\nShow the cover and illustrations on camera.\n\nWhy it's perfect for December specifically.\n\nMind Scale rating reveal.",cta:"Is Krampus on your December TBR? It absolutely should be",hashtags:["#Krampus","#Brom","#DarkChristmas","#BookTok","#HolidayReads"]},
-{id:505,date:"Thu Dec 10",week:"December — 🎄 Dark Christmas Week 2",month:"december",title:"Best Books I Read All Year — 2026 Favorites",type:"Ranking",thumbnail:"Best books of 2026 🖤📚",hook:"2026 is almost done and these are the books that absolutely defined my reading year",body:"Your best books of 2026 across all genres.\n\nFor each: what made it stand out, Mind Scale rating, who needs to read it before the year ends.\n\nThis will be one of your highest performing videos of the year.",cta:"Tell me your best book of 2026 — let's compare lists",hashtags:["#BestBooks2026","#BookTok","#YearInBooks","#DarkFiction","#YOUR_HASHTAG"]},
-{id:506,date:"Sat Dec 12",week:"December — 🎄 Dark Christmas Week 2",month:"december",title:"Dark Fiction Gift Guide for Book Lovers",type:"Recommendations",thumbnail:"Dark fiction gift guide 🎄📚🖤",hook:"If you have a dark fiction reader in your life this gift guide will make you their favorite person",body:"Gift guide featuring your favorite dark fiction books.\n\nOrganize by:\n• For the psych thriller lover\n• For the true crime obsessed\n• For the dark fantasy reader\n• For someone new to dark fiction\n\nInclude Chevy Stevens and Brom as anchor recommendations.",cta:"Share this with someone who needs to buy you books for Christmas",hashtags:["#BookGiftGuide","#DarkFiction","#ChristmasGifts","#BookTok","#YOUR_HASHTAG"]},
-{id:507,date:"Tue Dec 15",week:"December — 🎄 Dark Christmas Week 3",month:"december",title:"December Book Review Spotlight",type:"Book Review",thumbnail:"December read of the month 🎄🖤",hook:"This is my December read and it is dark and it is perfect and it is everything I wanted",body:"Full review of your most impactful December read.\n\nFocus on the winter atmosphere and how the setting enhances the psychological elements.\n\nMind Scale rating reveal with card on screen.",cta:"Tell me what you're reading over the Christmas break",hashtags:["#BookReview","#BookTok","#DarkFiction","#ChristmasReads","#YOUR_HASHTAG"]},
-{id:508,date:"Thu Dec 17",week:"December — 🎄 Dark Christmas Week 3",month:"december",title:"My Reading Goals for 2027",type:"Engagement",thumbnail:"2027 reading goals 📚🖤",hook:"2026 is almost over and I have very specific plans for what I am reading in 2027",body:"Share your reading goals for 2027:\n• Authors you plan to finish entire catalogs of\n• Genres you want to explore more\n• Number of books goal\n• Series you plan to start\n\nAsk followers for their 2027 reading goals.",cta:"Tell me your 2027 reading goal — let's hold each other accountable",hashtags:["#ReadingGoals","#BookTok","#2027Books","#DarkFiction","#YOUR_HASHTAG"]},
-{id:509,date:"Sat Dec 19",week:"December — 🎄 Dark Christmas Week 3",month:"december",title:"Christmas Book Haul — Final Haul of 2026",type:"Book Haul",thumbnail:"Final haul of 2026 🎄📚🖤",hook:"The final book haul of 2026 and I made sure it was the most unhinged one yet",body:"Your last book haul of the year — make it dramatic and festive.\n\nFilm with Christmas lights and dark moody atmosphere.\n\nFor each: hold up, one sentence, excitement rating.\n\nClose with a reflection on how much your shelf has grown this year.",cta:"Tell me the last book you bought in 2026",hashtags:["#BookHaul","#Christmas","#BookTok","#DarkFiction","#YOUR_HASHTAG"]},
-{id:510,date:"Thu Dec 31",week:"December — 🎄 Year End Finale",month:"december",title:"2026 YEAR END WRAP UP — Best Books, Worst Books, Mind Scale Records",type:"Monthly Wrap Up",thumbnail:"2026 year end wrap up 🎄🖤📚💀",hook:"2026 is done and I read things this year that permanently changed me — let's go through all of it",body:"Your biggest video of the entire year — post this on New Year's Eve.\n\n• Every book read in 2026 with Mind Scale ratings\n• Most Unhinged Book of the Year\n• Most Disappointing Book of the Year\n• Hidden Gem of the Year\n• Author Discovery of the Year — Chevy Stevens and Brom\n• BEST BOOK OF 2026 — big dramatic reveal\n• What's coming in 2027\n\nThis is your statement video — make it everything.",cta:"Happy New Year — tell me your best book of 2026 and most anticipated read of 2027",hashtags:["#YearEndWrapUp","#BestBooks2026","#BookTok","#DarkFiction","#YOUR_HASHTAG"]},
-
+  // Add your video schedule here, or use the Calendar panel to plan content.
 ];
 
 // ═══════════════════════════════════════════════
@@ -2498,7 +2463,7 @@ const SERIES_IDEAS=[
   {id:'si1',title:'📊 The Mind Scale Files',desc:'A recurring deep-dive where you assign a book an official Mind Scale rating with evidence — like a "case file." Post one every 2 weeks.',hook:'"Opening the case file on [Book]. Evidence of psychological damage follows."',why:'Builds brand identity around your rating system. Viewers tune in to see how you rate the next one.'},
   {id:'si2',title:'📚 Dark Book Club',desc:'Pick one book per month for you and your audience to read together. Do check-in videos at 25%, 50%, 75%, then a finale reaction. Ask viewers to comment their chapter reactions.',hook:'"This month\'s Dark Book Club pick is [Book]. You have 30 days. No excuses."',why:'Drives consistent engagement for a full month. People follow to see your reactions.'},
   {id:'si3',title:'🔬 Author Autopsy',desc:'Go deep on one author\'s full catalog — rank all their books, find patterns in their writing style, talk about what makes them genius or messy.',hook:'"I read every single book [Author] has ever written. Here\'s my verdict."',why:'Long-form content that positions you as the expert. Fans of that author flood your comments.'},
-  {id:'si4',title:'🆚 BookTok vs [YOUR NAME]',desc:'A series where you read the most hyped BookTok books and give your completely honest verdict. Did the hype lie? Did it deliver? The rating reveal IS the series.',hook:'"BookTok said this was a 5 star masterpiece. I read it. Here\'s the truth."',why:'Controversy drives comments. People defend their favorites — your comments go crazy.'},
+  {id:'si4',title:'🆚 BookTok vs '+(APP_NAME||'[Your Name]'),desc:'A series where you read the most hyped BookTok books and give your completely honest verdict. Did the hype lie? Did it deliver? The rating reveal IS the series.',hook:'"BookTok said this was a 5 star masterpiece. I read it. Here\'s the truth."',why:'Controversy drives comments. People defend their favorites — your comments go crazy.'},
   {id:'si5',title:'😈 Villain Era',desc:'One video per villain — analyzing what makes the best villains in dark fiction tick. What\'s their psychology? Why do they work? Could you relate to them?',hook:'"Today we\'re diagnosing [Villain]. Spoiler: I completely understand their choices."',why:'Niche enough to feel special, broad enough to cover many books. Highly shareable.'},
   {id:'si6',title:'⛓️ The Recommendation Chain',desc:'"If you liked [Book], read [Book], then [Book]." Build chains of 3–4 books that escalate in darkness. Each chain is one video.',hook:'"Start here. Then it gets worse. You asked for this."',why:'"If you liked X" is the most-shared format on BookTok. People tag friends constantly.'},
   {id:'si7',title:'💀 Trauma Tier List',desc:'Rank books from "I\'m fine" to "Need Therapy" using your Mind Scale. Do it by genre, by author, by trope. Update it as you read more.',hook:'"Updating my trauma tier list. New victims have been added."',why:'Tier lists go viral. The format is designed to generate debate in comments.'},
@@ -2643,7 +2608,7 @@ function scheduleAlarmCheck(){
     const currentTime=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
     alarms.filter(a=>a.active&&a.day===currentDay&&a.time===currentTime).forEach(a=>{
       if('Notification' in window&&Notification.permission==='granted'){
-        new Notification('[YOUR NAME] 🖤',{body:a.label,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🖤</text></svg>'});
+        new Notification((APP_NAME||'BookTok') + ' 🖤',{body:a.label,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🖤</text></svg>'});
       }
     });
   },60000);
@@ -3019,6 +2984,22 @@ let scGoal = parseInt(localStorage.getItem('sc3_goal') || '60');
 let scNotes = localStorage.getItem('sc3_notes') || '';
 let scStreak = parseInt(localStorage.getItem('sc3_streak') || '0');
 let scLastRead = localStorage.getItem('sc3_lastread') || '';
+// ── SETUP / BRANDING ──
+let APP_NAME = localStorage.getItem('booktok_setup_name') || '';
+let APP_TAG  = localStorage.getItem('booktok_setup_tag')  || '';
+function applyBranding() {
+  if (!APP_NAME) return;
+  document.title = APP_NAME + ' — BookTok Command Center';
+  const h1 = document.querySelector('.site-header h1');
+  if (h1) h1.textContent = APP_NAME;
+  // rating card header
+  const rcHdr = document.getElementById('rc-brand-name');
+  if (rcHdr) rcHdr.textContent = '✦ ' + APP_NAME + ' ✦';
+  const rcFtr = document.getElementById('rc-brand-footer');
+  if (rcFtr) rcFtr.textContent = APP_NAME + ' Command Center 🖤';
+  const rcN2 = document.getElementById('rc-brand-name2'); if (rcN2) rcN2.textContent = APP_NAME;
+}
+
 let scSelectedStars = 0, scSelectedInterest = 0, scSelectedMind = 0, scSelectedTiktok = '';
 let scPicks = { fmt: '', pace: '', src: '', rec: '' };
 const SC_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -3298,7 +3279,7 @@ async function shareRatingCard(){
   const mind=document.getElementById('rc-mind-name').textContent;
   const stars=document.getElementById('rc-stars').textContent;
   const genre=document.getElementById('rc-genre').textContent;
-  const text=`📚 ${title}\n⚖️ Mind Scale: ${mind}\n${stars?'⭐ '+stars+'\n':''}📖 ${genre}\n\n#BookTok #YOUR_HASHTAG #MindScale`;
+  const text=`📚 ${title}\n⚖️ Mind Scale: ${mind}\n${stars?'⭐ '+stars+'\n':''}📖 ${genre}\n\n#BookTok #${APP_TAG||'YourHashtag'} #MindScale`;
   if(navigator.share){try{await navigator.share({title:'My Rating — '+title,text});}catch(e){}}
   else toast('📱 Screenshot the card to share it!');
 }
@@ -3438,7 +3419,7 @@ function buildTBRScript(book){
     `── HOOK (pick one) ──\n${hooks.map((h,i)=>`Option ${i+1}: ${h}`).join('\n')}\n\n`+
     `── SETUP ──\n${setup}\n\n`+
     `── 5 THINGS TO COVER ──\n${points.map((p,i)=>`${i+1}. ${p}`).join('\n')}\n\n`+
-    `── MIND SCALE REVEAL ──\n[After you read it — show your rating card on screen. Pause. Let it land.]\n"Official [YOUR NAME] Mind Scale rating for ${T}: [your rating]"\n\n`+
+    `── MIND SCALE REVEAL ──\n[After you read it — show your rating card on screen. Pause. Let it land.]\n"Official "+(APP_NAME||'BookTok')+" Mind Scale rating for" ${T}: [your rating]"\n\n`+
     `── CTA (pick one) ──\n${ctas.join('\n')}`+
     haulSection;
 
@@ -3454,7 +3435,7 @@ function buildTBRScript(book){
     <div style="${secStyle}">5 THINGS TO COVER</div>
     ${points.map((p,i)=>`<div style="${lineStyle}"><b style="color:var(--text);">${i+1}.</b> ${p}</div>`).join('')}
     <div style="${secStyle}">MIND SCALE REVEAL</div>
-    <div style="${lineStyle}">[After you read it — show your rating card on screen. Pause on it. Let it land.] <em>"Official [YOUR NAME] Mind Scale rating for ${T}: ____"</em></div>
+    <div style="${lineStyle}">[After you read it — show your rating card on screen. Pause on it. Let it land.] <em>"Official "+(APP_NAME||'BookTok')+" Mind Scale rating for" ${T}: ____"</em></div>
     <div style="${secStyle}">CTA — pick one to end on</div>
     ${ctas.map(c=>`<div style="${optStyle}" onclick="navigator.clipboard&&navigator.clipboard.writeText(${JSON.stringify(c)}).then(()=>toast('CTA copied!'))">${c}</div>`).join('')}
     <div style="${secStyle}">BOOK HAUL FORMAT</div>
@@ -3487,7 +3468,7 @@ function scRenderScripts() {
         <div class="sc-script-line"><strong style="color:var(--text);font-style:normal;">Mind Scale Reveal:</strong> Official rating — ${mindName} — show your rating card on screen.</div>
         ${b.review ? `<div class="sc-script-line"><strong style="color:var(--text);font-style:normal;">Your Notes:</strong> "${b.review.slice(0,150)}${b.review.length>150?'...':''}"</div>` : ''}
         <div class="sc-script-line"><strong style="color:var(--text);font-style:normal;">CTA:</strong> "Have you read ${b.title}? Tell me your Mind Scale rating in the comments"</div>
-        <div class="sc-script-line"><strong style="color:var(--text);font-style:normal;">Hashtags:</strong> #BookTok #${(b.genre||'DarkFiction').replace(/\s+/g,'')} #MindScale #YOUR_HASHTAG #ThrillerBookTok</div>
+        <div class="sc-script-line"><strong style="color:var(--text);font-style:normal;">Hashtags:</strong> #BookTok #${(b.genre||'DarkFiction').replace(/\s+/g,'')} #MindScale #${APP_TAG||'YourHashtag'} #ThrillerBookTok</div>
       </div>
     </div>`;
   }).join('');
@@ -3746,7 +3727,7 @@ async function shareData(){
   const file=new File([blob],'titlesbytrish-backup-'+new Date().toISOString().slice(0,10)+'.json',{type:'application/json'});
   if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
     try{
-      await navigator.share({files:[file],title:'[YOUR NAME] Backup',text:'My [YOUR NAME] app data'});
+      await navigator.share({files:[file],title:(APP_NAME||'BookTok')+' Backup',text:'My '+(APP_NAME||'BookTok')+' app data'});
       toast('✦ Shared! Open on your other device and tap Restore Backup 🖤');
     }catch(e){if(e.name!=='AbortError')exportData();}
   } else {
@@ -3795,7 +3776,7 @@ async function syncViaAirdrop(){
   const file=new File([blob],'titlesbytrish-sync-'+new Date().toISOString().slice(0,10)+'.json',{type:'application/json'});
   if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
     try{
-      await navigator.share({files:[file],title:'[YOUR NAME] Sync',text:'Open this on your iPad and tap Restore Backup 🖤'});
+      await navigator.share({files:[file],title:(APP_NAME||'BookTok')+' Sync',text:'Open this on your iPad and tap Restore Backup 🖤'});
     }catch(e){if(e.name!=='AbortError')toast('Sharing cancelled');}
   } else {
     // Fallback: download the file
@@ -3929,7 +3910,7 @@ async function shareStatsCard(){
   const ratingEl=document.getElementById('scard-rating').textContent;
   const streakEl=document.getElementById('scard-streak').textContent;
   const genreEl=document.getElementById('scard-genre').textContent;
-  const shareText=`📚 ${readEl} books read | ⭐ ${ratingEl} avg | 🔥 ${streakEl} day streak\nTop genre: ${genreEl}\n\nTracked with [YOUR NAME] Command Center 🖤`;
+  const shareText=`📚 ${readEl} books read | ⭐ ${ratingEl} avg | 🔥 ${streakEl} day streak\nTop genre: ${genreEl}\n\nTracked with '+(APP_NAME||'BookTok')+' Command Center 🖤`;
   if(navigator.share){try{await navigator.share({title:'My Reading Stats 🖤',text:shareText});}catch(e){}}
   else{toast('📱 Screenshot the card to share!');}
 }
@@ -4029,42 +4010,42 @@ const capTemplates=[
    hook:'This book broke something in my brain and I\'m not sure it\'s been fixed since',
    body:'[Book title] by [Author]. The premise sounds simple — [one sentence]. But what actually happens is [twist/escalation]. The [best thing about the book] had me completely unraveling. This is not a comfortable read. It is a necessary one.',
    cta:'If you\'ve read this, you KNOW. Drop a 🖤 below. If you haven\'t — what are you waiting for?',
-   hashtags:'#BookTok #BookReview #PsychologicalThriller #DarkFiction #YOUR_HASHTAG #ThrillerBookTok #BookTokRecommendations'},
+   hashtags:'#BookTok #BookReview #PsychologicalThriller #DarkFiction #'+(APP_TAG||'YourHashtag')+' #ThrillerBookTok #BookTokRecommendations'},
   {type:'TBR Reveal',genre:'tbr',
    hook:'My [month] TBR is completely unhinged and I am not even a little bit sorry',
    body:'Here\'s what I\'m reading this month: [List each book with one dramatic sentence about why]. I don\'t know which one is going to destroy me first but statistically at least two of these are going to require a therapy session.',
    cta:'Have you read any of these? Tell me what I\'m in for 👇',
-   hashtags:'#BookTok #TBR #TBRPile #ReadingList #ThrillerBookTok #BookRecommendations #YOUR_HASHTAG'},
+   hashtags:'#BookTok #TBR #TBRPile #ReadingList #ThrillerBookTok #BookRecommendations #'+(APP_TAG||'YourHashtag')'},
   {type:'Author Spotlight',genre:'author',
    hook:'If you\'ve never read [Author Name] I need you to stop whatever you\'re doing right now',
    body:'[Author Name] writes the kind of books that make you question everyone around you. Start with [Book 1] — it will ruin you. Then [Book 2] will finish the job. What makes [Author Name] different from everyone else is [specific writing style/technique]. Nobody does [element] like they do.',
    cta:'Which [Author Name] book hit you hardest? Mine was [your answer] and I still haven\'t recovered.',
-   hashtags:'#BookTok #AuthorSpotlight #YOUR_HASHTAG #ThrillerBookTok #DarkFiction #MustRead'},
+   hashtags:'#BookTok #AuthorSpotlight #'+(APP_TAG||'YourHashtag')+' #ThrillerBookTok #DarkFiction #MustRead'},
   {type:'Book Haul',genre:'haul',
    hook:'I went to [store/online] and I have zero regrets and also zero money',
    body:'Haul time. [Show each book]. [Book 1] — [why you grabbed it]. [Book 2] — [why you grabbed it]. [Book 3] — [why you grabbed it]. My wallet is crying. My TBR pile is thriving. This is fine.',
    cta:'Which one should I read first? Vote in the comments 👇',
-   hashtags:'#BookHaul #BookTok #BookShopping #TBR #YOUR_HASHTAG #ThrillerBooks #BookCollection'},
+   hashtags:'#BookHaul #BookTok #BookShopping #TBR #'+(APP_TAG||'YourHashtag')+' #ThrillerBooks #BookCollection'},
   {type:'Monthly Wrap Up',genre:'wrapup',
    hook:'Here\'s every book I read in [month] ranked from "loved it" to "needed therapy after"',
    body:'[Month] wrap up. I read [number] books. Starting from the bottom: [Book] — [one line reaction]. [Book] — [one line reaction]. And the book that absolutely wrecked me this month: [Book]. [Why it hit so hard].',
    cta:'What was your best read of [month]? Drop it below — I\'m always adding to the TBR.',
-   hashtags:'#MonthlyWrapUp #BookTok #ReadingWrapUp #YOUR_HASHTAG #BooksRead #ThrillerBookTok'},
+   hashtags:'#MonthlyWrapUp #BookTok #ReadingWrapUp #'+(APP_TAG||'YourHashtag')+' #BooksRead #ThrillerBookTok'},
   {type:'Ranking',genre:'ranking',
    hook:'I ranked [topic] by how much they destroyed my mental health and the results are alarming',
    body:'[Number] position ranking of [topic]. Coming in at #[number]: [item] — [why]. #[number]: [item] — [why]. And the one that genuinely altered my personality: [#1 item]. [Why it\'s the top. Be dramatic. Be honest.]',
    cta:'Do you agree with my ranking? Tell me where I\'m wrong 👇',
-   hashtags:'#BookRanking #BookTok #YOUR_HASHTAG #ThrillerBooks #BookRecommendations #RankingBooks'},
+   hashtags:'#BookRanking #BookTok #'+(APP_TAG||'YourHashtag')+' #ThrillerBooks #BookRecommendations #RankingBooks'},
   {type:'Recommendations',genre:'recs',
    hook:'If you liked [popular book] I have [number] books that will completely finish you off',
    body:'You read [popular book] and now you need more? Here\'s your reading list: [Book 1] — [comparison + why]. [Book 2] — [comparison + why]. [Book 3] — [comparison + why]. You\'re welcome and I\'m sorry.',
    cta:'Save this for your next reading slump. And tag a friend who needs these.',
-   hashtags:'#BookRecommendations #BookTok #YOUR_HASHTAG #IfYouLiked #ThrillerBooks #ReadThis'},
+   hashtags:'#BookRecommendations #BookTok #'+(APP_TAG||'YourHashtag')+' #IfYouLiked #ThrillerBooks #ReadThis'},
   {type:'Engagement',genre:'engagement',
    hook:'This question has been living in my head rent free and I need your opinion',
    body:'[Ask a polarizing bookish question — examples: "Would you rather have the ending spoiled or be caught completely off guard by a traumatic plot twist?" / "Which book broke you so badly you couldn\'t read for a week afterward?" / "Do you DNF or do you finish every book no matter what?"]',
    cta:'Drop your answer below 👇 I\'m genuinely arguing about this with myself.',
-   hashtags:'#BookTok #BookQuestion #YOUR_HASHTAG #BookCommunity #ThrillerBookTok #BookDebate'},
+   hashtags:'#BookTok #BookQuestion #'+(APP_TAG||'YourHashtag')+' #BookCommunity #ThrillerBookTok #BookDebate'},
 ];
 
 let capFilter='all';
@@ -4231,7 +4212,7 @@ function generateHaulCaption(){
   const srcTags=sourceHashtags[src]||'';
 
   const caption=`${hook}\n\n${body}\n\n${cta}`;
-  const hashtags=`#BookTok #BookHaul #BookTokRecommendations ${srcTags} #DarkFiction #YOUR_HASHTAG #BookstoreTour #BookCommunity #DarkBookTok #HorrorBookTok #ThrillerBookTok #NewBooks #BookstagramTok`;
+  const hashtags=`#BookTok #BookHaul #BookTokRecommendations ${srcTags} #DarkFiction #'+(APP_TAG||'YourHashtag')+' #BookstoreTour #BookCommunity #DarkBookTok #HorrorBookTok #ThrillerBookTok #NewBooks #BookstagramTok`;
 
   document.getElementById('haul-caption-text').textContent=caption;
   document.getElementById('haul-hashtag-text').textContent=hashtags;
@@ -4251,11 +4232,11 @@ function copyHaulHashtags(){
 // HASHTAG TRACKER
 // ══════════════════════════════════════════
 let htSets=JSON.parse(localStorage.getItem('booktok_ht')||JSON.stringify([
-  {id:1,name:'Psych Thriller Review',tags:['#BookTok','#PsychologicalThriller','#ThrillerBookTok','#DarkFiction','#BookReview','#YOUR_HASHTAG','#BookRecommendations','#ReadingCommunity']},
-  {id:2,name:'TBR & Haul',tags:['#BookTok','#TBR','#BookHaul','#BookShopping','#YOUR_HASHTAG','#ThrillerBooks','#BookCollection','#ReadingList']},
-  {id:3,name:'True Crime',tags:['#TrueCrime','#BookTok','#TrueCrimeBookTok','#YOUR_HASHTAG','#DarkReads','#TrueCrimeBooks','#BookRecommendations']},
-  {id:4,name:'Author Spotlight',tags:['#BookTok','#AuthorSpotlight','#YOUR_HASHTAG','#MustRead','#ThrillerAuthor','#BookRecommendations','#DarkFiction']},
-  {id:5,name:'Engagement / Questions',tags:['#BookTok','#BookQuestion','#BookCommunity','#YOUR_HASHTAG','#ThrillerBookTok','#BookDebate','#ReadersOfTikTok']},
+  {id:1,name:'Psych Thriller Review',tags:['#BookTok','#PsychologicalThriller','#ThrillerBookTok','#DarkFiction','#BookReview','#'+(APP_TAG||'YourHashtag'),'#BookRecommendations','#ReadingCommunity']},
+  {id:2,name:'TBR & Haul',tags:['#BookTok','#TBR','#BookHaul','#BookShopping','#'+(APP_TAG||'YourHashtag'),'#ThrillerBooks','#BookCollection','#ReadingList']},
+  {id:3,name:'True Crime',tags:['#TrueCrime','#BookTok','#TrueCrimeBookTok','#'+(APP_TAG||'YourHashtag'),'#DarkReads','#TrueCrimeBooks','#BookRecommendations']},
+  {id:4,name:'Author Spotlight',tags:['#BookTok','#AuthorSpotlight','#'+(APP_TAG||'YourHashtag'),'#MustRead','#ThrillerAuthor','#BookRecommendations','#DarkFiction']},
+  {id:5,name:'Engagement / Questions',tags:['#BookTok','#BookQuestion','#BookCommunity','#'+(APP_TAG||'YourHashtag'),'#ThrillerBookTok','#BookDebate','#ReadersOfTikTok']},
 ]));
 function saveHT(){localStorage.setItem('booktok_ht',JSON.stringify(htSets));}
 function saveHashtagSet(){
@@ -4597,8 +4578,8 @@ const authorSeries=[
    videoIdea:'🎬 "Ken Follett\'s Kingsbridge series — medieval England to the Renaissance"',
    books:['The Evening and the Morning (900s — prequel)','The Pillars of the Earth (1100s)','World Without End (1300s)','A Column of Fire (1500s)']},
   // ── DO NOT READ ALONE ──
-  {id:'dnra',genre:'horror',name:'Do Not Read Alone',author:'Curated by [YOUR NAME]',
-   desc:'Ten of the darkest, most disturbing books [YOUR NAME] has ever encountered. Each one earned a 4 or 5 on the Mind Scale. The warning is the hook — read at your own risk.',
+  {id:'dnra',genre:'horror',name:'Do Not Read Alone',author:'Curated by '+(APP_NAME||'BookTok'),
+   desc:'Ten of the darkest, most disturbing books '+(APP_NAME||'this creator')+' has ever encountered. Each one earned a 4 or 5 on the Mind Scale. The warning is the hook — read at your own risk.',
    videoIdea:'🎬 "Do Not Read Alone — the series where every book might break you"',
    books:['The Troop — Nick Cutter','Tender is the Flesh — Agustina Bazterrica','The Only Good Indians — Stephen Graham Jones','Mexican Gothic — Silvia Moreno-Garcia','The Silent Companions — Laura Purcell','Little Heaven — Nick Cutter','The Haunting of Hill House — Shirley Jackson','Ring — Koji Suzuki','Plain Bad Heroines — Emily M. Danforth','The Fisherman — John Langan']},
 ];
@@ -5995,6 +5976,34 @@ function rescan(){
   document.getElementById('scanner-hint').textContent='Point your camera at the barcode on the back of the book';
   startScanner();
 }
+
+/* ── SETUP FUNCTIONS ── */
+function completeSetup() {
+  const name = document.getElementById('setup-name').value.trim();
+  const tag  = document.getElementById('setup-tag').value.trim().replace(/^#/, '');
+  if (!name) { document.getElementById('setup-name').focus(); return; }
+  APP_NAME = name;
+  APP_TAG  = tag;
+  localStorage.setItem('booktok_setup_name', name);
+  localStorage.setItem('booktok_setup_tag',  tag);
+  document.getElementById('setup-overlay').classList.add('hidden');
+  document.getElementById('setup-edit-btn').style.display = 'flex';
+  applyBranding();
+  toast('✦ Welcome, ' + name + '! Your app is ready 🖤');
+}
+function openSetup() {
+  document.getElementById('setup-name').value = APP_NAME;
+  document.getElementById('setup-tag').value  = APP_TAG;
+  document.getElementById('setup-overlay').classList.remove('hidden');
+}
+(function initSetup() {
+  if (APP_NAME) {
+    document.getElementById('setup-overlay').classList.add('hidden');
+    document.getElementById('setup-edit-btn').style.display = 'flex';
+    applyBranding();
+  }
+})();
+
 </script>
 
 <!-- BARCODE SCANNER OVERLAY -->
@@ -6070,7 +6079,7 @@ function rescan(){
     </div>
     <div id="stats-card-inner">
       <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;color:var(--gold);margin-bottom:4px;">✦ BOOKWORM ✦</div>
-      <div style="font-family:'IM Fell English SC',serif;font-size:26px;color:#fff;margin-bottom:18px;">[YOUR NAME]</div>
+      <div id="rc-brand-name2" style="font-family:'IM Fell English SC',serif;font-size:26px;color:#fff;margin-bottom:18px;">Your Name</div>
       <div class="scard-grid">
         <div class="scard-item"><div class="scard-num" id="scard-read">0</div><div class="scard-lbl">Books Read</div></div>
         <div class="scard-item"><div class="scard-num" id="scard-rating">—</div><div class="scard-lbl">Avg Rating ⭐</div></div>
@@ -6083,7 +6092,7 @@ function rescan(){
       <div class="scard-divider"></div>
       <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;">CURRENTLY READING</div>
       <div id="scard-reading" style="font-size:13px;color:var(--text-dim);font-style:italic;line-height:1.6;">—</div>
-      <div style="margin-top:18px;font-size:10px;color:rgba(200,160,80,.3);letter-spacing:1px;">[YOUR NAME] Command Center 🖤</div>
+      <div style="margin-top:18px;font-size:10px;color:rgba(200,160,80,.3);letter-spacing:1px;"id="rc-brand-footer">YOUR NAME Command Center 🖤</div>
     </div>
     <div style="margin-top:12px;text-align:center;font-size:13px;color:var(--text-dim);line-height:1.6;">📱 Screenshot this card and post it to your stories!</div>
     <button class="btn" onclick="shareStatsCard()" style="width:100%;margin-top:10px;padding:12px;font-size:15px;background:rgba(200,160,80,.12);border-color:rgba(200,160,80,.35);color:var(--gold);">📤 Share Card</button>
