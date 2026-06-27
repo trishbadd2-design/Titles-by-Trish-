@@ -663,6 +663,26 @@ canvas{width:100%!important;}
 .haul-src-btn{padding:7px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:13px;cursor:pointer;transition:.15s;white-space:nowrap;}
 .haul-src-btn:hover{border-color:var(--gold-dim);color:var(--text);}
 .haul-src-btn.active{border-color:var(--gold);background:var(--gold-faint);color:var(--gold);}
+/* Platform / Where to Read */
+.sc-plat-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px;}
+.sc-plat-pill{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:13px;cursor:pointer;transition:.15s;white-space:nowrap;user-select:none;}
+.sc-plat-pill:hover{border-color:var(--border-hi);color:var(--text);}
+.sc-plat-pill.active{font-weight:600;}
+.sc-plat-pill[data-p="Kindle"].active{border-color:#ff9900;background:rgba(255,153,0,.12);color:#ff9900;}
+.sc-plat-pill[data-p="Audible"].active{border-color:#f76e11;background:rgba(247,110,17,.12);color:#f7a060;}
+.sc-plat-pill[data-p="Spotify"].active{border-color:#1db954;background:rgba(29,185,84,.1);color:#1db954;}
+.sc-plat-pill[data-p="Hoopla"].active{border-color:#5599ff;background:rgba(85,153,255,.12);color:#7ab0ff;}
+.sc-plat-pill[data-p="Libby"].active{border-color:#44aacc;background:rgba(68,170,204,.1);color:#66ccee;}
+.sc-plat-pill[data-p="Physical"].active{border-color:var(--gold);background:var(--gold-faint);color:var(--gold);}
+/* Platform badges on cards */
+.plat-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;}
+.plat-badge{font-size:11px;padding:2px 7px;border-radius:10px;font-family:'IM Fell English SC',serif;letter-spacing:.5px;}
+.plat-badge.pb-kindle{background:rgba(255,153,0,.15);border:1px solid rgba(255,153,0,.4);color:#ff9900;}
+.plat-badge.pb-audible{background:rgba(247,110,17,.12);border:1px solid rgba(247,110,17,.4);color:#f7a060;}
+.plat-badge.pb-spotify{background:rgba(29,185,84,.1);border:1px solid rgba(29,185,84,.35);color:#1db954;}
+.plat-badge.pb-hoopla{background:rgba(85,153,255,.12);border:1px solid rgba(85,153,255,.35);color:#7ab0ff;}
+.plat-badge.pb-libby{background:rgba(68,170,204,.1);border:1px solid rgba(68,170,204,.35);color:#66ccee;}
+.plat-badge.pb-physical{background:var(--gold-faint);border:1px solid var(--border-hi);color:var(--gold);}
 
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -1451,6 +1471,17 @@ canvas{width:100%!important;}
       <div class="sc-field"><label>Reminds Me Of...</label><input id="sc-f-similar" placeholder="e.g. Gone Girl"/></div>
       <div class="sc-field"><label>My Review 💬</label><textarea id="sc-f-review" placeholder="spill everything..."></textarea></div>
     </div>
+    <div class="sc-msec" style="margin-top:10px;">
+      <div class="sc-msec-title">📖 Where Can You Read This?</div>
+      <div class="sc-plat-pills" id="sc-plat-pills-read">
+        <div class="sc-plat-pill" data-p="Kindle" onclick="scTogglePlat(this,'read')">📱 Kindle</div>
+        <div class="sc-plat-pill" data-p="Audible" onclick="scTogglePlat(this,'read')">🎧 Audible</div>
+        <div class="sc-plat-pill" data-p="Spotify" onclick="scTogglePlat(this,'read')">🎵 Spotify</div>
+        <div class="sc-plat-pill" data-p="Hoopla" onclick="scTogglePlat(this,'read')">🦉 Hoopla</div>
+        <div class="sc-plat-pill" data-p="Libby" onclick="scTogglePlat(this,'read')">📗 Libby</div>
+        <div class="sc-plat-pill" data-p="Physical" onclick="scTogglePlat(this,'read')">📚 Physical</div>
+      </div>
+    </div>
   </div>
 
   <div id="sc-tbr-only-fields" style="display:none;">
@@ -1479,6 +1510,17 @@ canvas{width:100%!important;}
           <option>Thriller</option><option>Literary Fiction</option><option>Dark Fiction</option>
           <option>Non-Fiction</option><option>Fantasy</option><option>Sci-Fi</option><option>Other</option>
         </select>
+      </div>
+    </div>
+    <div class="sc-msec" style="margin-top:10px;">
+      <div class="sc-msec-title">📖 Where Can You Read This?</div>
+      <div class="sc-plat-pills" id="sc-plat-pills-tbr">
+        <div class="sc-plat-pill" data-p="Kindle" onclick="scTogglePlat(this,'tbr')">📱 Kindle</div>
+        <div class="sc-plat-pill" data-p="Audible" onclick="scTogglePlat(this,'tbr')">🎧 Audible</div>
+        <div class="sc-plat-pill" data-p="Spotify" onclick="scTogglePlat(this,'tbr')">🎵 Spotify</div>
+        <div class="sc-plat-pill" data-p="Hoopla" onclick="scTogglePlat(this,'tbr')">🦉 Hoopla</div>
+        <div class="sc-plat-pill" data-p="Libby" onclick="scTogglePlat(this,'tbr')">📗 Libby</div>
+        <div class="sc-plat-pill" data-p="Physical" onclick="scTogglePlat(this,'tbr')">📚 Physical</div>
       </div>
     </div>
   </div>
@@ -3105,6 +3147,35 @@ function scTiktokBadge(t) {
   return `<span class="sc-badge" style="color:${colors[t]||'var(--text-dim)'}">${t}</span>`;
 }
 
+/* ── PLATFORM / WHERE TO READ ── */
+let _scPlatforms = [];
+function scTogglePlat(el, group) {
+  const p = el.dataset.p;
+  if (_scPlatforms.includes(p)) {
+    _scPlatforms = _scPlatforms.filter(x => x !== p);
+    el.classList.remove('active');
+  } else {
+    _scPlatforms.push(p);
+    el.classList.add('active');
+  }
+}
+function scPlatBadgesHtml(platforms) {
+  if (!platforms || !platforms.length) return '';
+  const map = { Kindle:'pb-kindle', Audible:'pb-audible', Spotify:'pb-spotify', Hoopla:'pb-hoopla', Libby:'pb-libby', Physical:'pb-physical' };
+  const icon = { Kindle:'📱', Audible:'🎧', Spotify:'🎵', Hoopla:'🦉', Libby:'📗', Physical:'📚' };
+  return `<div class="plat-badges">${platforms.map(p=>`<span class="plat-badge ${map[p]||''}">${icon[p]||''}${p}</span>`).join('')}</div>`;
+}
+function scLoadPlats(platforms, group) {
+  _scPlatforms = platforms ? [...platforms] : [];
+  document.querySelectorAll(`#sc-plat-pills-${group} .sc-plat-pill`).forEach(el => {
+    el.classList.toggle('active', _scPlatforms.includes(el.dataset.p));
+  });
+}
+function scResetPlats() {
+  _scPlatforms = [];
+  document.querySelectorAll('.sc-plat-pill').forEach(el => el.classList.remove('active'));
+}
+
 function scRenderBooks() {
   const g = document.getElementById('sc-book-grid');
   const q = (document.getElementById('sc-search')?.value || '').toLowerCase();
@@ -3126,6 +3197,7 @@ function scRenderBooks() {
       ${b.mind ? scMindBadge(b.mind) : ''}
       <div style="margin-top:4px;">${b.tiktok ? scTiktokBadge(b.tiktok) : ''}</div>
       ${b.pages ? `<div style="font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;color:var(--text-dim);margin-top:3px;">${b.pages} pages</div>` : ''}
+      ${scPlatBadgesHtml(b.platforms)}
     </div>`).join('');
 }
 
@@ -3154,6 +3226,7 @@ function scRenderTBR() {
         ${t.genre?`<div style="display:inline-block;font-size:12px;padding:2px 8px;border-radius:10px;background:rgba(200,160,80,.12);color:var(--gold-dim);border:1px solid var(--border);margin-top:4px;">${t.genre}</div>`:''}
         ${t.priority ? `<div style="font-size:13px;color:var(--text-dim);margin-top:3px;">${t.priority}</div>` : ''}
         ${t.why ? `<div style="font-size:14px;color:var(--text-dim);margin-top:4px;font-style:italic;">${t.why}</div>` : ''}
+        ${scPlatBadgesHtml(t.platforms)}
       </div>
       <div style="display:flex;gap:5px;flex-direction:column;align-items:flex-end;">
         <button class="btn" style="font-size:13px;padding:4px 8px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);" onclick="openTBRScript('${t.id}')">📋 Script</button>
@@ -3538,6 +3611,7 @@ function scInitRecPills() {
 function scOpenAdd(mode, prefill) {
   scSelectedStars = 0; scSelectedInterest = 0; scSelectedMind = 0; scSelectedTiktok = '';
   scPicks = { fmt: '', pace: '', src: '', rec: '' };
+  scResetPlats();
   document.getElementById('sc-modal-mode').value = mode;
   document.getElementById('sc-edit-id').value = '';
   document.getElementById('sc-modal-title').textContent = mode === 'read' ? 'Log a Book' : 'Add to TBR';
@@ -3583,6 +3657,7 @@ function scSaveBook() {
       review: document.getElementById('sc-f-review').value,
       botm: document.getElementById('sc-f-botm').checked,
       shelf: shelfEl ? shelfEl.value : '',
+      platforms: [..._scPlatforms],
     };
     if (eid) { const i = scBooks.findIndex(x => x.id === eid); if (i > -1) scBooks[i] = b; }
     else { scBooks.unshift(b); markReadingDay(); }
@@ -3590,7 +3665,7 @@ function scSaveBook() {
     const title = document.getElementById('sc-f-tbr-title').value.trim();
     const author = document.getElementById('sc-f-tbr-author').value.trim();
     if (!title || !author) { toast('Title and author are required!'); return; }
-    const item = { id: eid || Date.now().toString(), title, author, interest: scSelectedInterest, why: document.getElementById('sc-f-why').value, priority: document.getElementById('sc-f-priority').value, genre: document.getElementById('sc-f-tbr-genre').value, coverUrl: _pendingCoverUrl||'' };
+    const item = { id: eid || Date.now().toString(), title, author, interest: scSelectedInterest, why: document.getElementById('sc-f-why').value, priority: document.getElementById('sc-f-priority').value, genre: document.getElementById('sc-f-tbr-genre').value, coverUrl: _pendingCoverUrl||'', platforms: [..._scPlatforms] };
     if (eid) { const i = scTBR.findIndex(x => x.id === eid); if (i > -1) scTBR[i] = item; } else scTBR.unshift(item);
   }
   _pendingCoverUrl='';
@@ -3630,6 +3705,7 @@ function scEditBook(id) {
   if (b.rec) document.querySelectorAll('#sc-rec-pills .sc-rec-pill').forEach(p => { if (p.dataset.v === b.rec) p.classList.add('sc-rec-' + p.dataset.color); });
   if (b.mind) { scSelectedMind = b.mind; document.querySelectorAll('.sc-mind-pill').forEach(p => { if (+p.dataset.v === b.mind) p.classList.add('sel-' + b.mind); }); }
   if (b.tiktok) document.querySelectorAll('.sc-tiktok-pill').forEach(p => { if (p.dataset.v === b.tiktok) p.classList.add('active'); });
+  scLoadPlats(b.platforms || [], 'read');
   document.getElementById('sc-add-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
