@@ -4401,6 +4401,8 @@ const WHEEL_COLORS=['#6b1a1a','#3a0f5a','#1a3a6a','#5a2a00','#1a4a3a','#5a1040',
 const WHEEL_BORDER='#c8a050';
 let spinAngle=0,spinVel=0,spinAF=null,spinBooks=[],spinDone=false;
 
+let _spinDpr=1, _spinSize=300;
+
 function initSpin(){
   const FALLBACK=[
     {title:'Still Missing',author:'Chevy Stevens'},
@@ -4414,25 +4416,28 @@ function initSpin(){
   try { tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]'); } catch(e){}
   const valid=tbr.filter(b=>b&&b.title);
   spinBooks=(valid.length>=2?valid:FALLBACK).slice(0,10);
-  drawSpinWheel();
   document.getElementById('spin-result').textContent='';
   document.getElementById('spin-result-author').textContent='';
   spinDone=false;
+  // Set up canvas size ONCE here, not in drawSpinWheel
+  const canvas=document.getElementById('spin-canvas');
+  if(canvas){
+    _spinDpr=window.devicePixelRatio||1;
+    _spinSize=Math.min((window.innerWidth||390)-48,300);
+    canvas.style.width=_spinSize+'px'; canvas.style.height=_spinSize+'px';
+    canvas.width=_spinSize*_spinDpr; canvas.height=_spinSize*_spinDpr;
+  }
+  // Defer draw so panel has time to become visible
+  setTimeout(drawSpinWheel, 60);
 }
 
 function drawSpinWheel(){
   const canvas=document.getElementById('spin-canvas');
   if(!canvas)return;
   const ctx=canvas.getContext('2d');
-  // HiDPI fix
-  const dpr=window.devicePixelRatio||1;
-  const size=Math.min(window.innerWidth-48,300);
-  canvas.style.width=size+'px'; canvas.style.height=size+'px';
-  canvas.width=size*dpr; canvas.height=size*dpr;
-  ctx.scale(dpr,dpr);
-  const W=size,H=size,cx=W/2,cy=H/2,r=cx-6;
-  // background fill so canvas is never transparent-black
-  ctx.fillStyle='#120820'; ctx.beginPath(); ctx.arc(cx,cy,r+6,0,2*Math.PI); ctx.fill();
+  ctx.setTransform(1,0,0,1,0,0); // reset transforms without resizing canvas
+  ctx.scale(_spinDpr,_spinDpr);
+  const W=_spinSize,H=_spinSize,cx=W/2,cy=H/2,r=cx-6;
   ctx.clearRect(0,0,W,H);
   const n=spinBooks.length;
   if(!n)return;
