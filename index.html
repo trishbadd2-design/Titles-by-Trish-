@@ -4402,7 +4402,8 @@ const WHEEL_BORDER='#c8a050';
 let spinAngle=0,spinVel=0,spinAF=null,spinBooks=[],spinDone=false;
 
 function initSpin(){
-  const FALLBACK=[
+  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  spinBooks=tbr.length?tbr:[
     {title:'Still Missing',author:'Chevy Stevens'},
     {title:'Gone Girl',author:'Gillian Flynn'},
     {title:'The Silent Patient',author:'Alex Michaelides'},
@@ -4410,42 +4411,36 @@ function initSpin(){
     {title:'Mexican Gothic',author:'Silvia Moreno-Garcia'},
     {title:'The Push',author:'Ashley Audrain'},
   ];
-  let tbr=[];
-  try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e){}
-  const valid=tbr.filter(b=>b&&b.title);
-  spinBooks=(valid.length>=2?valid:FALLBACK).slice(0,10);
+  if(spinBooks.length>10)spinBooks=spinBooks.slice(0,10);
+  drawSpinWheel();
   document.getElementById('spin-result').textContent='';
   document.getElementById('spin-result-author').textContent='';
   spinDone=false;
-  // Double rAF ensures the panel is painted before we draw on the canvas
-  requestAnimationFrame(()=>requestAnimationFrame(drawSpinWheel));
 }
 
 function drawSpinWheel(){
   const canvas=document.getElementById('spin-canvas');
   if(!canvas)return;
   const ctx=canvas.getContext('2d');
-  if(!ctx)return;
-  // Always use fixed 300×300 — no dynamic resizing that resets context
-  const CX=150,CY=150,R=144;
-  ctx.clearRect(0,0,300,300);
+  const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,r=cx-6;
+  ctx.clearRect(0,0,W,H);
   const n=spinBooks.length;
   if(!n)return;
   const slice=(2*Math.PI)/n;
   for(let i=0;i<n;i++){
     const s=spinAngle+i*slice,e=s+slice;
-    ctx.beginPath();ctx.moveTo(CX,CY);ctx.arc(CX,CY,R,s,e);ctx.closePath();
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,e);ctx.closePath();
     ctx.fillStyle=WHEEL_COLORS[i%WHEEL_COLORS.length];ctx.fill();
     ctx.strokeStyle=WHEEL_BORDER;ctx.lineWidth=3;ctx.stroke();
-    ctx.save();ctx.translate(CX,CY);ctx.rotate(s+slice/2);
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(s+slice/2);
     ctx.textAlign='right';ctx.fillStyle='#ffffff';ctx.font='bold 11px Georgia';
     const lbl=spinBooks[i].title.length>16?spinBooks[i].title.slice(0,14)+'…':spinBooks[i].title;
-    ctx.fillText(lbl,R-8,4);ctx.restore();
+    ctx.fillText(lbl,r-10,4);ctx.restore();
   }
-  ctx.beginPath();ctx.arc(CX,CY,R,0,2*Math.PI);ctx.strokeStyle=WHEEL_BORDER;ctx.lineWidth=2;ctx.stroke();
-  ctx.beginPath();ctx.arc(CX,CY,22,0,2*Math.PI);ctx.fillStyle='#07050a';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,r,0,2*Math.PI);ctx.strokeStyle=WHEEL_BORDER;ctx.lineWidth=2;ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,24,0,2*Math.PI);ctx.fillStyle='#07050a';ctx.fill();
   ctx.strokeStyle=WHEEL_BORDER;ctx.lineWidth=2;ctx.stroke();
-  ctx.font='14px serif';ctx.textAlign='center';ctx.fillStyle='#c8a050';ctx.fillText('🖤',CX,CY+5);
+  ctx.font='16px serif';ctx.textAlign='center';ctx.fillStyle='#c8a050';ctx.fillText('🖤',cx,cy+6);
 }
 
 function spinWheel(){
