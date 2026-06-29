@@ -1663,7 +1663,7 @@ canvas{width:100%!important;}
   </div>
 
   <!-- WHEEL -->
-  <div id="spin-section-wheel" class="an-section active">
+  <div id="spin-section-wheel" style="display:block;">
     <div class="spin-wrap">
       <div id="spin-display" class="spin-display-box">
         <div id="spin-reel-title" class="spin-display-title">Tap Spin to pick your next read 🖤</div>
@@ -1678,7 +1678,7 @@ canvas{width:100%!important;}
   </div>
 
   <!-- MOOD PICKER -->
-  <div id="spin-section-mood" class="an-section">
+  <div id="spin-section-mood" style="display:none;">
     <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
       <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
         Answer two quick questions and I'll pick a book from your TBR that matches your mood right now. 🖤
@@ -2238,11 +2238,12 @@ function showPanel(id){
   if(id==='hashtags'){renderHashtags();}
   if(id==='wins'){renderWins();}
   if(id==='spin'){
-    // ensure the wheel tab+section are active if nothing else is
-    var anyActive=document.querySelector('#panel-spin .an-section.active');
-    if(!anyActive){
-      document.getElementById('spin-section-wheel').classList.add('active');
-      document.getElementById('spin-tab-wheel').classList.add('active');
+    var wheel=document.getElementById('spin-section-wheel');
+    var mood=document.getElementById('spin-section-mood');
+    var wheelTab=document.getElementById('spin-tab-wheel');
+    if(wheel&&wheel.style.display==='none'&&mood&&mood.style.display==='none'){
+      wheel.style.display='block';
+      if(wheelTab)wheelTab.classList.add('active');
     }
     initSpin();
   }
@@ -5771,11 +5772,18 @@ setTimeout(updateCountdown,500);
 // ══════════════════════════════════════════
 function switchSpinTab(tab,btn){
   document.querySelectorAll('#panel-spin .an-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('#panel-spin .an-section').forEach(s=>s.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('spin-section-'+tab).classList.add('active');
-  if(tab==='wheel'){initSpin();}
-  if(tab==='mood'){resetMoodPicker();}
+  var wheel=document.getElementById('spin-section-wheel');
+  var mood=document.getElementById('spin-section-mood');
+  if(tab==='wheel'){
+    if(wheel)wheel.style.display='block';
+    if(mood)mood.style.display='none';
+    initSpin();
+  } else {
+    if(wheel)wheel.style.display='none';
+    if(mood)mood.style.display='block';
+    resetMoodPicker();
+  }
 }
 
 // ══════════════════════════════════════════
@@ -5791,10 +5799,11 @@ const MOOD_GENRE_MAP={
 };
 let _moodVibe='';
 function selectMoodVibe(vibe,btn){
-  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('#mood-vibe-grid .mood-btn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
   _moodVibe=vibe;
   document.getElementById('mood-step-2').style.display='block';
+  toast('✦ Got it — now pick how long you want to read!');
 }
 function selectMoodLength(len,btn){
   document.querySelectorAll('#mood-step-2 .mood-btn').forEach(b=>b.classList.remove('sel'));
@@ -5828,7 +5837,7 @@ function selectMoodLength(len,btn){
 }
 function resetMoodPicker(){
   _moodVibe='';
-  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('#spin-section-mood .mood-btn').forEach(b=>b.classList.remove('sel'));
   document.getElementById('mood-step-2').style.display='none';
   document.getElementById('mood-result').style.display='none';
   document.getElementById('mood-reset-btn').style.display='none';
