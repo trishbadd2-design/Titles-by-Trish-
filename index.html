@@ -120,7 +120,7 @@ textarea{resize:vertical;min-height:80px;}
 /* ── ANALYTICS ── */
 .an-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .an-tabs::-webkit-scrollbar{display:none;}
-.an-tab{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:1px;padding:7px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;flex:0 0 auto;white-space:nowrap;}
+.an-tab{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:1px;padding:7px 12px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;flex:0 0 auto;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 .an-tab.active,.an-tab:hover{border-color:var(--border-hi);color:var(--gold);background:var(--gold-faint);}
 .an-section{display:none;}
 .an-section.active{display:block;}
@@ -625,7 +625,7 @@ canvas{width:100%!important;}
 .series-del:hover{color:#e06060;}
 /* Mood Picker */
 .mood-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.mood-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);font-family:'Cinzel',serif;font-size:13px;letter-spacing:1px;padding:12px 10px;cursor:pointer;transition:all .2s;text-align:center;line-height:1.4;}
+.mood-btn{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);font-family:'Cinzel',serif;font-size:13px;letter-spacing:1px;padding:12px 10px;cursor:pointer;transition:all .2s;text-align:center;line-height:1.4;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 .mood-btn:hover{border-color:var(--gold);color:var(--gold);}
 .mood-btn.sel{background:var(--gold-faint);border-color:var(--gold);color:var(--gold);}
 /* Goals Bingo */
@@ -5791,7 +5791,10 @@ function selectMoodVibe(vibe,btn){
 function selectMoodLength(len,btn){
   document.querySelectorAll('#mood-step-2 .mood-btn').forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
-  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  var tbr;
+  try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e){tbr=[];}
+  // fall back to spin wheel's loaded books if TBR is empty
+  if(!tbr.length&&spinBooks.length)tbr=spinBooks;
   const genres=MOOD_GENRE_MAP[_moodVibe]||[];
   let matches=tbr.filter(b=>{
     const genreMatch=!b.genre||genres.some(g=>b.genre.toLowerCase().includes(g.toLowerCase())||g.toLowerCase().includes(b.genre.toLowerCase()));
