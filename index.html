@@ -1666,20 +1666,10 @@ canvas{width:100%!important;}
 
   <!-- WHEEL -->
   <div id="spin-section-wheel" class="an-section active">
-    <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
-      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
-        The wheel spins from your TBR pile in the Scorecard. Add books there first, then let fate decide. 🖤
-      </div>
-    </div>
     <div class="spin-wrap">
-      <div class="spin-slot-outer">
-        <div class="spin-slot-window" id="spin-slot-window">
-          <div id="spin-slot-display" class="spin-slot-item">
-            <div style="font-style:italic;color:var(--text-dim);font-size:14px;">Tap Spin to pick your next read ✦</div>
-          </div>
-        </div>
-      </div>
-      <button class="btn btn-primary" style="padding:12px 40px;font-size:15px;letter-spacing:3px;margin-top:6px;" onclick="alert('button works')">✦ Spin</button>
+      <button id="spin-btn" class="btn btn-primary" style="padding:14px 48px;font-size:16px;letter-spacing:3px;touch-action:manipulation;width:100%;max-width:320px;">✦ Spin the Wheel</button>
+      <div class="spin-pointer"></div>
+      <canvas id="spin-canvas" width="320" height="320" style="border-radius:50%;display:block;"></canvas>
       <div style="text-align:center;margin-top:8px;">
         <div class="spin-result" id="spin-result"></div>
         <div class="spin-result-author" id="spin-result-author"></div>
@@ -4415,12 +4405,53 @@ function renderWins(){
 }
 
 // ══════════════════════════════════════════
-// SPIN THE WHEEL (slot-machine style)
+// SPIN THE WHEEL
 // ══════════════════════════════════════════
-let spinBooks=[],spinDone=false,_spinTimer=null;
+var spinBooks=[],_spinRot=0,_spinAnimRef=null;
+var SPIN_SEG_COLORS=['#8B1A1A','#4A235A','#1A3A4A','#2A4A1A','#4A3A1A','#1A2A5A','#5A1A3A','#1A4A3A','#4A1A2A','#2A3A1A'];
+var SPIN_TXT_COLORS=['#f5deb3','#e8c9f0','#c9e8f0','#c9f0d8','#f0e8c9','#c9d8f0','#f0c9e8','#c9f0ec','#f0c9d8','#d8f0c9'];
+
+function drawSpinWheel(){
+  var canvas=document.getElementById('spin-canvas');
+  if(!canvas)return;
+  var ctx=canvas.getContext('2d');
+  var W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,r=Math.min(cx,cy)-10;
+  ctx.clearRect(0,0,W,H);
+  // background
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.fillStyle='#1a1218';ctx.fill();
+  var n=spinBooks.length;
+  if(!n){
+    ctx.fillStyle='#c8a050';ctx.font='bold 14px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('Add books to TBR',cx,cy);return;
+  }
+  var slice=Math.PI*2/n;
+  for(var i=0;i<n;i++){
+    var s=_spinRot+i*slice,e=s+slice;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,e);ctx.closePath();
+    ctx.fillStyle=SPIN_SEG_COLORS[i%SPIN_SEG_COLORS.length];ctx.fill();
+    ctx.strokeStyle='#0a0808';ctx.lineWidth=2;ctx.stroke();
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(s+slice/2);
+    ctx.textAlign='right';ctx.textBaseline='middle';
+    ctx.fillStyle=SPIN_TXT_COLORS[i%SPIN_TXT_COLORS.length];
+    ctx.font='bold '+(n>8?10:12)+'px Georgia';
+    var lbl=spinBooks[i].title.length>18?spinBooks[i].title.slice(0,17)+'…':spinBooks[i].title;
+    ctx.fillText(lbl,r-14,0);ctx.restore();
+  }
+  // center circle with gradient
+  var grad=ctx.createRadialGradient(cx,cy,0,cx,cy,28);
+  grad.addColorStop(0,'#d4a017');grad.addColorStop(1,'#8b6914');
+  ctx.beginPath();ctx.arc(cx,cy,28,0,Math.PI*2);ctx.fillStyle=grad;ctx.fill();
+  ctx.strokeStyle='#0a0808';ctx.lineWidth=2;ctx.stroke();
+  ctx.fillStyle='#1a1218';ctx.font='bold 13px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('✦',cx,cy);
+  // outer ring
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.strokeStyle='#c8a050';ctx.lineWidth=3;ctx.stroke();
+}
 
 function initSpin(){
-  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  var tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
   spinBooks=tbr.length?tbr:[
     {title:'Still Missing',author:'Chevy Stevens'},
     {title:'Gone Girl',author:'Gillian Flynn'},
@@ -4430,46 +4461,49 @@ function initSpin(){
     {title:'The Push',author:'Ashley Audrain'},
   ];
   if(spinBooks.length>10)spinBooks=spinBooks.slice(0,10);
-  const win=document.getElementById('spin-slot-window');
-  const disp=document.getElementById('spin-slot-display');
-  if(win){win.classList.remove('spinning','landed');}
-  if(disp){disp.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:14px;">Tap Spin to pick your next read ✦</div>';}
   document.getElementById('spin-result').textContent='';
   document.getElementById('spin-result-author').textContent='';
-  spinDone=false;
+  // double rAF to ensure panel is visible before drawing
+  requestAnimationFrame(function(){requestAnimationFrame(function(){drawSpinWheel();});});
 }
 
 function spinWheel(){
-  alert('Spin called! books='+spinBooks.length);
-  var books=spinBooks.length?spinBooks:[{title:'Add books to your TBR first!',author:''}];
-  var n=books.length;
-  var win=document.getElementById('spin-slot-window');
-  var disp=document.getElementById('spin-slot-display');
-  if(!win||!disp)return;
-  win.classList.remove('landed');
-  win.classList.add('spinning');
+  if(_spinAnimRef)return;
+  if(!spinBooks.length)return;
   document.getElementById('spin-result').textContent='';
   document.getElementById('spin-result-author').textContent='';
-  var winner=Math.floor(Math.random()*n);
-  var i=0,ticks=0,maxTicks=28+Math.floor(Math.random()*16),delay=55;
-  function next(){
-    var book=books[i%n];
-    disp.innerHTML='<div class="spin-slot-title">'+book.title+'</div>'+(book.author?'<div class="spin-slot-author">by '+book.author+'</div>':'');
-    i++;ticks++;
-    if(ticks>maxTicks&&(i%n)===winner||ticks>maxTicks+n*3){
-      var w=books[winner];
-      disp.innerHTML='<div class="spin-slot-title">'+w.title+'</div>'+(w.author?'<div class="spin-slot-author">by '+w.author+'</div>':'');
-      win.classList.remove('spinning');win.classList.add('landed');
-      document.getElementById('spin-result').textContent='✦ '+w.title;
-      document.getElementById('spin-result-author').textContent=w.author?'by '+w.author:'';
-      toast('🎡 Your next read: '+w.title+' 🖤');
-      return;
+  var extraSpins=5+Math.random()*5;
+  var targetAngle=extraSpins*Math.PI*2+Math.random()*Math.PI*2;
+  var duration=4000+Math.random()*1500;
+  var startTime=performance.now();
+  var startRot=_spinRot;
+  function easeOut(t){return 1-Math.pow(1-t,4);}
+  function animate(now){
+    var elapsed=now-startTime;
+    var progress=Math.min(elapsed/duration,1);
+    _spinRot=startRot+targetAngle*easeOut(progress);
+    drawSpinWheel();
+    if(progress<1){
+      _spinAnimRef=requestAnimationFrame(animate);
+    } else {
+      _spinAnimRef=null;
+      var slice=Math.PI*2/spinBooks.length;
+      var norm=((_spinRot%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
+      var pointerAngle=(Math.PI*2-norm)%(Math.PI*2);
+      var winner=Math.floor(pointerAngle/slice)%spinBooks.length;
+      var picked=spinBooks[winner];
+      document.getElementById('spin-result').textContent='✦ '+picked.title;
+      document.getElementById('spin-result-author').textContent=picked.author?'by '+picked.author:'';
+      toast('🎡 Your next read: '+picked.title+' 🖤');
     }
-    if(ticks>maxTicks*0.6){delay=Math.min(delay+18,450);}
-    setTimeout(next,delay);
   }
-  setTimeout(next,10);
+  _spinAnimRef=requestAnimationFrame(animate);
 }
+// Wire spin button via addEventListener (more reliable on iOS than onclick)
+document.addEventListener('DOMContentLoaded',function(){
+  var btn=document.getElementById('spin-btn');
+  if(btn){btn.addEventListener('click',spinWheel);btn.addEventListener('touchend',function(e){e.preventDefault();spinWheel();});}
+});
 
 // ══════════════════════════════════════════
 // MONTHLY PICKS
@@ -6117,7 +6151,6 @@ function rescan(){
   document.getElementById('scanner-hint').textContent='Point your camera at the barcode on the back of the book';
   startScanner();
 }
-window.onerror=function(msg,src,line){alert('JS ERROR: '+msg+' (line '+line+')');};
 </script>
 
 <!-- BARCODE SCANNER OVERLAY -->
