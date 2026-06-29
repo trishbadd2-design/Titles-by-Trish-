@@ -4440,7 +4440,7 @@ function initSpin(){
 }
 
 function spinWheel(){
-  toast('Spin tapped! books:'+spinBooks.length);
+  alert('Spin called! books='+spinBooks.length);
   var books=spinBooks.length?spinBooks:[{title:'Add books to your TBR first!',author:''}];
   var n=books.length;
   var win=document.getElementById('spin-slot-window');
@@ -6117,6 +6117,7 @@ function rescan(){
   document.getElementById('scanner-hint').textContent='Point your camera at the barcode on the back of the book';
   startScanner();
 }
+window.onerror=function(msg,src,line){alert('JS ERROR: '+msg+' (line '+line+')');};
 </script>
 
 <!-- BARCODE SCANNER OVERLAY -->
