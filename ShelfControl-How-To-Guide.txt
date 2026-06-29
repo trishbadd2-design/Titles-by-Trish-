@@ -1,614 +1,106 @@
 
 ╔══════════════════════════════════════════════════════════════╗
-║                                                              ║
-║           ShelfControl — BookTok Command Center              ║
-║                   Complete How-To Guide                      ║
-║                                                              ║
+║         ShelfControl — BookTok Command Center                ║
+║                   Quick Reference Guide                      ║
 ╚══════════════════════════════════════════════════════════════╝
 
   Created by TitlesByTrish  ·  @TitlesByTrish on TikTok
 
 
 ──────────────────────────────────────────────────────────────
-  TABLE OF CONTENTS
+  🎤  MIC BUTTON TIP (works everywhere)
 ──────────────────────────────────────────────────────────────
 
-  1.  Content Calendar
-  2.  Scorecard (Book Log)
-  3.  TBR Pile
-  4.  Caption Generator
-  5.  Book Haul Captions
-  6.  Hashtag Sets
-  7.  Follower Tracker
-  8.  Engagement Tracker
-  9.  ARC & Collab Log
-  10. Idea Generator
-  11. Wins Journal
-  12. Spin the Wheel
-  13. Analytics
-  14. Quotes
-  15. Quick Notes
-  16. Voice / Mic Input
-  17. Backup & Restore
-  18. Settings & Themes
-
-
-══════════════════════════════════════════════════════════════
-  1. CONTENT CALENDAR
-══════════════════════════════════════════════════════════════
-
-The Content Calendar is your planning hub — every video idea
-from now through the end of the year, all in one place.
-
-HOW TO ADD A VIDEO PLAN
-  1. Tap "Content Calendar" from the home screen
-  2. Select the Date you want to post
-  3. Choose a Content Type from the dropdown:
-       Book Review · Book Haul · Reading Vlog · TBR/Wrap Up
-       Discussion · Recommendation · Story Time · Trend
-  4. Enter the Book Title (if it's book-specific)
-  5. Add your Hashtag Set (tap to auto-fill from your saved sets)
-  6. Add any Notes — your hook idea, talking points, or reminder
-  7. Tap "Add to Calendar"
-
-HOW TO USE IT
-  · Scroll through the calendar to see your plan at a glance
-  · Tap any entry to expand and see the full details
-  · Check off entries as "posted" so you always know where you are
-  · Use it to make sure you're posting a variety of content types
-    (not five reviews in a row!)
-
-PRO TIP: Plan out one month at a time every Sunday. Pick your
-content types first, then fill in which books for each slot.
-
-
-══════════════════════════════════════════════════════════════
-  2. SCORECARD — YOUR BOOK LOG
-══════════════════════════════════════════════════════════════
-
-The Scorecard is where you log every book you finish. It tracks
-more than just a star rating — it gives you real data about
-your reading and what your audience will love.
-
-HOW TO LOG A BOOK
-  1. Tap "Scorecard" from the home screen
-  2. Enter the Book Title and Author
-     (or tap the 🎤 mic and say "Book Title by Author Name" —
-     it fills BOTH fields automatically!)
-  3. Add the Date Started and Date Finished
-  4. Choose your Genre
-  5. Rate each category on a scale of 1–5:
-       ✦ Plot         ✦ Characters    ✦ Writing Style
-       ✦ Pacing       ✦ Ending        ✦ Emotional Hit
-  6. Overall Rating auto-calculates from your scores
-  7. Set the Mind Scale — how heavy was this book mentally?
-       Light Read · Mild · Moderate · Heavy · Devastating
-  8. Select your platform badges (where you read it):
-       📱 Kindle  🎧 Audible  🎵 Spotify  📗 Hoopla  📕 Libby  📖 Physical
-  9. Add your Review Notes — your honest thoughts
-  10. Tap "✦ Save to Scorecard"
-
-WHAT TO DO WITH IT
-  · Look back before you film a review — all your notes are there
-  · Sort by rating to see your top reads of the year
-  · Check your genre mix — are you in a reading rut?
-  · Use the Mind Scale to recommend books to your audience
-    ("if you want something light and fun, THIS one" /
-     "this one absolutely destroyed me in the best way")
-
-PRO TIP: Log the book immediately when you finish — while your
-feelings are still fresh. You don't have to film right away,
-but capture those first reactions now.
-
-
-══════════════════════════════════════════════════════════════
-  3. TBR PILE
-══════════════════════════════════════════════════════════════
-
-Your TBR (To Be Read) list lives here. Add books as you hear
-about them so you never forget a recommendation again.
-
-HOW TO ADD A BOOK
-  1. Tap "TBR Pile" from the home screen
-  2. Enter the Book Title and Author
-     (or tap 🎤 and say "Book Title by Author Name")
-  3. Set your Interest Level: ★ through ★★★★★
-  4. Add where you heard about it (TikTok rec, friend, etc.)
-  5. Select platform badges for where you plan to read it
-  6. Tap "✦ Add to TBR"
-
-FEATURES
-  · Sort by interest level — your most-anticipated books first
-  · Tap "Generate Video Script" on any book for a ready-made
-    TikTok-style TBR script you can read on camera
-  · Move a book to your Scorecard when you start reading it
-  · Remove books you've decided to skip without guilt
-
-AUTO-GENERATED TBR SCRIPT EXAMPLE:
-  "Okay, adding this one to my TBR and I cannot wait —
-   [Book Title] by [Author]. I heard about this from [source]
-   and the premise sounds absolutely [your notes]. This is
-   giving me [vibe] energy and I need it NOW."
-
-PRO TIP: Use your TBR as content! Film a "books on my TBR"
-video straight from this list — your most-anticipated books
-sorted and ready to talk about.
-
-
-══════════════════════════════════════════════════════════════
-  4. CAPTION GENERATOR
-══════════════════════════════════════════════════════════════
-
-Never stare at a blank caption box again. The Caption Generator
-has ready-made captions for every type of BookTok video.
-
-HOW TO USE IT
-  1. Tap "Caption Generator" from the home screen
-  2. Choose your Content Type:
-       Book Review · Books I Recommend · Reading Vlog
-       Discussion · Book Haul · Wrap Up · Reading Challenge
-  3. Fill in the prompts (book title, your rating, one-word
-     description, etc.)
-  4. Tap "Generate Caption"
-  5. Copy and paste it straight into TikTok
-
-CAPTION TYPES INCLUDED
-  · Book Review  — for your detailed review videos
-  · Recommendation  — for "you need to read this" videos
-  · Reading Vlog  — for reading-with-me / weekly vlog content
-  · Discussion  — for hot takes and bookish debates
-  · Book Haul  — for showing off new books
-  · Monthly Wrap Up  — for your end-of-month recap videos
-  · Reading Challenge  — for challenge update videos
-
-PRO TIP: Customize the generated caption before posting —
-add your own personality, specific quotes from the book,
-or a personal story. The generator gives you the structure;
-you make it yours.
-
-
-══════════════════════════════════════════════════════════════
-  5. BOOK HAUL CAPTIONS
-══════════════════════════════════════════════════════════════
-
-Book haul captions — already written and tagged by where you
-bought the books.
-
-HOW TO USE IT
-  1. Tap "Book Haul" from the home screen
-  2. Select your source:
-       Barnes & Noble · Book Outlet · Amazon · Library
-       Thrift Store · Online Indie · TBR Subscription Box
-  3. Add the books you're showing (title + author)
-  4. Tap "Generate Haul Caption"
-  5. Copy the caption — it includes source-specific wording
-     and is ready to paste into TikTok
-
-EACH SOURCE HAS ITS OWN VIBE
-  Barnes & Noble  — "I can never leave without spending $$$"
-  Book Outlet     — "The deals were too good, I had no choice"
-  Library         — "Free books? Say less. #LibraryTok"
-  Thrift Store    — "Thrift finds are hitting different lately"
-
-PRO TIP: These captions work for Instagram Reels and YouTube
-Shorts too — not just TikTok.
-
-
-══════════════════════════════════════════════════════════════
-  6. HASHTAG SETS
-══════════════════════════════════════════════════════════════
-
-Curated hashtag sets for every type of BookTok content —
-so you're never copy-pasting from your notes app again.
-
-HOW TO USE IT
-  1. Tap "Hashtags" from the home screen
-  2. Choose a set by content type:
-       General BookTok · Book Review · Book Haul
-       TBR & Wrap Up · Reading Vlog · Discussion
-       Romance · Fantasy · Thriller · Dark/Spicy · Cozy
-  3. Tap the set to expand and copy all hashtags
-  4. Paste directly into your TikTok caption
-
-TIPS FOR HASHTAGS
-  · Use a mix of large tags (#BookTok) and niche tags
-    (#DarkRomance, #ThrillerTok) — the niche ones get you
-    to the right audience faster
-  · Swap in your personal hashtag so followers can find all
-    your content in one place
-  · Don't use the same 30 tags every single video — rotate
-    between the sets to stay fresh
-
-PRO TIP: Your personal hashtag is already set up from your
-onboarding. Look for it automatically added to every set.
-
-
-══════════════════════════════════════════════════════════════
-  7. FOLLOWER TRACKER
-══════════════════════════════════════════════════════════════
-
-Log your follower count regularly and watch your growth over
-time — because the numbers matter and you deserve to celebrate.
-
-HOW TO USE IT
-  1. Tap "Followers" from the home screen
-  2. Tap "Log Today's Count"
-  3. Enter your current follower count
-  4. Add a note if something happened (viral video, collab, etc.)
-  5. Tap "Save"
-
-WHAT YOU'LL SEE
-  · Your growth chart — visually shows your upward trend
-  · How many followers you've gained this week / month
-  · Your fastest growth days (so you know what content works!)
-  · Milestone badges when you hit major counts
-
-MILESTONES TO LOG
-  500  ·  1K  ·  5K  ·  10K  ·  25K  ·  50K  ·  100K
-
-PRO TIP: Log every Sunday. That one weekly check-in gives you
-all the data you need — weekly growth, monthly trends, and
-which weeks your content hit hardest.
-
-
-══════════════════════════════════════════════════════════════
-  8. ENGAGEMENT TRACKER
-══════════════════════════════════════════════════════════════
-
-Track how individual videos perform so you can double down on
-what works and stop wasting time on what doesn't.
-
-HOW TO LOG A VIDEO
-  1. Tap "Engagement" from the home screen
-  2. Tap "Add Video"
-  3. Enter the video title / description
-  4. Enter the stats:
-       Views · Likes · Comments · Shares · Saves
-  5. Select the Content Type (Review, Haul, Vlog, etc.)
-  6. Add any notes about why you think it performed that way
-  7. Tap "Save"
-
-WHAT TO LOOK FOR
-  · Which content types get the most saves?
-     (Saves = TikTok loves it — push more of that)
-  · Which videos got shared the most?
-     (Shares = your audience loves it enough to send to a friend)
-  · Do certain book genres perform better than others?
-  · Do your longer videos outperform short ones, or vice versa?
-
-PRO TIP: You don't need to track every video. Pick your top
-3–5 videos from the week and log those. Patterns show up fast.
-
-
-══════════════════════════════════════════════════════════════
-  9. ARC & COLLAB LOG
-══════════════════════════════════════════════════════════════
-
-Track every ARC (Advance Review Copy) request and brand collab
-pitch — so nothing falls through the cracks.
-
-HOW TO LOG AN ARC
-  1. Tap "ARC & Collab" from the home screen
-  2. Tap "Add ARC"
-  3. Enter:
-       Book Title · Author / Publisher · Request Date
-       Review Deadline · Status (Requested / Approved / Posted)
-       Notes (any specific requirements from the publisher)
-  4. Tap "Save"
-
-HOW TO LOG A COLLAB PITCH
-  1. Tap "Add Collab"
-  2. Enter:
-       Brand Name · Contact Info · Pitch Date
-       Offer Details · Response Status · Deadline
-  3. Tap "Save"
-
-STATUS OPTIONS
-  · Requested — waiting to hear back
-  · Approved — you've been accepted!
-  · In Progress — reading / filming
-  · Posted — review is live
-  · Declined — they passed (keep pitching!)
-  · Expired — missed the deadline (it happens — note it and move on)
-
-PRO TIP: Set your review deadline two weeks BEFORE the book's
-release date. That gives you time to film, edit, and post
-without scrambling at the last minute.
-
-
-══════════════════════════════════════════════════════════════
-  10. IDEA GENERATOR
-══════════════════════════════════════════════════════════════
-
-Staring at a blank screen wondering what to film? Hit the Idea
-Generator and let the app do the thinking.
-
-HOW TO USE IT
-  1. Tap "Ideas" from the home screen
-  2. Tap "Generate Idea" for a random content prompt
-  3. Keep tapping until one sparks something
-  4. Tap the idea to save it to your content calendar
-
-CATEGORIES IT PULLS FROM
-  · Book reviews and recommendations
-  · Discussion / debate videos ("hot take" formats)
-  · Relatable bookish content (reading habits, shelfies)
-  · Trend-based ideas (duet prompts, stitches, sound trends)
-  · Personal story formats ("the book that changed me")
-  · Genre-specific deep dives
-
-PRO TIP: Use the generator when you're not stuck — browse it
-just to stay inspired. Save your favorites so you always have
-a backup plan for slow weeks.
-
-
-══════════════════════════════════════════════════════════════
-  11. WINS JOURNAL
-══════════════════════════════════════════════════════════════
-
-Your BookTok highlight reel. Log every win — big or small —
-because progress is worth celebrating.
-
-HOW TO LOG A WIN
-  1. Tap "Wins" from the home screen
-  2. Tap the text field and type your win
-     (or tap 🎤 and speak it!)
-  3. Choose a Category:
-       Milestone · Viral Video · Collab · Reading Goal
-       Brand Deal · Personal
-  4. Add the Date
-  5. Add Notes — any extra context you want to remember
-  6. Tap "✦ Log This Win"
-
-WHAT COUNTS AS A WIN?
-  Everything. Seriously.
-  · First 100 followers
-  · A comment that made you cry (the good kind)
-  · Finishing a book you almost DNF'd
-  · Your first viral video
-  · Getting an ARC from a publisher you love
-  · Making it through a posting slump
-  · Hitting a milestone you set for yourself
-
-PRO TIP: Read your Wins Journal when you're feeling burnt out.
-Remind yourself how far you've come. This community is hard
-work and you're doing it.
-
-
-══════════════════════════════════════════════════════════════
-  12. SPIN THE WHEEL
-══════════════════════════════════════════════════════════════
-
-Can't decide what to read next? Let the wheel decide.
-
-HOW TO USE IT
-  1. Tap "Spin the Wheel" from the home screen
-  2. The wheel is automatically filled with books from your TBR
-  3. Tap "SPIN"
-  4. Whatever it lands on — that's your next read. No takebacks.
-
-CUSTOMIZING THE WHEEL
-  · The wheel pulls from your TBR automatically
-  · You can add or remove books from your TBR to change
-    what appears on the wheel
-  · Want a specific vibe? Filter your TBR by genre first,
-    then spin
-
-PRO TIP: This makes incredible content. Film yourself spinning
-the wheel and let your audience watch in real time. They love
-the anticipation — and they'll be invested in the book once
-they see you commit to it.
-
-
-══════════════════════════════════════════════════════════════
-  13. ANALYTICS
-══════════════════════════════════════════════════════════════
-
-Your monthly stats pulled together in one dashboard.
-
-WHAT YOU'LL SEE
-  · Books read this month vs. last month
-  · Follower growth (from your Follower Tracker)
-  · Top performing video of the month (from Engagement Tracker)
-  · Genre breakdown of your reading
-  · Average rating for the month
-  · Most-used hashtag sets
-  · Wins logged this month
-
-HOW TO USE IT
-  · Check in at the end of each month for your recap
-  · Screenshot it for a "monthly wrap up" video — your audience
-    loves seeing the numbers
-  · Use the genre breakdown to plan next month's content
-    ("I read mostly fantasy this month — let me try some romance")
-
-PRO TIP: The data is only as good as your logging. The more
-consistently you use Scorecard, Follower Tracker, and
-Engagement Tracker, the better your Analytics dashboard looks.
-
-
-══════════════════════════════════════════════════════════════
-  14. QUOTES
-══════════════════════════════════════════════════════════════
-
-Save your favorite lines from books as you read them.
-
-HOW TO SAVE A QUOTE
-  1. Tap "Quotes" from the home screen
-  2. Tap the Quote field and type (or tap 🎤 to speak)
-  3. Add the Book Title (also has a mic button!)
-  4. Add the Author
-  5. Give it a tag (Romance, Fantasy, Inspirational, etc.)
-  6. Tap "✦ Save Quote"
-
-USING YOUR QUOTES
-  · Use them as text overlays on aesthetic reading videos
-  · Start a review video with a powerful quote from the book
-  · Create a "quotes from my recent reads" TikTok — these
-    perform incredibly well
-  · Share to your Instagram story during reading
-
-PRO TIP: Save quotes as you READ, not after. You'll forget the
-exact wording — capture it in the moment with the mic button.
-
-
-══════════════════════════════════════════════════════════════
-  15. QUICK NOTES
-══════════════════════════════════════════════════════════════
-
-Your scratch pad. Thoughts, ideas, reminders — anything you
-need to jot down fast.
-
-HOW TO USE IT
-  · Tap the ✏️ icon in the bottom navigation bar
-  · Type or tap the 🎤 mic to speak — spoken text gets added
-    to what's already there (it won't overwrite your notes)
-  · Your notes auto-save as you type — no save button needed
-  · Notes stay there until you manually clear them
-
-WHAT TO USE IT FOR
-  · Video hooks you thought of in the shower
-  · A book title someone mentioned in a comment
-  · Your outline for an upcoming discussion video
-  · A quote you want to save before you forget
-
-PRO TIP: Pair Quick Notes with the mic button — you can be
-lying in bed, think of a video idea, tap the mic, say it out
-loud, and it's saved. No fumbling to type in the dark.
-
-
-══════════════════════════════════════════════════════════════
-  16. VOICE / MIC INPUT
-══════════════════════════════════════════════════════════════
-
-Many fields throughout the app have a 🎤 mic button.
-Tap it and speak instead of type — the app listens and
-fills the field automatically.
-
-WHERE MIC BUTTONS APPEAR
-  · Scorecard: Book Title, Author
-  · TBR Pile: Book Title, Author
-  · Wins Journal: Win title field
-  · Quotes: Quote text, Book title
-  · Quick Notes: Main notes area
-
-THE MAGIC "TITLE BY AUTHOR" TRICK
-  On Title fields, you can say the WHOLE thing at once:
-
-  Say: "The Dead and the Dark by Courtney Gould"
-
-  The app automatically fills:
-    Title → "The Dead and the Dark"
-    Author → "Courtney Gould"
-
-  You don't have to tap two separate mic buttons.
-
-HOW TO USE THE MIC
-  1. Tap the 🎤 button — it turns red and pulses
-  2. Speak clearly
-  3. When you stop speaking, the field fills automatically
-  4. Tap 🎤 again at any time to stop listening
-
-TROUBLESHOOTING
-  · "Mic access denied" — Go to your browser/app settings
-    and allow microphone access for this site
-  · Not working at all — Try Chrome on Android or Safari on
-    iPhone. Some older browsers don't support voice input.
-  · Speaking but nothing appears — Speak a little slower and
-    make sure you have a good connection
-
-
-══════════════════════════════════════════════════════════════
-  17. BACKUP & RESTORE
-══════════════════════════════════════════════════════════════
-
-Your app saves everything to your device. Back up regularly
-so you never lose your data.
-
-HOW TO BACK UP
-  1. From the home screen, tap "Backup & Sync"
-     (or tap the ⚙️ gear icon → Backup)
-  2. Tap "Backup My Data"
-  3. A file downloads to your device (it's tiny — just text)
-  4. Keep this file somewhere safe: iCloud, Google Drive,
-     your email, or AirDrop it to another device
-
-HOW TO RESTORE
-  1. Open your app
-  2. Go to Backup & Sync → "Restore Backup"
-  3. Select the backup file you saved
-  4. Done — all your data is back
-
-MOVING TO A NEW DEVICE
-  1. Back up on your old device (steps above)
-  2. Send the file to your new device via AirDrop, email,
-     or save it to cloud storage
-  3. Open the app on your new device (use the same link)
-  4. Restore the backup file
-
-BACK UP HOW OFTEN?
-  Once a week is a great habit — same as saving a document.
-  Back up before clearing your browser cache or switching
-  devices, no matter what.
-
-
-══════════════════════════════════════════════════════════════
-  18. SETTINGS & THEMES
-══════════════════════════════════════════════════════════════
-
-Personalize your app any time.
-
-HOW TO OPEN SETTINGS
-  Tap the ⚙️ gear icon in the bottom right corner
-
-WHAT YOU CAN CHANGE
-  · Your BookTok name (shown in captions and scripts)
-  · Your personal hashtag
-  · Your color theme:
-      ✦ Gold (original, classic warm dark)
-      ✦ Crimson (deep red — dramatic and bold)
-      ✦ Amethyst (purple — witchy and mysterious)
-      ✦ Teal (blue-green — cool and editorial)
-      ✦ Rose (pink — soft and romantic)
-      ✦ Silver (monochrome — sleek and minimal)
-      ✦ Emerald (green — lush and cozy)
-
-Your settings save automatically — no need to re-enter them
-every time you open the app.
+  Tap any 🎤 button and speak instead of type.
+  On title fields, say "Book Title by Author Name" and it
+  fills BOTH fields at once automatically.
 
 
 ──────────────────────────────────────────────────────────────
-  QUICK TIPS FOR MAKING THE MOST OF SHELFCONTROL
+  WHAT EACH SECTION DOES
 ──────────────────────────────────────────────────────────────
 
-✦ LOG AS YOU GO — The app works best when you use it daily.
-  Spend 2 minutes logging a book or video right after it happens.
+  📅  Content Calendar
+      Plan your videos by date. Pick content type, book,
+      hashtag set, and notes. Check off when posted.
 
-✦ USE THE MIC — It's faster than typing. Train yourself to
-  reach for 🎤 first and the keyboard second.
+  📖  Scorecard
+      Log every book you finish — ratings, genre, Mind Scale,
+      platform badges (Kindle/Audible/Hoopla/Libby/Spotify/
+      Physical), and review notes. Your reading history lives here.
 
-✦ PLAN SUNDAYS — Spend 10 minutes every Sunday opening the
-  Content Calendar and mapping out the week ahead.
+  📚  TBR Pile
+      Add books you want to read. Tap "Generate Script" on any
+      book for a ready-made TikTok TBR script.
 
-✦ BACKUP WEEKLY — Set a reminder. One backup a week keeps
-  your data safe no matter what.
+  ✍️  Caption Generator
+      Pick a content type, fill in the prompts, get a
+      ready-to-paste TikTok caption.
 
-✦ SCREENSHOT ANALYTICS — At the end of each month, screenshot
-  your Analytics page. It's perfect monthly wrap-up content.
+  📦  Book Haul Captions
+      Choose your source (Barnes & Noble, Library, Amazon, etc.)
+      and get a caption written for that specific haul.
 
-✦ WINS JOURNAL MATTERS — Log even the small stuff. Reading
-  your wins back is the best cure for creator burnout.
+  🏷️  Hashtag Sets
+      Curated hashtag sets by content type — tap to copy,
+      paste into TikTok.
 
-✦ LET THE WHEEL DECIDE — When you can't pick a next read and
-  you need content, spin the wheel on camera. Every time.
+  📈  Follower Tracker
+      Log your count weekly. Watch your growth chart build.
+
+  🎯  Engagement Tracker
+      Log views, likes, comments, shares, and saves per video
+      to see what content actually performs.
+
+  📬  ARC & Collab Log
+      Track every ARC request and brand pitch — status,
+      deadline, and notes all in one place.
+
+  💡  Idea Generator
+      Tap to get a random content idea when you're stuck.
+
+  🏆  Wins Journal
+      Log every milestone, viral video, and personal win.
+      Read it back when you're feeling burnt out.
+
+  🎡  Spin the Wheel
+      Pulls from your TBR automatically. Tap SPIN and commit
+      to whatever it lands on. Great content to film live.
+
+  📊  Analytics
+      Monthly stats — books read, growth, top video, genre mix.
+      Screenshot it for your monthly wrap-up video.
+
+  💬  Quotes
+      Save favorite lines as you read. Use as text overlays
+      or to open a review video.
+
+  ✏️  Quick Notes
+      Scratch pad — auto-saves as you type. Use the 🎤 mic
+      to speak notes (appends, doesn't overwrite).
+
+
+──────────────────────────────────────────────────────────────
+  💾  BACKUP REMINDER
+──────────────────────────────────────────────────────────────
+
+  Your data saves on your device, not the cloud.
+  Go to Backup & Sync → "Backup My Data" once a week.
+  To move to a new device: back up → send file → restore.
+
+
+──────────────────────────────────────────────────────────────
+  ⚙️  SETTINGS
+──────────────────────────────────────────────────────────────
+
+  Tap the gear icon anytime to change your name, hashtag,
+  or color theme (Gold · Crimson · Amethyst · Teal ·
+  Rose · Silver · Emerald).
 
 
 ──────────────────────────────────────────────────────────────
 
   Questions? Find me on TikTok: @TitlesByTrish 🖤
-
-  Please do not share this file outside of your purchase.
-  If someone you know would love this app, send them to
-  my link — it helps me keep creating tools like this!
+  Please don't share this file — send friends to my link!
 
 ──────────────────────────────────────────────────────────────
