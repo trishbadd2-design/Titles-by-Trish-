@@ -4407,7 +4407,7 @@ function renderWins(){
 // ══════════════════════════════════════════
 // SPIN THE WHEEL
 // ══════════════════════════════════════════
-const WHEEL_COLORS=['#6b1a1a','#3a0f5a','#1a3a6a','#5a2a00','#1a4a3a','#5a1040','#2a2a6a'];
+const WHEEL_COLORS=['#b71c1c','#6a1b9a','#1565c0','#e65100','#1b5e20','#880e4f','#0277bd'];
 const WHEEL_BORDER='#c8a050';
 let spinAngle=0,spinVel=0,spinAF=null,spinBooks=[],spinDone=false;
 
@@ -4434,6 +4434,7 @@ function drawSpinWheel(){
   const ctx=canvas.getContext('2d');
   const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,r=cx-6;
   ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#1a0d28';ctx.fillRect(0,0,W,H);
   const n=spinBooks.length;
   if(!n)return;
   const slice=(2*Math.PI)/n;
