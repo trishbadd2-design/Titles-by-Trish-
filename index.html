@@ -477,13 +477,11 @@ canvas{width:100%!important;}
 
 /* ── SPIN THE WHEEL ── */
 .spin-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px 0;}
-.spin-slot-outer{width:100%;max-width:340px;}
-.spin-slot-window{border:2px solid var(--border);border-radius:12px;background:var(--bg3);overflow:hidden;height:120px;display:flex;align-items:center;justify-content:center;transition:border-color .3s,box-shadow .3s;}
-.spin-slot-window.spinning{border-color:var(--gold);box-shadow:0 0 24px rgba(200,160,80,.25);}
-.spin-slot-window.landed{border-color:var(--gold);box-shadow:0 0 36px rgba(200,160,80,.45);}
-.spin-slot-item{text-align:center;padding:16px 20px;width:100%;}
-.spin-slot-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:6px;}
-.spin-slot-author{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);}
+.spin-display-box{width:100%;max-width:320px;min-height:190px;background:rgba(200,160,80,.06);border:2px solid var(--border-hi);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;text-align:center;transition:border-color .3s,box-shadow .3s;}
+.spin-display-box.spinning{border-color:var(--gold);box-shadow:0 0 32px rgba(200,160,80,.35);animation:spinPulse .5s ease infinite alternate;}
+@keyframes spinPulse{from{box-shadow:0 0 20px rgba(200,160,80,.2);}to{box-shadow:0 0 40px rgba(200,160,80,.45);}}
+.spin-display-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;line-height:1.4;margin-bottom:8px;}
+.spin-display-author{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);margin-top:4px;}
 .spin-result{font-family:'Cinzel',serif;font-weight:900;font-size:16px;color:#fff;text-align:center;letter-spacing:2px;min-height:24px;}
 .spin-result-author{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:var(--gold-dim);text-align:center;margin-top:4px;}
 .spin-empty{font-style:italic;color:var(--text-dim);font-size:15px;text-align:center;padding:20px;}
@@ -1667,10 +1665,12 @@ canvas{width:100%!important;}
   <!-- WHEEL -->
   <div id="spin-section-wheel" class="an-section active">
     <div class="spin-wrap">
-      <button id="spin-btn" class="btn btn-primary" style="padding:14px 48px;font-size:16px;letter-spacing:3px;touch-action:manipulation;width:100%;max-width:320px;">✦ Spin the Wheel</button>
-      <div class="spin-pointer"></div>
-      <canvas id="spin-canvas" width="320" height="320" style="border-radius:50%;display:block;"></canvas>
-      <div style="text-align:center;margin-top:8px;">
+      <div id="spin-display" class="spin-display-box">
+        <div id="spin-reel-title" class="spin-display-title">Tap Spin to pick your next read 🖤</div>
+        <div id="spin-reel-author" class="spin-display-author"></div>
+      </div>
+      <button id="spin-btn" onclick="spinWheel()" class="btn btn-primary" style="padding:14px 48px;font-size:16px;letter-spacing:3px;touch-action:manipulation;width:100%;max-width:320px;-webkit-tap-highlight-color:transparent;">✦ Spin the Wheel</button>
+      <div style="text-align:center;margin-top:4px;">
         <div class="spin-result" id="spin-result"></div>
         <div class="spin-result-author" id="spin-result-author"></div>
       </div>
@@ -4407,51 +4407,11 @@ function renderWins(){
 // ══════════════════════════════════════════
 // SPIN THE WHEEL
 // ══════════════════════════════════════════
-var spinBooks=[],_spinRot=0,_spinAnimRef=null;
-var SPIN_SEG_COLORS=['#8B1A1A','#4A235A','#1A3A4A','#2A4A1A','#4A3A1A','#1A2A5A','#5A1A3A','#1A4A3A','#4A1A2A','#2A3A1A'];
-var SPIN_TXT_COLORS=['#f5deb3','#e8c9f0','#c9e8f0','#c9f0d8','#f0e8c9','#c9d8f0','#f0c9e8','#c9f0ec','#f0c9d8','#d8f0c9'];
-
-function drawSpinWheel(){
-  var canvas=document.getElementById('spin-canvas');
-  if(!canvas)return;
-  var ctx=canvas.getContext('2d');
-  var W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,r=Math.min(cx,cy)-10;
-  ctx.clearRect(0,0,W,H);
-  // background
-  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
-  ctx.fillStyle='#1a1218';ctx.fill();
-  var n=spinBooks.length;
-  if(!n){
-    ctx.fillStyle='#c8a050';ctx.font='bold 14px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText('Add books to TBR',cx,cy);return;
-  }
-  var slice=Math.PI*2/n;
-  for(var i=0;i<n;i++){
-    var s=_spinRot+i*slice,e=s+slice;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,e);ctx.closePath();
-    ctx.fillStyle=SPIN_SEG_COLORS[i%SPIN_SEG_COLORS.length];ctx.fill();
-    ctx.strokeStyle='#0a0808';ctx.lineWidth=2;ctx.stroke();
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(s+slice/2);
-    ctx.textAlign='right';ctx.textBaseline='middle';
-    ctx.fillStyle=SPIN_TXT_COLORS[i%SPIN_TXT_COLORS.length];
-    ctx.font='bold '+(n>8?10:12)+'px Georgia';
-    var lbl=spinBooks[i].title.length>18?spinBooks[i].title.slice(0,17)+'…':spinBooks[i].title;
-    ctx.fillText(lbl,r-14,0);ctx.restore();
-  }
-  // center circle with gradient
-  var grad=ctx.createRadialGradient(cx,cy,0,cx,cy,28);
-  grad.addColorStop(0,'#d4a017');grad.addColorStop(1,'#8b6914');
-  ctx.beginPath();ctx.arc(cx,cy,28,0,Math.PI*2);ctx.fillStyle=grad;ctx.fill();
-  ctx.strokeStyle='#0a0808';ctx.lineWidth=2;ctx.stroke();
-  ctx.fillStyle='#1a1218';ctx.font='bold 13px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('✦',cx,cy);
-  // outer ring
-  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
-  ctx.strokeStyle='#c8a050';ctx.lineWidth=3;ctx.stroke();
-}
+var spinBooks=[], _spinRunning=false, _spinTimer=null;
 
 function initSpin(){
-  var tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  var tbr;
+  try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e){tbr=[];}
   spinBooks=tbr.length?tbr:[
     {title:'Still Missing',author:'Chevy Stevens'},
     {title:'Gone Girl',author:'Gillian Flynn'},
@@ -4460,50 +4420,52 @@ function initSpin(){
     {title:'Mexican Gothic',author:'Silvia Moreno-Garcia'},
     {title:'The Push',author:'Ashley Audrain'},
   ];
-  if(spinBooks.length>10)spinBooks=spinBooks.slice(0,10);
+  if(spinBooks.length>20)spinBooks=spinBooks.slice(0,20);
+  var reelTitle=document.getElementById('spin-reel-title');
+  var reelAuthor=document.getElementById('spin-reel-author');
+  if(reelTitle)reelTitle.textContent='Tap Spin to pick your next read 🖤';
+  if(reelAuthor)reelAuthor.textContent=spinBooks.length+' books ready';
   document.getElementById('spin-result').textContent='';
   document.getElementById('spin-result-author').textContent='';
-  // double rAF to ensure panel is visible before drawing
-  requestAnimationFrame(function(){requestAnimationFrame(function(){drawSpinWheel();});});
 }
 
 function spinWheel(){
-  if(_spinAnimRef)return;
-  if(!spinBooks.length)return;
-  document.getElementById('spin-result').textContent='';
-  document.getElementById('spin-result-author').textContent='';
-  var extraSpins=5+Math.random()*5;
-  var targetAngle=extraSpins*Math.PI*2+Math.random()*Math.PI*2;
-  var duration=4000+Math.random()*1500;
-  var startTime=performance.now();
-  var startRot=_spinRot;
-  function easeOut(t){return 1-Math.pow(1-t,4);}
-  function animate(now){
-    var elapsed=now-startTime;
-    var progress=Math.min(elapsed/duration,1);
-    _spinRot=startRot+targetAngle*easeOut(progress);
-    drawSpinWheel();
-    if(progress<1){
-      _spinAnimRef=requestAnimationFrame(animate);
-    } else {
-      _spinAnimRef=null;
-      var slice=Math.PI*2/spinBooks.length;
-      var norm=((_spinRot%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
-      var pointerAngle=(Math.PI*2-norm)%(Math.PI*2);
-      var winner=Math.floor(pointerAngle/slice)%spinBooks.length;
-      var picked=spinBooks[winner];
-      document.getElementById('spin-result').textContent='✦ '+picked.title;
-      document.getElementById('spin-result-author').textContent=picked.author?'by '+picked.author:'';
-      toast('🎡 Your next read: '+picked.title+' 🖤');
+  if(_spinRunning){return;}
+  if(!spinBooks.length){toast('Add books to your TBR first! 📚');return;}
+  var display=document.getElementById('spin-display');
+  var reelTitle=document.getElementById('spin-reel-title');
+  var reelAuthor=document.getElementById('spin-reel-author');
+  var result=document.getElementById('spin-result');
+  var resultAuthor=document.getElementById('spin-result-author');
+  if(!reelTitle){toast('Spin error — try refreshing');return;}
+  result.textContent='';
+  resultAuthor.textContent='';
+  var finalIdx=Math.floor(Math.random()*spinBooks.length);
+  var finalBook=spinBooks[finalIdx];
+  var startTime=Date.now();
+  var duration=3000+Math.floor(Math.random()*1500);
+  _spinRunning=true;
+  if(display)display.classList.add('spinning');
+  function tick(){
+    var elapsed=Date.now()-startTime;
+    if(elapsed>=duration){
+      if(display)display.classList.remove('spinning');
+      reelTitle.textContent='✦ '+finalBook.title;
+      reelAuthor.textContent=finalBook.author?'by '+finalBook.author:'';
+      result.textContent='✦ '+finalBook.title;
+      resultAuthor.textContent=finalBook.author?'by '+finalBook.author:'';
+      toast('🎡 Your next read: '+finalBook.title+' 🖤');
+      _spinRunning=false;
+      return;
     }
+    var progress=elapsed/duration;
+    var idx=Math.floor(Math.random()*spinBooks.length);
+    reelTitle.textContent=spinBooks[idx].title;
+    reelAuthor.textContent=spinBooks[idx].author?'by '+spinBooks[idx].author:'';
+    _spinTimer=setTimeout(tick,Math.floor(80+progress*300));
   }
-  _spinAnimRef=requestAnimationFrame(animate);
+  tick();
 }
-// Wire spin button via addEventListener (more reliable on iOS than onclick)
-document.addEventListener('DOMContentLoaded',function(){
-  var btn=document.getElementById('spin-btn');
-  if(btn){btn.addEventListener('click',spinWheel);btn.addEventListener('touchend',function(e){e.preventDefault();spinWheel();});}
-});
 
 // ══════════════════════════════════════════
 // MONTHLY PICKS
