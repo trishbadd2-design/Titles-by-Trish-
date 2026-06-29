@@ -4440,39 +4440,34 @@ function initSpin(){
 }
 
 function spinWheel(){
-  if(_spinTimer)return;
-  const n=spinBooks.length;
-  if(!n)return;
-  const win=document.getElementById('spin-slot-window');
-  const disp=document.getElementById('spin-slot-display');
-  if(!disp)return;
+  var books=spinBooks.length?spinBooks:[{title:'Add books to your TBR first!',author:''}];
+  var n=books.length;
+  var win=document.getElementById('spin-slot-window');
+  var disp=document.getElementById('spin-slot-display');
+  if(!win||!disp)return;
+  win.classList.remove('landed');
+  win.classList.add('spinning');
   document.getElementById('spin-result').textContent='';
   document.getElementById('spin-result-author').textContent='';
-  if(win)win.classList.add('spinning');
-  const winner=Math.floor(Math.random()*n);
-  const totalFrames=28+Math.floor(Math.random()*18);
-  let frame=0,idx=0,speed=55;
-  function tick(){
-    idx=(idx+1)%n;
-    frame++;
-    const b=spinBooks[idx];
-    disp.innerHTML=`<div class="spin-slot-title">${b.title}</div>${b.author?`<div class="spin-slot-author">by ${b.author}</div>`:''}`;
-    const progress=frame/totalFrames;
-    if(progress>0.5){speed=55+Math.pow((progress-0.5)/0.5,2)*620;}
-    const remaining=totalFrames-frame;
-    if(remaining<=0||(remaining<n&&idx===winner)){
-      _spinTimer=null;
-      const final=spinBooks[winner];
-      disp.innerHTML=`<div class="spin-slot-title">${final.title}</div>${final.author?`<div class="spin-slot-author">by ${final.author}</div>`:''}`;
-      if(win){win.classList.remove('spinning');win.classList.add('landed');}
-      document.getElementById('spin-result').textContent='✦ '+final.title;
-      document.getElementById('spin-result-author').textContent=final.author?'by '+final.author:'';
-      toast('🎡 Fate has decided: '+final.title+' 🖤');
+  var winner=Math.floor(Math.random()*n);
+  var i=0,ticks=0,maxTicks=28+Math.floor(Math.random()*16),delay=55;
+  function next(){
+    var book=books[i%n];
+    disp.innerHTML='<div class="spin-slot-title">'+book.title+'</div>'+(book.author?'<div class="spin-slot-author">by '+book.author+'</div>':'');
+    i++;ticks++;
+    if(ticks>maxTicks&&(i%n)===winner||ticks>maxTicks+n*3){
+      var w=books[winner];
+      disp.innerHTML='<div class="spin-slot-title">'+w.title+'</div>'+(w.author?'<div class="spin-slot-author">by '+w.author+'</div>':'');
+      win.classList.remove('spinning');win.classList.add('landed');
+      document.getElementById('spin-result').textContent='✦ '+w.title;
+      document.getElementById('spin-result-author').textContent=w.author?'by '+w.author:'';
+      toast('🎡 Your next read: '+w.title+' 🖤');
       return;
     }
-    _spinTimer=setTimeout(tick,Math.round(speed));
+    if(ticks>maxTicks*0.6){delay=Math.min(delay+18,450);}
+    setTimeout(next,delay);
   }
-  _spinTimer=setTimeout(tick,speed);
+  setTimeout(next,10);
 }
 
 // ══════════════════════════════════════════
