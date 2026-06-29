@@ -4440,6 +4440,7 @@ function initSpin(){
 }
 
 function spinWheel(){
+  toast('Spin tapped! books:'+spinBooks.length);
   var books=spinBooks.length?spinBooks:[{title:'Add books to your TBR first!',author:''}];
   var n=books.length;
   var win=document.getElementById('spin-slot-window');
