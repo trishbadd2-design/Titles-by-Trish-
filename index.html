@@ -663,6 +663,13 @@ canvas{width:100%!important;}
 .haul-src-btn{padding:7px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:13px;cursor:pointer;transition:.15s;white-space:nowrap;}
 .haul-src-btn:hover{border-color:var(--gold-dim);color:var(--text);}
 .haul-src-btn.active{border-color:var(--gold);background:var(--gold-faint);color:var(--gold);}
+/* ── MIC / VOICE INPUT ── */
+.mic-btn{background:none;border:1px solid var(--border);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:16px;display:inline-flex;align-items:center;justify-content:center;color:var(--text-dim);transition:.15s;flex-shrink:0;padding:0;}
+.mic-btn:hover{border-color:var(--border-hi);color:var(--text);}
+.mic-btn.listening{border-color:#e05555;color:#e05555;animation:micPulse .7s ease-in-out infinite;}
+@keyframes micPulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.15);opacity:.6;}}
+.mic-row{display:flex;align-items:center;gap:6px;}
+.mic-row input,.mic-row textarea{flex:1;min-width:0;}
 /* Platform / Where to Read */
 .sc-plat-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px;}
 .sc-plat-pill{padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:13px;cursor:pointer;transition:.15s;white-space:nowrap;user-select:none;}
@@ -1348,8 +1355,8 @@ canvas{width:100%!important;}
 
   <div id="sc-read-fields">
     <div class="sc-two-col">
-      <div class="sc-field"><label>Book Title *</label><input id="sc-f-title" placeholder="title..."/></div>
-      <div class="sc-field"><label>Author *</label><input id="sc-f-author" placeholder="author..."/></div>
+      <div class="sc-field"><label>Book Title *</label><div class="mic-row"><input id="sc-f-title" placeholder='Title (or say "Title by Author")'/><button class="mic-btn" onclick="startVoice('sc-f-title',true)" title="Speak title">🎤</button></div></div>
+      <div class="sc-field"><label>Author *</label><div class="mic-row"><input id="sc-f-author" placeholder="author..."/><button class="mic-btn" onclick="startVoice('sc-f-author',false)" title="Speak author">🎤</button></div></div>
     </div>
     <div class="sc-two-col">
       <div class="sc-field"><label>Date Started</label><input id="sc-f-dstart" type="date"/></div>
@@ -1486,8 +1493,8 @@ canvas{width:100%!important;}
 
   <div id="sc-tbr-only-fields" style="display:none;">
     <div class="sc-two-col">
-      <div class="sc-field"><label>Book Title *</label><input id="sc-f-tbr-title" placeholder="title..."/></div>
-      <div class="sc-field"><label>Author *</label><input id="sc-f-tbr-author" placeholder="author..."/></div>
+      <div class="sc-field"><label>Book Title *</label><div class="mic-row"><input id="sc-f-tbr-title" placeholder='Say "Title by Author" or just title'/><button class="mic-btn" onclick="startVoice('sc-f-tbr-title',true)" title="Speak title">🎤</button></div></div>
+      <div class="sc-field"><label>Author *</label><div class="mic-row"><input id="sc-f-tbr-author" placeholder="author..."/><button class="mic-btn" onclick="startVoice('sc-f-tbr-author',false)" title="Speak author">🎤</button></div></div>
     </div>
     <div class="sc-msec">
       <div class="sc-msec-title">⭐ Interest Level</div>
@@ -1616,7 +1623,7 @@ canvas{width:100%!important;}
   <div class="card-box" style="margin-bottom:16px;">
     <div class="label-sm">Log a Win</div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
-      <input type="text" id="win-title-input" placeholder="What happened? (e.g. Hit 1K followers!)">
+      <div class="mic-row"><input type="text" id="win-title-input" placeholder="What happened? (e.g. Hit 1K followers!)"><button class="mic-btn" onclick="startVoice('win-title-input',false)" title="Speak your win">🎤</button></div>
       <div class="grid-2">
         <div>
           <div class="label-sm">Category</div>
@@ -2007,7 +2014,10 @@ canvas{width:100%!important;}
     <button onclick="closeQuickNotes()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;">✕</button>
   </div>
   <div style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">Jot down anything — book thoughts, video ideas, quotes, reminders. Auto-saves as you type. 🖤</div>
-  <textarea id="qnote-area" oninput="saveQuickNotes()" placeholder="Start typing..." style="flex:1;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px;color:#fff;font-family:'Playfair Display',serif;font-size:15px;line-height:1.7;resize:none;min-height:60vh;"></textarea>
+  <div class="mic-row" style="align-items:flex-start;flex:1;">
+    <textarea id="qnote-area" oninput="saveQuickNotes()" placeholder="Start typing..." style="flex:1;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px;color:#fff;font-family:'Playfair Display',serif;font-size:15px;line-height:1.7;resize:none;min-height:60vh;"></textarea>
+    <button class="mic-btn" onclick="startVoice('qnote-area',false)" title="Speak your notes" style="margin-top:4px;flex-shrink:0;">🎤</button>
+  </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
     <div id="qnote-count" style="font-size:13px;color:var(--text-dim);"></div>
     <button onclick="clearQuickNotes()" style="background:none;border:1px solid var(--border);border-radius:3px;color:var(--text-dim);font-size:13px;padding:5px 12px;cursor:pointer;">Clear All</button>
@@ -5920,6 +5930,67 @@ function updateNoteCount(){
 }
 
 // ══════════════════════════════════════════
+// VOICE / MIC INPUT
+// ══════════════════════════════════════════
+function startVoice(targetId, smartParse){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('Voice input not supported in this browser. Try Chrome or Safari.');return;}
+  const el=document.getElementById(targetId);
+  if(!el)return;
+  const btn=el.closest('.mic-row')?.querySelector('.mic-btn')||el.parentElement?.querySelector('.mic-btn');
+  if(btn&&btn.classList.contains('listening')){
+    if(window._voiceRecognizer){window._voiceRecognizer.stop();window._voiceRecognizer=null;}
+    btn&&btn.classList.remove('listening');
+    return;
+  }
+  const recog=new SR();
+  window._voiceRecognizer=recog;
+  recog.lang='en-US';
+  recog.interimResults=false;
+  recog.maxAlternatives=1;
+  btn&&btn.classList.add('listening');
+  recog.onresult=function(e){
+    const text=e.results[0][0].transcript.trim();
+    if(smartParse){
+      const byMatch=text.match(/^(.+?)\s+by\s+(.+)$/i);
+      if(byMatch){
+        el.value=byMatch[1].trim();
+        const authorId=targetId.replace(/tbr-title|title/,'author').replace(/tbr-title|title/,'author');
+        const authorEl=document.getElementById(targetId.replace('title','author'));
+        if(authorEl)authorEl.value=byMatch[2].trim();
+        el.dispatchEvent(new Event('input'));
+        if(authorEl)authorEl.dispatchEvent(new Event('input'));
+        toast('✦ Got it: title + author filled in!');
+        return;
+      }
+    }
+    if(el.tagName==='TEXTAREA'&&el.id==='qnote-area'){
+      const sep=el.value&&!el.value.endsWith('\n')?'\n':'';
+      el.value+=sep+text;
+    } else {
+      el.value=text;
+    }
+    el.dispatchEvent(new Event('input'));
+    toast('✦ Got it!');
+  };
+  recog.onerror=function(e){
+    if(e.error==='not-allowed')toast('Mic access denied. Check browser permissions.');
+    else if(e.error!=='no-speech')toast('Voice error: '+e.error);
+    btn&&btn.classList.remove('listening');
+    window._voiceRecognizer=null;
+  };
+  recog.onend=function(){
+    btn&&btn.classList.remove('listening');
+    window._voiceRecognizer=null;
+  };
+  try{recog.start();}catch(err){
+    toast('Could not start mic: '+err.message);
+    btn&&btn.classList.remove('listening');
+    window._voiceRecognizer=null;
+  }
+}
+
+// ══════════════════════════════════════════
 // BIO LINK TRACKER
 // ══════════════════════════════════════════
 let bioLinkLog=JSON.parse(localStorage.getItem('tbtrish_biolinks')||'[]');
@@ -6113,9 +6184,9 @@ function rescan(){
     </div>
     <div class="sc-field">
       <label>The Quote</label>
-      <textarea id="q-text" rows="4" placeholder="Type the quote here..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;font-style:italic;resize:vertical;line-height:1.6;font-family:inherit;"></textarea>
+      <div class="mic-row" style="align-items:flex-start;"><textarea id="q-text" rows="4" placeholder="Type or speak the quote..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;font-style:italic;resize:vertical;line-height:1.6;font-family:inherit;"></textarea><button class="mic-btn" onclick="startVoice('q-text',false)" title="Speak quote" style="margin-top:4px;">🎤</button></div>
     </div>
-    <div class="sc-field"><label>Book Title</label><input id="q-book" type="text" placeholder="Book title..."/></div>
+    <div class="sc-field"><label>Book Title</label><div class="mic-row"><input id="q-book" type="text" placeholder="Book title..."/><button class="mic-btn" onclick="startVoice('q-book',false)" title="Speak title">🎤</button></div></div>
     <div class="sc-field"><label>Author</label><input id="q-author" type="text" placeholder="Author name..."/></div>
     <button class="btn btn-primary" onclick="saveQuote()" style="width:100%;padding:12px;font-size:15px;margin-top:8px;">✦ Save Quote</button>
   </div>
