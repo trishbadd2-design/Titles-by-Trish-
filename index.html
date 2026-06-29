@@ -477,8 +477,13 @@ canvas{width:100%!important;}
 
 /* ── SPIN THE WHEEL ── */
 .spin-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px 0;}
-.spin-pointer{width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:22px solid var(--gold);filter:drop-shadow(0 0 6px rgba(200,160,80,.6));margin-bottom:-8px;}
-#spin-canvas{border-radius:50%;box-shadow:0 0 40px rgba(139,26,26,.3),0 0 0 2px var(--border);}
+.spin-slot-outer{width:100%;max-width:340px;}
+.spin-slot-window{border:2px solid var(--border);border-radius:12px;background:var(--bg3);overflow:hidden;height:120px;display:flex;align-items:center;justify-content:center;transition:border-color .3s,box-shadow .3s;}
+.spin-slot-window.spinning{border-color:var(--gold);box-shadow:0 0 24px rgba(200,160,80,.25);}
+.spin-slot-window.landed{border-color:var(--gold);box-shadow:0 0 36px rgba(200,160,80,.45);}
+.spin-slot-item{text-align:center;padding:16px 20px;width:100%;}
+.spin-slot-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:6px;}
+.spin-slot-author{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold-dim);}
 .spin-result{font-family:'Cinzel',serif;font-weight:900;font-size:16px;color:#fff;text-align:center;letter-spacing:2px;min-height:24px;}
 .spin-result-author{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:var(--gold-dim);text-align:center;margin-top:4px;}
 .spin-empty{font-style:italic;color:var(--text-dim);font-size:15px;text-align:center;padding:20px;}
@@ -1667,10 +1672,15 @@ canvas{width:100%!important;}
       </div>
     </div>
     <div class="spin-wrap">
-      <div class="spin-pointer"></div>
-      <canvas id="spin-canvas" width="300" height="300"></canvas>
+      <div class="spin-slot-outer">
+        <div class="spin-slot-window" id="spin-slot-window">
+          <div id="spin-slot-display" class="spin-slot-item">
+            <div style="font-style:italic;color:var(--text-dim);font-size:14px;">Tap Spin to pick your next read ✦</div>
+          </div>
+        </div>
+      </div>
       <button class="btn btn-primary" style="padding:12px 40px;font-size:15px;letter-spacing:3px;margin-top:6px;" onclick="spinWheel()">✦ Spin</button>
-      <div>
+      <div style="text-align:center;margin-top:8px;">
         <div class="spin-result" id="spin-result"></div>
         <div class="spin-result-author" id="spin-result-author"></div>
       </div>
@@ -4405,11 +4415,9 @@ function renderWins(){
 }
 
 // ══════════════════════════════════════════
-// SPIN THE WHEEL
+// SPIN THE WHEEL (slot-machine style)
 // ══════════════════════════════════════════
-const WHEEL_COLORS=['#b71c1c','#6a1b9a','#1565c0','#e65100','#1b5e20','#880e4f','#0277bd'];
-const WHEEL_BORDER='#c8a050';
-let spinAngle=0,spinVel=0,spinAF=null,spinBooks=[],spinDone=false;
+let spinBooks=[],spinDone=false,_spinTimer=null;
 
 function initSpin(){
   const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
@@ -4422,63 +4430,49 @@ function initSpin(){
     {title:'The Push',author:'Ashley Audrain'},
   ];
   if(spinBooks.length>10)spinBooks=spinBooks.slice(0,10);
-  drawSpinWheel();
+  const win=document.getElementById('spin-slot-window');
+  const disp=document.getElementById('spin-slot-display');
+  if(win){win.classList.remove('spinning','landed');}
+  if(disp){disp.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:14px;">Tap Spin to pick your next read ✦</div>';}
   document.getElementById('spin-result').textContent='';
   document.getElementById('spin-result-author').textContent='';
   spinDone=false;
-}
-
-function drawSpinWheel(){
-  const canvas=document.getElementById('spin-canvas');
-  if(!canvas)return;
-  const ctx=canvas.getContext('2d');
-  const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,r=cx-6;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#1a0d28';ctx.fillRect(0,0,W,H);
-  const n=spinBooks.length;
-  if(!n)return;
-  const slice=(2*Math.PI)/n;
-  for(let i=0;i<n;i++){
-    const s=spinAngle+i*slice,e=s+slice;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,e);ctx.closePath();
-    ctx.fillStyle=WHEEL_COLORS[i%WHEEL_COLORS.length];ctx.fill();
-    ctx.strokeStyle=WHEEL_BORDER;ctx.lineWidth=3;ctx.stroke();
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(s+slice/2);
-    ctx.textAlign='right';ctx.fillStyle='#ffffff';ctx.font='bold 11px Georgia';
-    const lbl=spinBooks[i].title.length>16?spinBooks[i].title.slice(0,14)+'…':spinBooks[i].title;
-    ctx.fillText(lbl,r-10,4);ctx.restore();
-  }
-  ctx.beginPath();ctx.arc(cx,cy,r,0,2*Math.PI);ctx.strokeStyle=WHEEL_BORDER;ctx.lineWidth=2;ctx.stroke();
-  ctx.beginPath();ctx.arc(cx,cy,24,0,2*Math.PI);ctx.fillStyle='#07050a';ctx.fill();
-  ctx.strokeStyle=WHEEL_BORDER;ctx.lineWidth=2;ctx.stroke();
-  ctx.font='16px serif';ctx.textAlign='center';ctx.fillStyle='#c8a050';ctx.fillText('🖤',cx,cy+6);
 }
 
 function spinWheel(){
-  if(spinAF)return;
+  if(_spinTimer)return;
+  const n=spinBooks.length;
+  if(!n)return;
+  const win=document.getElementById('spin-slot-window');
+  const disp=document.getElementById('spin-slot-display');
+  if(!disp)return;
   document.getElementById('spin-result').textContent='';
   document.getElementById('spin-result-author').textContent='';
-  spinVel=0.25+Math.random()*0.2;
-  spinDone=false;
-  animateSpin();
-}
-
-function animateSpin(){
-  spinAngle+=spinVel;
-  spinVel*=0.985;
-  drawSpinWheel();
-  if(spinVel>0.002){spinAF=requestAnimationFrame(animateSpin);}
-  else{
-    spinAF=null;
-    const n=spinBooks.length;
-    const slice=(2*Math.PI)/n;
-    const norm=(((- Math.PI/2 - spinAngle)%(2*Math.PI))+(2*Math.PI))%(2*Math.PI);
-    const idx=Math.floor(norm/slice)%n;
-    const picked=spinBooks[idx];
-    document.getElementById('spin-result').textContent=picked.title;
-    document.getElementById('spin-result-author').textContent=picked.author||'';
-    toast('🎡 Your next read: '+picked.title+' 🖤');
+  if(win)win.classList.add('spinning');
+  const winner=Math.floor(Math.random()*n);
+  const totalFrames=28+Math.floor(Math.random()*18);
+  let frame=0,idx=0,speed=55;
+  function tick(){
+    idx=(idx+1)%n;
+    frame++;
+    const b=spinBooks[idx];
+    disp.innerHTML=`<div class="spin-slot-title">${b.title}</div>${b.author?`<div class="spin-slot-author">by ${b.author}</div>`:''}`;
+    const progress=frame/totalFrames;
+    if(progress>0.5){speed=55+Math.pow((progress-0.5)/0.5,2)*620;}
+    const remaining=totalFrames-frame;
+    if(remaining<=0||(remaining<n&&idx===winner)){
+      _spinTimer=null;
+      const final=spinBooks[winner];
+      disp.innerHTML=`<div class="spin-slot-title">${final.title}</div>${final.author?`<div class="spin-slot-author">by ${final.author}</div>`:''}`;
+      if(win){win.classList.remove('spinning');win.classList.add('landed');}
+      document.getElementById('spin-result').textContent='✦ '+final.title;
+      document.getElementById('spin-result-author').textContent=final.author?'by '+final.author:'';
+      toast('🎡 Fate has decided: '+final.title+' 🖤');
+      return;
+    }
+    _spinTimer=setTimeout(tick,Math.round(speed));
   }
+  _spinTimer=setTimeout(tick,speed);
 }
 
 // ══════════════════════════════════════════
