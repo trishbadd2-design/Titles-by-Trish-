@@ -4482,8 +4482,9 @@ function spinWheel(){
 // MOOD PICKER (defined early so later errors can't prevent it)
 // ══════════════════════════════════════════
 // ══ MOOD PICKER ══
-var mpSelectedMood=null,mpSelectedTime=null;
-var moodPickerBooks={
+window.mpSelectedMood=null;
+window.mpSelectedTime=null;
+window.moodPickerBooks={
   'dark-twisted':{
     'quick':[{title:'The Push',author:'Ashley Audrain',reason:'Short, suffocating, and deeply unsettling. Will haunt you.'},{title:'Luckiest Girl Alive',author:'Jessica Knoll',reason:'Fast, razor-sharp psychological thriller with a devastating twist.'}],
     'medium':[{title:'The Silent Patient',author:'Alex Michaelides',reason:'A twisty psychological thriller with a jaw-dropping ending.'},{title:'Behind Closed Doors',author:'B.A. Paris',reason:'A perfect marriage hides something monstrous. Dark and gripping.'}],
@@ -4518,23 +4519,26 @@ var moodPickerBooks={
 function selectMood(btn){
   document.querySelectorAll('#mp-step-mood .mood-btn').forEach(function(b){b.classList.remove('sel');});
   btn.classList.add('sel');
-  mpSelectedMood=btn.getAttribute('data-mood');
+  window.mpSelectedMood=btn.getAttribute('data-mood');
   document.getElementById('mp-step-time').style.display='block';
   document.getElementById('mp-result').style.display='none';
 }
 function selectTime(btn){
   document.querySelectorAll('#mp-step-time .mood-btn').forEach(function(b){b.classList.remove('sel');});
   btn.classList.add('sel');
-  mpSelectedTime=btn.getAttribute('data-time');
+  window.mpSelectedTime=btn.getAttribute('data-time');
   showMoodResult();
 }
 function showMoodResult(){
   try{
-    if(!mpSelectedMood||!mpSelectedTime)return;
-    var moodData=moodPickerBooks[mpSelectedMood];
-    var pool=(moodData&&moodData[mpSelectedTime])||[];
+    var mood=window.mpSelectedMood;
+    var time=window.mpSelectedTime;
+    if(!mood||!time)return;
+    var books=window.moodPickerBooks||{};
+    var moodData=books[mood];
+    var pool=(moodData&&moodData[time])||[];
     var tbr=[];
-    try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e){tbr=[];}
+    try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e2){tbr=[];}
     var pick;
     if(tbr.length){
       var t=tbr[Math.floor(Math.random()*tbr.length)];
@@ -4546,12 +4550,12 @@ function showMoodResult(){
     }
     document.getElementById('mp-result-title').textContent='✦ '+pick.title;
     document.getElementById('mp-result-author').textContent=pick.author?'by '+pick.author:'';
-    document.getElementById('mp-result-reason').textContent=pick.reason;
+    document.getElementById('mp-result-reason').textContent=pick.reason||'';
     document.getElementById('mp-result').style.display='block';
   }catch(e){alert('Result error: '+e.message);}
 }
 function resetMoodPicker(){
-  mpSelectedMood=null;mpSelectedTime=null;
+  window.mpSelectedMood=null;window.mpSelectedTime=null;
   document.querySelectorAll('#mood-picker-section .mood-btn').forEach(function(b){b.classList.remove('sel');});
   document.getElementById('mp-step-time').style.display='none';
   document.getElementById('mp-result').style.display='none';
