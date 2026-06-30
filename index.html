@@ -1678,35 +1678,42 @@ canvas{width:100%!important;}
   <div style="border-top:1px solid var(--border);margin:28px 0 20px;"></div>
 
   <!-- MOOD PICKER (always visible) -->
-  <div id="spin-section-mood">
+  <div id="mood-picker-section">
     <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:12px;">🎭 MOOD PICKER</div>
-    <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
-      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
-        Answer two quick questions and I'll pick a book from your TBR that matches your mood right now. 🖤
+    <p style="font-style:italic;color:var(--text-dim);font-size:14px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin:0 0 20px;line-height:1.7;">
+      Answer two quick questions and I'll pick a book that matches your mood right now. 🖤
+    </p>
+    <!-- STEP 1: Mood -->
+    <div id="mp-step-mood">
+      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold);margin-bottom:12px;">HOW ARE YOU FEELING?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button class="mood-btn" data-mood="dark-twisted" onclick="selectMood(this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-align:left;">🖤 Dark &amp; Twisted</button>
+        <button class="mood-btn" data-mood="sad-emotional" onclick="selectMood(this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-align:left;">😢 Sad &amp; Emotional</button>
+        <button class="mood-btn" data-mood="curious-tense" onclick="selectMood(this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-align:left;">🔍 Curious &amp; Tense</button>
+        <button class="mood-btn" data-mood="adventure-magic" onclick="selectMood(this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-align:left;">✨ Adventure &amp; Magic</button>
+        <button class="mood-btn" data-mood="fast-thrilling" onclick="selectMood(this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-align:left;">⚡ Fast &amp; Thrilling</button>
+        <button class="mood-btn" data-mood="dark-cozy" onclick="selectMood(this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-align:left;">🕯️ Dark &amp; Cozy</button>
       </div>
     </div>
-    <div id="mood-step-1">
-      <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">HOW ARE YOU FEELING?</div>
-      <div class="mood-grid" id="mood-vibe-grid">
-        <button class="mood-btn" data-vibe="dark-twisted" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🖤 Dark &amp; Twisted</button>
-        <button class="mood-btn" data-vibe="sad-emotional" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">😢 Sad &amp; Emotional</button>
-        <button class="mood-btn" data-vibe="curious-tense" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔍 Curious &amp; Tense</button>
-        <button class="mood-btn" data-vibe="adventure-magic" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✨ Adventure &amp; Magic</button>
-        <button class="mood-btn" data-vibe="fast-thrilling" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">⚡ Fast &amp; Thrilling</button>
-        <button class="mood-btn" data-vibe="dark-cozy" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🕯️ Dark &amp; Cozy</button>
+    <!-- STEP 2: Time (hidden until mood selected) -->
+    <div id="mp-step-time" style="display:none;margin-top:24px;">
+      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold);margin-bottom:12px;">HOW MUCH TIME DO YOU HAVE?</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button class="mood-btn" data-time="quick" onclick="selectTime(this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-align:left;">📖 Quick Read <span style="color:var(--text-dim);font-size:12px;">Under 300 pages</span></button>
+        <button class="mood-btn" data-time="medium" onclick="selectTime(this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-align:left;">📚 A Good Read <span style="color:var(--text-dim);font-size:12px;">300–500 pages</span></button>
+        <button class="mood-btn" data-time="any" onclick="selectTime(this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-align:left;">🌑 Doesn't Matter <span style="color:var(--text-dim);font-size:12px;">Any length</span></button>
       </div>
     </div>
-    <div id="mood-step-2" style="display:none;margin-top:16px;">
-      <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">HOW MUCH TIME DO YOU HAVE?</div>
-      <div class="mood-grid">
-        <button class="mood-btn" data-len="short" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📖 Quick Read<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">Under 300 pages</span></button>
-        <button class="mood-btn" data-len="medium" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📚 A Good Read<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">300–500 pages</span></button>
-        <button class="mood-btn" data-len="any" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🌑 Doesn't Matter<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">Any length</span></button>
-      </div>
+    <!-- RESULT -->
+    <div id="mp-result" style="display:none;margin-top:24px;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--gold);border-radius:8px;padding:20px;text-align:center;">
+      <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:10px;">✦ YOUR MOOD MATCH</div>
+      <div id="mp-result-title" style="font-size:18px;color:#fff;font-weight:700;margin-bottom:4px;"></div>
+      <div id="mp-result-author" style="font-size:14px;color:var(--text-dim);margin-bottom:10px;"></div>
+      <div id="mp-result-reason" style="font-size:13px;color:var(--gold-dim);font-style:italic;"></div>
     </div>
-    <div id="mood-result" style="display:none;margin-top:16px;"></div>
-    <div id="mood-reset-btn" style="display:none;margin-top:12px;">
-      <button class="btn" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="resetMoodPicker()" style="width:100%;">↩ Start Over</button>
+    <!-- RESET -->
+    <div style="margin-top:20px;text-align:center;">
+      <button onclick="resetMoodPicker()" style="background:none;border:none;color:var(--text-dim);font-family:'Cinzel',serif;font-size:12px;cursor:pointer;letter-spacing:2px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">↩ Start Over</button>
     </div>
   </div>
 </div>
@@ -4474,86 +4481,77 @@ function spinWheel(){
 // ══════════════════════════════════════════
 // MOOD PICKER (defined early so later errors can't prevent it)
 // ══════════════════════════════════════════
-var MOOD_GENRE_MAP={
-  'dark-twisted':['Psychological Thriller','Horror','Folk Horror','Dark Fiction'],
-  'sad-emotional':['Literary Fiction','Historical Fiction','Dark Fiction'],
-  'curious-tense':['True Crime','Mystery','Thriller','Psychological Thriller'],
-  'adventure-magic':['Dark Fantasy','Historical Fiction','Fantasy'],
-  'fast-thrilling':['Psychological Thriller','Thriller','Mystery'],
-  'dark-cozy':['Dark Fantasy','Dark Fiction','Folk Horror','Historical Fiction']
+// ══ MOOD PICKER ══
+var mpSelectedMood=null,mpSelectedTime=null;
+var moodPickerBooks={
+  'dark-twisted':{
+    'quick':[{title:'The Push',author:'Ashley Audrain',reason:'Short, suffocating, and deeply unsettling. Will haunt you.'},{title:'Luckiest Girl Alive',author:'Jessica Knoll',reason:'Fast, razor-sharp psychological thriller with a devastating twist.'}],
+    'medium':[{title:'The Silent Patient',author:'Alex Michaelides',reason:'A twisty psychological thriller with a jaw-dropping ending.'},{title:'Behind Closed Doors',author:'B.A. Paris',reason:'A perfect marriage hides something monstrous. Dark and gripping.'}],
+    'any':[{title:'Gone Girl',author:'Gillian Flynn',reason:'The ultimate dark & twisted read. Unreliable narrators at their finest.'},{title:'Sharp Objects',author:'Gillian Flynn',reason:'Deeply dark Southern Gothic. Not a comfort read — a great one.'}]
+  },
+  'sad-emotional':{
+    'quick':[{title:'All the Light We Cannot See',author:'Anthony Doerr',reason:'Heartbreaking and beautiful. A devastating read.'},{title:'The Lovely Bones',author:'Alice Sebold',reason:'Emotional and haunting — grief from an unforgettable perspective.'}],
+    'medium':[{title:'Mexican Gothic',author:'Silvia Moreno-Garcia',reason:'Atmospheric horror with an emotional core that sneaks up on you.'},{title:'The Woman in the Window',author:'A.J. Finn',reason:'Isolation, grief, and paranoia wrapped in a gripping thriller.'}],
+    'any':[{title:'Rebecca',author:'Daphne du Maurier',reason:'The original dark romance. Melancholy, gothic, and deeply emotional.'},{title:'The Shadow of the Wind',author:'Carlos Ruiz Zafón',reason:'A love letter to books. Sweeping, melancholy, and unforgettable.'}]
+  },
+  'curious-tense':{
+    'quick':[{title:'The Woman on the Train',author:'Paula Hawkins',reason:'Addictive, tense, and impossible to put down once you start.'},{title:'In a Dark Dark Wood',author:'Ruth Ware',reason:'A bachelorette weekend goes very wrong. Tense from page one.'}],
+    'medium':[{title:'The Guest List',author:'Lucy Foley',reason:'A wedding, a murder, everyone\'s a suspect. Twisty and propulsive.'},{title:'The Paris Apartment',author:'Lucy Foley',reason:'A missing brother. A locked apartment. Layers of secrets.'}],
+    'any':[{title:'Big Little Lies',author:'Liane Moriarty',reason:'Everyone is hiding something. Clever, funny, and genuinely suspenseful.'},{title:'The Secret History',author:'Donna Tartt',reason:'Who did it is revealed on page one. The why will consume you.'}]
+  },
+  'adventure-magic':{
+    'quick':[{title:'The Cruel Prince',author:'Holly Black',reason:'Dark fae politics and morally grey characters. Addictive.'},{title:'An Ember in the Ashes',author:'Sabaa Tahir',reason:'Epic, fast-paced dark fantasy with incredible world-building.'}],
+    'medium':[{title:'The Name of the Wind',author:'Patrick Rothfuss',reason:'The best fantasy narrator ever written. Immersive and extraordinary.'},{title:'A Court of Thorns and Roses',author:'Sarah J. Maas',reason:'Dark fairy tale romance with real stakes and a gripping plot.'}],
+    'any':[{title:'The Night Circus',author:'Erin Morgenstern',reason:'A dark, dreamy competition between two magicians. Pure magic.'},{title:'Jonathan Strange & Mr Norrell',author:'Susanna Clarke',reason:'Victorian England with real magic. Dense, beautiful, unforgettable.'}]
+  },
+  'fast-thrilling':{
+    'quick':[{title:'The Chain',author:'Adrian McKinty',reason:'One of the most propulsive thrillers written. Can\'t stop reading.'},{title:'Verity',author:'Colleen Hoover',reason:'You\'ll read this in one sitting. Dark, twisty, deeply disturbing.'}],
+    'medium':[{title:'The Whisper Man',author:'Alex North',reason:'A serial killer thriller with real emotional depth. Pacy and scary.'},{title:'Before I Go to Sleep',author:'S.J. Watson',reason:'Amnesia, secrets, and escalating dread. Impossible to put down.'}],
+    'any':[{title:'The Thursday Murder Club',author:'Richard Osman',reason:'Witty, clever, and surprisingly gripping. Fun-fast perfection.'},{title:'Jar of Hearts',author:'Jennifer Hillier',reason:'A shocking opening and relentless pace. Dark and propulsive.'}]
+  },
+  'dark-cozy':{
+    'quick':[{title:'The Little Stranger',author:'Sarah Waters',reason:'A gothic ghost story with slow, cozy dread. Perfect for fall nights.'},{title:'Mexican Gothic',author:'Silvia Moreno-Garcia',reason:'Creepy, atmospheric, perfect for a dark cozy evening.'}],
+    'medium':[{title:'The October Country',author:'Ray Bradbury',reason:'Short stories drenched in autumn dread. Made for cozy reading.'},{title:'The Ruins',author:'Scott Smith',reason:'Dark, slow-building horror. Perfect for a long rainy afternoon.'}],
+    'any':[{title:'Something Wicked This Way Comes',author:'Ray Bradbury',reason:'Autumnal, dark, and deeply cozy. The original dark academia vibes.'},{title:'We Have Always Lived in the Castle',author:'Shirley Jackson',reason:'Creepy sisters, a crumbling house, and pure gothic perfection.'}]
+  }
 };
-var _moodVibe='';
-function selectMoodVibe(vibe,btn){
-  try{
-    document.querySelectorAll('#mood-vibe-grid .mood-btn').forEach(function(b){b.classList.remove('sel');});
-    btn.classList.add('sel');
-    _moodVibe=vibe;
-    document.getElementById('mood-step-2').style.display='block';
-    toast('✦ Got it — now pick how long you want to read!');
-  }catch(e){toast('Mood error: '+e.message);}
+function selectMood(btn){
+  document.querySelectorAll('#mp-step-mood .mood-btn').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+  mpSelectedMood=btn.getAttribute('data-mood');
+  document.getElementById('mp-step-time').style.display='block';
+  document.getElementById('mp-result').style.display='none';
 }
-function selectMoodLength(len,btn){
-  try{
-    document.querySelectorAll('#mood-step-2 .mood-btn').forEach(function(b){b.classList.remove('sel');});
-    btn.classList.add('sel');
-    var tbr;
-    try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e){tbr=[];}
-    if(!tbr.length&&spinBooks.length)tbr=spinBooks;
-    var genres=MOOD_GENRE_MAP[_moodVibe]||[];
-    var matches=tbr.filter(function(b){
-      var genreMatch=!b.genre||genres.some(function(g){return b.genre.toLowerCase().indexOf(g.toLowerCase())>-1||g.toLowerCase().indexOf(b.genre.toLowerCase())>-1;});
-      if(len==='short')return genreMatch&&(!b.pages||b.pages<300);
-      if(len==='medium')return genreMatch&&(!b.pages||(b.pages>=300&&b.pages<=500));
-      return genreMatch;
-    });
-    if(!matches.length)matches=tbr;
-    var resultEl=document.getElementById('mood-result');
-    if(!matches.length){
-      resultEl.innerHTML='<div class="card-box" style="padding:14px;text-align:center;color:var(--text-dim);font-style:italic;">Your TBR is empty — add some books to the Scorecard first! 🖤</div>';
-    } else {
-      var pick=matches[Math.floor(Math.random()*matches.length)];
-      resultEl.innerHTML='<div class="card-box" style="padding:16px;text-align:center;"><div style="font-family:\'Cinzel\',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">✦ YOUR NEXT READ</div><div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:4px;">'+pick.title+'</div>'+(pick.author?'<div style="font-size:15px;color:var(--text-dim);">by '+pick.author+'</div>':'')+'<div style="font-size:13px;color:var(--text-dim);margin-top:8px;font-style:italic;">From your TBR pile 🖤</div></div>';
-    }
-    resultEl.style.display='block';
-    document.getElementById('mood-reset-btn').style.display='block';
-  }catch(e){toast('Length error: '+e.message);}
+function selectTime(btn){
+  document.querySelectorAll('#mp-step-time .mood-btn').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+  mpSelectedTime=btn.getAttribute('data-time');
+  showMoodResult();
+}
+function showMoodResult(){
+  if(!mpSelectedMood||!mpSelectedTime)return;
+  var pool=moodPickerBooks[mpSelectedMood]&&moodPickerBooks[mpSelectedMood][mpSelectedTime];
+  if(!pool||!pool.length)return;
+  var tbr=[];
+  try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e){tbr=[];}
+  var pick;
+  if(tbr.length){
+    var t=tbr[Math.floor(Math.random()*tbr.length)];
+    pick={title:t.title||t,author:t.author||'',reason:'This one\'s been waiting on your TBR — fate says it\'s time. 🖤'};
+  } else {
+    pick=pool[Math.floor(Math.random()*pool.length)];
+  }
+  document.getElementById('mp-result-title').textContent='✦ '+pick.title;
+  document.getElementById('mp-result-author').textContent=pick.author?'by '+pick.author:'';
+  document.getElementById('mp-result-reason').textContent=pick.reason;
+  document.getElementById('mp-result').style.display='block';
 }
 function resetMoodPicker(){
-  _moodVibe='';
-  document.querySelectorAll('#spin-section-mood .mood-btn').forEach(function(b){b.classList.remove('sel');});
-  var s2=document.getElementById('mood-step-2');
-  var mr=document.getElementById('mood-result');
-  var mrb=document.getElementById('mood-reset-btn');
-  if(s2)s2.style.display='none';
-  if(mr)mr.style.display='none';
-  if(mrb)mrb.style.display='none';
+  mpSelectedMood=null;mpSelectedTime=null;
+  document.querySelectorAll('#mood-picker-section .mood-btn').forEach(function(b){b.classList.remove('sel');});
+  document.getElementById('mp-step-time').style.display='none';
+  document.getElementById('mp-result').style.display='none';
 }
-// Mood button event delegation — touchend fires before click on iOS,
-// both are wired; dedup guard prevents double-firing.
-var _lastMoodFiredAt=0;
-function _dispatchMoodBtn(btn){
-  var now=Date.now();
-  if(now-_lastMoodFiredAt<400)return;
-  _lastMoodFiredAt=now;
-  var vibe=btn.getAttribute('data-vibe');
-  var len=btn.getAttribute('data-len');
-  if(vibe)selectMoodVibe(vibe,btn);
-  else if(len)selectMoodLength(len,btn);
-}
-(function(){
-  var moodSection=document.getElementById('spin-section-mood');
-  if(!moodSection)return;
-  // touchend: primary path for iOS Safari / PWA
-  moodSection.addEventListener('touchend',function(e){
-    var btn=e.target.closest&&e.target.closest('.mood-btn');
-    if(btn)_dispatchMoodBtn(btn);
-  },{passive:true});
-  // click: fallback for desktop and any device where touchend doesn't fire
-  moodSection.addEventListener('click',function(e){
-    var btn=e.target.closest&&e.target.closest('.mood-btn');
-    if(btn)_dispatchMoodBtn(btn);
-  });
-})();
 
 // ══════════════════════════════════════════
 // MONTHLY PICKS
