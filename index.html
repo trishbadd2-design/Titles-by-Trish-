@@ -33,16 +33,11 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 /* ── LAYOUT ── */
 #app{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 20px 80px;}
 
-/* ── SPLASH ── */
-#splash{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .7s ease,visibility .7s ease;}
-#splash.fade-out{opacity:0;visibility:hidden;pointer-events:none;}
-@keyframes splashDot{0%,100%{opacity:.2;transform:translateY(0);}50%{opacity:1;transform:translateY(-7px);}}
-@keyframes splashGlow{0%,100%{text-shadow:0 0 40px rgba(200,160,80,.3),0 0 80px rgba(139,26,26,.2);}50%{text-shadow:0 0 80px rgba(200,160,80,.6),0 0 140px rgba(139,26,26,.3);}}
 
 /* ── HEADER ── */
 .site-header{text-align:center;padding:40px 0 24px;border-bottom:1px solid var(--border);margin-bottom:28px;position:relative;}
 .site-header .eyebrow{font-family:'IM Fell English SC',serif;font-size:13px;letter-spacing:7px;color:rgba(200,160,80,.5);margin-bottom:14px;}
-.site-header h1{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(26px,6vw,42px);letter-spacing:5px;color:#fff;animation:splashGlow 4s ease-in-out infinite;margin-bottom:6px;}
+.site-header h1{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(26px,6vw,42px);letter-spacing:5px;color:#fff;margin-bottom:6px;}
 .site-header .tagline{font-style:italic;font-size:15px;color:rgba(255,255,255,.6);letter-spacing:1px;}
 .header-rule{height:1px;background:linear-gradient(90deg,transparent,rgba(200,160,80,.5),transparent);max-width:320px;margin:16px auto 0;}
 
@@ -755,20 +750,6 @@ canvas{width:100%!important;}
 </head>
 <body>
 
-<!-- SPLASH SCREEN -->
-<div id="splash">
-  <div style="text-align:center;padding:20px;">
-    <div style="font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:7px;color:rgba(200,160,80,.35);margin-bottom:22px;">✦ &nbsp; ✦ &nbsp; ✦</div>
-    <div style="font-family:'Cinzel',serif;font-weight:900;font-size:clamp(30px,8vw,48px);letter-spacing:5px;color:#fff;text-shadow:0 0 60px rgba(200,160,80,.5),0 0 120px rgba(139,26,26,.3);">TitlesByTrish</div>
-    <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(200,160,80,.5),transparent);max-width:260px;margin:18px auto 16px;"></div>
-    <div style="font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:5px;color:rgba(200,160,80,.4);">Command Center</div>
-    <div style="margin-top:38px;display:flex;justify-content:center;gap:9px;">
-      <div style="width:5px;height:5px;background:var(--gold);border-radius:50%;opacity:.3;animation:splashDot 1.3s ease-in-out infinite;"></div>
-      <div style="width:5px;height:5px;background:var(--gold);border-radius:50%;opacity:.3;animation:splashDot 1.3s ease-in-out .22s infinite;"></div>
-      <div style="width:5px;height:5px;background:var(--gold);border-radius:50%;opacity:.3;animation:splashDot 1.3s ease-in-out .44s infinite;"></div>
-    </div>
-  </div>
-</div>
 
 <div id="app">
 
@@ -7043,20 +7024,6 @@ function exportBooksCSV(){
   toast('✦ Books exported as CSV!');
 }
 
-// ── SPLASH FADE ──
-(function(){
-  var loaded=false;
-  function hideSplash(){
-    if(loaded)return;loaded=true;
-    setTimeout(function(){
-      var s=document.getElementById('splash');
-      if(s)s.classList.add('fade-out');
-    },1600);
-  }
-  if(document.readyState==='complete'){hideSplash();}
-  else{window.addEventListener('load',hideSplash);}
-  setTimeout(hideSplash,3000);
-})();
 </script>
 
 <!-- BARCODE SCANNER OVERLAY -->
