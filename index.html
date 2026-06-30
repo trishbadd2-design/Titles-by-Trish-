@@ -788,6 +788,7 @@ canvas{width:100%!important;}
   <button class="nav-btn" onclick="showPanel('timer')">⏱️ Timer</button>
   <button class="nav-btn" onclick="showPanel('spending')">💰 Spending</button>
   <button class="nav-btn" onclick="showPanel('pipeline')">🤝 Pipeline</button>
+  <button class="nav-btn" onclick="showPanel('mood')">🎭 Mood Picker</button>
   <button class="nav-btn" onclick="showPanel('spin')">🎡 Spin the Wheel</button>
 </div>
 
@@ -1744,12 +1745,14 @@ canvas{width:100%!important;}
     </div>
   </div>
 
-  <!-- DIVIDER -->
-  <div style="border-top:1px solid var(--border);margin:28px 0 20px;"></div>
+</div>
 
-  <!-- MOOD PICKER (always visible) -->
+<!-- ═══════════════════════════════════════════ -->
+<!-- PANEL: MOOD PICKER                          -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="panel" id="panel-mood">
+  <div class="section-title">🎭 Mood Picker</div>
   <div id="mood-picker-section">
-    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:12px;">🎭 MOOD PICKER</div>
     <p style="font-style:italic;color:var(--text-dim);font-size:14px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin:0 0 20px;line-height:1.7;">
       Answer two quick questions and I'll pick a book that matches your mood right now. 🖤
     </p>
@@ -2431,7 +2434,7 @@ function showPanel(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
-  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,monthlypicks:12,analytics:13,timer:14,spending:15,pipeline:16,spin:17};
+  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,monthlypicks:12,analytics:13,timer:14,spending:15,pipeline:16,mood:17,spin:18};
   if(map[id]!==undefined)document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
@@ -4299,7 +4302,7 @@ function clearCCalDay(){
 // ══════════════════════════════════════════
 // SWIPE GESTURES (between panels)
 // ══════════════════════════════════════════
-const PANEL_ORDER=['calendar','followers','engagement','arc','ideas','books','schedule','planner','scorecard','captions','hashtags','wins','monthlypicks','analytics','timer','spending','pipeline','spin'];
+const PANEL_ORDER=['calendar','followers','engagement','arc','ideas','books','schedule','planner','scorecard','captions','hashtags','wins','monthlypicks','analytics','timer','spending','pipeline','mood','spin'];
 var _currentPanel='calendar', _touchX=0, _touchY=0;
 document.addEventListener('touchstart',e=>{_touchX=e.touches[0].clientX;_touchY=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchend',e=>{
