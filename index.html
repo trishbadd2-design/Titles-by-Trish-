@@ -1688,20 +1688,20 @@ canvas{width:100%!important;}
     <div id="mood-step-1">
       <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">HOW ARE YOU FEELING?</div>
       <div class="mood-grid" id="mood-vibe-grid">
-        <button class="mood-btn" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('dark-twisted',this)">🖤 Dark &amp; Twisted</button>
-        <button class="mood-btn" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('sad-emotional',this)">😢 Sad &amp; Emotional</button>
-        <button class="mood-btn" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('curious-tense',this)">🔍 Curious &amp; Tense</button>
-        <button class="mood-btn" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('adventure-magic',this)">✨ Adventure &amp; Magic</button>
-        <button class="mood-btn" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('fast-thrilling',this)">⚡ Fast &amp; Thrilling</button>
-        <button class="mood-btn" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('dark-cozy',this)">🕯️ Dark &amp; Cozy</button>
+        <button class="mood-btn" data-vibe="dark-twisted" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('dark-twisted',this)">🖤 Dark &amp; Twisted</button>
+        <button class="mood-btn" data-vibe="sad-emotional" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('sad-emotional',this)">😢 Sad &amp; Emotional</button>
+        <button class="mood-btn" data-vibe="curious-tense" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('curious-tense',this)">🔍 Curious &amp; Tense</button>
+        <button class="mood-btn" data-vibe="adventure-magic" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('adventure-magic',this)">✨ Adventure &amp; Magic</button>
+        <button class="mood-btn" data-vibe="fast-thrilling" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('fast-thrilling',this)">⚡ Fast &amp; Thrilling</button>
+        <button class="mood-btn" data-vibe="dark-cozy" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('dark-cozy',this)">🕯️ Dark &amp; Cozy</button>
       </div>
     </div>
     <div id="mood-step-2" style="display:none;margin-top:16px;">
       <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">HOW MUCH TIME DO YOU HAVE?</div>
       <div class="mood-grid">
-        <button class="mood-btn" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodLength('short',this)">📖 Quick Read<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">Under 300 pages</span></button>
-        <button class="mood-btn" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodLength('medium',this)">📚 A Good Read<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">300–500 pages</span></button>
-        <button class="mood-btn" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodLength('any',this)">🌑 Doesn't Matter<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">Any length</span></button>
+        <button class="mood-btn" data-len="short" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodLength('short',this)">📖 Quick Read<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">Under 300 pages</span></button>
+        <button class="mood-btn" data-len="medium" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodLength('medium',this)">📚 A Good Read<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">300–500 pages</span></button>
+        <button class="mood-btn" data-len="any" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodLength('any',this)">🌑 Doesn't Matter<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">Any length</span></button>
       </div>
     </div>
     <div id="mood-result" style="display:none;margin-top:16px;"></div>
@@ -2026,6 +2026,9 @@ canvas{width:100%!important;}
 </div>
 
 <script>
+window.onerror=function(msg,src,line){
+  try{toast('JS ERR: '+msg+' L'+line);}catch(e){alert('JS ERR: '+msg+' L'+line);}
+};
 // ═══════════════════════════════════════════════
 // VIDEOS DATA
 // ═══════════════════════════════════════════════
@@ -4469,6 +4472,73 @@ function spinWheel(){
 }
 
 // ══════════════════════════════════════════
+// MOOD PICKER (defined early so later errors can't prevent it)
+// ══════════════════════════════════════════
+var MOOD_GENRE_MAP={
+  'dark-twisted':['Psychological Thriller','Horror','Folk Horror','Dark Fiction'],
+  'sad-emotional':['Literary Fiction','Historical Fiction','Dark Fiction'],
+  'curious-tense':['True Crime','Mystery','Thriller','Psychological Thriller'],
+  'adventure-magic':['Dark Fantasy','Historical Fiction','Fantasy'],
+  'fast-thrilling':['Psychological Thriller','Thriller','Mystery'],
+  'dark-cozy':['Dark Fantasy','Dark Fiction','Folk Horror','Historical Fiction']
+};
+var _moodVibe='';
+function selectMoodVibe(vibe,btn){
+  try{
+    document.querySelectorAll('#mood-vibe-grid .mood-btn').forEach(function(b){b.classList.remove('sel');});
+    btn.classList.add('sel');
+    _moodVibe=vibe;
+    document.getElementById('mood-step-2').style.display='block';
+    toast('✦ Got it — now pick how long you want to read!');
+  }catch(e){toast('Mood error: '+e.message);}
+}
+function selectMoodLength(len,btn){
+  try{
+    document.querySelectorAll('#mood-step-2 .mood-btn').forEach(function(b){b.classList.remove('sel');});
+    btn.classList.add('sel');
+    var tbr;
+    try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e){tbr=[];}
+    if(!tbr.length&&spinBooks.length)tbr=spinBooks;
+    var genres=MOOD_GENRE_MAP[_moodVibe]||[];
+    var matches=tbr.filter(function(b){
+      var genreMatch=!b.genre||genres.some(function(g){return b.genre.toLowerCase().indexOf(g.toLowerCase())>-1||g.toLowerCase().indexOf(b.genre.toLowerCase())>-1;});
+      if(len==='short')return genreMatch&&(!b.pages||b.pages<300);
+      if(len==='medium')return genreMatch&&(!b.pages||(b.pages>=300&&b.pages<=500));
+      return genreMatch;
+    });
+    if(!matches.length)matches=tbr;
+    var resultEl=document.getElementById('mood-result');
+    if(!matches.length){
+      resultEl.innerHTML='<div class="card-box" style="padding:14px;text-align:center;color:var(--text-dim);font-style:italic;">Your TBR is empty — add some books to the Scorecard first! 🖤</div>';
+    } else {
+      var pick=matches[Math.floor(Math.random()*matches.length)];
+      resultEl.innerHTML='<div class="card-box" style="padding:16px;text-align:center;"><div style="font-family:\'Cinzel\',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">✦ YOUR NEXT READ</div><div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:4px;">'+pick.title+'</div>'+(pick.author?'<div style="font-size:15px;color:var(--text-dim);">by '+pick.author+'</div>':'')+'<div style="font-size:13px;color:var(--text-dim);margin-top:8px;font-style:italic;">From your TBR pile 🖤</div></div>';
+    }
+    resultEl.style.display='block';
+    document.getElementById('mood-reset-btn').style.display='block';
+  }catch(e){toast('Length error: '+e.message);}
+}
+function resetMoodPicker(){
+  _moodVibe='';
+  document.querySelectorAll('#spin-section-mood .mood-btn').forEach(function(b){b.classList.remove('sel');});
+  var s2=document.getElementById('mood-step-2');
+  var mr=document.getElementById('mood-result');
+  var mrb=document.getElementById('mood-reset-btn');
+  if(s2)s2.style.display='none';
+  if(mr)mr.style.display='none';
+  if(mrb)mrb.style.display='none';
+}
+// Belt AND suspenders: also wire via addEventListener in case onclick fails
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('#mood-vibe-grid .mood-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){selectMoodVibe(btn.getAttribute('data-vibe'),btn);});
+  });
+  document.querySelectorAll('#mood-step-2 .mood-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){selectMoodLength(btn.getAttribute('data-len'),btn);});
+  });
+});
+
+// ══════════════════════════════════════════
 // MONTHLY PICKS
 // ══════════════════════════════════════════
 const monthlyPicks={
@@ -5759,66 +5829,6 @@ setInterval(updateCountdown,60000);
 document.addEventListener('DOMContentLoaded',updateCountdown);
 setTimeout(updateCountdown,500);
 
-// ══════════════════════════════════════════
-// SPIN PANEL TABS
-// ══════════════════════════════════════════
-
-// ══════════════════════════════════════════
-// MOOD PICKER
-// ══════════════════════════════════════════
-const MOOD_GENRE_MAP={
-  'dark-twisted':['Psychological Thriller','Horror','Folk Horror','Dark Fiction'],
-  'sad-emotional':['Literary Fiction','Historical Fiction','Dark Fiction'],
-  'curious-tense':['True Crime','Mystery','Thriller','Psychological Thriller'],
-  'adventure-magic':['Dark Fantasy','Historical Fiction','Fantasy'],
-  'fast-thrilling':['Psychological Thriller','Thriller','Mystery'],
-  'dark-cozy':['Dark Fantasy','Dark Fiction','Folk Horror','Historical Fiction']
-};
-let _moodVibe='';
-function selectMoodVibe(vibe,btn){
-  document.querySelectorAll('#mood-vibe-grid .mood-btn').forEach(b=>b.classList.remove('sel'));
-  btn.classList.add('sel');
-  _moodVibe=vibe;
-  document.getElementById('mood-step-2').style.display='block';
-  toast('✦ Got it — now pick how long you want to read!');
-}
-function selectMoodLength(len,btn){
-  document.querySelectorAll('#mood-step-2 .mood-btn').forEach(b=>b.classList.remove('sel'));
-  btn.classList.add('sel');
-  var tbr;
-  try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e){tbr=[];}
-  // fall back to spin wheel's loaded books if TBR is empty
-  if(!tbr.length&&spinBooks.length)tbr=spinBooks;
-  const genres=MOOD_GENRE_MAP[_moodVibe]||[];
-  let matches=tbr.filter(b=>{
-    const genreMatch=!b.genre||genres.some(g=>b.genre.toLowerCase().includes(g.toLowerCase())||g.toLowerCase().includes(b.genre.toLowerCase()));
-    if(len==='short')return genreMatch&&(!b.pages||b.pages<300);
-    if(len==='medium')return genreMatch&&(!b.pages||(b.pages>=300&&b.pages<=500));
-    return genreMatch;
-  });
-  if(!matches.length)matches=tbr;
-  if(!matches.length){
-    document.getElementById('mood-result').innerHTML='<div class="card-box" style="padding:14px;text-align:center;color:var(--text-dim);font-style:italic;">Your TBR is empty — add some books to the Scorecard first! 🖤</div>';
-  } else {
-    const pick=matches[Math.floor(Math.random()*matches.length)];
-    document.getElementById('mood-result').innerHTML=`<div class="card-box" style="padding:16px;text-align:center;">
-      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">✦ YOUR NEXT READ</div>
-      <div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:4px;">${pick.title}</div>
-      ${pick.author?`<div style="font-size:15px;color:var(--text-dim);">by ${pick.author}</div>`:''}
-      ${pick.genre?`<div style="font-size:13px;color:var(--gold-dim);margin-top:6px;">${pick.genre}</div>`:''}
-      <div style="font-size:13px;color:var(--text-dim);margin-top:8px;font-style:italic;">From your TBR pile 🖤</div>
-    </div>`;
-  }
-  document.getElementById('mood-result').style.display='block';
-  document.getElementById('mood-reset-btn').style.display='block';
-}
-function resetMoodPicker(){
-  _moodVibe='';
-  document.querySelectorAll('#spin-section-mood .mood-btn').forEach(b=>b.classList.remove('sel'));
-  document.getElementById('mood-step-2').style.display='none';
-  document.getElementById('mood-result').style.display='none';
-  document.getElementById('mood-reset-btn').style.display='none';
-}
 
 // ══════════════════════════════════════════
 // BOOKSHELF GOALS
