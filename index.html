@@ -33,65 +33,76 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 /* ── LAYOUT ── */
 #app{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 20px 80px;}
 
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .7s ease,visibility .7s ease;}
+#splash.fade-out{opacity:0;visibility:hidden;pointer-events:none;}
+@keyframes splashDot{0%,100%{opacity:.2;transform:translateY(0);}50%{opacity:1;transform:translateY(-7px);}}
+@keyframes splashGlow{0%,100%{text-shadow:0 0 40px rgba(200,160,80,.3),0 0 80px rgba(139,26,26,.2);}50%{text-shadow:0 0 80px rgba(200,160,80,.6),0 0 140px rgba(139,26,26,.3);}}
+
 /* ── HEADER ── */
-.site-header{text-align:center;padding:44px 0 28px;border-bottom:1px solid var(--border);margin-bottom:28px;}
-.site-header .eyebrow{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:6px;color:var(--gold-dim);margin-bottom:10px;}
-.site-header h1{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(22px,5vw,36px);letter-spacing:4px;color:#fff;text-shadow:0 0 40px rgba(139,26,26,.4);margin-bottom:4px;}
-.site-header .tagline{font-style:italic;font-size:15px;color:var(--text-dim);}
+.site-header{text-align:center;padding:40px 0 24px;border-bottom:1px solid var(--border);margin-bottom:28px;position:relative;}
+.site-header .eyebrow{font-family:'IM Fell English SC',serif;font-size:13px;letter-spacing:7px;color:rgba(200,160,80,.5);margin-bottom:14px;}
+.site-header h1{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(26px,6vw,42px);letter-spacing:5px;color:#fff;animation:splashGlow 4s ease-in-out infinite;margin-bottom:6px;}
+.site-header .tagline{font-style:italic;font-size:15px;color:rgba(255,255,255,.6);letter-spacing:1px;}
+.header-rule{height:1px;background:linear-gradient(90deg,transparent,rgba(200,160,80,.5),transparent);max-width:320px;margin:16px auto 0;}
 
 /* ── NAV TABS ── */
-.nav-tabs{display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:16px;}
-.nav-btn{font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;padding:8px 14px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
-.nav-btn:hover{border-color:var(--border-hi);color:var(--text);}
-.nav-btn.active{border-color:var(--border-hi);background:var(--gold-faint);color:var(--gold);}
+.nav-tabs{display:flex;gap:6px;margin-bottom:28px;overflow-x:auto;flex-wrap:nowrap;border-bottom:1px solid var(--border);padding-bottom:14px;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-top:2px;}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.nav-btn{font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .25s;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
+.nav-btn:hover{border-color:var(--border-hi);color:var(--text);background:rgba(200,160,80,.05);}
+.nav-btn.active{border-color:var(--gold);background:rgba(200,160,80,.12);color:var(--gold);box-shadow:0 0 14px rgba(200,160,80,.15);}
 
 /* ── PANELS ── */
-.panel{display:none;animation:fadeIn .25s ease;}
+.panel{display:none;animation:fadeIn .3s cubic-bezier(.22,1,.36,1);}
 .panel.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── SHARED ── */
-.section-title{font-family:'Cinzel',serif;font-weight:900;font-size:14px;letter-spacing:3px;color:#fff;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
-.card-box{background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:4px;padding:18px 20px;margin-bottom:12px;}
+.section-title{font-family:'Cinzel',serif;font-weight:900;font-size:13px;letter-spacing:4px;color:var(--gold);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.card-box{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin-bottom:12px;box-shadow:0 4px 24px rgba(0,0,0,.3);transition:border-color .25s,box-shadow .25s;}
+.card-box:hover{border-color:rgba(200,160,80,.28);box-shadow:0 6px 32px rgba(0,0,0,.4);}
 .label-sm{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:4px;color:var(--gold-dim);margin-bottom:6px;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
 @media(max-width:600px){.grid-2,.grid-3{grid-template-columns:1fr;}}
 
 /* ── BUTTONS ── */
-.btn{font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;padding:9px 18px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .2s;}
-.btn:hover{border-color:var(--border-hi);color:var(--gold);}
-.btn-primary{border-color:var(--border-hi);background:var(--gold-faint);color:var(--gold);}
-.btn-primary:hover{background:rgba(200,160,80,.2);}
-.btn-danger{border-color:rgba(139,26,26,.4);color:rgba(220,100,100,.7);}
-.btn-danger:hover{border-color:rgba(200,60,60,.6);color:#e06060;}
-.btn-green{border-color:rgba(60,160,60,.4);color:rgba(100,200,100,.8);}
+.btn{font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;padding:9px 18px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .25s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.btn:hover{border-color:var(--border-hi);color:var(--gold);transform:translateY(-1px);}
+.btn:active{transform:translateY(0);}
+.btn-primary{border-color:rgba(200,160,80,.5);background:rgba(200,160,80,.1);color:var(--gold);box-shadow:0 0 18px rgba(200,160,80,.1);}
+.btn-primary:hover{background:rgba(200,160,80,.2);box-shadow:0 0 28px rgba(200,160,80,.2);border-color:var(--gold);}
+.btn-danger{border-color:rgba(139,26,26,.4);color:rgba(220,100,100,.7);border-radius:6px;}
+.btn-danger:hover{border-color:rgba(200,60,60,.6);color:#e06060;background:rgba(139,26,26,.08);}
+.btn-green{border-color:rgba(60,160,60,.4);color:rgba(100,200,100,.8);border-radius:6px;}
 .btn-green:hover{background:rgba(60,160,60,.1);}
 .btn-full{width:100%;margin-top:10px;}
 
 /* ── INPUTS ── */
-input,select,textarea{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:'Playfair Display',serif;font-size:16px;padding:9px 12px;width:100%;outline:none;transition:border-color .2s;}
-input:focus,select:focus,textarea:focus{border-color:var(--border-hi);}
+input,select,textarea{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Playfair Display',serif;font-size:16px;padding:10px 13px;width:100%;outline:none;transition:border-color .2s,box-shadow .2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--border-hi);box-shadow:0 0 0 3px rgba(200,160,80,.07);}
 select option{background:#1a0f20;color:var(--text);}
 textarea{resize:vertical;min-height:80px;}
 
 /* ── PROGRESS ── */
-.progress-wrap{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:4px;padding:16px 20px;margin-bottom:20px;}
+.progress-wrap{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:20px;}
 .progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 .progress-label{font-family:'Cinzel',serif;font-size:15px;letter-spacing:3px;color:var(--gold);}
 .progress-count{font-family:'IM Fell English SC',serif;font-size:15px;color:var(--text-dim);}
 .progress-track{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
-.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--red),var(--gold));transition:width .5s ease;box-shadow:0 0 10px rgba(139,26,26,.5);}
+@keyframes shimmer{0%{background-position:200% center;}100%{background-position:-200% center;}}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--red),var(--gold),var(--red));background-size:200% auto;animation:shimmer 3s linear infinite;box-shadow:0 0 12px rgba(200,160,80,.35);}
 
 /* ── STATS ── */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
-.stat-box{border:1px solid var(--border);border-radius:4px;padding:14px;text-align:center;background:rgba(255,255,255,.02);}
-.stat-num{font-family:'Cinzel',serif;font-weight:900;font-size:24px;color:#fff;text-shadow:0 0 20px rgba(200,160,80,.3);margin-bottom:4px;}
-.stat-label{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:3px;color:var(--text-dim);}
+.stat-box{border:1px solid var(--border);border-radius:8px;padding:16px 12px;text-align:center;background:rgba(255,255,255,.025);box-shadow:0 2px 12px rgba(0,0,0,.2);}
+.stat-num{font-family:'Cinzel',serif;font-weight:900;font-size:26px;color:#fff;text-shadow:0 0 30px rgba(200,160,80,.45);margin-bottom:5px;}
+.stat-label{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:rgba(255,255,255,.5);}
 
 /* ── VIDEO CARDS ── */
-.video-card{border:1px solid var(--border);border-radius:4px;background:rgba(255,255,255,.025);overflow:hidden;transition:border-color .2s;margin-bottom:10px;}
-.video-card:hover{border-color:var(--border-hi);}
+.video-card{border:1px solid var(--border);border-radius:8px;background:rgba(255,255,255,.025);overflow:hidden;transition:border-color .25s,box-shadow .25s,transform .2s;margin-bottom:10px;box-shadow:0 2px 16px rgba(0,0,0,.25);}
+.video-card:hover{border-color:var(--border-hi);box-shadow:0 4px 24px rgba(0,0,0,.4);transform:translateY(-1px);}
 .video-card.done{background:rgba(40,120,40,.1);border-color:rgba(60,160,60,.3);}
 .card-top{display:flex;align-items:center;gap:12px;padding:13px 15px;cursor:pointer;}
 .card-date{font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold-dim);white-space:nowrap;min-width:86px;}
@@ -743,12 +754,29 @@ canvas{width:100%!important;}
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div style="text-align:center;padding:20px;">
+    <div style="font-family:'IM Fell English SC',serif;font-size:11px;letter-spacing:7px;color:rgba(200,160,80,.35);margin-bottom:22px;">✦ &nbsp; ✦ &nbsp; ✦</div>
+    <div style="font-family:'Cinzel',serif;font-weight:900;font-size:clamp(30px,8vw,48px);letter-spacing:5px;color:#fff;text-shadow:0 0 60px rgba(200,160,80,.5),0 0 120px rgba(139,26,26,.3);">TitlesByTrish</div>
+    <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(200,160,80,.5),transparent);max-width:260px;margin:18px auto 16px;"></div>
+    <div style="font-family:'IM Fell English SC',serif;font-size:12px;letter-spacing:5px;color:rgba(200,160,80,.4);">Command Center</div>
+    <div style="margin-top:38px;display:flex;justify-content:center;gap:9px;">
+      <div style="width:5px;height:5px;background:var(--gold);border-radius:50%;opacity:.3;animation:splashDot 1.3s ease-in-out infinite;"></div>
+      <div style="width:5px;height:5px;background:var(--gold);border-radius:50%;opacity:.3;animation:splashDot 1.3s ease-in-out .22s infinite;"></div>
+      <div style="width:5px;height:5px;background:var(--gold);border-radius:50%;opacity:.3;animation:splashDot 1.3s ease-in-out .44s infinite;"></div>
+    </div>
+  </div>
+</div>
+
 <div id="app">
 
 <div class="site-header">
-  <div class="eyebrow">✦ Command Center ✦</div>
+  <div class="eyebrow">✦ &nbsp; Command Center &nbsp; ✦</div>
   <h1>TitlesByTrish</h1>
   <div class="tagline">Your complete BookTok home base</div>
+  <div class="header-rule"></div>
   <div style="margin-top:14px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
     <button class="btn btn-primary" onclick="exportData()" style="font-size:16px;padding:6px 14px;">⬇ Backup My Data</button>
     <label class="btn" style="font-size:16px;padding:6px 14px;cursor:pointer;">⬆ Restore Backup<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
@@ -6976,6 +7004,21 @@ function exportBooksCSV(){
   a.click();
   toast('✦ Books exported as CSV!');
 }
+
+// ── SPLASH FADE ──
+(function(){
+  var loaded=false;
+  function hideSplash(){
+    if(loaded)return;loaded=true;
+    setTimeout(function(){
+      var s=document.getElementById('splash');
+      if(s)s.classList.add('fade-out');
+    },1600);
+  }
+  if(document.readyState==='complete'){hideSplash();}
+  else{window.addEventListener('load',hideSplash);}
+  setTimeout(hideSplash,3000);
+})();
 </script>
 
 <!-- BARCODE SCANNER OVERLAY -->
