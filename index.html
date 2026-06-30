@@ -712,6 +712,33 @@ canvas{width:100%!important;}
 .wupcard-book-item{font-size:13px;color:var(--text);line-height:1.5;border-left:2px solid rgba(200,160,80,.3);padding-left:8px;margin-bottom:6px;}
 .wupcard-book-auth{font-size:11px;color:rgba(255,255,255,.45);}
 .wupcard-brand{text-align:center;font-size:10px;color:rgba(200,160,80,.25);letter-spacing:2px;margin-top:18px;}
+/* ── TIMER ── */
+.timer-display{font-family:'Cinzel',serif;font-size:52px;font-weight:900;color:#fff;text-align:center;letter-spacing:4px;text-shadow:0 0 30px rgba(200,160,80,.3);margin:20px 0 10px;}
+.timer-book{text-align:center;font-style:italic;color:var(--text-dim);font-size:15px;margin-bottom:20px;min-height:22px;}
+.timer-btns{display:flex;justify-content:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+.timer-btn{font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;padding:10px 22px;border-radius:4px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text-dim);cursor:pointer;transition:all .2s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.timer-btn.primary{border-color:var(--border-hi);background:var(--gold-faint);color:var(--gold);}
+.timer-btn:hover{border-color:var(--border-hi);color:var(--gold);}
+.timer-session{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(200,160,80,.08);font-size:14px;}
+.timer-session-title{color:var(--text);font-weight:600;flex:1;}
+.timer-session-meta{color:var(--text-dim);font-size:13px;margin-left:10px;text-align:right;}
+/* ── SPENDING ── */
+.spend-entry{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(200,160,80,.08);gap:8px;flex-wrap:wrap;}
+.spend-store{font-family:'Cinzel',serif;font-size:13px;letter-spacing:1px;color:var(--gold);}
+.spend-amount{font-family:'Cinzel',serif;font-size:18px;color:#fff;}
+.spend-meta{font-size:12px;color:var(--text-dim);}
+/* ── PIPELINE ── */
+.pipe-entry{border:1px solid var(--border);border-radius:4px;padding:13px 15px;margin-bottom:8px;background:rgba(255,255,255,.02);}
+.pipe-brand{font-family:'Cinzel',serif;font-size:15px;color:#fff;margin-bottom:5px;}
+.pipe-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;}
+.pipe-badge{font-size:11px;font-family:'IM Fell English SC',serif;letter-spacing:1px;padding:2px 8px;border-radius:10px;border:1px solid;}
+.pipe-meta{font-size:13px;color:var(--text-dim);}
+/* ── THEME PICKER ── */
+.theme-overlay{display:none;position:fixed;inset:0;z-index:900;background:rgba(5,3,8,.96);flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+.theme-overlay.open{display:flex;}
+.theme-swatches{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin:20px 0;}
+.theme-swatch{width:60px;height:60px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:22px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.theme-swatch.active{border-color:#fff;transform:scale(1.1);}
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
@@ -727,6 +754,10 @@ canvas{width:100%!important;}
     <label class="btn" style="font-size:16px;padding:6px 14px;cursor:pointer;">⬆ Restore Backup<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
     <button class="btn" onclick="shareData()" style="font-size:16px;padding:6px 14px;background:rgba(90,32,128,.25);border-color:rgba(150,80,220,.4);color:rgba(200,160,255,.9);">📡 Share to Other Device</button>
     <button class="btn" onclick="openSyncModal()" style="font-size:16px;padding:6px 14px;background:rgba(42,122,42,.2);border-color:rgba(80,200,80,.35);color:rgba(140,220,140,.95);">🔄 Sync Code</button>
+  </div>
+  <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
+    <button id="notif-btn" onclick="toggleNotifications()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--text-dim);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;padding:5px 14px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔔 Enable Reminders</button>
+    <button onclick="openThemePicker()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--text-dim);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;padding:5px 14px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎨 Theme</button>
   </div>
 </div>
 
@@ -747,6 +778,9 @@ canvas{width:100%!important;}
   <button class="nav-btn" onclick="showPanel('spin')">🎡 Spin the Wheel</button>
   <button class="nav-btn" onclick="showPanel('monthlypicks')">📚 Monthly Picks</button>
   <button class="nav-btn" onclick="showPanel('analytics')">📊 Analytics</button>
+  <button class="nav-btn" onclick="showPanel('timer')">⏱️ Timer</button>
+  <button class="nav-btn" onclick="showPanel('spending')">💰 Spending</button>
+  <button class="nav-btn" onclick="showPanel('pipeline')">🤝 Pipeline</button>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -914,6 +948,13 @@ canvas{width:100%!important;}
 <!-- ═══════════════════════════ -->
 <div class="panel" id="panel-ideas">
   <div class="section-title">💡 Content Idea Generator</div>
+
+  <div class="card-box" style="margin-bottom:16px;border-color:rgba(200,160,80,.35);">
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:8px;">📚 IDEAS FROM MY LIBRARY</div>
+    <div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">Generate specific video ideas based on your recent reads — genres, ratings, patterns.</div>
+    <button class="btn btn-primary" onclick="generateIdeasFromReads()" style="width:100%;padding:10px;font-size:14px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Generate Ideas from My Recent Reads</button>
+    <div id="reads-ideas-list" style="margin-top:12px;"></div>
+  </div>
 
   <div class="idea-filter">
     <button class="idea-filter-btn active" onclick="setIdeaFilter('all',this)">All Genres</button>
@@ -1772,11 +1813,136 @@ canvas{width:100%!important;}
   </div>
 </div>
 
+<!-- ═══════════════════════════ -->
+<!-- PANEL: TIMER               -->
+<!-- ═══════════════════════════ -->
+<div class="panel" id="panel-timer">
+  <div class="section-title">⏱️ Reading Timer</div>
+  <div class="card-box" style="text-align:center;padding:24px 16px;">
+    <div class="timer-display" id="timer-display">00:00:00</div>
+    <div class="timer-book" id="timer-book-label"></div>
+    <div class="sc-field" style="text-align:left;margin-bottom:16px;">
+      <label>Book You're Reading</label>
+      <input id="timer-book-input" type="text" placeholder="Enter book title..." style="width:100%;box-sizing:border-box;"/>
+    </div>
+    <div class="timer-btns">
+      <button class="timer-btn primary" id="timer-start-btn" onclick="startTimer()">▶ Start Reading</button>
+      <button class="timer-btn" id="timer-pause-btn" onclick="pauseTimer()" style="display:none;">⏸ Pause</button>
+      <button class="timer-btn" id="timer-stop-btn" onclick="stopTimer()" style="display:none;">⏹ Stop & Log</button>
+    </div>
+    <div style="display:flex;justify-content:center;gap:20px;padding:12px 0;border-top:1px solid rgba(200,160,80,.1);">
+      <div style="text-align:center;">
+        <div style="font-family:'Cinzel',serif;font-size:22px;color:var(--gold);" id="timer-today-total">0m</div>
+        <div style="font-size:11px;color:var(--text-dim);letter-spacing:1px;margin-top:2px;">TODAY'S READING</div>
+      </div>
+    </div>
+  </div>
+  <div class="card-box" style="margin-top:16px;">
+    <div class="label-sm" style="margin-bottom:10px;">Recent Sessions</div>
+    <div id="timer-session-list"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:8px 0;">No sessions yet — start reading! 🖤</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- PANEL: SPENDING            -->
+<!-- ═══════════════════════════ -->
+<div class="panel" id="panel-spending">
+  <div class="section-title">💰 Book Spending Tracker</div>
+  <div class="card-box" style="margin-bottom:16px;">
+    <div class="label-sm" style="margin-bottom:12px;">Quick Add Purchase</div>
+    <div class="sc-two-col">
+      <div class="sc-field">
+        <label>Store</label>
+        <select id="spend-store">
+          <option>Barnes &amp; Noble</option>
+          <option>Amazon</option>
+          <option>Book Outlet</option>
+          <option>ThriftBooks</option>
+          <option>Indie Bookstore</option>
+          <option>Library Fine</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="sc-field">
+        <label>Amount ($)</label>
+        <input id="spend-amount" type="number" step="0.01" min="0" placeholder="0.00"/>
+      </div>
+    </div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Date</label><input id="spend-date" type="date"/></div>
+      <div class="sc-field"><label>Notes</label><input id="spend-notes" type="text" placeholder="Book title, etc..."/></div>
+    </div>
+    <button class="btn btn-primary" onclick="addSpending()" style="width:100%;padding:10px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Add</button>
+  </div>
+  <div class="card-box" style="margin-bottom:16px;">
+    <div id="spending-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;"></div>
+  </div>
+  <div id="spending-list"></div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- PANEL: PIPELINE            -->
+<!-- ═══════════════════════════ -->
+<div class="panel" id="panel-pipeline">
+  <div class="section-title">🤝 Collab Pipeline</div>
+  <div class="card-box" style="margin-bottom:16px;">
+    <div id="pipeline-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;"></div>
+  </div>
+  <button class="sc-add-btn" onclick="openPipelineAdd()">✦ Add Collab / Brand Deal</button>
+  <div class="an-add-form" id="pipeline-add-form">
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Brand / Author *</label><input id="pipe-brand" type="text" placeholder="Brand or author name..."/></div>
+      <div class="sc-field">
+        <label>Type</label>
+        <select id="pipe-type">
+          <option>ARC Review</option>
+          <option>Sponsored Post</option>
+          <option>Brand Partnership</option>
+          <option>Author Feature</option>
+          <option>Affiliate</option>
+        </select>
+      </div>
+    </div>
+    <div class="sc-two-col">
+      <div class="sc-field">
+        <label>Status</label>
+        <select id="pipe-status">
+          <option>Reached Out</option>
+          <option>Negotiating</option>
+          <option>Confirmed</option>
+          <option>In Progress</option>
+          <option>Posted</option>
+          <option>Paid</option>
+        </select>
+      </div>
+      <div class="sc-field"><label>Date</label><input id="pipe-date" type="date"/></div>
+    </div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Amount ($, optional)</label><input id="pipe-amount" type="number" step="0.01" min="0" placeholder="0.00"/></div>
+      <div class="sc-field"><label>Contact</label><input id="pipe-contact" type="text" placeholder="Email or @handle..."/></div>
+    </div>
+    <div class="sc-field"><label>Notes</label><input id="pipe-notes" type="text" placeholder="Requirements, deadlines, etc..."/></div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closePipelineAdd()">Cancel</button>
+      <button class="sc-btn-save" onclick="savePipelineItem()">✦ Save</button>
+    </div>
+  </div>
+  <div id="pipeline-list" style="margin-top:8px;"></div>
+</div>
+
 <!-- ═══════════════════════════════════════════ -->
 <!-- PANEL 15: ANALYTICS                         -->
 <!-- ═══════════════════════════════════════════ -->
 <div class="panel" id="panel-analytics">
   <div class="section-title">📊 Analytics</div>
+  <div class="card-box" style="margin-bottom:16px;border-color:rgba(200,160,80,.35);">
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:6px;">📦 BACKUP & EXPORT</div>
+    <div style="font-size:14px;color:var(--text-dim);margin:8px 0 12px;line-height:1.7;">Download all your data as a file. Use this to back up your books, logs, and settings.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button onclick="exportAllData()" class="btn btn-primary" style="flex:1;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📦 Export All Data (JSON)</button>
+      <button onclick="exportBooksCSV()" class="btn" style="flex:1;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Export Books (CSV)</button>
+    </div>
+  </div>
   <div class="an-tabs">
     <button class="an-tab active" id="an-tab-growth" onclick="switchAnTab('growth',this)">📈 Growth Log</button>
     <button class="an-tab" id="an-tab-videos" onclick="switchAnTab('videos',this)">🎬 Video Stats</button>
@@ -2256,7 +2422,7 @@ function showPanel(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
-  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,spin:12,monthlypicks:13,analytics:14};
+  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,spin:12,monthlypicks:13,analytics:14,timer:15,spending:16,pipeline:17};
   if(map[id]!==undefined)document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
@@ -2271,6 +2437,9 @@ function showPanel(id){
   if(id==='spin'){initSpin();}
   if(id==='monthlypicks'){initMonthlyPicks();}
   if(id==='analytics'){initAnalytics();}
+  if(id==='timer'){renderTimerPanel();}
+  if(id==='spending'){renderSpending();}
+  if(id==='pipeline'){renderPipeline();}
   _currentPanel=id;
   localStorage.setItem('tbtrish_lastpanel',id);
 }
@@ -6363,6 +6532,450 @@ async function shareWrapupCard(elId){
   if(navigator.share){try{await navigator.share({title:'TitlesByTrish Reading Wrap-Up 🖤',text:text});}catch(e){}}
   else{toast('📱 Screenshot the card above and post it!');}
 }
+
+// ══════════════════════════════════════════
+// FEATURE 1: READING TIMER
+// ══════════════════════════════════════════
+var scTimerSessions = JSON.parse(localStorage.getItem('sc3_timer_sessions')||'[]');
+var scTimerActive = JSON.parse(localStorage.getItem('sc3_timer_active')||'null');
+var _timerInterval = null, _timerPaused = false, _timerPausedAt = 0, _timerPausedTotal = 0;
+
+function _fmtTime(secs){
+  if(secs<60)return secs+'s';
+  var m=Math.floor(secs/60);var s=secs%60;
+  if(m<60)return m+'m'+(s>0?' '+s+'s':'');
+  var h=Math.floor(m/60);var rm=m%60;
+  return h+'h'+(rm>0?' '+rm+'m':'');
+}
+function _fmtHMS(secs){
+  var h=Math.floor(secs/3600);var m=Math.floor((secs%3600)/60);var s=secs%60;
+  return (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+function startTimer(){
+  if(_timerInterval)return;
+  var book=document.getElementById('timer-book-input').value.trim();
+  scTimerActive={start:Date.now(),book:book,pausedTotal:_timerPausedTotal};
+  localStorage.setItem('sc3_timer_active',JSON.stringify(scTimerActive));
+  _timerPaused=false;
+  _timerInterval=setInterval(_timerTick,1000);
+  document.getElementById('timer-start-btn').style.display='none';
+  document.getElementById('timer-pause-btn').style.display='';
+  document.getElementById('timer-stop-btn').style.display='';
+  _timerTick();
+}
+function pauseTimer(){
+  if(_timerPaused){
+    // Resume
+    _timerPausedTotal+=Math.floor((Date.now()-_timerPausedAt)/1000);
+    scTimerActive.pausedTotal=_timerPausedTotal;
+    localStorage.setItem('sc3_timer_active',JSON.stringify(scTimerActive));
+    _timerPaused=false;
+    document.getElementById('timer-pause-btn').textContent='⏸ Pause';
+    if(!_timerInterval)_timerInterval=setInterval(_timerTick,1000);
+  } else {
+    // Pause
+    _timerPausedAt=Date.now();
+    _timerPaused=true;
+    clearInterval(_timerInterval);_timerInterval=null;
+    document.getElementById('timer-pause-btn').textContent='▶ Resume';
+  }
+}
+function stopTimer(){
+  clearInterval(_timerInterval);_timerInterval=null;
+  if(!scTimerActive)return;
+  var elapsed=Math.floor((Date.now()-scTimerActive.start)/1000)-(scTimerActive.pausedTotal||0);
+  if(_timerPaused&&_timerPausedAt){elapsed-=Math.floor((Date.now()-_timerPausedAt)/1000);}
+  if(elapsed>5){
+    var today=new Date().toISOString().slice(0,10);
+    scTimerSessions.unshift({id:Date.now(),book:scTimerActive.book||'Untitled',date:today,duration:elapsed});
+    if(scTimerSessions.length>50)scTimerSessions=scTimerSessions.slice(0,50);
+    localStorage.setItem('sc3_timer_sessions',JSON.stringify(scTimerSessions));
+  }
+  scTimerActive=null;localStorage.removeItem('sc3_timer_active');
+  _timerPaused=false;_timerPausedAt=0;_timerPausedTotal=0;
+  document.getElementById('timer-display').textContent='00:00:00';
+  document.getElementById('timer-book-label').textContent='';
+  document.getElementById('timer-start-btn').style.display='';
+  document.getElementById('timer-pause-btn').style.display='none';
+  document.getElementById('timer-stop-btn').style.display='none';
+  document.getElementById('timer-pause-btn').textContent='⏸ Pause';
+  renderTimerPanel();
+}
+function _timerTick(){
+  if(!scTimerActive)return;
+  var elapsed=Math.floor((Date.now()-scTimerActive.start)/1000)-(scTimerActive.pausedTotal||0);
+  document.getElementById('timer-display').textContent=_fmtHMS(elapsed);
+  if(scTimerActive.book)document.getElementById('timer-book-label').textContent=scTimerActive.book;
+}
+function renderTimerPanel(){
+  var today=new Date().toISOString().slice(0,10);
+  var todayTotal=scTimerSessions.filter(function(s){return s.date===today;}).reduce(function(acc,s){return acc+(s.duration||0);},0);
+  var el=document.getElementById('timer-today-total');
+  if(el)el.textContent=_fmtTime(todayTotal)||'0m';
+  var last7=scTimerSessions.slice(0,7);
+  var listEl=document.getElementById('timer-session-list');
+  if(!listEl)return;
+  if(!last7.length){listEl.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:8px 0;">No sessions yet — start reading! 🖤</div>';return;}
+  listEl.innerHTML=last7.map(function(s){
+    return '<div class="timer-session"><div class="timer-session-title">'+_esc(s.book||'Untitled')+'</div><div class="timer-session-meta">'+_esc(s.date)+'<br>'+_fmtTime(s.duration)+'</div></div>';
+  }).join('');
+  // If timer is active, resume tick display
+  if(scTimerActive&&!_timerInterval){
+    _timerInterval=setInterval(_timerTick,1000);
+    _timerTick();
+    document.getElementById('timer-start-btn').style.display='none';
+    document.getElementById('timer-pause-btn').style.display='';
+    document.getElementById('timer-stop-btn').style.display='';
+  }
+}
+
+// ══════════════════════════════════════════
+// FEATURE 2: BOOK SPENDING TRACKER
+// ══════════════════════════════════════════
+var scSpending = JSON.parse(localStorage.getItem('sc3_spending')||'[]');
+
+function addSpending(){
+  var store=document.getElementById('spend-store').value;
+  var amount=parseFloat(document.getElementById('spend-amount').value);
+  var date=document.getElementById('spend-date').value||new Date().toISOString().slice(0,10);
+  var notes=document.getElementById('spend-notes').value.trim();
+  if(!amount||isNaN(amount)||amount<=0){toast('Enter an amount');return;}
+  var item={id:Date.now(),store:store,amount:amount,date:date,notes:notes};
+  scSpending.unshift(item);
+  localStorage.setItem('sc3_spending',JSON.stringify(scSpending));
+  document.getElementById('spend-amount').value='';
+  document.getElementById('spend-notes').value='';
+  renderSpending();
+  toast('✦ Added!');
+}
+function deleteSpending(id){
+  scSpending=scSpending.filter(function(s){return s.id!==id;});
+  localStorage.setItem('sc3_spending',JSON.stringify(scSpending));
+  renderSpending();
+}
+function renderSpending(){
+  var now=new Date();
+  var thisMonth=now.getFullYear()+'-'+(now.getMonth()<9?'0':'')+(now.getMonth()+1);
+  var thisYear=String(now.getFullYear());
+  var monthTotal=scSpending.filter(function(s){return (s.date||'').startsWith(thisMonth);}).reduce(function(a,s){return a+(s.amount||0);},0);
+  var yearTotal=scSpending.filter(function(s){return (s.date||'').startsWith(thisYear);}).reduce(function(a,s){return a+(s.amount||0);},0);
+  var booksRead=JSON.parse(localStorage.getItem('sc3_books')||'[]').length;
+  var allTotal=scSpending.reduce(function(a,s){return a+(s.amount||0);},0);
+  var booksPerDollar=allTotal>0?(booksRead/allTotal).toFixed(2):0;
+  var statsEl=document.getElementById('spending-stats');
+  if(statsEl){
+    statsEl.innerHTML=
+      '<div><div style="font-family:\'Cinzel\',serif;font-size:20px;color:var(--gold);">$'+monthTotal.toFixed(2)+'</div><div style="font-size:11px;color:var(--text-dim);margin-top:3px;letter-spacing:1px;">THIS MONTH</div></div>'+
+      '<div><div style="font-family:\'Cinzel\',serif;font-size:20px;color:var(--gold);">$'+yearTotal.toFixed(2)+'</div><div style="font-size:11px;color:var(--text-dim);margin-top:3px;letter-spacing:1px;">THIS YEAR</div></div>'+
+      '<div><div style="font-family:\'Cinzel\',serif;font-size:20px;color:var(--gold);">'+booksPerDollar+'</div><div style="font-size:11px;color:var(--text-dim);margin-top:3px;letter-spacing:1px;">BOOKS PER $</div></div>';
+  }
+  // Group by month
+  var byMonth={};
+  scSpending.forEach(function(s){var mk=(s.date||'').slice(0,7);if(!byMonth[mk])byMonth[mk]=[];byMonth[mk].push(s);});
+  var months=Object.keys(byMonth).sort().reverse();
+  var listEl=document.getElementById('spending-list');
+  if(!listEl)return;
+  if(!scSpending.length){listEl.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:16px 0;text-align:center;">No purchases logged yet 🖤</div>';return;}
+  var monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  listEl.innerHTML=months.map(function(mk){
+    var parts=mk.split('-');var label=(monthNames[parseInt(parts[1],10)-1]||'')+' '+parts[0];
+    var items=byMonth[mk];var mTotal=items.reduce(function(a,s){return a+(s.amount||0);},0);
+    return '<div class="card-box" style="margin-bottom:12px;">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">'+
+        '<div style="font-family:\'Cinzel\',serif;font-size:13px;letter-spacing:2px;color:var(--gold);">'+label+'</div>'+
+        '<div style="font-family:\'Cinzel\',serif;font-size:15px;color:#fff;">$'+mTotal.toFixed(2)+'</div>'+
+      '</div>'+
+      items.map(function(s){
+        return '<div class="spend-entry">'+
+          '<div><div class="spend-store">'+_esc(s.store)+'</div>'+(s.notes?'<div class="spend-meta">'+_esc(s.notes)+'</div>':'')+
+          '<div class="spend-meta">'+_esc(s.date)+'</div></div>'+
+          '<div style="display:flex;align-items:center;gap:10px;"><div class="spend-amount">$'+Number(s.amount).toFixed(2)+'</div>'+
+          '<button onclick="deleteSpending('+s.id+')" style="background:none;border:none;color:rgba(220,80,80,.7);font-size:16px;cursor:pointer;padding:4px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button></div>'+
+        '</div>';
+      }).join('')+
+    '</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// FEATURE 3: PUSH NOTIFICATIONS
+// ══════════════════════════════════════════
+var scNotifEnabled = localStorage.getItem('sc3_notif')==='1';
+
+function toggleNotifications(){
+  if(!('Notification' in window)){toast('Notifications not supported on this browser');return;}
+  if(scNotifEnabled){
+    scNotifEnabled=false;localStorage.setItem('sc3_notif','0');
+    checkNotifBtn();toast('Reminders disabled');return;
+  }
+  Notification.requestPermission(function(perm){
+    if(perm==='granted'){
+      scNotifEnabled=true;localStorage.setItem('sc3_notif','1');
+      checkNotifBtn();toast('✦ Reminders enabled! 🔔');
+    } else {
+      toast('Permission denied — enable in browser settings');
+    }
+  });
+}
+function checkNotifBtn(){
+  var btn=document.getElementById('notif-btn');if(!btn)return;
+  if(scNotifEnabled&&(typeof Notification!=='undefined')&&Notification.permission==='granted'){
+    btn.textContent='🔔 Reminders On';btn.style.color='var(--gold)';btn.style.borderColor='rgba(200,160,80,.4)';
+  } else {
+    btn.textContent='🔔 Enable Reminders';btn.style.color='var(--text-dim)';btn.style.borderColor='var(--border)';
+  }
+}
+(function _initNotif(){
+  var lastVisit=parseInt(localStorage.getItem('sc3_last_visit')||'0',10);
+  var now=Date.now();
+  localStorage.setItem('sc3_last_visit',String(now));
+  if(scNotifEnabled&&typeof Notification!=='undefined'&&Notification.permission==='granted'){
+    var hoursSince=(now-lastVisit)/3600000;
+    if(lastVisit>0&&hoursSince>20){
+      try{new Notification('📚 TitlesByTrish',{body:"Don't forget to log your reading today! Keep that streak alive 🔥"});}catch(e){}
+    }
+  }
+  setTimeout(checkNotifBtn,100);
+})();
+
+// ══════════════════════════════════════════
+// FEATURE 4: VIDEO IDEAS FROM READS
+// ══════════════════════════════════════════
+function generateIdeasFromReads(){
+  var books=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var dnf=JSON.parse(localStorage.getItem('sc3_dnf')||'[]');
+  var recent=books.slice(0,10);
+  var ideas=[];
+  if(!recent.length){
+    document.getElementById('reads-ideas-list').innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:14px;padding:8px 0;">Add some books to your Book Bank first!</div>';
+    return;
+  }
+  // Genre count
+  var genres={};recent.forEach(function(b){if(b.genre)genres[b.genre]=(genres[b.genre]||0)+1;});
+  var topGenre=Object.entries(genres).sort(function(a,b){return b[1]-a[1];})[0];
+  if(topGenre&&topGenre[1]>=3){
+    ideas.push({hook:'Rank your top '+topGenre[0]+' reads',concept:'"I ranked ALL my '+topGenre[0]+' books and the results shocked me 👀"',cta:'#booktok #'+topGenre[0].toLowerCase().replace(/\s/g,'')});
+  }
+  // 5-star books
+  var fiveStars=recent.filter(function(b){return b.rating===5;});
+  if(fiveStars.length>0){
+    ideas.push({hook:'My '+fiveStars.length+'-star reads — books that actually destroyed me',concept:'"POV: you ask me what books broke me... these are them 💀 #'+fiveStars.length+'stars"',cta:'#booktok #5starreads #destroyed'});
+  }
+  // High mind scale
+  var mindBooks=recent.filter(function(b){return b.mind>=4;});
+  if(mindBooks.length>0){
+    ideas.push({hook:'Books that broke my brain — Mind Scale 4 & 5 tier list',concept:'"Rating books by how much they psychologically wrecked me... this tier list is NOT okay 🧠💀"',cta:'#booktok #mindscale #psychologicalthriller'});
+  }
+  // Same author 2+
+  var authors={};recent.forEach(function(b){if(b.author)authors[b.author]=(authors[b.author]||0)+1;});
+  var topAuthor=Object.entries(authors).sort(function(a,b){return b[1]-a[1];})[0];
+  if(topAuthor&&topAuthor[1]>=2){
+    ideas.push({hook:'Everything I\'ve read by '+topAuthor[0]+' — ranked',concept:'"I read '+topAuthor[1]+' books by '+topAuthor[0]+' so you don\'t have to... here\'s the ranking 👀"',cta:'#booktok #authordeep'});
+  }
+  // DNF books
+  if(dnf.length>0){
+    ideas.push({hook:'Books I DNF\'d and why — no shame',concept:'"DNF is not a bad word. Here are the books I put down and exactly why 📖❌"',cta:'#booktok #dnf #didnotfinish'});
+  }
+  // Multiple genres
+  var uniqueGenres=Object.keys(genres);
+  if(uniqueGenres.length>=3){
+    ideas.push({hook:'My reading personality based on my library',concept:'"I looked at ALL the genres I read and my personality is officially all over the place 😭"',cta:'#booktok #readingpersonality #bookworm'});
+  }
+  // Always-add ideas
+  ideas.push({hook:'React to my TBR pile',concept:'"I haven\'t looked at my TBR in 3 months... reacting to every single book on it 😭📚"',cta:'#booktok #tbr #readinglist'});
+  ideas.push({hook:'Reading stats that surprised me',concept:'"I ran the numbers on my reading year and I am NOT okay with what I found 📊"',cta:'#booktok #readingstats #bookworm'});
+  var el=document.getElementById('reads-ideas-list');
+  if(!el)return;
+  el.innerHTML=ideas.map(function(idea,i){
+    return '<div style="background:rgba(200,160,80,.06);border:1px solid rgba(200,160,80,.15);border-radius:6px;padding:12px 14px;margin-bottom:8px;">'+
+      '<div style="font-family:\'Cinzel\',serif;font-size:13px;color:var(--gold);margin-bottom:4px;">'+_esc(idea.hook)+'</div>'+
+      '<div style="font-size:13px;color:var(--text);line-height:1.5;margin-bottom:6px;font-style:italic;">'+_esc(idea.concept)+'</div>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;">'+
+        '<div style="font-size:11px;color:var(--text-dim);">'+_esc(idea.cta)+'</div>'+
+        '<button onclick="copyIdeaHook(\''+idea.hook.replace(/'/g,"\\'")+'\')" style="background:none;border:1px solid rgba(200,160,80,.3);border-radius:3px;color:var(--gold);font-size:11px;padding:3px 8px;cursor:pointer;font-family:\'Cinzel\',serif;letter-spacing:1px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Copy</button>'+
+      '</div></div>';
+  }).join('');
+}
+function copyIdeaHook(text){
+  if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){toast('✦ Copied!');}).catch(function(){_fallbackCopy(text);});}
+  else{_fallbackCopy(text);}
+}
+function _fallbackCopy(text){
+  var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('✦ Copied!');
+}
+
+// ══════════════════════════════════════════
+// FEATURE 5: COLLAB PIPELINE
+// ══════════════════════════════════════════
+var scPipeline = JSON.parse(localStorage.getItem('sc3_pipeline')||'[]');
+var _pipelineEditId = null;
+
+function openPipelineAdd(){
+  _pipelineEditId=null;
+  document.getElementById('pipe-brand').value='';
+  document.getElementById('pipe-type').value='ARC Review';
+  document.getElementById('pipe-status').value='Reached Out';
+  document.getElementById('pipe-date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('pipe-amount').value='';
+  document.getElementById('pipe-contact').value='';
+  document.getElementById('pipe-notes').value='';
+  var f=document.getElementById('pipeline-add-form');if(f)f.classList.add('open');
+}
+function closePipelineAdd(){
+  var f=document.getElementById('pipeline-add-form');if(f)f.classList.remove('open');
+  _pipelineEditId=null;
+}
+function savePipelineItem(){
+  var brand=document.getElementById('pipe-brand').value.trim();
+  if(!brand){toast('Enter a brand or author name');return;}
+  var item={
+    id:_pipelineEditId||Date.now(),
+    brand:brand,
+    type:document.getElementById('pipe-type').value,
+    status:document.getElementById('pipe-status').value,
+    date:document.getElementById('pipe-date').value,
+    amount:parseFloat(document.getElementById('pipe-amount').value)||0,
+    contact:document.getElementById('pipe-contact').value.trim(),
+    notes:document.getElementById('pipe-notes').value.trim()
+  };
+  if(_pipelineEditId){
+    scPipeline=scPipeline.map(function(p){return p.id===_pipelineEditId?item:p;});
+  } else {
+    scPipeline.unshift(item);
+  }
+  localStorage.setItem('sc3_pipeline',JSON.stringify(scPipeline));
+  closePipelineAdd();renderPipeline();toast('✦ Saved!');
+}
+function deletePipelineItem(id){
+  scPipeline=scPipeline.filter(function(p){return p.id!==id;});
+  localStorage.setItem('sc3_pipeline',JSON.stringify(scPipeline));
+  renderPipeline();
+}
+function editPipelineItem(id){
+  var item=scPipeline.filter(function(p){return p.id===id;})[0];if(!item)return;
+  _pipelineEditId=id;
+  document.getElementById('pipe-brand').value=item.brand||'';
+  document.getElementById('pipe-type').value=item.type||'ARC Review';
+  document.getElementById('pipe-status').value=item.status||'Reached Out';
+  document.getElementById('pipe-date').value=item.date||'';
+  document.getElementById('pipe-amount').value=item.amount||'';
+  document.getElementById('pipe-contact').value=item.contact||'';
+  document.getElementById('pipe-notes').value=item.notes||'';
+  var f=document.getElementById('pipeline-add-form');if(f)f.classList.add('open');
+  f.scrollIntoView({behavior:'smooth'});
+}
+function _pipeStatusStyle(status){
+  var map={
+    'Reached Out':'color:rgba(180,180,180,.9);border-color:rgba(180,180,180,.3);background:rgba(180,180,180,.06)',
+    'Negotiating':'color:rgba(240,190,60,.9);border-color:rgba(240,190,60,.3);background:rgba(240,190,60,.07)',
+    'Confirmed':'color:rgba(80,160,240,.9);border-color:rgba(80,160,240,.3);background:rgba(80,160,240,.07)',
+    'In Progress':'color:rgba(240,140,40,.9);border-color:rgba(240,140,40,.3);background:rgba(240,140,40,.07)',
+    'Posted':'color:rgba(80,210,120,.9);border-color:rgba(80,210,120,.3);background:rgba(80,210,120,.07)',
+    'Paid':'color:rgba(50,230,80,.9);border-color:rgba(50,230,80,.3);background:rgba(50,230,80,.08)'
+  };
+  return map[status]||'';
+}
+function renderPipeline(){
+  var active=scPipeline.filter(function(p){return ['Reached Out','Negotiating','Confirmed','In Progress'].indexOf(p.status)!==-1;}).length;
+  var confirmed=scPipeline.filter(function(p){return p.status==='Confirmed'||p.status==='In Progress'||p.status==='Posted'||p.status==='Paid';}).length;
+  var earned=scPipeline.filter(function(p){return p.status==='Paid';}).reduce(function(a,p){return a+(p.amount||0);},0);
+  var statsEl=document.getElementById('pipeline-stats');
+  if(statsEl){
+    statsEl.innerHTML=
+      '<div><div style="font-family:\'Cinzel\',serif;font-size:22px;color:var(--gold);">'+active+'</div><div style="font-size:11px;color:var(--text-dim);margin-top:3px;letter-spacing:1px;">ACTIVE</div></div>'+
+      '<div><div style="font-family:\'Cinzel\',serif;font-size:22px;color:var(--gold);">'+confirmed+'</div><div style="font-size:11px;color:var(--text-dim);margin-top:3px;letter-spacing:1px;">CONFIRMED</div></div>'+
+      '<div><div style="font-family:\'Cinzel\',serif;font-size:22px;color:var(--gold);">$'+earned.toFixed(2)+'</div><div style="font-size:11px;color:var(--text-dim);margin-top:3px;letter-spacing:1px;">EARNED</div></div>';
+  }
+  var listEl=document.getElementById('pipeline-list');if(!listEl)return;
+  if(!scPipeline.length){listEl.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:16px 0;text-align:center;">No collabs logged yet 🖤</div>';return;}
+  listEl.innerHTML=scPipeline.map(function(p){
+    var sSt=_pipeStatusStyle(p.status);
+    var paidIcon=p.status==='Paid'?' 💰':'';
+    return '<div class="pipe-entry">'+
+      '<div class="pipe-brand">'+_esc(p.brand)+'</div>'+
+      '<div class="pipe-badges">'+
+        '<span class="pipe-badge" style="color:rgba(200,160,80,.8);border-color:rgba(200,160,80,.2);background:rgba(200,160,80,.06);">'+_esc(p.type)+'</span>'+
+        '<span class="pipe-badge" style="'+sSt+'">'+_esc(p.status)+paidIcon+'</span>'+
+      '</div>'+
+      '<div class="pipe-meta">'+
+        (p.date?'📅 '+_esc(p.date)+' ':'')+(p.amount?'· $'+Number(p.amount).toFixed(2)+' ':'')+
+        (p.contact?'· '+_esc(p.contact):'')+(p.notes?'<br>'+_esc(p.notes):'')+'</div>'+
+      '<div style="display:flex;gap:8px;margin-top:8px;">'+
+        '<button onclick="editPipelineItem('+p.id+')" style="background:rgba(200,160,80,.08);border:1px solid rgba(200,160,80,.2);border-radius:3px;color:var(--gold);font-size:11px;font-family:\'Cinzel\',serif;letter-spacing:1px;padding:4px 10px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Edit</button>'+
+        '<button onclick="deletePipelineItem('+p.id+')" style="background:rgba(220,80,80,.06);border:1px solid rgba(220,80,80,.2);border-radius:3px;color:rgba(220,80,80,.8);font-size:11px;font-family:\'Cinzel\',serif;letter-spacing:1px;padding:4px 10px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Delete</button>'+
+      '</div></div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// FEATURE 6: ACCENT COLOR THEMES
+// ══════════════════════════════════════════
+var scTheme = localStorage.getItem('sc3_theme')||'gold';
+var _themes={
+  gold:{gold:'#c8a050',goldDim:'rgba(200,160,80,.85)',goldFaint:'rgba(200,160,80,.1)',red:'#c0404a',redDim:'rgba(192,64,74,.4)'},
+  purple:{gold:'#9b59b6',goldDim:'rgba(155,89,182,.85)',goldFaint:'rgba(155,89,182,.1)',red:'#7d3c98',redDim:'rgba(125,60,152,.4)'},
+  teal:{gold:'#1abc9c',goldDim:'rgba(26,188,156,.85)',goldFaint:'rgba(26,188,156,.1)',red:'#148f77',redDim:'rgba(20,143,119,.4)'},
+  rose:{gold:'#e91e63',goldDim:'rgba(233,30,99,.85)',goldFaint:'rgba(233,30,99,.1)',red:'#c2185b',redDim:'rgba(194,24,91,.4)'},
+  forest:{gold:'#27ae60',goldDim:'rgba(39,174,96,.85)',goldFaint:'rgba(39,174,96,.1)',red:'#1e8449',redDim:'rgba(30,132,73,.4)'}
+};
+function applyTheme(name){
+  var t=_themes[name]||_themes.gold;
+  var r=document.documentElement;
+  r.style.setProperty('--gold',t.gold);
+  r.style.setProperty('--gold-dim',t.goldDim);
+  r.style.setProperty('--gold-faint',t.goldFaint);
+  r.style.setProperty('--red',t.red);
+  r.style.setProperty('--red-dim',t.redDim);
+  scTheme=name;localStorage.setItem('sc3_theme',name);
+  // Update swatch active state
+  document.querySelectorAll('.theme-swatch').forEach(function(sw){
+    sw.classList.toggle('active',sw.dataset.theme===name);
+  });
+}
+function openThemePicker(){
+  document.getElementById('theme-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeThemePicker(){
+  document.getElementById('theme-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+applyTheme(scTheme);
+
+// ══════════════════════════════════════════
+// FEATURE 7: EXPORT DATA
+// ══════════════════════════════════════════
+function exportAllData(){
+  var out={_version:'2',_exported:new Date().toISOString()};
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k&&(k.startsWith('sc3_')||k.startsWith('tbtrish_'))){
+      out[k]=localStorage.getItem(k);
+    }
+  }
+  var blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='titlesbytrish-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  toast('✦ All data exported!');
+}
+function exportBooksCSV(){
+  var books=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  if(!books.length){toast('No books to export');return;}
+  var headers=['Title','Author','Genre','Rating','Mind Scale','Date Started','Date Finished','Pages','Review','TikTok Status','Recommendation'];
+  function csvEsc(v){var s=String(v||'');return '"'+s.replace(/"/g,'""')+'"';}
+  var rows=books.map(function(b){
+    return [b.title,b.author,b.genre,b.rating||'',b.mind||'',b.dateStart||'',b.dateEnd||'',b.pages||'',b.review||'',b.tiktok||'',b.rec||''].map(csvEsc).join(',');
+  });
+  var csv=headers.map(csvEsc).join(',')+'\n'+rows.join('\n');
+  var blob=new Blob([csv],{type:'text/csv'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='titlesbytrish-books-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  toast('✦ Books exported as CSV!');
+}
 </script>
 
 <!-- BARCODE SCANNER OVERLAY -->
@@ -6623,6 +7236,37 @@ async function shareWrapupCard(elId){
     <div id="annual-wrapup-card" class="wrapup-card"></div>
     <div style="margin-top:10px;text-align:center;font-size:13px;color:var(--text-dim);line-height:1.6;">📱 Screenshot the card above and post it!</div>
     <button class="btn" onclick="shareWrapupCard('annual-wrapup-card')" style="width:100%;margin-top:8px;padding:12px;font-size:15px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📤 Share</button>
+  </div>
+</div>
+
+<!-- THEME PICKER OVERLAY -->
+<div class="theme-overlay" id="theme-overlay">
+  <div style="text-align:center;width:100%;max-width:360px;">
+    <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:var(--gold);margin-bottom:6px;">🎨 CHOOSE YOUR THEME</div>
+    <div style="font-size:13px;color:var(--text-dim);margin-bottom:4px;">Pick an accent color for the app</div>
+    <div class="theme-swatches">
+      <div style="text-align:center;">
+        <div class="theme-swatch active" data-theme="gold" onclick="applyTheme('gold')" style="background:#c8a050;">🖤</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Dark Gold</div>
+      </div>
+      <div style="text-align:center;">
+        <div class="theme-swatch" data-theme="purple" onclick="applyTheme('purple')" style="background:#9b59b6;">💜</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Midnight</div>
+      </div>
+      <div style="text-align:center;">
+        <div class="theme-swatch" data-theme="teal" onclick="applyTheme('teal')" style="background:#1abc9c;">🩵</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Dark Teal</div>
+      </div>
+      <div style="text-align:center;">
+        <div class="theme-swatch" data-theme="rose" onclick="applyTheme('rose')" style="background:#e91e63;">🌹</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Dark Rose</div>
+      </div>
+      <div style="text-align:center;">
+        <div class="theme-swatch" data-theme="forest" onclick="applyTheme('forest')" style="background:#27ae60;">💚</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Forest</div>
+      </div>
+    </div>
+    <button onclick="closeThemePicker()" class="btn" style="margin-top:8px;padding:10px 32px;font-size:13px;letter-spacing:2px;">✦ Done</button>
   </div>
 </div>
 
