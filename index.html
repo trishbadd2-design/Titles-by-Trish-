@@ -744,6 +744,28 @@ canvas{width:100%!important;}
 .theme-swatches{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin:20px 0;}
 .theme-swatch{width:60px;height:60px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:22px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 .theme-swatch.active{border-color:#fff;transform:scale(1.1);}
+/* ── BOOK QUOTE JOURNAL ── */
+.bq-card{position:relative;border-left:3px solid var(--red);background:rgba(255,255,255,.025);border-radius:0 6px 6px 0;padding:14px 16px 12px 16px;margin-bottom:12px;}
+.bq-quote-text{font-style:italic;font-size:16px;color:var(--text);line-height:1.7;margin-bottom:8px;}
+.bq-book{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--gold-dim);}
+.bq-meta{font-size:12px;color:rgba(255,255,255,.3);margin-top:5px;}
+.bq-actions{position:absolute;top:10px;right:10px;display:flex;gap:5px;}
+.bq-btn{background:none;border:none;cursor:pointer;font-size:16px;padding:3px 6px;color:var(--text-dim);touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.bq-btn:hover{color:var(--gold);}
+.bq-add-form{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;display:none;}
+/* ── RELEASES TRACKER ── */
+.rel-card{border:1px solid var(--border);border-radius:6px;padding:13px 15px;margin-bottom:10px;background:rgba(255,255,255,.02);display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.rel-title{font-family:'Cinzel',serif;font-size:15px;color:#fff;margin-bottom:3px;}
+.rel-author{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);}
+.rel-badge{font-family:'Cinzel',serif;font-size:12px;letter-spacing:1px;padding:4px 10px;border-radius:12px;white-space:nowrap;flex-shrink:0;}
+.rel-badge.soon{background:rgba(200,160,80,.15);color:var(--gold);border:1px solid rgba(200,160,80,.35);}
+.rel-badge.out{background:rgba(80,200,100,.1);color:#6dca7f;border:1px solid rgba(80,200,100,.3);}
+.rel-badge.future{background:rgba(255,255,255,.05);color:var(--text-dim);border:1px solid var(--border);}
+.rel-add-form{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;display:none;}
+/* ── TBR SORT BUTTONS ── */
+.tbr-sort-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+.tbr-sort-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:13px;cursor:pointer;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.tbr-sort-btn.active{border-color:var(--red);background:rgba(var(--red-rgb,180,50,50),.15);color:#e07070;}
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
@@ -783,6 +805,7 @@ canvas{width:100%!important;}
   <button class="nav-btn" onclick="showPanel('captions')">✍️ Captions</button>
   <button class="nav-btn" onclick="showPanel('hashtags')">🏷️ Hashtags</button>
   <button class="nav-btn" onclick="showPanel('wins')">🏆 Wins Journal</button>
+  <button class="nav-btn" onclick="showPanel('bookquotes')">📝 Quotes</button>
   <button class="nav-btn" onclick="showPanel('monthlypicks')">📚 Monthly Picks</button>
   <button class="nav-btn" onclick="showPanel('analytics')">📊 Analytics</button>
   <button class="nav-btn" onclick="showPanel('timer')">⏱️ Timer</button>
@@ -1219,6 +1242,7 @@ canvas{width:100%!important;}
     <button class="sc-tab" onclick="scSwitchTab('goals',this)">🎯 Goals</button>
     <button class="sc-tab" onclick="scSwitchTab('scripts',this)">🎬 Scripts</button>
     <button class="sc-tab" onclick="scSwitchTab('quotes',this)">💬 Quotes</button>
+    <button class="sc-tab" onclick="scSwitchTab('releases',this)">📅 Releases</button>
   </div>
 
   <!-- CURRENTLY READING -->
@@ -1273,6 +1297,11 @@ canvas{width:100%!important;}
   <div id="sc-section-tbr" class="sc-section">
     <button class="sc-add-btn" onclick="scOpenAdd('tbr')">✦ Add to My TBR Pile</button>
     <input class="sc-search" id="sc-tbr-search" placeholder="Search TBR..." oninput="scRenderTBR()" style="margin-top:8px;margin-bottom:4px;"/>
+    <div class="tbr-sort-row" id="tbr-sort-row">
+      <button class="tbr-sort-btn active" id="tbr-sort-date" onclick="setTBRSort('date')">🗓️ Date Added</button>
+      <button class="tbr-sort-btn" id="tbr-sort-priority" onclick="setTBRSort('priority')">⚡ Priority</button>
+      <button class="tbr-sort-btn" id="tbr-sort-alpha" onclick="setTBRSort('alpha')">🔤 A–Z</button>
+    </div>
     <div id="tbr-genre-filters" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;margin-top:4px;"></div>
     <div id="sc-tbr-list"></div>
   </div>
@@ -1295,6 +1324,30 @@ canvas{width:100%!important;}
       </div>
     </div>
     <div id="sc-wishlist-list"></div>
+  </div>
+
+  <!-- RELEASES -->
+  <div id="sc-section-releases" class="sc-section">
+    <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">
+      Track upcoming book releases you're excited for — never miss a release date. 🖤
+    </div>
+    <button class="sc-add-btn" onclick="openReleasesForm()">✦ Add Upcoming Release</button>
+    <div class="rel-add-form" id="rel-add-form">
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Book Title *</label><input id="rel-f-title" placeholder="title..."/></div>
+        <div class="sc-field"><label>Author</label><input id="rel-f-author" placeholder="author..."/></div>
+      </div>
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Release Date *</label><input type="date" id="rel-f-date"/></div>
+        <div class="sc-field"><label>Genre</label><input id="rel-f-genre" placeholder="e.g. Thriller..."/></div>
+      </div>
+      <div class="sc-field"><label>Notes</label><input id="rel-f-notes" placeholder="preorder link, why you're excited..."/></div>
+      <div class="sc-modal-actions" style="margin-top:10px;">
+        <button class="sc-btn-cancel" onclick="closeReleasesForm()">Cancel</button>
+        <button class="sc-btn-save" onclick="addRelease()">✦ Add Release</button>
+      </div>
+    </div>
+    <div id="sc-releases-list"></div>
   </div>
 
   <!-- STATS -->
@@ -2039,12 +2092,14 @@ canvas{width:100%!important;}
         <div class="sc-field"><label>Shares</label><input type="number" id="an-v-shares" placeholder="0"/></div>
         <div class="sc-field"><label>New Followers</label><input type="number" id="an-v-follows" placeholder="0"/></div>
       </div>
+      <div class="sc-field"><label>Book This Video Is About (optional)</label><input id="an-v-book" placeholder="e.g. Fourth Wing by Rebecca Yarros..."/></div>
       <div class="sc-modal-actions" style="margin-top:10px;">
         <button class="sc-btn-cancel" onclick="closeVidForm()">Cancel</button>
         <button class="sc-btn-save" onclick="saveVidEntry()">✦ Save</button>
       </div>
     </div>
     <div id="an-vid-insight"></div>
+    <div id="an-vid-book-chart"></div>
     <div id="an-vid-list"></div>
   </div>
 
@@ -2434,7 +2489,7 @@ function showPanel(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
-  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,monthlypicks:12,analytics:13,timer:14,spending:15,pipeline:16,mood:17,spin:18};
+  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,bookquotes:12,monthlypicks:13,analytics:14,timer:15,spending:16,pipeline:17,mood:18,spin:19};
   if(map[id]!==undefined)document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
@@ -2446,6 +2501,7 @@ function showPanel(id){
   if(id==='captions'){initCaptions();}
   if(id==='hashtags'){renderHashtags();}
   if(id==='wins'){renderWins();}
+  if(id==='bookquotes'){renderBookQuotes();}
   if(id==='spin'){initSpin();}
   if(id==='monthlypicks'){initMonthlyPicks();}
   if(id==='analytics'){initAnalytics();}
@@ -3269,6 +3325,7 @@ let scGoal = parseInt(localStorage.getItem('sc3_goal') || '60');
 let scNotes = localStorage.getItem('sc3_notes') || '';
 let scStreak = parseInt(localStorage.getItem('sc3_streak') || '0');
 let scLastRead = localStorage.getItem('sc3_lastread') || '';
+var scReleases = JSON.parse(localStorage.getItem('sc3_releases')||'[]');
 let scSelectedStars = 0, scSelectedInterest = 0, scSelectedMind = 0, scSelectedTiktok = '';
 let scPicks = { fmt: '', pace: '', src: '', rec: '' };
 const SC_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -3283,6 +3340,7 @@ function scSave() {
   localStorage.setItem('sc3_notes', scNotes);
   localStorage.setItem('sc3_streak', String(scStreak));
   localStorage.setItem('sc3_lastread', scLastRead);
+  localStorage.setItem('sc3_releases', JSON.stringify(scReleases));
 }
 
 function initScorecard() {
@@ -3340,6 +3398,7 @@ function scSwitchTab(t, el) {
   document.querySelectorAll('.sc-section').forEach(e => e.classList.remove('active'));
   el.classList.add('active');
   if(t==='quotes')renderQuotes();
+  if(t==='releases')renderReleases();
   document.getElementById('sc-section-' + t).classList.add('active');
   if (t === 'stats') scRenderStats();
   if (t === 'monthly') { scPopulateYears(); scRenderMonthly(); }
@@ -3432,13 +3491,27 @@ function scRenderTBR() {
   const filterEl = document.getElementById('tbr-genre-filters');
   if(filterEl){
     const genres=['all',...[...new Set(scTBR.map(t=>t.genre||'').filter(Boolean))].sort()];
-    filterEl.innerHTML=genres.map(g=>`<button onclick="setTBRGenre('${g}',this)" style="padding:5px 12px;border-radius:20px;border:1px solid ${tbrGenreFilter===g?'var(--gold)':'var(--border)'};background:${tbrGenreFilter===g?'var(--gold-faint)':'transparent'};color:${tbrGenreFilter===g?'var(--gold)':'var(--text-dim)'};font-size:13px;cursor:pointer;white-space:nowrap;">${g==='all'?'All':g}</button>`).join('');
+    filterEl.innerHTML=genres.map(g=>`<button onclick="setTBRGenre('${g}',this)" style="padding:5px 12px;border-radius:20px;border:1px solid ${tbrGenreFilter===g?'var(--gold)':'var(--border)'};background:${tbrGenreFilter===g?'var(--gold-faint)':'transparent'};color:${tbrGenreFilter===g?'var(--gold)':'var(--text-dim)'};font-size:13px;cursor:pointer;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">${g==='all'?'All':g}</button>`).join('');
   }
   if (!scTBR.length) { l.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">TBR pile is empty!</div>'; return; }
   const tbrQ=(document.getElementById('sc-tbr-search')||{}).value||'';
   const tbrSearchTerm=tbrQ.trim().toLowerCase();
   let filtered = tbrGenreFilter==='all' ? scTBR : scTBR.filter(t=>(t.genre||'')=== tbrGenreFilter);
   if(tbrSearchTerm)filtered=filtered.filter(t=>(t.title||'').toLowerCase().includes(tbrSearchTerm)||(t.author||'').toLowerCase().includes(tbrSearchTerm));
+  // Apply sort
+  const _priOrder={High:0,Medium:1,Low:2};
+  if(tbrSort==='priority'){
+    filtered=[...filtered].sort(function(a,b){
+      const pa=_priOrder[a.priority]!==undefined?_priOrder[a.priority]:3;
+      const pb=_priOrder[b.priority]!==undefined?_priOrder[b.priority]:3;
+      return pa-pb;
+    });
+  } else if(tbrSort==='alpha'){
+    filtered=[...filtered].sort(function(a,b){return (a.title||'').toLowerCase()<(b.title||'').toLowerCase()?-1:1;});
+  } else {
+    // date: id descending (higher id = newer)
+    filtered=[...filtered].sort(function(a,b){return (b.id||'')>(a.id||'')?1:-1;});
+  }
   if(!filtered.length){l.innerHTML=`<div style="text-align:center;padding:20px;color:var(--text-dim);font-style:italic;">No ${tbrGenreFilter} books in your TBR yet.</div>`;return;}
   l.innerHTML = filtered.map(t => `
     <div class="sc-tbr-card">
@@ -4019,7 +4092,8 @@ const ALL_BACKUP_KEYS=[
   'tbtrish_ht','tbtrish_wins','tbtrish_plan_init',
   'tbtrish_growth','tbtrish_vidperf','tbtrish_pr','tbtrish_collabs',
   'tbtrish_biolinks','tbtrish_bingo','tbtrish_goals','tbtrish_quicknotes',
-  'tbtrish_quotes','tbtrish_contentcal'
+  'tbtrish_quotes','tbtrish_contentcal',
+  'tbtrish_bookquotes','sc3_releases'
 ];
 function buildBackupBlob(){
   const backup={_version:2,_date:new Date().toISOString()};
@@ -4302,7 +4376,7 @@ function clearCCalDay(){
 // ══════════════════════════════════════════
 // SWIPE GESTURES (between panels)
 // ══════════════════════════════════════════
-const PANEL_ORDER=['calendar','followers','engagement','arc','ideas','books','schedule','planner','scorecard','captions','hashtags','wins','monthlypicks','analytics','timer','spending','pipeline','mood','spin'];
+const PANEL_ORDER=['calendar','followers','engagement','arc','ideas','books','schedule','planner','scorecard','captions','hashtags','wins','bookquotes','monthlypicks','analytics','timer','spending','pipeline','mood','spin'];
 var _currentPanel='calendar', _touchX=0, _touchY=0;
 document.addEventListener('touchstart',e=>{_touchX=e.touches[0].clientX;_touchY=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchend',e=>{
@@ -5559,6 +5633,7 @@ function openVidForm(){
   document.getElementById('an-v-saves').value='';
   document.getElementById('an-v-shares').value='';
   document.getElementById('an-v-follows').value='';
+  document.getElementById('an-v-book').value='';
 }
 function closeVidForm(){document.getElementById('vid-add-form').style.display='none';}
 function saveVidEntry(){
@@ -5574,7 +5649,8 @@ function saveVidEntry(){
     comments:parseInt(document.getElementById('an-v-comments').value)||0,
     saves:parseInt(document.getElementById('an-v-saves').value)||0,
     shares:parseInt(document.getElementById('an-v-shares').value)||0,
-    follows:parseInt(document.getElementById('an-v-follows').value)||0
+    follows:parseInt(document.getElementById('an-v-follows').value)||0,
+    book:document.getElementById('an-v-book').value.trim()
   };
   anVids.unshift(entry);
   saveAnVids(); closeVidForm(); renderVidLog();
@@ -5586,6 +5662,7 @@ function deleteVidEntry(id){
 }
 function renderVidLog(){
   renderVidInsight();
+  renderVidBookChart();
   renderVidList();
 }
 function renderVidInsight(){
@@ -7031,6 +7108,183 @@ function exportBooksCSV(){
   toast('✦ Books exported as CSV!');
 }
 
+// ══════════════════════════════════════════
+// BOOK QUOTE JOURNAL
+// ══════════════════════════════════════════
+var scBookQuotes = JSON.parse(localStorage.getItem('tbtrish_bookquotes')||'[]');
+function saveBookQuotes(){localStorage.setItem('tbtrish_bookquotes',JSON.stringify(scBookQuotes));}
+function openBQForm(){
+  document.getElementById('bq-f-booktitle').value='';
+  document.getElementById('bq-f-author').value='';
+  document.getElementById('bq-f-page').value='';
+  document.getElementById('bq-f-quote').value='';
+  document.getElementById('bq-add-form').style.display='block';
+  setTimeout(function(){document.getElementById('bq-f-booktitle').focus();},100);
+}
+function closeBQForm(){document.getElementById('bq-add-form').style.display='none';}
+function addBookQuote(){
+  var bookTitle=document.getElementById('bq-f-booktitle').value.trim();
+  var quote=document.getElementById('bq-f-quote').value.trim();
+  if(!bookTitle){toast('Book title is required');return;}
+  if(!quote){toast('Please enter the quote text');return;}
+  var entry={
+    id:Date.now().toString(),
+    bookTitle:bookTitle,
+    author:document.getElementById('bq-f-author').value.trim(),
+    quote:quote,
+    page:document.getElementById('bq-f-page').value.trim(),
+    dateAdded:new Date().toLocaleDateString()
+  };
+  scBookQuotes.unshift(entry);
+  saveBookQuotes();
+  closeBQForm();
+  renderBookQuotes();
+  toast('✦ Quote saved 🖤');
+}
+function deleteQuoteJournal(id){
+  if(!confirm('Remove this quote?'))return;
+  scBookQuotes=scBookQuotes.filter(function(q){return q.id!==id;});
+  saveBookQuotes();
+  renderBookQuotes();
+}
+function copyQuoteJournal(id){
+  var q=scBookQuotes.find(function(x){return x.id===id;});
+  if(!q)return;
+  var text='"'+q.quote+'"';
+  if(q.bookTitle)text+='\n— '+(q.author?q.author+', ':'')+q.bookTitle;
+  if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){toast('✦ Quote copied 🖤');});}
+  else{
+    var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    toast('✦ Quote copied 🖤');
+  }
+}
+function renderBookQuotes(){
+  var l=document.getElementById('bq-list');if(!l)return;
+  if(!scBookQuotes.length){
+    l.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No quotes yet — add your first favourite line 🖤</div>';
+    return;
+  }
+  l.innerHTML=scBookQuotes.map(function(q){
+    return '<div class="bq-card">'
+      +'<div class="bq-actions">'
+      +'<button class="bq-btn" onclick="copyQuoteJournal(\''+q.id+'\')" title="Copy">📋</button>'
+      +'<button class="bq-btn" onclick="deleteQuoteJournal(\''+q.id+'\')" title="Delete">✕</button>'
+      +'</div>'
+      +'<div class="bq-quote-text">“'+q.quote.replace(/</g,'&lt;')+'”</div>'
+      +'<div class="bq-book">— '+(q.author?q.author+', ':'')+q.bookTitle+(q.page?' · p.'+q.page:'')+'</div>'
+      +'<div class="bq-meta">'+q.dateAdded+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// UPCOMING RELEASES TRACKER
+// ══════════════════════════════════════════
+function saveReleases(){localStorage.setItem('sc3_releases',JSON.stringify(scReleases));}
+function openReleasesForm(){
+  document.getElementById('rel-f-title').value='';
+  document.getElementById('rel-f-author').value='';
+  document.getElementById('rel-f-date').value='';
+  document.getElementById('rel-f-genre').value='';
+  document.getElementById('rel-f-notes').value='';
+  document.getElementById('rel-add-form').style.display='block';
+  setTimeout(function(){document.getElementById('rel-f-title').focus();},100);
+}
+function closeReleasesForm(){document.getElementById('rel-add-form').style.display='none';}
+function addRelease(){
+  var title=document.getElementById('rel-f-title').value.trim();
+  var releaseDate=document.getElementById('rel-f-date').value;
+  if(!title){toast('Book title is required');return;}
+  if(!releaseDate){toast('Release date is required');return;}
+  var entry={
+    id:Date.now().toString(),
+    title:title,
+    author:document.getElementById('rel-f-author').value.trim(),
+    releaseDate:releaseDate,
+    genre:document.getElementById('rel-f-genre').value.trim(),
+    notes:document.getElementById('rel-f-notes').value.trim()
+  };
+  scReleases.push(entry);
+  saveReleases();
+  closeReleasesForm();
+  renderReleases();
+  toast('✦ Release added 🖤');
+}
+function deleteRelease(id){
+  scReleases=scReleases.filter(function(r){return r.id!==id;});
+  saveReleases();
+  renderReleases();
+}
+function renderReleases(){
+  var l=document.getElementById('sc-releases-list');if(!l)return;
+  if(!scReleases.length){
+    l.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-dim);font-style:italic;">No upcoming releases tracked yet 🖤</div>';
+    return;
+  }
+  var sorted=[].concat(scReleases).sort(function(a,b){return a.releaseDate<b.releaseDate?-1:a.releaseDate>b.releaseDate?1:0;});
+  var today=new Date();today.setHours(0,0,0,0);
+  l.innerHTML=sorted.map(function(r){
+    var rd=new Date(r.releaseDate+'T00:00:00');
+    var diff=Math.round((rd-today)/(1000*60*60*24));
+    var badgeClass,badgeText;
+    if(diff<0){badgeClass='out';badgeText='Out now!';}
+    else if(diff===0){badgeClass='out';badgeText='Today! 🎉';}
+    else if(diff<=30){badgeClass='soon';badgeText=diff+' day'+(diff===1?'':'s');}
+    else{badgeClass='future';badgeText=diff+' days';}
+    return '<div class="rel-card">'
+      +'<div style="flex:1;min-width:0;">'
+      +'<div class="rel-title">'+r.title+'</div>'
+      +(r.author?'<div class="rel-author">'+r.author+'</div>':'' )
+      +(r.genre?'<div style="font-size:12px;color:var(--text-dim);margin-top:3px;">'+r.genre+'</div>':'' )
+      +'<div style="font-size:13px;color:var(--text-dim);margin-top:4px;">📅 '+new Date(r.releaseDate+'T00:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+'</div>'
+      +(r.notes?'<div style="font-size:13px;color:var(--text-dim);font-style:italic;margin-top:4px;">'+r.notes+'</div>':'')
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">'
+      +'<span class="rel-badge '+badgeClass+'">'+badgeText+'</span>'
+      +'<button class="btn btn-danger" style="font-size:13px;padding:3px 8px;" onclick="deleteRelease(\''+r.id+'\')">✕</button>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// TBR SORTING
+// ══════════════════════════════════════════
+var tbrSort='date';
+function setTBRSort(s){
+  tbrSort=s;
+  document.querySelectorAll('.tbr-sort-btn').forEach(function(b){b.classList.remove('active');});
+  var btn=document.getElementById('tbr-sort-'+s);
+  if(btn)btn.classList.add('active');
+  scRenderTBR();
+}
+
+// ══════════════════════════════════════════
+// TOP BOOKS BY VIEWS CHART (Analytics)
+// ══════════════════════════════════════════
+function renderVidBookChart(){
+  var el=document.getElementById('an-vid-book-chart');if(!el)return;
+  var withBook=anVids.filter(function(v){return v.book&&v.book.trim();});
+  if(!withBook.length){el.innerHTML='';return;}
+  var bookMap={};
+  withBook.forEach(function(v){
+    var b=v.book.trim();
+    if(!bookMap[b])bookMap[b]=0;
+    bookMap[b]+=v.views||0;
+  });
+  var data=Object.entries(bookMap).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
+  var maxVal=data[0]?data[0][1]:1;
+  el.innerHTML='<div style="font-family:\'IM Fell English SC\',serif;font-size:16px;letter-spacing:3px;color:var(--gold-dim);margin:16px 0 8px;">📚 TOP BOOKS BY VIEWS</div>'
+    +data.map(function(d){
+      var pct=maxVal?Math.round(d[1]/maxVal*100):0;
+      return '<div class="sc-chart-row">'
+        +'<div class="sc-chart-label" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+d[0]+'">'+d[0]+'</div>'
+        +'<div class="sc-chart-bg"><div class="sc-chart-fill" style="width:'+pct+'%"></div></div>'
+        +'<div class="sc-chart-n">'+fmtNum(d[1])+'</div>'
+        +'</div>';
+    }).join('');
+}
+
 </script>
 
 <!-- BARCODE SCANNER OVERLAY -->
@@ -7323,6 +7577,28 @@ function exportBooksCSV(){
     </div>
     <button onclick="closeThemePicker()" class="btn" style="margin-top:8px;padding:10px 32px;font-size:13px;letter-spacing:2px;">✦ Done</button>
   </div>
+</div>
+
+<!-- BOOK QUOTE JOURNAL PANEL -->
+<div class="panel" id="panel-bookquotes">
+  <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:var(--gold);margin-bottom:16px;">📝 BOOK QUOTE JOURNAL</div>
+  <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:16px;line-height:1.7;">
+    Save your favourite lines — the quotes that stopped you mid-page. 🖤
+  </div>
+  <button class="sc-add-btn" onclick="openBQForm()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Add a Quote</button>
+  <div class="bq-add-form" id="bq-add-form">
+    <div class="sc-field"><label>Book Title *</label><input id="bq-f-booktitle" placeholder="title of the book..."/></div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Author (optional)</label><input id="bq-f-author" placeholder="author name..."/></div>
+      <div class="sc-field"><label>Page # (optional)</label><input type="number" id="bq-f-page" placeholder="e.g. 142"/></div>
+    </div>
+    <div class="sc-field"><label>Quote *</label><textarea id="bq-f-quote" rows="4" placeholder="Type the quote here..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;font-style:italic;resize:vertical;line-height:1.6;font-family:inherit;"></textarea></div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeBQForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="addBookQuote()">✦ Save Quote</button>
+    </div>
+  </div>
+  <div id="bq-list"></div>
 </div>
 
 </body>
