@@ -703,6 +703,13 @@ canvas{width:100%!important;}
 .theme-swatch{width:38px;height:38px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.15s;position:relative;}
 .theme-swatch.selected{border-color:#fff;transform:scale(1.15);}
 .theme-swatch span{display:none;}
+/* ── MIC INPUT ── */
+.mic-row{display:flex;gap:6px;align-items:center;}
+.mic-row input,.mic-row textarea{flex:1;}
+.mic-btn{flex-shrink:0;width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:rgba(200,160,80,.08);color:var(--gold);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.mic-btn:hover{background:rgba(200,160,80,.18);border-color:var(--border-hi);}
+.mic-btn.listening{background:rgba(139,26,26,.3);border-color:rgba(200,80,80,.6);animation:micPulse .8s infinite;}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(200,80,80,.4);}50%{box-shadow:0 0 0 6px rgba(200,80,80,0);}}
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
@@ -910,9 +917,9 @@ canvas{width:100%!important;}
   <div class="card-box">
     <div class="label-sm">Add New ARC or Collab</div>
     <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;">
-      <input type="text" id="arc-title" placeholder="Book title or collab name">
+      <div class="mic-row"><input type="text" id="arc-title" placeholder='Book title (or say "Title by Author")'/><button class="mic-btn" onclick="startVoice('arc-title',true)" title="Speak title">🎤</button></div>
       <div class="grid-2">
-        <div><div class="label-sm">Author / Brand</div><input type="text" id="arc-author" placeholder="Author name"></div>
+        <div><div class="label-sm">Author / Brand</div><div class="mic-row"><input type="text" id="arc-author" placeholder="Author name"/><button class="mic-btn" onclick="startVoice('arc-author',false)" title="Speak author">🎤</button></div></div>
         <div><div class="label-sm">Type</div>
           <select id="arc-type">
             <option>ARC Review</option><option>Author Feature</option><option>Brand Collab</option><option>Publishing Partner</option>
@@ -1264,8 +1271,8 @@ canvas{width:100%!important;}
     <button class="sc-add-btn" onclick="openWishlistAdd()">✦ Add to Wishlist</button>
     <div class="wl-add-form" id="wl-add-form">
       <div class="sc-two-col">
-        <div class="sc-field"><label>Book Title *</label><input id="wl-f-title" placeholder="title..."/></div>
-        <div class="sc-field"><label>Author</label><input id="wl-f-author" placeholder="author..."/></div>
+        <div class="sc-field"><label>Book Title *</label><div class="mic-row"><input id="wl-f-title" placeholder='Say "Title by Author" or just title'/><button class="mic-btn" onclick="startVoice('wl-f-title',true)" title="Speak title">🎤</button></div></div>
+        <div class="sc-field"><label>Author</label><div class="mic-row"><input id="wl-f-author" placeholder="author..."/><button class="mic-btn" onclick="startVoice('wl-f-author',false)" title="Speak author">🎤</button></div></div>
       </div>
       <div class="sc-field"><label>Notes (where to get it, why you want it)</label><input id="wl-f-notes" placeholder="e.g. preorder on Amazon, saw on TikTok..."/></div>
       <div class="sc-modal-actions" style="margin-top:10px;">
@@ -1373,8 +1380,8 @@ canvas{width:100%!important;}
 <div class="sc-modal">
   <h2>📖 Now Reading</h2>
   <div class="sc-two-col">
-    <div class="sc-field"><label>Book Title *</label><input id="cr-f-title" placeholder="title..."/></div>
-    <div class="sc-field"><label>Author</label><input id="cr-f-author" placeholder="author..."/></div>
+    <div class="sc-field"><label>Book Title *</label><div class="mic-row"><input id="cr-f-title" placeholder='Say "Title by Author" or just title'/><button class="mic-btn" onclick="startVoice('cr-f-title',true)" title="Speak title">🎤</button></div></div>
+    <div class="sc-field"><label>Author</label><div class="mic-row"><input id="cr-f-author" placeholder="author..."/><button class="mic-btn" onclick="startVoice('cr-f-author',false)" title="Speak author">🎤</button></div></div>
   </div>
   <div class="sc-two-col">
     <div class="sc-field"><label>Total Pages</label><input id="cr-f-pages" type="number" placeholder="e.g. 384"/></div>
@@ -1406,8 +1413,8 @@ canvas{width:100%!important;}
 
   <div id="sc-read-fields">
     <div class="sc-two-col">
-      <div class="sc-field"><label>Book Title *</label><input id="sc-f-title" placeholder="title..."/></div>
-      <div class="sc-field"><label>Author *</label><input id="sc-f-author" placeholder="author..."/></div>
+      <div class="sc-field"><label>Book Title *</label><div class="mic-row"><input id="sc-f-title" placeholder='Title (or say "Title by Author")'/><button class="mic-btn" onclick="startVoice('sc-f-title',true)" title="Speak title">🎤</button></div></div>
+      <div class="sc-field"><label>Author *</label><div class="mic-row"><input id="sc-f-author" placeholder="author..."/><button class="mic-btn" onclick="startVoice('sc-f-author',false)" title="Speak author">🎤</button></div></div>
     </div>
     <div class="sc-two-col">
       <div class="sc-field"><label>Date Started</label><input id="sc-f-dstart" type="date"/></div>
@@ -1533,8 +1540,8 @@ canvas{width:100%!important;}
 
   <div id="sc-tbr-only-fields" style="display:none;">
     <div class="sc-two-col">
-      <div class="sc-field"><label>Book Title *</label><input id="sc-f-tbr-title" placeholder="title..."/></div>
-      <div class="sc-field"><label>Author *</label><input id="sc-f-tbr-author" placeholder="author..."/></div>
+      <div class="sc-field"><label>Book Title *</label><div class="mic-row"><input id="sc-f-tbr-title" placeholder='Say "Title by Author" or just title'/><button class="mic-btn" onclick="startVoice('sc-f-tbr-title',true)" title="Speak title">🎤</button></div></div>
+      <div class="sc-field"><label>Author *</label><div class="mic-row"><input id="sc-f-tbr-author" placeholder="author..."/><button class="mic-btn" onclick="startVoice('sc-f-tbr-author',false)" title="Speak author">🎤</button></div></div>
     </div>
     <div class="sc-msec">
       <div class="sc-msec-title">⭐ Interest Level</div>
@@ -6060,6 +6067,48 @@ function openSetup() {
     applyBranding();
   }
 })();
+
+// ══ VOICE / MIC INPUT ══
+function startVoice(targetId, smartParse){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('Voice input not supported. Try Safari or Chrome.');return;}
+  var el=document.getElementById(targetId);
+  if(!el)return;
+  var btn=el.closest&&el.closest('.mic-row')&&el.closest('.mic-row').querySelector('.mic-btn');
+  if(btn&&btn.classList.contains('listening')){
+    if(window._voiceRecognizer){window._voiceRecognizer.stop();window._voiceRecognizer=null;}
+    btn&&btn.classList.remove('listening');return;
+  }
+  var recog=new SR();
+  window._voiceRecognizer=recog;
+  recog.lang='en-US';recog.interimResults=false;recog.maxAlternatives=1;
+  btn&&btn.classList.add('listening');
+  recog.onresult=function(e){
+    var text=e.results[0][0].transcript.trim();
+    if(smartParse){
+      var m=text.match(/^(.+?)\s+by\s+(.+)$/i);
+      if(m){
+        el.value=m[1].trim();
+        var authorEl=document.getElementById(targetId.replace('title','author'));
+        if(authorEl)authorEl.value=m[2].trim();
+        el.dispatchEvent(new Event('input'));
+        if(authorEl)authorEl.dispatchEvent(new Event('input'));
+        toast('✦ Got it: title + author filled in!');
+        btn&&btn.classList.remove('listening');window._voiceRecognizer=null;return;
+      }
+    }
+    el.value=text;el.dispatchEvent(new Event('input'));
+    toast('✦ Got it!');
+    btn&&btn.classList.remove('listening');window._voiceRecognizer=null;
+  };
+  recog.onerror=function(e){
+    if(e.error==='not-allowed')toast('Mic access denied — check browser permissions.');
+    else if(e.error!=='no-speech')toast('Voice error: '+e.error);
+    btn&&btn.classList.remove('listening');window._voiceRecognizer=null;
+  };
+  recog.onend=function(){btn&&btn.classList.remove('listening');window._voiceRecognizer=null;};
+  try{recog.start();}catch(err){toast('Could not start mic: '+err.message);btn&&btn.classList.remove('listening');window._voiceRecognizer=null;}
+}
 
 </script>
 
