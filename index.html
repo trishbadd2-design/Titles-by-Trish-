@@ -694,6 +694,24 @@ canvas{width:100%!important;}
 .plat-badge.pb-libby{background:rgba(68,170,204,.1);border:1px solid rgba(68,170,204,.35);color:#66ccee;}
 .plat-badge.pb-physical{background:var(--gold-faint);border:1px solid var(--border-hi);color:var(--gold);}
 
+/* ── WRAP-UP CARDS ── */
+.wrapup-overlay{display:none;position:fixed;inset:0;z-index:800;background:rgba(5,3,8,.98);padding:20px;overflow-y:auto;flex-direction:column;align-items:center;}
+.wrapup-overlay.open{display:flex;}
+.wrapup-card{background:linear-gradient(160deg,#0a0514,#180b2a,#0a0514);border:1px solid rgba(200,160,80,.35);border-radius:12px;padding:28px 22px;position:relative;overflow:hidden;width:100%;}
+.wrapup-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(200,160,80,.1),transparent 65%);pointer-events:none;}
+.wupcard-eyebrow{font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;color:rgba(200,160,80,.5);margin-bottom:6px;text-align:center;}
+.wupcard-title{font-family:'Cinzel',serif;font-size:28px;font-weight:900;color:#fff;text-align:center;margin-bottom:4px;}
+.wupcard-sub{font-family:'IM Fell English SC',serif;font-size:13px;letter-spacing:3px;color:rgba(255,255,255,.45);text-align:center;margin-bottom:20px;}
+.wupcard-divider{width:60px;height:1px;background:rgba(200,160,80,.4);margin:14px auto;}
+.wupcard-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.wupcard-stat{text-align:center;background:rgba(200,160,80,.06);border:1px solid rgba(200,160,80,.15);border-radius:6px;padding:10px 6px;}
+.wupcard-stat-n{font-family:'Cinzel',serif;font-size:22px;color:var(--gold);}
+.wupcard-stat-l{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-top:2px;}
+.wupcard-section{margin-bottom:14px;}
+.wupcard-section-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:rgba(200,160,80,.5);margin-bottom:6px;}
+.wupcard-book-item{font-size:13px;color:var(--text);line-height:1.5;border-left:2px solid rgba(200,160,80,.3);padding-left:8px;margin-bottom:6px;}
+.wupcard-book-auth{font-size:11px;color:rgba(255,255,255,.45);}
+.wupcard-brand{text-align:center;font-size:10px;color:rgba(200,160,80,.25);letter-spacing:2px;margin-top:18px;}
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
@@ -1198,6 +1216,7 @@ canvas{width:100%!important;}
     </div>
     <div class="sc-month-pills" id="sc-month-pills"></div>
     <div id="sc-monthly-content"></div>
+    <button id="sc-monthly-wrapup-btn" onclick="openMonthlyWrapup()" style="display:none;width:100%;margin-top:14px;background:rgba(139,26,26,.12);border:1px solid rgba(139,26,26,.4);border-radius:4px;color:rgba(220,140,140,.9);font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;padding:11px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📅 Generate Monthly Wrap-Up Card</button>
   </div>
 
   <!-- TBR -->
@@ -1230,7 +1249,8 @@ canvas{width:100%!important;}
 
   <!-- STATS -->
   <div id="sc-section-stats" class="sc-section">
-    <button class="sc-add-btn" onclick="openStatsCard()" style="margin-bottom:14px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);">✨ View My Stats Card</button>
+    <button class="sc-add-btn" onclick="openStatsCard()" style="margin-bottom:8px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);">✨ View My Stats Card</button>
+    <button class="sc-add-btn" onclick="openAnnualWrapup()" style="margin-bottom:14px;background:rgba(139,26,26,.12);border-color:rgba(139,26,26,.4);color:rgba(220,140,140,.9);">📅 Annual Wrap-Up Card</button>
     <div class="card-box" style="margin-bottom:10px;"><div class="label-sm" style="margin-bottom:10px;">Genres</div><div id="sc-genre-chart"></div></div>
     <div class="card-box" style="margin-bottom:10px;"><div class="label-sm" style="margin-bottom:10px;">Star Ratings</div><div id="sc-rating-chart"></div></div>
     <div class="card-box" style="margin-bottom:10px;"><div class="label-sm" style="margin-bottom:10px;">Mind Scale Ratings</div><div id="sc-mind-chart"></div></div>
@@ -3275,6 +3295,7 @@ function scRenderMonthly() {
     return `<div class="sc-month-pill${hasBooks?' has-books':''}" onclick="scShowMonth(${i},${yr},this)">${m}</div>`;
   }).join('');
   content.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-dim);font-style:italic;">Select a month above</div>';
+  var wupBtn=document.getElementById('sc-monthly-wrapup-btn');if(wupBtn)wupBtn.style.display='none';
 }
 
 function scShowMonth(m, yr, el) {
@@ -3295,6 +3316,7 @@ function scShowMonth(m, yr, el) {
       ${b.mind ? scMindBadge(b.mind) : ''}
     </div>`).join('') + '</div>';
   content.innerHTML = html;
+  scShowMonthWrapup(m, yr);
 }
 
 function scRenderChart(elId, data, maxVal) {
@@ -6143,6 +6165,101 @@ function rescan(){
   document.getElementById('scanner-hint').textContent='Point your camera at the barcode on the back of the book';
   startScanner();
 }
+
+// ══ WRAP-UP CARDS ══
+function _esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+var _wupMonth=null,_wupYear=null;
+
+function scShowMonthWrapup(m,yr){
+  _wupMonth=m;_wupYear=yr;
+  document.getElementById('sc-monthly-wrapup-btn').style.display='block';
+}
+
+function openMonthlyWrapup(){
+  var m=_wupMonth,yr=_wupYear;
+  if(m===null||yr===null){toast('Select a month first');return;}
+  var mb=scBooks.filter(function(b){if(!b.dateEnd)return false;var d=new Date(b.dateEnd+'T12:00');return d.getFullYear()===yr&&d.getMonth()===m;});
+  if(!mb.length){toast('No books logged for this month yet');return;}
+  var totalPages=mb.reduce(function(s,b){return s+(parseInt(b.pages)||0);},0);
+  var rats=mb.filter(function(b){return b.rating>0;});
+  var avg=rats.length?(Math.round(rats.reduce(function(s,b){return s+b.rating;},0)/rats.length*10)/10):'—';
+  var botm=mb.find(function(b){return b.botm;})||mb.concat().sort(function(a,b){return(b.rating||0)-(a.rating||0);})[0];
+  var genres={};mb.forEach(function(b){if(b.genre)genres[b.genre]=(genres[b.genre]||0)+1;});
+  var topGenre=Object.keys(genres).sort(function(a,b){return genres[b]-genres[a];})[0]||'';
+  var mindC={};mb.forEach(function(b){if(b.mind)mindC[b.mind]=(mindC[b.mind]||0)+1;});
+  var topMind=Object.keys(mindC).sort(function(a,b){return mindC[b]-mindC[a];})[0];
+  var bookList=mb.slice(0,8).map(function(b){return '<div class="wupcard-book-item">'+(b.botm?'🏆 ':'')+'<strong>'+_esc(b.title)+'</strong>'+(b.rating?' &nbsp;'+'★'.repeat(b.rating):'')+'<br><span class="wupcard-book-auth">'+_esc(b.author||'')+'</span></div>';}).join('');
+  document.getElementById('monthly-wrapup-card').innerHTML=
+    '<div class="wupcard-eyebrow">✦ TitlesByTrish ✦</div>'+
+    '<div class="wupcard-title">'+SC_MONTHS[m]+'</div>'+
+    '<div class="wupcard-sub">'+yr+' Reading Wrap-Up</div>'+
+    '<div class="wupcard-stat-row">'+
+      '<div class="wupcard-stat"><div class="wupcard-stat-n">'+mb.length+'</div><div class="wupcard-stat-l">BOOKS</div></div>'+
+      '<div class="wupcard-stat"><div class="wupcard-stat-n">'+(totalPages?totalPages.toLocaleString():'—')+'</div><div class="wupcard-stat-l">PAGES</div></div>'+
+      '<div class="wupcard-stat"><div class="wupcard-stat-n">'+(avg!=='—'?avg+'⭐':avg)+'</div><div class="wupcard-stat-l">AVG ⭐</div></div>'+
+    '</div>'+
+    '<div class="wupcard-divider"></div>'+
+    (topGenre?'<div class="wupcard-section"><div class="wupcard-section-label">TOP GENRE</div><div style="font-family:\'Cinzel\',serif;font-size:15px;color:var(--gold);">'+_esc(topGenre)+'</div></div>':'')+
+    (topMind?'<div class="wupcard-section"><div class="wupcard-section-label">MOST COMMON MIND SCALE</div><div style="font-size:14px;color:var(--text);">'+_esc(MIND_NAMES[parseInt(topMind)])+'</div></div>':'')+
+    '<div class="wupcard-divider"></div>'+
+    (botm?'<div class="wupcard-section"><div class="wupcard-section-label">✦ BEST BOOK OF THE MONTH</div><div style="font-family:\'Cinzel\',serif;font-size:16px;color:#fff;font-weight:700;">'+_esc(botm.title)+'</div><div class="wupcard-book-auth">by '+_esc(botm.author||'')+'</div></div>':'')+
+    '<div class="wupcard-section" style="margin-top:12px;"><div class="wupcard-section-label">ALL BOOKS READ</div>'+bookList+'</div>'+
+    '<div class="wupcard-brand">TitlesByTrish Command Center 🖤</div>';
+  document.getElementById('monthly-wrapup-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeMonthlyWrapup(){
+  document.getElementById('monthly-wrapup-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function openAnnualWrapup(){
+  var yr=parseInt((document.getElementById('sc-year-select')||{}).value||new Date().getFullYear());
+  var yb=scBooks.filter(function(b){if(!b.dateEnd)return false;var d=new Date(b.dateEnd+'T12:00');return d.getFullYear()===yr;});
+  if(!yb.length){toast('No books logged for '+yr+' yet — log some reads first!');return;}
+  var totalPages=yb.reduce(function(s,b){return s+(parseInt(b.pages)||0);},0);
+  var rats=yb.filter(function(b){return b.rating>0;});
+  var avg=rats.length?(Math.round(rats.reduce(function(s,b){return s+b.rating;},0)/rats.length*10)/10):'—';
+  var best=yb.filter(function(b){return b.botm;}).concat(yb.concat().sort(function(a,b){return(b.rating||0)-(a.rating||0);}))[0];
+  var mostMind=yb.filter(function(b){return b.mind;}).concat().sort(function(a,b){return(b.mind||0)-(a.mind||0);})[0];
+  var genres={};yb.forEach(function(b){if(b.genre)genres[b.genre]=(genres[b.genre]||0)+1;});
+  var topGenres=Object.entries(genres).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
+  var months={};yb.forEach(function(b){if(b.dateEnd){var d=new Date(b.dateEnd+'T12:00');var mk=SC_SHORT[d.getMonth()];months[mk]=(months[mk]||0)+1;}});
+  var busiest=Object.entries(months).sort(function(a,b){return b[1]-a[1];})[0];
+  var fiveStars=yb.filter(function(b){return b.rating===5;}).length;
+  document.getElementById('annual-wrapup-card').innerHTML=
+    '<div class="wupcard-eyebrow">✦ TitlesByTrish ✦</div>'+
+    '<div class="wupcard-title">'+yr+'</div>'+
+    '<div class="wupcard-sub">Reading Wrapped 🖤</div>'+
+    '<div class="wupcard-stat-row">'+
+      '<div class="wupcard-stat"><div class="wupcard-stat-n">'+yb.length+'</div><div class="wupcard-stat-l">BOOKS</div></div>'+
+      '<div class="wupcard-stat"><div class="wupcard-stat-n">'+(totalPages?totalPages.toLocaleString():'—')+'</div><div class="wupcard-stat-l">PAGES</div></div>'+
+      '<div class="wupcard-stat"><div class="wupcard-stat-n">'+fiveStars+'</div><div class="wupcard-stat-l">5-STARS</div></div>'+
+    '</div>'+
+    '<div class="wupcard-divider"></div>'+
+    (best?'<div class="wupcard-section"><div class="wupcard-section-label">✦ BEST BOOK OF '+yr+'</div><div style="font-family:\'Cinzel\',serif;font-size:16px;color:#fff;font-weight:700;">'+_esc(best.title)+'</div><div class="wupcard-book-auth">by '+_esc(best.author||'')+(best.rating?' &nbsp;'+'★'.repeat(best.rating):'')+'</div></div>':'')+
+    (mostMind?'<div class="wupcard-section"><div class="wupcard-section-label">💀 MOST MIND-WRECKING</div><div style="font-size:15px;color:#fff;">'+_esc(mostMind.title)+'</div><div class="wupcard-book-auth">Mind Scale: '+_esc(MIND_NAMES[mostMind.mind]||'')+'</div></div>':'')+
+    (topGenres.length?'<div class="wupcard-section"><div class="wupcard-section-label">TOP GENRES</div>'+topGenres.map(function(g){return '<div style="font-size:13px;color:var(--text);margin-bottom:3px;">'+_esc(g[0])+'<span style="color:var(--gold);margin-left:6px;">×'+g[1]+'</span></div>';}).join('')+'</div>':'')+
+    (busiest?'<div class="wupcard-section"><div class="wupcard-section-label">MOST ACTIVE MONTH</div><div style="font-family:\'Cinzel\',serif;font-size:15px;color:var(--gold);">'+_esc(busiest[0])+' <span style="font-size:13px;color:var(--text);">— '+busiest[1]+' books</span></div></div>':'')+
+    (avg!=='—'?'<div class="wupcard-section"><div class="wupcard-section-label">AVERAGE RATING</div><div style="font-family:\'Cinzel\',serif;font-size:22px;color:var(--gold);">'+avg+'⭐</div></div>':'')+
+    '<div class="wupcard-brand">TitlesByTrish Command Center 🖤</div>';
+  document.getElementById('annual-wrapup-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeAnnualWrapup(){
+  document.getElementById('annual-wrapup-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+async function shareWrapupCard(elId){
+  var el=document.getElementById(elId);
+  var text=(el?el.innerText:'')||'TitlesByTrish Reading Wrap-Up 🖤';
+  if(navigator.share){try{await navigator.share({title:'TitlesByTrish Reading Wrap-Up 🖤',text:text});}catch(e){}}
+  else{toast('📱 Screenshot the card above and post it!');}
+}
 </script>
 
 <!-- BARCODE SCANNER OVERLAY -->
@@ -6360,6 +6477,32 @@ function rescan(){
       </div>
       <div id="sync-load-status" style="margin-top:10px;font-size:14px;color:var(--text-dim);"></div>
     </div>
+  </div>
+</div>
+
+<!-- MONTHLY WRAP-UP CARD OVERLAY -->
+<div id="monthly-wrapup-overlay" class="wrapup-overlay">
+  <div style="width:100%;max-width:380px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);">📅 MONTHLY WRAP-UP</div>
+      <button onclick="closeMonthlyWrapup()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;touch-action:manipulation;">✕</button>
+    </div>
+    <div id="monthly-wrapup-card" class="wrapup-card"></div>
+    <div style="margin-top:12px;text-align:center;font-size:13px;color:var(--text-dim);line-height:1.6;">📱 Screenshot this card and post it to your stories!</div>
+    <button class="btn" onclick="shareWrapupCard('monthly-wrapup-card')" style="width:100%;margin-top:10px;padding:12px;font-size:15px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);touch-action:manipulation;">📤 Share</button>
+  </div>
+</div>
+
+<!-- ANNUAL WRAP-UP CARD OVERLAY -->
+<div id="annual-wrapup-overlay" class="wrapup-overlay">
+  <div style="width:100%;max-width:380px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);">📚 ANNUAL WRAP-UP</div>
+      <button onclick="closeAnnualWrapup()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;touch-action:manipulation;">✕</button>
+    </div>
+    <div id="annual-wrapup-card" class="wrapup-card"></div>
+    <div style="margin-top:12px;text-align:center;font-size:13px;color:var(--text-dim);line-height:1.6;">📱 Screenshot this card and post it to your stories!</div>
+    <button class="btn" onclick="shareWrapupCard('annual-wrapup-card')" style="width:100%;margin-top:10px;padding:12px;font-size:15px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);touch-action:manipulation;">📤 Share</button>
   </div>
 </div>
 
