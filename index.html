@@ -6752,7 +6752,7 @@ function renderSpending(){
 var scNotifEnabled = localStorage.getItem('sc3_notif')==='1';
 
 function toggleNotifications(){
-  if(!('Notification' in window)){toast('Notifications not supported on this browser');return;}
+  if(!('Notification' in window)){toast('Reminders aren\'t supported on iOS Safari — use the Post Schedule tab to set alarms instead! ⏰');return;}
   if(scNotifEnabled){
     scNotifEnabled=false;localStorage.setItem('sc3_notif','0');
     checkNotifBtn();toast('Reminders disabled');return;
@@ -6775,10 +6775,15 @@ function checkNotifBtn(){
   }
 }
 (function _initNotif(){
+  var btn=document.getElementById('notif-btn');
+  if(!('Notification' in window)){
+    if(btn)btn.style.display='none';
+    return;
+  }
   var lastVisit=parseInt(localStorage.getItem('sc3_last_visit')||'0',10);
   var now=Date.now();
   localStorage.setItem('sc3_last_visit',String(now));
-  if(scNotifEnabled&&typeof Notification!=='undefined'&&Notification.permission==='granted'){
+  if(scNotifEnabled&&Notification.permission==='granted'){
     var hoursSince=(now-lastVisit)/3600000;
     if(lastVisit>0&&hoursSince>20){
       try{new Notification('📚 TitlesByTrish',{body:"Don't forget to log your reading today! Keep that streak alive 🔥"});}catch(e){}
