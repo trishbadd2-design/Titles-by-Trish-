@@ -42,9 +42,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .header-rule{height:1px;background:linear-gradient(90deg,transparent,rgba(200,160,80,.5),transparent);max-width:320px;margin:16px auto 0;}
 
 /* ── NAV TABS ── */
-.nav-tabs{display:flex;gap:6px;margin-bottom:28px;overflow-x:auto;flex-wrap:nowrap;border-bottom:1px solid var(--border);padding-bottom:14px;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-top:2px;}
-.nav-tabs::-webkit-scrollbar{display:none;}
-.nav-btn{font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .25s;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
+.nav-tabs{display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:14px;padding-top:2px;}
+.nav-btn{font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .25s;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 .nav-btn:hover{border-color:var(--border-hi);color:var(--text);background:rgba(200,160,80,.05);}
 .nav-btn.active{border-color:var(--gold);background:rgba(200,160,80,.12);color:var(--gold);box-shadow:0 0 14px rgba(200,160,80,.15);}
 
