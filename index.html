@@ -4529,22 +4529,26 @@ function selectTime(btn){
   showMoodResult();
 }
 function showMoodResult(){
-  if(!mpSelectedMood||!mpSelectedTime)return;
-  var pool=moodPickerBooks[mpSelectedMood]&&moodPickerBooks[mpSelectedMood][mpSelectedTime];
-  if(!pool||!pool.length)return;
-  var tbr=[];
-  try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e){tbr=[];}
-  var pick;
-  if(tbr.length){
-    var t=tbr[Math.floor(Math.random()*tbr.length)];
-    pick={title:t.title||t,author:t.author||'',reason:'This one\'s been waiting on your TBR — fate says it\'s time. 🖤'};
-  } else {
-    pick=pool[Math.floor(Math.random()*pool.length)];
-  }
-  document.getElementById('mp-result-title').textContent='✦ '+pick.title;
-  document.getElementById('mp-result-author').textContent=pick.author?'by '+pick.author:'';
-  document.getElementById('mp-result-reason').textContent=pick.reason;
-  document.getElementById('mp-result').style.display='block';
+  try{
+    if(!mpSelectedMood||!mpSelectedTime)return;
+    var moodData=moodPickerBooks[mpSelectedMood];
+    var pool=(moodData&&moodData[mpSelectedTime])||[];
+    var tbr=[];
+    try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e){tbr=[];}
+    var pick;
+    if(tbr.length){
+      var t=tbr[Math.floor(Math.random()*tbr.length)];
+      pick={title:t.title||String(t),author:t.author||'',reason:'This one\'s been waiting on your TBR — fate says it\'s time. 🖤'};
+    } else if(pool.length){
+      pick=pool[Math.floor(Math.random()*pool.length)];
+    } else {
+      pick={title:'Verity',author:'Colleen Hoover',reason:'A dark, compulsive thriller you\'ll devour in one sitting. 🖤'};
+    }
+    document.getElementById('mp-result-title').textContent='✦ '+pick.title;
+    document.getElementById('mp-result-author').textContent=pick.author?'by '+pick.author:'';
+    document.getElementById('mp-result-reason').textContent=pick.reason;
+    document.getElementById('mp-result').style.display='block';
+  }catch(e){alert('Result error: '+e.message);}
 }
 function resetMoodPicker(){
   mpSelectedMood=null;mpSelectedTime=null;
