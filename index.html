@@ -1688,20 +1688,20 @@ canvas{width:100%!important;}
     <div id="mood-step-1">
       <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">HOW ARE YOU FEELING?</div>
       <div class="mood-grid" id="mood-vibe-grid">
-        <button class="mood-btn" data-vibe="dark-twisted" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('dark-twisted',this)">🖤 Dark &amp; Twisted</button>
-        <button class="mood-btn" data-vibe="sad-emotional" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('sad-emotional',this)">😢 Sad &amp; Emotional</button>
-        <button class="mood-btn" data-vibe="curious-tense" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('curious-tense',this)">🔍 Curious &amp; Tense</button>
-        <button class="mood-btn" data-vibe="adventure-magic" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('adventure-magic',this)">✨ Adventure &amp; Magic</button>
-        <button class="mood-btn" data-vibe="fast-thrilling" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('fast-thrilling',this)">⚡ Fast &amp; Thrilling</button>
-        <button class="mood-btn" data-vibe="dark-cozy" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodVibe('dark-cozy',this)">🕯️ Dark &amp; Cozy</button>
+        <button class="mood-btn" data-vibe="dark-twisted" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🖤 Dark &amp; Twisted</button>
+        <button class="mood-btn" data-vibe="sad-emotional" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">😢 Sad &amp; Emotional</button>
+        <button class="mood-btn" data-vibe="curious-tense" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔍 Curious &amp; Tense</button>
+        <button class="mood-btn" data-vibe="adventure-magic" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✨ Adventure &amp; Magic</button>
+        <button class="mood-btn" data-vibe="fast-thrilling" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">⚡ Fast &amp; Thrilling</button>
+        <button class="mood-btn" data-vibe="dark-cozy" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🕯️ Dark &amp; Cozy</button>
       </div>
     </div>
     <div id="mood-step-2" style="display:none;margin-top:16px;">
       <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">HOW MUCH TIME DO YOU HAVE?</div>
       <div class="mood-grid">
-        <button class="mood-btn" data-len="short" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodLength('short',this)">📖 Quick Read<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">Under 300 pages</span></button>
-        <button class="mood-btn" data-len="medium" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodLength('medium',this)">📚 A Good Read<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">300–500 pages</span></button>
-        <button class="mood-btn" data-len="any" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="selectMoodLength('any',this)">🌑 Doesn't Matter<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">Any length</span></button>
+        <button class="mood-btn" data-len="short" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📖 Quick Read<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">Under 300 pages</span></button>
+        <button class="mood-btn" data-len="medium" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📚 A Good Read<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">300–500 pages</span></button>
+        <button class="mood-btn" data-len="any" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🌑 Doesn't Matter<br><span style="font-size:12px;color:var(--text-dim);pointer-events:none;">Any length</span></button>
       </div>
     </div>
     <div id="mood-result" style="display:none;margin-top:16px;"></div>
@@ -4528,15 +4528,32 @@ function resetMoodPicker(){
   if(mr)mr.style.display='none';
   if(mrb)mrb.style.display='none';
 }
-// Belt AND suspenders: also wire via addEventListener in case onclick fails
-document.addEventListener('DOMContentLoaded',function(){
-  document.querySelectorAll('#mood-vibe-grid .mood-btn').forEach(function(btn){
-    btn.addEventListener('click',function(){selectMoodVibe(btn.getAttribute('data-vibe'),btn);});
+// Mood button event delegation — touchend fires before click on iOS,
+// both are wired; dedup guard prevents double-firing.
+var _lastMoodFiredAt=0;
+function _dispatchMoodBtn(btn){
+  var now=Date.now();
+  if(now-_lastMoodFiredAt<400)return;
+  _lastMoodFiredAt=now;
+  var vibe=btn.getAttribute('data-vibe');
+  var len=btn.getAttribute('data-len');
+  if(vibe)selectMoodVibe(vibe,btn);
+  else if(len)selectMoodLength(len,btn);
+}
+(function(){
+  var moodSection=document.getElementById('spin-section-mood');
+  if(!moodSection)return;
+  // touchend: primary path for iOS Safari / PWA
+  moodSection.addEventListener('touchend',function(e){
+    var btn=e.target.closest&&e.target.closest('.mood-btn');
+    if(btn)_dispatchMoodBtn(btn);
+  },{passive:true});
+  // click: fallback for desktop and any device where touchend doesn't fire
+  moodSection.addEventListener('click',function(e){
+    var btn=e.target.closest&&e.target.closest('.mood-btn');
+    if(btn)_dispatchMoodBtn(btn);
   });
-  document.querySelectorAll('#mood-step-2 .mood-btn').forEach(function(btn){
-    btn.addEventListener('click',function(){selectMoodLength(btn.getAttribute('data-len'),btn);});
-  });
-});
+})();
 
 // ══════════════════════════════════════════
 // MONTHLY PICKS
