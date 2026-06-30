@@ -1319,7 +1319,8 @@ canvas{width:100%!important;}
   <!-- STATS -->
   <div id="sc-section-stats" class="sc-section">
     <button class="sc-add-btn" onclick="openStatsCard()" style="margin-bottom:8px;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);">✨ View My Stats Card</button>
-    <button class="sc-add-btn" onclick="openAnnualWrapup()" style="margin-bottom:14px;background:rgba(139,26,26,.12);border-color:rgba(139,26,26,.4);color:rgba(220,140,140,.9);">📅 Annual Wrap-Up Card</button>
+    <button class="sc-add-btn" onclick="openAnnualWrapup()" style="margin-bottom:8px;background:rgba(139,26,26,.12);border-color:rgba(139,26,26,.4);color:rgba(220,140,140,.9);">📅 Annual Wrap-Up Card</button>
+    <button class="sc-add-btn" onclick="fetchMissingCovers()" style="margin-bottom:14px;background:rgba(80,120,200,.1);border-color:rgba(80,120,200,.35);color:rgba(140,170,240,.9);">🖼️ Fetch Missing Covers</button>
     <div class="card-box" style="margin-bottom:10px;"><div class="label-sm" style="margin-bottom:10px;">Genres</div><div id="sc-genre-chart"></div></div>
     <div class="card-box" style="margin-bottom:10px;"><div class="label-sm" style="margin-bottom:10px;">Star Ratings</div><div id="sc-rating-chart"></div></div>
     <div class="card-box" style="margin-bottom:10px;"><div class="label-sm" style="margin-bottom:10px;">Mind Scale Ratings</div><div id="sc-mind-chart"></div></div>
@@ -3427,6 +3428,7 @@ function scRenderBooks() {
         <button onclick="event.stopPropagation();scEditBook('${b.id}')" style="background:var(--gold-faint);color:var(--gold);border:1px solid var(--border);border-radius:2px;padding:2px 7px;font-size:16px;cursor:pointer;font-family:'IM Fell English SC',serif;">edit</button>
         <button onclick="event.stopPropagation();scDeleteBook('${b.id}')" style="background:transparent;color:var(--text-dim);border:none;border-radius:2px;padding:2px 6px;font-size:15px;cursor:pointer;">✕</button>
       </div>
+      ${b.coverUrl ? `<img src="${b.coverUrl}" style="width:52px;height:76px;object-fit:cover;border-radius:3px;margin-bottom:6px;border:1px solid var(--border);" onerror="this.style.display='none'"/>` : ''}
       ${b.botm ? `<div style="font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;color:rgba(200,160,40,.9);margin-bottom:3px;">🏆 Best of Month</div>` : ''}
       <div class="sc-book-title">${b.title}</div>
       <div class="sc-book-author">${b.author}</div>
@@ -3884,6 +3886,7 @@ function scSaveBook() {
     const author = document.getElementById('sc-f-author').value.trim();
     if (!title || !author) { toast('Title and author are required!'); return; }
     const shelfEl = document.querySelector('input[name="sc-shelf"]:checked');
+    const existingBook = eid ? scBooks.find(x => x.id === eid) : null;
     const b = { id: eid || Date.now().toString(), title, author,
       dateStart: document.getElementById('sc-f-dstart').value,
       dateEnd: document.getElementById('sc-f-dend').value,
@@ -3898,15 +3901,19 @@ function scSaveBook() {
       botm: document.getElementById('sc-f-botm').checked,
       shelf: shelfEl ? shelfEl.value : '',
       platforms: [..._scPlatforms],
+      coverUrl: _pendingCoverUrl || (existingBook && existingBook.coverUrl) || '',
     };
     if (eid) { const i = scBooks.findIndex(x => x.id === eid); if (i > -1) scBooks[i] = b; }
     else { scBooks.unshift(b); markReadingDay(); }
+    if (!b.coverUrl) { autoFetchCover(b.id, title, author, 'read'); }
   } else {
     const title = document.getElementById('sc-f-tbr-title').value.trim();
     const author = document.getElementById('sc-f-tbr-author').value.trim();
     if (!title || !author) { toast('Title and author are required!'); return; }
-    const item = { id: eid || Date.now().toString(), title, author, interest: scSelectedInterest, why: document.getElementById('sc-f-why').value, priority: document.getElementById('sc-f-priority').value, genre: document.getElementById('sc-f-tbr-genre').value, coverUrl: _pendingCoverUrl||'', platforms: [..._scPlatforms] };
+    const existingTBR = eid ? scTBR.find(x => x.id === eid) : null;
+    const item = { id: eid || Date.now().toString(), title, author, interest: scSelectedInterest, why: document.getElementById('sc-f-why').value, priority: document.getElementById('sc-f-priority').value, genre: document.getElementById('sc-f-tbr-genre').value, coverUrl: _pendingCoverUrl || (existingTBR && existingTBR.coverUrl) || '', platforms: [..._scPlatforms] };
     if (eid) { const i = scTBR.findIndex(x => x.id === eid); if (i > -1) scTBR[i] = item; } else scTBR.unshift(item);
+    if (!item.coverUrl) { autoFetchCover(item.id, title, author, 'tbr'); }
   }
   _pendingCoverUrl='';
   scSave(); scRenderAll(); scCloseModal(); toast('✦ Book saved!');
@@ -3956,6 +3963,7 @@ function scOpenDetail(id) {
   const de = b.dateEnd ? new Date(b.dateEnd+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
   const dateStr = ds && de ? `${ds} → ${de}` : de || ds;
   document.getElementById('sc-detail-content').innerHTML = `
+    ${b.coverUrl ? `<div style="text-align:center;margin-bottom:12px;"><img src="${b.coverUrl}" style="max-height:140px;max-width:96px;object-fit:cover;border-radius:4px;border:1px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,.4);" onerror="this.parentElement.style.display='none'"/></div>` : ''}
     <div style="font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:2px;padding-right:26px;">${b.title}</div>
     <div style="font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--text-dim);margin-bottom:10px;">by ${b.author}</div>
     <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;"/>
@@ -5114,6 +5122,36 @@ async function doPhotoSearch(){
 }
 let _photoResults=[];
 let _pendingCoverUrl='';
+
+// ── AUTO COVER FETCH ──
+async function fetchBookCover(title,author){
+  try{
+    var q=encodeURIComponent((title||'')+(author?' '+author:''));
+    var res=await fetch('https://www.googleapis.com/books/v1/volumes?q='+q+'&maxResults=1&fields=items(volumeInfo/imageLinks)');
+    var data=await res.json();
+    var thumb=((data.items||[])[0]||{}).volumeInfo&&data.items[0].volumeInfo.imageLinks&&data.items[0].volumeInfo.imageLinks.thumbnail||'';
+    return thumb.replace('http://','https://')||'';
+  }catch(e){return'';}
+}
+async function autoFetchCover(id,title,author,listName){
+  var url=await fetchBookCover(title,author);
+  if(!url)return;
+  var list=listName==='tbr'?scTBR:scBooks;
+  var item=list.find(function(x){return x.id===id;});
+  if(item&&!item.coverUrl){item.coverUrl=url;scSave();scRenderAll();}
+}
+async function fetchMissingCovers(){
+  var missing=scBooks.filter(function(b){return!b.coverUrl;}).concat(scTBR.filter(function(t){return!t.coverUrl;}));
+  if(!missing.length){toast('✦ All books already have covers!');return;}
+  toast('Fetching covers for '+missing.length+' books...');
+  for(var i=0;i<missing.length;i++){
+    var b=missing[i];
+    var url=await fetchBookCover(b.title,b.author);
+    if(url){b.coverUrl=url;}
+    await new Promise(function(r){setTimeout(r,200);});
+  }
+  scSave();scRenderAll();toast('✦ Covers updated!');
+}
 function renderPhotoResults(results){
   _photoResults=results;
   document.getElementById('photo-hint').textContent='Tap the right book to fill in the form 🖤';
