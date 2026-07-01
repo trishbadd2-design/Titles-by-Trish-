@@ -2584,7 +2584,7 @@ function showPanel(id){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
   const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,bookquotes:12,monthlypicks:13,analytics:14,timer:15,spending:16,pipeline:17,mood:18,spin:19,thumbnails:20,replies:21,collabwish:22,ratecard:23,quiz:24};
-  if(map[id]!==undefined)document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
+  if(map[id]!==undefined){var _nb=document.querySelectorAll('.nav-btn')[map[id]];if(_nb)_nb.classList.add('active');}
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
   if(id==='arc')renderARC();
@@ -7671,7 +7671,7 @@ function renderPostTimes(){
       var isBest=i===bestIdx&&avgs[i]>0;
       return '<div class="sc-chart-row">'
         +'<div class="sc-chart-label" style="color:'+(isBest?'var(--gold)':'var(--text-dim)')+';">'+d.slice(0,3)+(isBest?' ★':'')+'</div>'
-        +'<div class="sc-chart-bg"><div class="sc-chart-fill" style="width:'+pct+'%;background:'+(isBest?'var(--gold)':'var(--red)');+'"></div></div>'
+        +'<div class="sc-chart-bg"><div class="sc-chart-fill" style="width:'+pct+'%;background:'+(isBest?'var(--gold)':'var(--red)')+'"></div></div>'
         +'<div class="sc-chart-n">'+(avgs[i]?avgs[i].toLocaleString():'—')+'</div>'
         +'</div>';
     }).join('')+'</div>';
