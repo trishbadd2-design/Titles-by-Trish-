@@ -813,13 +813,13 @@ canvas{width:100%!important;}
   <button class="nav-btn" onclick="showPanel('pipeline')">🤝 Pipeline</button>
   <button class="nav-btn" onclick="showPanel('mood')">🎭 Mood Picker</button>
   <button class="nav-btn" onclick="showPanel('spin')">🎡 Spin the Wheel</button>
-  <button class="nav-btn" onclick="showPanel('thumbnails')">🎨 Thumbnails</button>
-  <button class="nav-btn" onclick="showPanel('replies')">💬 Saved Replies</button>
-  <button class="nav-btn" onclick="showPanel('collabwish')">🌟 Collab Wish</button>
-  <button class="nav-btn" onclick="showPanel('milestones')">🎯 Milestones</button>
-  <button class="nav-btn" onclick="showPanel('posttimes')">⏰ Post Times</button>
-  <button class="nav-btn" onclick="showPanel('ratecard')">💳 Rate Card</button>
-  <button class="nav-btn" onclick="showPanel('quiz')">🧠 Reader Quiz</button>
+  <button class="nav-btn" onclick="showPanel('thumbnails')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎨 Thumbnails</button>
+  <button class="nav-btn" onclick="showPanel('replies')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">💬 Saved Replies</button>
+  <button class="nav-btn" onclick="showPanel('collabwish')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🌟 Collab Wishlist</button>
+  <button class="nav-btn" onclick="showPanel('milestones')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎯 Milestones</button>
+  <button class="nav-btn" onclick="showPanel('posttimes')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">⏰ Post Times</button>
+  <button class="nav-btn" onclick="showPanel('ratecard')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">💰 Rate Card</button>
+  <button class="nav-btn" onclick="showPanel('quiz')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🧠 Reader Quiz</button>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -1250,8 +1250,8 @@ canvas{width:100%!important;}
     <button class="sc-tab" onclick="scSwitchTab('scripts',this)">🎬 Scripts</button>
     <button class="sc-tab" onclick="scSwitchTab('quotes',this)">💬 Quotes</button>
     <button class="sc-tab" onclick="scSwitchTab('releases',this)">📅 Releases</button>
-    <button class="sc-tab" onclick="scSwitchTab('rereads',this)">🔁 Re-reads</button>
-    <button class="sc-tab" onclick="scSwitchTab('predictions',this)">🔮 Predictions</button>
+    <button class="sc-tab" onclick="scSwitchTab('rereads',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔁 Re-reads</button>
+    <button class="sc-tab" onclick="scSwitchTab('predictions',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔮 Predictions</button>
   </div>
 
   <!-- CURRENTLY READING -->
@@ -2077,6 +2077,7 @@ canvas{width:100%!important;}
     <button class="an-tab" id="an-tab-collabs" onclick="switchAnTab('collabs',this)">🤝 Collabs</button>
     <button class="an-tab" id="an-tab-biolink" onclick="switchAnTab('biolink',this)">🔗 Bio Link</button>
     <button class="an-tab" id="an-tab-contentcal" onclick="switchAnTab('contentcal',this)">📅 Content Cal</button>
+    <button class="an-tab" id="an-tab-posttimes" onclick="switchAnTab('posttimes',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">⏰ Post Times</button>
   </div>
 
   <!-- GROWTH LOG -->
@@ -2306,6 +2307,15 @@ canvas{width:100%!important;}
       <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-dim);"><div style="width:8px;height:8px;border-radius:50%;background:rgba(160,80,220,.7);"></div>Editing</div>
       <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-dim);"><div style="width:8px;height:8px;border-radius:50%;background:rgba(80,200,80,.8);"></div>Posted</div>
     </div>
+  </div>
+
+  <!-- POST TIMES -->
+  <div id="an-section-posttimes" class="an-section">
+    <div class="card-box" style="padding:12px 16px;margin-bottom:14px;">
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">Log your best performing posting times — spot the patterns and post when your audience is most active. ⏰</div>
+    </div>
+    <div style="font-size:14px;color:var(--text-dim);margin-bottom:10px;">Use the <strong style="color:var(--gold);">⏰ Post Times</strong> panel to log and track your best posting times.</div>
+    <button class="sc-add-btn" onclick="showPanel('posttimes')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Go to Post Times Tracker</button>
   </div>
 </div>
 
@@ -3467,6 +3477,8 @@ function scSwitchTab(t, el) {
   el.classList.add('active');
   if(t==='quotes')renderQuotes();
   if(t==='releases')renderReleases();
+  if(t==='rereads')renderRereads();
+  if(t==='predictions')renderPredictions();
   document.getElementById('sc-section-' + t).classList.add('active');
   if (t === 'stats') scRenderStats();
   if (t === 'monthly') { scPopulateYears(); scRenderMonthly(); }
@@ -4164,7 +4176,7 @@ const ALL_BACKUP_KEYS=[
   'tbtrish_quotes','tbtrish_contentcal',
   'tbtrish_bookquotes','sc3_releases','sc3_rereads','sc3_predictions',
   'tbtrish_thumbnails','tbtrish_replies','tbtrish_collabwish',
-  'tbtrish_milestones','tbtrish_posttimes','tbtrish_ratecard'
+  'tbtrish_milestones','tbtrish_posttimes','tbtrish_ratecard','tbtrish_quizzes'
 ];
 function buildBackupBlob(){
   const backup={_version:2,_date:new Date().toISOString()};
