@@ -766,6 +766,32 @@ canvas{width:100%!important;}
 .tbr-sort-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
 .tbr-sort-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:13px;cursor:pointer;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 .tbr-sort-btn.active{border-color:var(--red);background:rgba(var(--red-rgb,180,50,50),.15);color:#e07070;}
+/* ── NEW FEATURE STYLES ── */
+.feat-panel-header{font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:var(--gold);margin-bottom:16px;}
+.feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px;position:relative;}
+.feat-card-title{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.feat-card-sub{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:1px;color:var(--text-dim);margin-bottom:6px;}
+.feat-card-meta{font-size:13px;color:var(--text-dim);font-style:italic;}
+.feat-card-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.feat-form{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;display:none;}
+.feat-form.open{display:block;}
+.booknotes-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;align-items:center;justify-content:center;}
+.booknotes-modal.open{display:flex;}
+.booknotes-inner{background:var(--bg2);border:1px solid var(--border-hi);border-radius:8px;padding:20px;width:90%;max-width:480px;max-height:80vh;overflow-y:auto;}
+.booknotes-title{font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;}
+.booknotes-ta{width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;min-height:160px;font-family:inherit;line-height:1.6;}
+.quiz-q{font-family:'Playfair Display',serif;font-size:16px;color:var(--text);margin-bottom:10px;}
+.quiz-opts{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
+.quiz-opt{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;cursor:pointer;font-size:14px;color:var(--text-dim);text-align:left;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:border-color .2s;}
+.quiz-opt.selected{border-color:var(--gold);color:var(--gold);background:var(--gold-faint);}
+.quiz-result{background:var(--bg2);border:2px solid var(--gold);border-radius:8px;padding:20px;text-align:center;margin-top:16px;display:none;}
+.quiz-result.show{display:block;}
+.timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:4px;}
+.timeline-line{width:2px;background:var(--border);flex-shrink:0;min-height:30px;}
+.posttimes-summary{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:16px;}
+.posttimes-day{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:14px;}
+.posttimes-day:last-child{border-bottom:none;}
+.posttimes-day.best{color:var(--gold);font-weight:700;}
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
@@ -3546,8 +3572,8 @@ function scRenderBooks() {
   g.innerHTML = filtered.map(b => `
     <div class="sc-book-card" onclick="scOpenDetail('${b.id}')">
       <div style="position:absolute;top:8px;right:8px;display:flex;gap:3px;">
-        <button onclick="event.stopPropagation();openRatingCard('${b.id}')" style="background:rgba(200,160,80,.12);color:var(--gold);border:1px solid rgba(200,160,80,.3);border-radius:2px;padding:2px 7px;font-size:14px;cursor:pointer;" title="Show Rating Card">📊</button>
-        <button onclick="event.stopPropagation();openBookNotes('${b.id}')" style="background:rgba(80,120,200,.12);color:rgba(140,170,240,.9);border:1px solid rgba(80,120,200,.3);border-radius:2px;padding:2px 7px;font-size:14px;cursor:pointer;" title="Reading Notes">📝</button>
+        <button onclick="event.stopPropagation();openRatingCard('${b.id}')" style="background:rgba(200,160,80,.12);color:var(--gold);border:1px solid rgba(200,160,80,.3);border-radius:2px;padding:2px 7px;font-size:14px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;" title="Show Rating Card">📊</button>
+        <button onclick="event.stopPropagation();openBookNotes('${b.id}')" style="background:rgba(200,160,80,.08);color:var(--gold-dim);border:1px solid rgba(200,160,80,.25);border-radius:2px;padding:2px 7px;font-size:14px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;" title="Reading Notes">📝</button>
         <button onclick="event.stopPropagation();scEditBook('${b.id}')" style="background:var(--gold-faint);color:var(--gold);border:1px solid var(--border);border-radius:2px;padding:2px 7px;font-size:16px;cursor:pointer;font-family:'IM Fell English SC',serif;">edit</button>
         <button onclick="event.stopPropagation();scDeleteBook('${b.id}')" style="background:transparent;color:var(--text-dim);border:none;border-radius:2px;padding:2px 6px;font-size:15px;cursor:pointer;">✕</button>
       </div>
