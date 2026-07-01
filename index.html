@@ -813,6 +813,13 @@ canvas{width:100%!important;}
   <button class="nav-btn" onclick="showPanel('pipeline')">🤝 Pipeline</button>
   <button class="nav-btn" onclick="showPanel('mood')">🎭 Mood Picker</button>
   <button class="nav-btn" onclick="showPanel('spin')">🎡 Spin the Wheel</button>
+  <button class="nav-btn" onclick="showPanel('thumbnails')">🎨 Thumbnails</button>
+  <button class="nav-btn" onclick="showPanel('replies')">💬 Saved Replies</button>
+  <button class="nav-btn" onclick="showPanel('collabwish')">🌟 Collab Wish</button>
+  <button class="nav-btn" onclick="showPanel('milestones')">🎯 Milestones</button>
+  <button class="nav-btn" onclick="showPanel('posttimes')">⏰ Post Times</button>
+  <button class="nav-btn" onclick="showPanel('ratecard')">💳 Rate Card</button>
+  <button class="nav-btn" onclick="showPanel('quiz')">🧠 Reader Quiz</button>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -1243,6 +1250,8 @@ canvas{width:100%!important;}
     <button class="sc-tab" onclick="scSwitchTab('scripts',this)">🎬 Scripts</button>
     <button class="sc-tab" onclick="scSwitchTab('quotes',this)">💬 Quotes</button>
     <button class="sc-tab" onclick="scSwitchTab('releases',this)">📅 Releases</button>
+    <button class="sc-tab" onclick="scSwitchTab('rereads',this)">🔁 Re-reads</button>
+    <button class="sc-tab" onclick="scSwitchTab('predictions',this)">🔮 Predictions</button>
   </div>
 
   <!-- CURRENTLY READING -->
@@ -1348,6 +1357,56 @@ canvas{width:100%!important;}
       </div>
     </div>
     <div id="sc-releases-list"></div>
+  </div>
+
+  <!-- RE-READS -->
+  <div id="sc-section-rereads" class="sc-section">
+    <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">Track books you've read more than once and compare ratings. 🔁</div>
+    <button class="sc-add-btn" onclick="openRereadForm()">✦ Log a Re-read</button>
+    <div id="sc-reread-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Book Title *</label><input id="rr-f-title" placeholder="title..."/></div>
+        <div class="sc-field"><label>Author *</label><input id="rr-f-author" placeholder="author..."/></div>
+      </div>
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Original Rating</label><select id="rr-f-orig"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+        <div class="sc-field"><label>Re-read Rating</label><select id="rr-f-new"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+      </div>
+      <div class="sc-field"><label>Date Re-read</label><input type="date" id="rr-f-date"/></div>
+      <div class="sc-field"><label>Thoughts (did it hold up?)</label><textarea id="rr-f-thoughts" rows="3" placeholder="Did it hit differently the second time?" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;"></textarea></div>
+      <div class="sc-modal-actions" style="margin-top:10px;">
+        <button class="sc-btn-cancel" onclick="closeRereadForm()">Cancel</button>
+        <button class="sc-btn-save" onclick="saveReread()">✦ Save</button>
+      </div>
+    </div>
+    <div id="sc-rereads-list"></div>
+  </div>
+
+  <!-- PREDICTIONS -->
+  <div id="sc-section-predictions" class="sc-section">
+    <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.7;">Write your predictions before reading — then reveal if you were right! 🔮</div>
+    <button class="sc-add-btn" onclick="openPredForm()">✦ Add Prediction</button>
+    <div id="sc-pred-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Book Title *</label><input id="pred-f-title" placeholder="title..."/></div>
+        <div class="sc-field"><label>Author</label><input id="pred-f-author" placeholder="author..."/></div>
+      </div>
+      <div class="sc-field"><label>My Prediction *</label><textarea id="pred-f-text" rows="3" placeholder="What do you think will happen?" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;"></textarea></div>
+      <div class="sc-field"><label>Was I Right?</label>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button class="mood-btn" id="pred-yes" onclick="setPredRight('yes',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✅ Yes!</button>
+          <button class="mood-btn" id="pred-partial" onclick="setPredRight('partial',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🤏 Partially</button>
+          <button class="mood-btn" id="pred-no" onclick="setPredRight('no',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">❌ Nope</button>
+          <button class="mood-btn" id="pred-unread" onclick="setPredRight('unread',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📖 Not yet</button>
+        </div>
+      </div>
+      <div class="sc-field"><label>What Actually Happened (reveal)</label><textarea id="pred-f-reveal" rows="2" placeholder="The truth..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;"></textarea></div>
+      <div class="sc-modal-actions" style="margin-top:10px;">
+        <button class="sc-btn-cancel" onclick="closePredForm()">Cancel</button>
+        <button class="sc-btn-save" onclick="savePrediction()">✦ Save</button>
+      </div>
+    </div>
+    <div id="sc-preds-list"></div>
   </div>
 
   <!-- STATS -->
@@ -2489,7 +2548,7 @@ function showPanel(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
-  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,bookquotes:12,monthlypicks:13,analytics:14,timer:15,spending:16,pipeline:17,mood:18,spin:19};
+  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,bookquotes:12,monthlypicks:13,analytics:14,timer:15,spending:16,pipeline:17,mood:18,spin:19,thumbnails:20,replies:21,collabwish:22,milestones:23,posttimes:24,ratecard:25,quiz:26};
   if(map[id]!==undefined)document.querySelectorAll('.nav-btn')[map[id]].classList.add('active');
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
@@ -2508,6 +2567,13 @@ function showPanel(id){
   if(id==='timer'){renderTimerPanel();}
   if(id==='spending'){renderSpending();}
   if(id==='pipeline'){renderPipeline();}
+  if(id==='thumbnails'){renderThumbIdeas();}
+  if(id==='replies'){renderReplies();}
+  if(id==='collabwish'){renderCollabWish();}
+  if(id==='milestones'){renderMilestones();}
+  if(id==='posttimes'){renderPostTimes();}
+  if(id==='ratecard'){renderRateCard();}
+  if(id==='quiz'){initQuiz();}
   _currentPanel=id;
   localStorage.setItem('tbtrish_lastpanel',id);
 }
@@ -3341,6 +3407,8 @@ function scSave() {
   localStorage.setItem('sc3_streak', String(scStreak));
   localStorage.setItem('sc3_lastread', scLastRead);
   localStorage.setItem('sc3_releases', JSON.stringify(scReleases));
+  localStorage.setItem('sc3_rereads', JSON.stringify(scRereads));
+  localStorage.setItem('sc3_predictions', JSON.stringify(scPredictions));
 }
 
 function initScorecard() {
@@ -3467,6 +3535,7 @@ function scRenderBooks() {
     <div class="sc-book-card" onclick="scOpenDetail('${b.id}')">
       <div style="position:absolute;top:8px;right:8px;display:flex;gap:3px;">
         <button onclick="event.stopPropagation();openRatingCard('${b.id}')" style="background:rgba(200,160,80,.12);color:var(--gold);border:1px solid rgba(200,160,80,.3);border-radius:2px;padding:2px 7px;font-size:14px;cursor:pointer;" title="Show Rating Card">📊</button>
+        <button onclick="event.stopPropagation();openBookNotes('${b.id}')" style="background:rgba(80,120,200,.12);color:rgba(140,170,240,.9);border:1px solid rgba(80,120,200,.3);border-radius:2px;padding:2px 7px;font-size:14px;cursor:pointer;" title="Reading Notes">📝</button>
         <button onclick="event.stopPropagation();scEditBook('${b.id}')" style="background:var(--gold-faint);color:var(--gold);border:1px solid var(--border);border-radius:2px;padding:2px 7px;font-size:16px;cursor:pointer;font-family:'IM Fell English SC',serif;">edit</button>
         <button onclick="event.stopPropagation();scDeleteBook('${b.id}')" style="background:transparent;color:var(--text-dim);border:none;border-radius:2px;padding:2px 6px;font-size:15px;cursor:pointer;">✕</button>
       </div>
@@ -4093,7 +4162,9 @@ const ALL_BACKUP_KEYS=[
   'tbtrish_growth','tbtrish_vidperf','tbtrish_pr','tbtrish_collabs',
   'tbtrish_biolinks','tbtrish_bingo','tbtrish_goals','tbtrish_quicknotes',
   'tbtrish_quotes','tbtrish_contentcal',
-  'tbtrish_bookquotes','sc3_releases'
+  'tbtrish_bookquotes','sc3_releases','sc3_rereads','sc3_predictions',
+  'tbtrish_thumbnails','tbtrish_replies','tbtrish_collabwish',
+  'tbtrish_milestones','tbtrish_posttimes','tbtrish_ratecard'
 ];
 function buildBackupBlob(){
   const backup={_version:2,_date:new Date().toISOString()};
@@ -4376,7 +4447,7 @@ function clearCCalDay(){
 // ══════════════════════════════════════════
 // SWIPE GESTURES (between panels)
 // ══════════════════════════════════════════
-const PANEL_ORDER=['calendar','followers','engagement','arc','ideas','books','schedule','planner','scorecard','captions','hashtags','wins','bookquotes','monthlypicks','analytics','timer','spending','pipeline','mood','spin'];
+const PANEL_ORDER=['calendar','followers','engagement','arc','ideas','books','schedule','planner','scorecard','captions','hashtags','wins','bookquotes','monthlypicks','analytics','timer','spending','pipeline','mood','spin','thumbnails','replies','collabwish','milestones','posttimes','ratecard','quiz'];
 var _currentPanel='calendar', _touchX=0, _touchY=0;
 document.addEventListener('touchstart',e=>{_touchX=e.touches[0].clientX;_touchY=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchend',e=>{
@@ -7285,6 +7356,391 @@ function renderVidBookChart(){
     }).join('');
 }
 
+// ══════════════════════════════════════════
+// SCORECARD EXTRA VARS
+// ══════════════════════════════════════════
+var scRereads=JSON.parse(localStorage.getItem('sc3_rereads')||'[]');
+var scPredictions=JSON.parse(localStorage.getItem('sc3_predictions')||'[]');
+var _predRight='unread';
+
+// ══════════════════════════════════════════
+// BOOK READING NOTES
+// ══════════════════════════════════════════
+function openBookNotes(id){
+  var b=scBooks.find(function(x){return x.id===id;});
+  if(!b)return;
+  document.getElementById('sc-booknotes-title').textContent=b.title;
+  document.getElementById('sc-booknotes-text').value=b.notes||'';
+  document.getElementById('sc-booknotes-id').value=id;
+  var m=document.getElementById('sc-booknotes-modal');
+  m.style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function saveBookNotes(){
+  var id=document.getElementById('sc-booknotes-id').value;
+  var b=scBooks.find(function(x){return x.id===id;});
+  if(b){b.notes=document.getElementById('sc-booknotes-text').value;scSave();toast('✦ Notes saved!');}
+  closeBookNotes();
+}
+function closeBookNotes(){
+  document.getElementById('sc-booknotes-modal').style.display='none';
+  document.body.style.overflow='';
+}
+
+// ══════════════════════════════════════════
+// RE-READS
+// ══════════════════════════════════════════
+function openRereadForm(){document.getElementById('sc-reread-form').style.display='block';}
+function closeRereadForm(){document.getElementById('sc-reread-form').style.display='none';}
+function saveReread(){
+  var title=document.getElementById('rr-f-title').value.trim();
+  if(!title){toast('Title is required!');return;}
+  var entry={id:Date.now().toString(),title:title,author:document.getElementById('rr-f-author').value.trim(),originalRating:document.getElementById('rr-f-orig').value,rereadRating:document.getElementById('rr-f-new').value,dateReread:document.getElementById('rr-f-date').value,thoughts:document.getElementById('rr-f-thoughts').value.trim()};
+  scRereads.unshift(entry);scSave();renderRereads();closeRereadForm();
+  ['rr-f-title','rr-f-author','rr-f-thoughts'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('rr-f-orig').value='';document.getElementById('rr-f-new').value='';document.getElementById('rr-f-date').value='';
+  toast('✦ Re-read logged!');
+}
+function deleteReread(id){if(!confirm('Delete this re-read?'))return;scRereads=scRereads.filter(function(r){return r.id!==id;});scSave();renderRereads();}
+function renderRereads(){
+  var el=document.getElementById('sc-rereads-list');if(!el)return;
+  if(!scRereads.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No re-reads logged yet!</div>';return;}
+  el.innerHTML=scRereads.map(function(r){
+    var stars=function(n){return n?'★'.repeat(parseInt(n))+'☆'.repeat(5-parseInt(n)):'—';};
+    return '<div class="card-box" style="margin-bottom:10px;padding:14px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;">'
+      +'<div><div style="font-family:\'Cinzel\',serif;font-size:15px;font-weight:700;color:var(--text);">'+r.title+'</div>'
+      +(r.author?'<div style="font-size:13px;color:var(--text-dim);">by '+r.author+'</div>':'')
+      +'</div><button onclick="deleteReread(\''+r.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button></div>'
+      +'<div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;">'
+      +'<div style="font-size:13px;color:var(--text-dim);">Original: <span style="color:var(--gold);">'+stars(r.originalRating)+'</span></div>'
+      +'<div style="font-size:13px;color:var(--text-dim);">Re-read: <span style="color:var(--gold);">'+stars(r.rereadRating)+'</span></div>'
+      +(r.dateReread?'<div style="font-size:13px;color:var(--text-dim);">'+r.dateReread+'</div>':'')
+      +'</div>'
+      +(r.thoughts?'<div style="font-style:italic;color:var(--text-dim);font-size:14px;margin-top:8px;border-left:2px solid var(--red);padding-left:8px;">'+r.thoughts+'</div>':'')
+      +'</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// BOOK PREDICTIONS
+// ══════════════════════════════════════════
+function openPredForm(){document.getElementById('sc-pred-form').style.display='block';_predRight='unread';}
+function closePredForm(){document.getElementById('sc-pred-form').style.display='none';}
+function setPredRight(val,btn){
+  _predRight=val;
+  ['pred-yes','pred-partial','pred-no','pred-unread'].forEach(function(id){document.getElementById(id).classList.remove('sel');});
+  btn.classList.add('sel');
+}
+function savePrediction(){
+  var title=document.getElementById('pred-f-title').value.trim();
+  var text=document.getElementById('pred-f-text').value.trim();
+  if(!title||!text){toast('Title and prediction are required!');return;}
+  var entry={id:Date.now().toString(),title:title,author:document.getElementById('pred-f-author').value.trim(),prediction:text,wasRight:_predRight,reveal:document.getElementById('pred-f-reveal').value.trim()};
+  scPredictions.unshift(entry);scSave();renderPredictions();closePredForm();
+  ['pred-f-title','pred-f-author','pred-f-text','pred-f-reveal'].forEach(function(id){document.getElementById(id).value='';});
+  toast('✦ Prediction saved!');
+}
+function deletePrediction(id){if(!confirm('Delete this prediction?'))return;scPredictions=scPredictions.filter(function(p){return p.id!==id;});scSave();renderPredictions();}
+function renderPredictions(){
+  var el=document.getElementById('sc-preds-list');if(!el)return;
+  if(!scPredictions.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No predictions yet — add one before your next read!</div>';return;}
+  var badges={yes:'✅ Right!',partial:'🤏 Partially',no:'❌ Wrong',unread:'📖 Not yet'};
+  var colors={yes:'rgba(42,180,42,.2)',partial:'rgba(200,160,80,.2)',no:'rgba(180,42,42,.2)',unread:'rgba(100,100,100,.2)'};
+  el.innerHTML=scPredictions.map(function(p){
+    return '<div class="card-box" style="margin-bottom:10px;padding:14px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;">'
+      +'<div><div style="font-family:\'Cinzel\',serif;font-size:15px;font-weight:700;color:var(--text);">'+p.title+'</div>'
+      +(p.author?'<div style="font-size:13px;color:var(--text-dim);">by '+p.author+'</div>':'')
+      +'</div>'
+      +'<div style="display:flex;gap:6px;align-items:center;">'
+      +'<span style="font-size:12px;padding:3px 10px;border-radius:10px;background:'+colors[p.wasRight||'unread']+';color:var(--text);">'+(badges[p.wasRight]||'📖 Not yet')+'</span>'
+      +'<button onclick="deletePrediction(\''+p.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button></div></div>'
+      +'<div style="font-style:italic;color:var(--text);font-size:14px;margin-top:10px;border-left:2px solid var(--gold);padding-left:10px;">'+p.prediction+'</div>'
+      +(p.reveal?'<div style="font-size:13px;color:var(--text-dim);margin-top:8px;border-left:2px solid var(--red);padding-left:8px;">Reveal: '+p.reveal+'</div>':'')
+      +'</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// THUMBNAIL IDEAS
+// ══════════════════════════════════════════
+var thumbIdeas=JSON.parse(localStorage.getItem('tbtrish_thumbnails')||'[]');
+function openThumbForm(){document.getElementById('thumb-form').style.display='block';}
+function closeThumbForm(){document.getElementById('thumb-form').style.display='none';}
+function saveThumbIdea(){
+  var book=document.getElementById('th-f-book').value.trim();
+  var concept=document.getElementById('th-f-concept').value.trim();
+  if(!book||!concept){toast('Book and concept are required!');return;}
+  thumbIdeas.unshift({id:Date.now().toString(),bookTitle:book,concept:concept,style:document.getElementById('th-f-style').value,colors:document.getElementById('th-f-colors').value.trim()});
+  localStorage.setItem('tbtrish_thumbnails',JSON.stringify(thumbIdeas));
+  renderThumbIdeas();closeThumbForm();
+  document.getElementById('th-f-book').value='';document.getElementById('th-f-concept').value='';document.getElementById('th-f-colors').value='';
+  toast('✦ Thumbnail idea saved!');
+}
+function deleteThumbIdea(id){if(!confirm('Delete this idea?'))return;thumbIdeas=thumbIdeas.filter(function(t){return t.id!==id;});localStorage.setItem('tbtrish_thumbnails',JSON.stringify(thumbIdeas));renderThumbIdeas();}
+function renderThumbIdeas(){
+  var el=document.getElementById('thumb-list');if(!el)return;
+  if(!thumbIdeas.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No thumbnail ideas yet!</div>';return;}
+  el.innerHTML=thumbIdeas.map(function(t){
+    return '<div class="card-box" style="margin-bottom:10px;padding:14px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;">'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:14px;font-weight:700;color:var(--gold);">'+t.bookTitle+'</div>'
+      +'<div style="display:flex;gap:6px;align-items:center;">'
+      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(200,160,80,.15);color:var(--gold-dim);border:1px solid var(--border);">'+t.style+'</span>'
+      +'<button onclick="deleteThumbIdea(\''+t.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button></div></div>'
+      +'<div style="font-size:15px;color:var(--text);margin-top:8px;line-height:1.6;">'+t.concept+'</div>'
+      +(t.colors?'<div style="font-size:13px;color:var(--text-dim);margin-top:6px;">🎨 '+t.colors+'</div>':'')
+      +'</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// SAVED REPLIES
+// ══════════════════════════════════════════
+var savedReplies=JSON.parse(localStorage.getItem('tbtrish_replies')||'[]');
+function openReplyForm(){document.getElementById('reply-form').style.display='block';}
+function closeReplyForm(){document.getElementById('reply-form').style.display='none';}
+function saveReply(){
+  var reply=document.getElementById('rep-f-reply').value.trim();
+  if(!reply){toast('Reply text is required!');return;}
+  savedReplies.unshift({id:Date.now().toString(),trigger:document.getElementById('rep-f-trigger').value.trim(),reply:reply,category:document.getElementById('rep-f-cat').value});
+  localStorage.setItem('tbtrish_replies',JSON.stringify(savedReplies));
+  renderReplies();closeReplyForm();
+  document.getElementById('rep-f-trigger').value='';document.getElementById('rep-f-reply').value='';
+  toast('✦ Reply saved!');
+}
+function deleteReply(id){if(!confirm('Delete this reply?'))return;savedReplies=savedReplies.filter(function(r){return r.id!==id;});localStorage.setItem('tbtrish_replies',JSON.stringify(savedReplies));renderReplies();}
+function copyReply(id){var r=savedReplies.find(function(x){return x.id===id;});if(!r)return;navigator.clipboard&&navigator.clipboard.writeText(r.reply).then(function(){toast('✦ Copied!');}).catch(function(){toast(r.reply);});}
+function renderReplies(){
+  var el=document.getElementById('reply-list');if(!el)return;
+  if(!savedReplies.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No saved replies yet!</div>';return;}
+  var catColors={'Book Recs':'rgba(200,160,80,.2)','Questions':'rgba(80,120,200,.2)','Positive':'rgba(42,180,42,.2)','Negative':'rgba(180,42,42,.2)','General':'rgba(100,100,100,.2)'};
+  el.innerHTML=savedReplies.map(function(r){
+    return '<div class="card-box" style="margin-bottom:10px;padding:14px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'
+      +(r.trigger?'<div style="font-size:13px;color:var(--text-dim);font-style:italic;">💬 "'+r.trigger+'"</div>':'<div></div>')
+      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+(catColors[r.category]||'rgba(100,100,100,.2)')+';color:var(--text);">'+r.category+'</span>'
+      +'</div>'
+      +'<div style="font-size:15px;color:var(--text);line-height:1.6;margin-bottom:10px;">'+r.reply+'</div>'
+      +'<div style="display:flex;gap:8px;">'
+      +'<button onclick="copyReply(\''+r.id+'\')" class="btn btn-primary" style="flex:1;padding:8px;font-size:14px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Copy</button>'
+      +'<button onclick="deleteReply(\''+r.id+'\')" class="btn btn-danger" style="padding:8px 12px;font-size:14px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'</div></div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// COLLAB WISHLIST
+// ══════════════════════════════════════════
+var collabWish=JSON.parse(localStorage.getItem('tbtrish_collabwish')||'[]');
+function openCollabWishForm(){document.getElementById('collabwish-form').style.display='block';}
+function closeCollabWishForm(){document.getElementById('collabwish-form').style.display='none';}
+function saveCollabWish(){
+  var name=document.getElementById('cw-f-name').value.trim();
+  if(!name){toast('Name is required!');return;}
+  collabWish.unshift({id:Date.now().toString(),name:name,type:document.getElementById('cw-f-type').value,reason:document.getElementById('cw-f-reason').value.trim(),notes:document.getElementById('cw-f-notes').value.trim(),contacted:false});
+  localStorage.setItem('tbtrish_collabwish',JSON.stringify(collabWish));
+  renderCollabWish();closeCollabWishForm();
+  document.getElementById('cw-f-name').value='';document.getElementById('cw-f-reason').value='';document.getElementById('cw-f-notes').value='';
+  toast('✦ Added to wishlist!');
+}
+function deleteCollabWish(id){if(!confirm('Remove from wishlist?'))return;collabWish=collabWish.filter(function(c){return c.id!==id;});localStorage.setItem('tbtrish_collabwish',JSON.stringify(collabWish));renderCollabWish();}
+function toggleContacted(id){var c=collabWish.find(function(x){return x.id===id;});if(c){c.contacted=!c.contacted;localStorage.setItem('tbtrish_collabwish',JSON.stringify(collabWish));renderCollabWish();}}
+function renderCollabWish(){
+  var el=document.getElementById('collabwish-list');if(!el)return;
+  if(!collabWish.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No wishlist entries yet!</div>';return;}
+  var typeColors={Author:'rgba(200,160,80,.2)',Creator:'rgba(80,120,200,.2)',Publisher:'rgba(160,80,220,.2)',Brand:'rgba(42,180,42,.2)'};
+  el.innerHTML=collabWish.map(function(c){
+    return '<div class="card-box" style="margin-bottom:10px;padding:14px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;">'
+      +'<div>'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:16px;font-weight:700;color:var(--text);">'+c.name+'</div>'
+      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+(typeColors[c.type]||'rgba(100,100,100,.2)')+';color:var(--text);margin-top:4px;display:inline-block;">'+c.type+'</span>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px;align-items:center;">'
+      +'<button onclick="toggleContacted(\''+c.id+'\')" style="font-size:11px;padding:3px 10px;border-radius:10px;border:1px solid var(--border);background:'+(c.contacted?'rgba(42,180,42,.2)':'transparent')+';color:'+(c.contacted?'rgba(140,220,140,.9)':'var(--text-dim)')+';cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+(c.contacted?'✅ Contacted':'📩 Not Yet')+'</button>'
+      +'<button onclick="deleteCollabWish(\''+c.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button>'
+      +'</div></div>'
+      +(c.reason?'<div style="font-size:14px;color:var(--text-dim);margin-top:8px;font-style:italic;">'+c.reason+'</div>':'')
+      +(c.notes?'<div style="font-size:13px;color:var(--text-dim);margin-top:4px;">📌 '+c.notes+'</div>':'')
+      +'</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// MILESTONE TRACKER
+// ══════════════════════════════════════════
+var milestones=JSON.parse(localStorage.getItem('tbtrish_milestones')||'[]');
+function openMilestoneForm(){document.getElementById('milestone-form').style.display='block';}
+function closeMilestoneForm(){document.getElementById('milestone-form').style.display='none';}
+function saveMilestone(){
+  var followers=document.getElementById('ms-f-followers').value.trim();
+  if(!followers){toast('Follower count is required!');return;}
+  milestones.push({id:Date.now().toString(),followers:parseInt(followers),platform:document.getElementById('ms-f-platform').value,date:document.getElementById('ms-f-date').value,note:document.getElementById('ms-f-note').value.trim()});
+  milestones.sort(function(a,b){return a.followers-b.followers;});
+  localStorage.setItem('tbtrish_milestones',JSON.stringify(milestones));
+  renderMilestones();closeMilestoneForm();
+  document.getElementById('ms-f-followers').value='';document.getElementById('ms-f-date').value='';document.getElementById('ms-f-note').value='';
+  toast('🎯 Milestone saved!');
+}
+function deleteMilestone(id){if(!confirm('Delete this milestone?'))return;milestones=milestones.filter(function(m){return m.id!==id;});localStorage.setItem('tbtrish_milestones',JSON.stringify(milestones));renderMilestones();}
+function renderMilestones(){
+  var el=document.getElementById('milestone-list');if(!el)return;
+  if(!milestones.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No milestones yet — log your first one! 🎯</div>';return;}
+  el.innerHTML=milestones.map(function(m){
+    var fmtNum=function(n){return n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(n%1000===0?0:1)+'K':String(n);};
+    return '<div class="card-box" style="margin-bottom:10px;padding:14px;display:flex;gap:14px;align-items:flex-start;">'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:24px;font-weight:900;color:var(--gold);min-width:60px;text-align:center;">'+fmtNum(m.followers)+'</div>'
+      +'<div style="flex:1;">'
+      +'<div style="font-size:14px;color:var(--text-dim);">'+m.platform+(m.date?' · '+m.date:'')+'</div>'
+      +(m.note?'<div style="font-size:14px;color:var(--text);margin-top:6px;font-style:italic;line-height:1.6;">'+m.note+'</div>':'')
+      +'</div>'
+      +'<button onclick="deleteMilestone(\''+m.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button>'
+      +'</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// BEST POSTING TIMES
+// ══════════════════════════════════════════
+var postTimes=JSON.parse(localStorage.getItem('tbtrish_posttimes')||'[]');
+function openPostTimeForm(){document.getElementById('posttime-form').style.display='block';}
+function closePostTimeForm(){document.getElementById('posttime-form').style.display='none';}
+function savePostTime(){
+  var day=document.getElementById('pt-f-day').value;
+  var time=document.getElementById('pt-f-time').value;
+  if(!time){toast('Time is required!');return;}
+  postTimes.unshift({id:Date.now().toString(),dayOfWeek:day,time:time,views:parseInt(document.getElementById('pt-f-views').value)||0,likes:parseInt(document.getElementById('pt-f-likes').value)||0,platform:document.getElementById('pt-f-platform').value,notes:document.getElementById('pt-f-notes').value.trim()});
+  localStorage.setItem('tbtrish_posttimes',JSON.stringify(postTimes));
+  renderPostTimes();closePostTimeForm();
+  document.getElementById('pt-f-time').value='';document.getElementById('pt-f-views').value='';document.getElementById('pt-f-likes').value='';document.getElementById('pt-f-notes').value='';
+  toast('✦ Post time logged!');
+}
+function deletePostTime(id){if(!confirm('Delete?'))return;postTimes=postTimes.filter(function(p){return p.id!==id;});localStorage.setItem('tbtrish_posttimes',JSON.stringify(postTimes));renderPostTimes();}
+function renderPostTimes(){
+  var el=document.getElementById('posttime-list');var ch=document.getElementById('posttime-chart');if(!el)return;
+  if(!postTimes.length){ch.innerHTML='';el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No posts logged yet!</div>';return;}
+  var days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  var byDay={};days.forEach(function(d){byDay[d]=[];});
+  postTimes.forEach(function(p){if(byDay[p.dayOfWeek])byDay[p.dayOfWeek].push(p.views);});
+  var avgs=days.map(function(d){var arr=byDay[d];return arr.length?Math.round(arr.reduce(function(a,b){return a+b;},0)/arr.length):0;});
+  var maxAvg=Math.max.apply(null,avgs)||1;
+  var bestIdx=avgs.indexOf(Math.max.apply(null,avgs));
+  ch.innerHTML='<div class="card-box" style="margin-bottom:14px;padding:14px;">'
+    +'<div style="font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:10px;">AVG VIEWS BY DAY</div>'
+    +days.map(function(d,i){
+      var pct=Math.round(avgs[i]/maxAvg*100);
+      var isBest=i===bestIdx&&avgs[i]>0;
+      return '<div class="sc-chart-row">'
+        +'<div class="sc-chart-label" style="color:'+(isBest?'var(--gold)':'var(--text-dim)')+';">'+d.slice(0,3)+(isBest?' ★':'')+'</div>'
+        +'<div class="sc-chart-bg"><div class="sc-chart-fill" style="width:'+pct+'%;background:'+(isBest?'var(--gold)':'var(--red)');+'"></div></div>'
+        +'<div class="sc-chart-n">'+(avgs[i]?avgs[i].toLocaleString():'—')+'</div>'
+        +'</div>';
+    }).join('')+'</div>';
+  el.innerHTML=postTimes.map(function(p){
+    return '<div class="card-box" style="margin-bottom:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;">'
+      +'<div>'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:14px;color:var(--text);">'+p.dayOfWeek+' @ '+p.time+'</div>'
+      +'<div style="font-size:13px;color:var(--text-dim);">'+p.platform+' · 👀 '+p.views.toLocaleString()+' · ❤️ '+p.likes.toLocaleString()+'</div>'
+      +(p.notes?'<div style="font-size:13px;color:var(--text-dim);font-style:italic;">'+p.notes+'</div>':'')
+      +'</div>'
+      +'<button onclick="deletePostTime(\''+p.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button>'
+      +'</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// RATE CARD
+// ══════════════════════════════════════════
+var rateCard=JSON.parse(localStorage.getItem('tbtrish_ratecard')||'[]');
+function openRateForm(){document.getElementById('rate-form').style.display='block';}
+function closeRateForm(){document.getElementById('rate-form').style.display='none';}
+function saveRate(){
+  var rate=document.getElementById('rc-f-rate').value.trim();
+  if(!rate){toast('Rate is required!');return;}
+  rateCard.push({id:Date.now().toString(),service:document.getElementById('rc-f-service').value,rate:rate,notes:document.getElementById('rc-f-notes').value.trim()});
+  localStorage.setItem('tbtrish_ratecard',JSON.stringify(rateCard));
+  renderRateCard();closeRateForm();
+  document.getElementById('rc-f-rate').value='';document.getElementById('rc-f-notes').value='';
+  toast('✦ Rate saved!');
+}
+function deleteRate(id){if(!confirm('Delete this rate?'))return;rateCard=rateCard.filter(function(r){return r.id!==id;});localStorage.setItem('tbtrish_ratecard',JSON.stringify(rateCard));renderRateCard();}
+function copyRateCard(){
+  if(!rateCard.length){toast('No rates added yet!');return;}
+  var text='✦ TitlesByTrish Rate Card ✦\n\n'+rateCard.map(function(r){return r.service+': '+r.rate+(r.notes?' ('+r.notes+')':'');}).join('\n');
+  navigator.clipboard&&navigator.clipboard.writeText(text).then(function(){toast('✦ Rate card copied!');}).catch(function(){toast(text);});
+}
+function renderRateCard(){
+  var el=document.getElementById('rate-list');if(!el)return;
+  if(!rateCard.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No rates added yet!</div>';return;}
+  el.innerHTML=rateCard.map(function(r){
+    return '<div class="card-box" style="margin-bottom:10px;padding:16px;display:flex;justify-content:space-between;align-items:center;">'
+      +'<div>'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:14px;color:var(--text-dim);letter-spacing:1px;">'+r.service+'</div>'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:22px;font-weight:900;color:var(--gold);margin-top:4px;">'+r.rate+'</div>'
+      +(r.notes?'<div style="font-size:13px;color:var(--text-dim);margin-top:4px;">'+r.notes+'</div>':'')
+      +'</div>'
+      +'<button onclick="deleteRate(\''+r.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button>'
+      +'</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// READER PERSONALITY QUIZ
+// ══════════════════════════════════════════
+var quizAnswers={};
+var QUIZ_QS=[
+  {q:'When you pick up a book, you\'re hoping for...',opts:['Plot twists that break you','A slow burn romance','Non-stop action','Beautiful prose']},
+  {q:'Your ideal reading spot is...',opts:['Midnight in bed with just a lamp','A cozy coffee shop','Outside in nature','A library or quiet study']},
+  {q:'A book made you cry. You feel...',opts:['Satisfied — it hit deep','Annoyed — you wanted happy','Inspired — emotional = good writing','Confused — you don\'t cry at books']},
+  {q:'Your TBR pile is...',opts:['Organized by genre and priority','A chaotic stack of impulse buys','Carefully curated from BookTok','What TBR? Finish one, buy one']},
+  {q:'You DNF a book at 60%. You feel...',opts:['Zero guilt — life\'s too short','Guilty for days','You never DNF','Skim to the end just in case']},
+  {q:'Your BookTok style is...',opts:['Dark and dramatic reviews','Cozy aesthetic vibes','Chaotic unhinged reactions','Thoughtful deep dives']}
+];
+var QUIZ_RESULTS={
+  A:{type:'The Dark Reader 🖤',desc:'You live for psychological depth, plot twists that destroy you, and books that haunt you for weeks. You don\'t read to relax — you read to feel everything at maximum intensity.',tip:'Content idea: "Books that broke my brain and I\'m not sorry" — your audience lives for your unhinged reactions to dark material.'},
+  B:{type:'The Cozy Reader 🕯️',desc:'Atmosphere is everything to you. You want a slow burn, an aesthetic reading setup, and a book that wraps around you like a warm blanket — even if it\'s a little dark around the edges.',tip:'Content idea: "Cozy reading vlogs" and aesthetic shelfies perform incredibly well for your reader type.'},
+  C:{type:'The Chaotic Reader ⚡',desc:'You buy books on impulse, read three at once, and your reactions are genuinely unhinged in the best way. You were made for BookTok.',tip:'Content idea: "Books I bought at midnight and immediately regretted" or live reaction content — your energy is your brand.'},
+  D:{type:'The Thoughtful Reader 📚',desc:'You care about the craft — beautiful sentences, thematic depth, and books that say something real. You bring a literary perspective to BookTok that sets you apart.',tip:'Content idea: "Underrated books that deserve more attention" — your audience trusts your taste and wants your deep dives.'}
+};
+function initQuiz(){
+  if(Object.keys(quizAnswers).length>0&&document.getElementById('quiz-result').style.display!=='none')return;
+  quizAnswers={};
+  document.getElementById('quiz-result').style.display='none';
+  document.getElementById('quiz-body').style.display='block';
+  document.getElementById('quiz-submit-row').style.display='none';
+  var opts=['A','B','C','D'];
+  document.getElementById('quiz-questions').innerHTML=QUIZ_QS.map(function(q,qi){
+    return '<div class="card-box" style="margin-bottom:14px;padding:14px;" id="quiz-q-'+qi+'">'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:13px;color:var(--gold);margin-bottom:10px;">'+(qi+1)+'. '+q.q+'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:8px;">'
+      +q.opts.map(function(o,oi){
+        return '<button onclick="selectAnswer('+qi+',\''+opts[oi]+'\')" id="quiz-opt-'+qi+'-'+opts[oi]+'" class="mood-btn" style="text-align:left;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+opts[oi]+') '+o+'</button>';
+      }).join('')
+      +'</div></div>';
+  }).join('');
+}
+function selectAnswer(q,opt){
+  var opts=['A','B','C','D'];
+  opts.forEach(function(o){var b=document.getElementById('quiz-opt-'+q+'-'+o);if(b)b.classList.remove('sel');});
+  var btn=document.getElementById('quiz-opt-'+q+'-'+opt);if(btn)btn.classList.add('sel');
+  quizAnswers[q]=opt;
+  if(Object.keys(quizAnswers).length===QUIZ_QS.length){document.getElementById('quiz-submit-row').style.display='block';}
+}
+function submitQuiz(){
+  var counts={A:0,B:0,C:0,D:0};
+  Object.values(quizAnswers).forEach(function(v){if(counts[v]!==undefined)counts[v]++;});
+  var winner=Object.keys(counts).reduce(function(a,b){return counts[a]>=counts[b]?a:b;});
+  var result=QUIZ_RESULTS[winner];
+  document.getElementById('quiz-body').style.display='none';
+  document.getElementById('quiz-result').style.display='block';
+  document.getElementById('quiz-result-type').textContent=result.type;
+  document.getElementById('quiz-result-desc').textContent=result.desc;
+  document.getElementById('quiz-result-tip').textContent='💡 '+result.tip;
+}
+function resetQuiz(){quizAnswers={};initQuiz();}
+
 </script>
 
 <!-- BARCODE SCANNER OVERLAY -->
@@ -7599,6 +8055,166 @@ function renderVidBookChart(){
     </div>
   </div>
   <div id="bq-list"></div>
+</div>
+
+<!-- THUMBNAILS -->
+<div class="panel" id="panel-thumbnails">
+  <div class="section-title">🎨 Thumbnail Ideas</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Save thumbnail concept ideas for each book video so you never lose inspiration.</p>
+  <button class="sc-add-btn" onclick="openThumbForm()">✦ Add Thumbnail Idea</button>
+  <div id="thumb-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <div class="sc-field"><label>Book Title *</label><input id="th-f-book" placeholder="which book?"/></div>
+    <div class="sc-field"><label>Concept *</label><textarea id="th-f-concept" rows="3" placeholder="Describe the thumbnail idea..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;"></textarea></div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Style</label><select id="th-f-style"><option>Text Overlay</option><option>Aesthetic</option><option>Reaction</option><option>Side-by-Side</option><option>Custom</option></select></div>
+      <div class="sc-field"><label>Colors / Vibe</label><input id="th-f-colors" placeholder="dark moody, red tones..."/></div>
+    </div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeThumbForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveThumbIdea()">✦ Save Idea</button>
+    </div>
+  </div>
+  <div id="thumb-list"></div>
+</div>
+
+<!-- SAVED REPLIES -->
+<div class="panel" id="panel-replies">
+  <div class="section-title">💬 Saved Replies</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Store your go-to responses to common comments — one tap to copy and paste.</p>
+  <button class="sc-add-btn" onclick="openReplyForm()">✦ Add Saved Reply</button>
+  <div id="reply-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <div class="sc-field"><label>Trigger (what comment is this for?)</label><input id="rep-f-trigger" placeholder="e.g. What book do you recommend for..."/></div>
+    <div class="sc-field"><label>Your Reply *</label><textarea id="rep-f-reply" rows="4" placeholder="Your saved response..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;"></textarea></div>
+    <div class="sc-field"><label>Category</label><select id="rep-f-cat"><option>General</option><option>Book Recs</option><option>Questions</option><option>Positive</option><option>Negative</option></select></div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeReplyForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveReply()">✦ Save Reply</button>
+    </div>
+  </div>
+  <div id="reply-list"></div>
+</div>
+
+<!-- COLLAB WISHLIST -->
+<div class="panel" id="panel-collabwish">
+  <div class="section-title">🌟 Collab Wishlist</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Dream collabs with authors, creators, publishers, and brands.</p>
+  <button class="sc-add-btn" onclick="openCollabWishForm()">✦ Add to Wishlist</button>
+  <div id="collabwish-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Name *</label><input id="cw-f-name" placeholder="author or creator name..."/></div>
+      <div class="sc-field"><label>Type</label><select id="cw-f-type"><option>Author</option><option>Creator</option><option>Publisher</option><option>Brand</option></select></div>
+    </div>
+    <div class="sc-field"><label>Why I Want This Collab</label><textarea id="cw-f-reason" rows="2" placeholder="Why would this be amazing?" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;"></textarea></div>
+    <div class="sc-field"><label>Notes</label><input id="cw-f-notes" placeholder="their handle, contact info..."/></div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeCollabWishForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveCollabWish()">✦ Save</button>
+    </div>
+  </div>
+  <div id="collabwish-list"></div>
+</div>
+
+<!-- MILESTONES -->
+<div class="panel" id="panel-milestones">
+  <div class="section-title">🎯 Milestones</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Celebrate your follower milestones and remember what got you there.</p>
+  <button class="sc-add-btn" onclick="openMilestoneForm()">✦ Log a Milestone</button>
+  <div id="milestone-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Followers *</label><input type="number" id="ms-f-followers" placeholder="e.g. 10000"/></div>
+      <div class="sc-field"><label>Platform</label><select id="ms-f-platform"><option>TikTok</option><option>Instagram</option><option>YouTube</option></select></div>
+    </div>
+    <div class="sc-field"><label>Date Achieved</label><input type="date" id="ms-f-date"/></div>
+    <div class="sc-field"><label>What Helped You Get Here</label><textarea id="ms-f-note" rows="3" placeholder="What video blew up? What changed?" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;"></textarea></div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeMilestoneForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveMilestone()">✦ Save Milestone</button>
+    </div>
+  </div>
+  <div id="milestone-list"></div>
+</div>
+
+<!-- POST TIMES -->
+<div class="panel" id="panel-posttimes">
+  <div class="section-title">⏰ Best Posting Times</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Track which days and times your videos perform best.</p>
+  <button class="sc-add-btn" onclick="openPostTimeForm()">✦ Log a Post</button>
+  <div id="posttime-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Day *</label><select id="pt-f-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select></div>
+      <div class="sc-field"><label>Time *</label><input type="time" id="pt-f-time"/></div>
+    </div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Views</label><input type="number" id="pt-f-views" placeholder="e.g. 5000"/></div>
+      <div class="sc-field"><label>Likes</label><input type="number" id="pt-f-likes" placeholder="e.g. 800"/></div>
+    </div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Platform</label><select id="pt-f-platform"><option>TikTok</option><option>Instagram</option><option>YouTube</option></select></div>
+      <div class="sc-field"><label>Notes</label><input id="pt-f-notes" placeholder="anything notable..."/></div>
+    </div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closePostTimeForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="savePostTime()">✦ Save</button>
+    </div>
+  </div>
+  <div id="posttime-chart" style="margin-bottom:16px;"></div>
+  <div id="posttime-list"></div>
+</div>
+
+<!-- RATE CARD -->
+<div class="panel" id="panel-ratecard">
+  <div class="section-title">💳 Rate Card</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Your brand deal rates — always ready to share.</p>
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+    <button class="sc-add-btn" style="flex:1;margin:0;" onclick="openRateForm()">✦ Add Rate</button>
+    <button class="sc-add-btn" style="flex:1;margin:0;background:rgba(200,160,80,.1);border-color:rgba(200,160,80,.35);color:var(--gold);" onclick="copyRateCard()">📋 Copy Full Rate Card</button>
+  </div>
+  <div id="rate-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Service *</label><select id="rc-f-service"><option>Dedicated Video</option><option>Video Integration</option><option>Story / Post</option><option>Bundle Deal</option><option>Custom</option></select></div>
+      <div class="sc-field"><label>Rate *</label><input id="rc-f-rate" placeholder="e.g. $500 or $300-500"/></div>
+    </div>
+    <div class="sc-field"><label>Notes</label><input id="rc-f-notes" placeholder="what's included, turnaround time..."/></div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeRateForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveRate()">✦ Save Rate</button>
+    </div>
+  </div>
+  <div id="rate-list"></div>
+</div>
+
+<!-- READER QUIZ -->
+<div class="panel" id="panel-quiz">
+  <div class="section-title">🧠 Reader Personality Quiz</div>
+  <div id="quiz-body">
+    <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:20px;line-height:1.7;">Answer 6 quick questions to discover your reader personality type!</p>
+    <div id="quiz-questions"></div>
+    <div id="quiz-submit-row" style="display:none;margin-top:16px;">
+      <button class="sc-add-btn" onclick="submitQuiz()">✦ See My Reader Type</button>
+    </div>
+  </div>
+  <div id="quiz-result" style="display:none;text-align:center;padding:20px;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--gold);border-radius:10px;">
+    <div id="quiz-result-type" style="font-family:'Cinzel',serif;font-size:22px;font-weight:900;color:var(--gold);margin-bottom:10px;"></div>
+    <div id="quiz-result-desc" style="font-size:15px;color:var(--text);line-height:1.7;margin-bottom:14px;font-style:italic;"></div>
+    <div id="quiz-result-tip" style="font-size:13px;color:var(--gold-dim);border-top:1px solid var(--border);padding-top:12px;"></div>
+    <button class="sc-add-btn" style="margin-top:16px;" onclick="resetQuiz()">↩ Retake Quiz</button>
+  </div>
+</div>
+
+<!-- BOOK NOTES MODAL -->
+<div id="sc-booknotes-modal" class="sc-modal-overlay" style="display:none;">
+  <div class="sc-modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div id="sc-booknotes-title" style="font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:var(--gold);"></div>
+      <button onclick="closeBookNotes()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;">✕</button>
+    </div>
+    <textarea id="sc-booknotes-text" rows="8" placeholder="Jot down thoughts, quotes, reactions while reading..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;line-height:1.7;"></textarea>
+    <input type="hidden" id="sc-booknotes-id"/>
+    <div class="sc-modal-actions" style="margin-top:12px;">
+      <button class="sc-btn-cancel" onclick="closeBookNotes()">Close</button>
+      <button class="sc-btn-save" onclick="saveBookNotes()">✦ Save Notes</button>
+    </div>
+  </div>
 </div>
 
 </body>
