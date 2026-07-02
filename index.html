@@ -1011,42 +1011,73 @@ canvas{width:100%!important;}
 <!-- PANEL 5: IDEA GENERATOR    -->
 <!-- ═══════════════════════════ -->
 <div class="panel" id="panel-ideas">
-  <div class="section-title">💡 Content Idea Generator</div>
+  <div class="section-title">💡 Content Ideas</div>
 
-  <div class="card-box" style="margin-bottom:16px;border-color:rgba(200,160,80,.35);">
-    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:8px;">📚 IDEAS FROM MY LIBRARY</div>
-    <div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">Generate specific video ideas based on your recent reads — genres, ratings, patterns.</div>
-    <button class="btn btn-primary" onclick="generateIdeasFromReads()" style="width:100%;padding:10px;font-size:14px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Generate Ideas from My Recent Reads</button>
-    <div id="reads-ideas-list" style="margin-top:12px;"></div>
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <button class="sc-tab active" id="ideas-subtab-gen" onclick="switchIdeasTab('gen',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Idea Generator</button>
+    <button class="sc-tab" id="ideas-subtab-video" onclick="switchIdeasTab('video',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📹 My Video Ideas</button>
   </div>
 
-  <div class="idea-filter">
-    <button class="idea-filter-btn active" onclick="setIdeaFilter('all',this)">All Genres</button>
-    <button class="idea-filter-btn" onclick="setIdeaFilter('psych',this)">Psych Thriller</button>
-    <button class="idea-filter-btn" onclick="setIdeaFilter('truecrime',this)">True Crime</button>
-    <button class="idea-filter-btn" onclick="setIdeaFilter('fantasy',this)">Dark Fantasy</button>
-    <button class="idea-filter-btn" onclick="setIdeaFilter('hf',this)">Historical Fiction</button>
-    <button class="idea-filter-btn" onclick="setIdeaFilter('engagement',this)">Engagement</button>
-    <button class="idea-filter-btn" onclick="setIdeaFilter('haul',this)">Haul / Wrap Up</button>
+  <div id="ideas-tab-gen">
+    <div class="card-box" style="margin-bottom:16px;border-color:rgba(200,160,80,.35);">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:8px;">📚 IDEAS FROM MY LIBRARY</div>
+      <div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">Generate specific video ideas based on your recent reads — genres, ratings, patterns.</div>
+      <button class="btn btn-primary" onclick="generateIdeasFromReads()" style="width:100%;padding:10px;font-size:14px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Generate Ideas from My Recent Reads</button>
+      <div id="reads-ideas-list" style="margin-top:12px;"></div>
+    </div>
+
+    <div class="idea-filter">
+      <button class="idea-filter-btn active" onclick="setIdeaFilter('all',this)">All Genres</button>
+      <button class="idea-filter-btn" onclick="setIdeaFilter('psych',this)">Psych Thriller</button>
+      <button class="idea-filter-btn" onclick="setIdeaFilter('truecrime',this)">True Crime</button>
+      <button class="idea-filter-btn" onclick="setIdeaFilter('fantasy',this)">Dark Fantasy</button>
+      <button class="idea-filter-btn" onclick="setIdeaFilter('hf',this)">Historical Fiction</button>
+      <button class="idea-filter-btn" onclick="setIdeaFilter('engagement',this)">Engagement</button>
+      <button class="idea-filter-btn" onclick="setIdeaFilter('haul',this)">Haul / Wrap Up</button>
+    </div>
+
+    <div class="idea-display" id="idea-display">
+      <div class="idea-empty">Hit the button below to generate your next video idea 🖤</div>
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-primary" style="flex:1;padding:12px;" onclick="generateIdea()">✦ Generate Idea</button>
+      <button class="btn" style="flex:1;padding:12px;" onclick="saveIdea()">Save This Idea</button>
+    </div>
+
+    <div class="card-box" style="margin-top:16px;">
+      <div class="label-sm">Saved Ideas</div>
+      <div id="saved-ideas" style="margin-top:8px;"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:8px 0;">No saved ideas yet</div></div>
+    </div>
+
+    <div class="card-box" style="margin-top:16px;">
+      <div class="label-sm" style="margin-bottom:12px;">📺 Content Series Ideas — Keep People Coming Back</div>
+      <div id="series-ideas-list"></div>
+    </div>
   </div>
 
-  <div class="idea-display" id="idea-display">
-    <div class="idea-empty">Hit the button below to generate your next video idea 🖤</div>
-  </div>
-
-  <div style="display:flex;gap:10px;">
-    <button class="btn btn-primary" style="flex:1;padding:12px;" onclick="generateIdea()">✦ Generate Idea</button>
-    <button class="btn" style="flex:1;padding:12px;" onclick="saveIdea()">Save This Idea</button>
-  </div>
-
-  <div class="card-box" style="margin-top:16px;">
-    <div class="label-sm">Saved Ideas</div>
-    <div id="saved-ideas" style="margin-top:8px;"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:8px 0;">No saved ideas yet</div></div>
-  </div>
-
-  <div class="card-box" style="margin-top:16px;">
-    <div class="label-sm" style="margin-bottom:12px;">📺 Content Series Ideas — Keep People Coming Back</div>
-    <div id="series-ideas-list"></div>
+  <div id="ideas-tab-video" style="display:none;">
+    <div class="card-box" style="margin-bottom:16px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:14px;">📹 MY VIDEO IDEAS</div>
+      <div class="mic-row" style="margin-bottom:10px;">
+        <input type="text" id="videoidea-input" class="input-field" placeholder="Type a video idea..." onkeydown="if(event.key==='Enter'){addVideoIdea();}" style="font-size:15px;">
+        <button class="mic-btn" onclick="startVoice('videoidea-input',false)" title="Speak your idea">🎙️</button>
+      </div>
+      <select id="videoidea-category" class="input-field" style="margin-bottom:10px;font-size:14px;">
+        <option value="">— Category (optional) —</option>
+        <option value="Book Review">Book Review</option>
+        <option value="Book Haul">Book Haul</option>
+        <option value="Wrap Up">Wrap Up</option>
+        <option value="Reading Vlog">Reading Vlog</option>
+        <option value="Recommendation">Recommendation</option>
+        <option value="Storytime">Storytime</option>
+        <option value="Collab">Collab</option>
+        <option value="Trend">Trend</option>
+        <option value="Other">Other</option>
+      </select>
+      <button class="btn btn-primary" onclick="addVideoIdea()" style="width:100%;padding:11px;font-size:15px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add Idea</button>
+    </div>
+    <div id="videoideas-list"></div>
   </div>
 </div>
 
@@ -2563,6 +2594,7 @@ const folLogs=JSON.parse(localStorage.getItem('tbtrish_fol')||'[]');
 const engLogs=JSON.parse(localStorage.getItem('tbtrish_eng')||'[]');
 const arcList=JSON.parse(localStorage.getItem('tbtrish_arc')||'[]');
 const savedIdeas=JSON.parse(localStorage.getItem('tbtrish_ideas')||'[]');
+var videoIdeas=JSON.parse(localStorage.getItem('tbtrish_videoideas')||'[]');
 const savedBooks=new Set(JSON.parse(localStorage.getItem('tbtrish_savedbooks')||'[]'));
 const alarms=JSON.parse(localStorage.getItem('tbtrish_alarms')||JSON.stringify([
   {id:'a1',label:'🎬 Film Day — Record this week\'s videos',day:'Saturday',time:'10:00',active:false},
@@ -2964,6 +2996,55 @@ function renderSavedIdeas(){
       </div>
       <button class="del-btn" onclick="deleteSavedIdea('${i.title.replace(/'/g,"\\'")}')">✕</button>
     </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// MY VIDEO IDEAS
+// ══════════════════════════════════════════
+function switchIdeasTab(tab,btn){
+  document.getElementById('ideas-tab-gen').style.display=tab==='gen'?'':'none';
+  document.getElementById('ideas-tab-video').style.display=tab==='video'?'':'none';
+  document.querySelectorAll('#panel-ideas .sc-tab').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  if(tab==='video')renderVideoIdeas();
+}
+
+function addVideoIdea(){
+  var inp=document.getElementById('videoidea-input');
+  var cat=document.getElementById('videoidea-category');
+  var text=(inp?inp.value.trim():'');
+  if(!text){toast('Type or speak a video idea first!');return;}
+  videoIdeas.unshift({id:Date.now(),text:text,category:cat?cat.value:'',ts:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  localStorage.setItem('tbtrish_videoideas',JSON.stringify(videoIdeas));
+  if(inp)inp.value='';
+  if(cat)cat.value='';
+  renderVideoIdeas();
+  toast('✦ Video idea saved!');
+}
+
+function deleteVideoIdea(id){
+  videoIdeas=videoIdeas.filter(function(v){return v.id!==id;});
+  localStorage.setItem('tbtrish_videoideas',JSON.stringify(videoIdeas));
+  renderVideoIdeas();
+}
+
+function renderVideoIdeas(){
+  var el=document.getElementById('videoideas-list');
+  if(!el)return;
+  if(!videoIdeas.length){
+    el.innerHTML='<div style="text-align:center;padding:32px 16px;font-style:italic;color:var(--text-dim);font-size:15px;">No video ideas yet — jot one down above 🎬</div>';
+    return;
+  }
+  el.innerHTML=videoIdeas.map(function(v){
+    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;">'
+      +'<div style="flex:1;min-width:0;">'
+      +(v.category?'<div style="font-size:11px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:3px;font-family:\'IM Fell English SC\',serif;">'+v.category+'</div>':'')
+      +'<div style="font-size:15px;color:var(--text);line-height:1.5;word-break:break-word;">'+v.text+'</div>'
+      +'<div style="font-size:12px;color:var(--text-dim);margin-top:4px;">'+v.ts+'</div>'
+      +'</div>'
+      +'<button class="del-btn" onclick="deleteVideoIdea('+v.id+')" style="flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'</div>';
+  }).join('');
 }
 
 // ═══════════════════════════════════════════════
