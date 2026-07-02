@@ -3036,15 +3036,194 @@ function renderVideoIdeas(){
     return;
   }
   el.innerHTML=videoIdeas.map(function(v){
-    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;">'
+    return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;margin-bottom:10px;overflow:hidden;">'
+      +'<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;">'
       +'<div style="flex:1;min-width:0;">'
       +(v.category?'<div style="font-size:11px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:3px;font-family:\'IM Fell English SC\',serif;">'+v.category+'</div>':'')
       +'<div style="font-size:15px;color:var(--text);line-height:1.5;word-break:break-word;">'+v.text+'</div>'
       +'<div style="font-size:12px;color:var(--text-dim);margin-top:4px;">'+v.ts+'</div>'
       +'</div>'
       +'<button class="del-btn" onclick="deleteVideoIdea('+v.id+')" style="flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'</div>'
+      +'<button onclick="openVidPkg('+v.id+')" style="width:100%;padding:9px;background:rgba(200,160,80,.08);border:none;border-top:1px solid var(--border);color:var(--gold-dim);font-family:\'IM Fell English SC\',serif;font-size:13px;letter-spacing:2px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Generate Content Package</button>'
       +'</div>';
   }).join('');
+}
+
+// ══════════════════════════════════════════
+// VIDEO CONTENT PACKAGE GENERATOR
+// ══════════════════════════════════════════
+var _vidPkgId=null;
+
+function openVidPkg(id){
+  var idea=videoIdeas.find(function(v){return v.id===id;});
+  if(!idea)return;
+  _vidPkgId=id;
+  var pkg=buildContentPkg(idea);
+  document.getElementById('vidpkg-idea-title').textContent=idea.text;
+  document.getElementById('vidpkg-content').innerHTML=renderPkgHTML(pkg);
+  document.getElementById('vidpkg-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeVidPkg(){
+  document.getElementById('vidpkg-modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function regenerateVidPkg(){
+  if(_vidPkgId!==null)openVidPkg(_vidPkgId);
+}
+
+function copyPkgSection(text){
+  if(navigator.clipboard){navigator.clipboard.writeText(text).then(function(){toast('✦ Copied!');});}
+  else{var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('✦ Copied!');}
+}
+
+function buildContentPkg(idea){
+  var cat=idea.category||'';
+  var text=idea.text||'';
+  var rnd=function(arr){return arr[Math.floor(Math.random()*arr.length)];};
+
+  // HOOKS
+  var hookMap={
+    'Book Review':["POV: I was NOT ready for this book 📖","I need to talk about this book RIGHT NOW","Stop what you're doing — I just finished this and I have thoughts"],
+    'Book Haul':["I may have a book buying problem and I'm not even sorry","New book haul just dropped and my wallet hates me","Come see what I picked up this week — I went a little overboard"],
+    'Wrap Up':["Here's every book I read this month and my honest ratings","Monthly wrap-up time — some hits, some misses, let's talk","I read so many books this month and I have thoughts on all of them"],
+    'Reading Vlog':["Come read with me — it's a cozy day and I need company","Reading vlog because I need accountability and you're coming with me","Can I finish this book before midnight? Let's find out"],
+    'Recommendation':["If you haven't read this yet, drop everything","This book has been living rent-free in my head and you need to know why","3 books that completely wrecked me — in the best way"],
+    'Storytime':["Story time: this book had me throwing it across the room","I need to vent about this ending — no spoilers, I promise","The author did WHAT? Let me tell you..."],
+    'Collab':["Me and my fave creator finally collab'd and it's giving BookTok energy","We swapped book recommendations and this is what happened","Duo BookTok just unlocked a new level 📖"],
+    'Trend':["Doing the trend but make it dark reads","BookTok trend but it's only psychological thrillers","POV: BookTok trends but for book lovers only"]
+  };
+  var hook=rnd(hookMap[cat]||["I need to talk about this right now","POV: this idea has been living in my head rent-free","Let's get into it — here's what you need to know"]);
+
+  // SCRIPTS
+  var scriptMap={
+    'Book Review':'HOOK (0–3 sec)\n"'+hook+'"\n\nSHOW THE BOOK (3–8 sec)\nHold the cover toward camera. Slowly rotate to reveal the spine.\n\nINTRO (8–20 sec)\n"So here\'s the deal with this book — [brief premise of your idea]. I picked it up because [reason]. And honestly? Here\'s what I actually thought..."\n\nMIDDLE (20–50 sec)\n• One thing that hooked you in the first few pages\n• A moment that completely surprised you\n• Who you\'d recommend it to (and who to skip it)\n\nRATING (50–55 sec)\n"I\'m giving this [X] out of 5 stars — and here\'s my one-sentence reason why."\n\nOUTRO (55–60 sec)\n[See Call to Action below]',
+    'Book Haul':'HOOK (0–3 sec)\n"'+hook+'"\n\nBOOK BY BOOK (3–50 sec)\nFor each book:\n• Show cover (natural light, spine visible)\n• Say the title + one-word genre\n• Why you got it — one sentence max\n• Predicted rating before reading\n\nFINAL SHOT (50–58 sec)\nAll books fanned out or stacked on a flat surface — slow pan across.\n\nOUTRO (58–60 sec)\n[See Call to Action below]',
+    'Wrap Up':'HOOK (0–3 sec)\n"'+hook+'"\n\nBOOK STACK REVEAL (3–8 sec)\nAll books from the period stacked — slowly reveal each cover one by one.\n\nPER BOOK (8–50 sec)\nFor each: cover reveal → rating out of 5 → one-word reaction (obsessed / disappointed / traumatized / underrated)\n\nFAVOURITE PICK (50–55 sec)\n"My fave this round was... and if you read ONE book from this list, make it that one."\n\nOUTRO (55–60 sec)\n[See Call to Action below]',
+    'Reading Vlog':'HOOK (0–3 sec)\n"'+hook+'"\n\nSET THE SCENE (3–10 sec)\nCozy setup shot — your reading spot, the book, your drink. No talking needed here.\n\nREADING CLIPS (10–45 sec)\nShort clips of you actually reading — page turns, reactions, underlining. Voiceover works great here: share what\'s happening in the story without spoilers.\n\nREACTION / WRAP (45–55 sec)\n"Okay so I finished / I\'m [X]% through and I have to say..."\n\nOUTRO (55–60 sec)\n[See Call to Action below]'
+  };
+  var defaultScript='HOOK (0–3 sec)\n"'+hook+'"\n\nSET THE SCENE (3–10 sec)\nGet your book / prop in frame. Natural light or ring light slightly off-center for depth.\n\nMAIN POINTS (10–50 sec)\nCover 2–3 key angles on your idea:\n• What it\'s about and why you\'re talking about it\n• The most interesting or surprising detail\n• Why your audience will care or relate\n\nTAKEAWAY (50–55 sec)\nOne punchy sentence that sums it all up — make it quotable.\n\nOUTRO (55–60 sec)\n[See Call to Action below]';
+  var script=scriptMap[cat]||defaultScript;
+
+  // CAPTIONS
+  var captionMap={
+    'Book Review':["This book had me in a chokehold 📖🖤 honest review below ↓","I have feelings and I need to talk about them 😤 full thoughts in comments","Rating: [X]/5 ⭐ the ending? unexpected. the vibes? immaculate. the damage? real."],
+    'Book Haul':["My bank account is crying but my shelf is THRIVING 📚✨","New books just entered the chat 🖤 come see what I grabbed","Haul szn never ends and I refuse to apologize 📖"],
+    'Wrap Up':["Monthly wrap-up ft. honest ratings and one book that actually ruined me 🖤","Read [X] books — some 5 stars, one DNF, zero regrets","Every book I read this month, rated 📖✨ the good, the bad, the unhinged"],
+    'Recommendation':["If you're looking for your next obsession — here it is 📖🖤","I don't usually recommend books this hard but this one? different.","POV: I just handed you your next 5-star read 🖤"],
+    'Storytime':["Story time: this book had me spiral and I have no regrets 📖","The author really said 'let me ruin your day' and delivered 🖤","I wasn't ready. You won't be ready. Read it anyway."],
+    'Reading Vlog':["Come read with me — cozy day, good book, zero responsibilities 📖✨","Reading vlog because accountability is the only way I finish books 🖤","Productive reading day ft. too much tea and one very good book"]
+  };
+  var caption=rnd(captionMap[cat]||["That idea has been living in my head — had to talk about it 📖🖤","If you know, you know. If you don't — stick around 🖤","BookTok made me do it and I have zero regrets 📚"]);
+
+  // HASHTAGS
+  var base='#BookTok #BookTokReads #BookRecommendations #ReadingCommunity #Bookish #BookLover #BookTokCreator';
+  var catTagMap={
+    'Book Review':'#BookReview #BookReviewTok #HonestReview #ReadThis #BookTokReview',
+    'Book Haul':'#BookHaul #NewBooks #BookShopping #AddedToTBR #HaulSzn',
+    'Wrap Up':'#MonthlyWrapUp #WrapUp #BooksIRead #ReadingWrapUp #ReadingRecap',
+    'Reading Vlog':'#ReadingVlog #ReadWithMe #ReadingDay #CozyReads #StudyWithMe',
+    'Recommendation':'#BookRec #MustRead #BooksYouNeedToRead #NextRead #BookRecommendation',
+    'Storytime':'#BookStorytime #ReadersOfTikTok #BookishStorytime #BookDrama',
+    'Collab':'#BookTokCollab #BookCreator #Collab #BookTokDuo',
+    'Trend':'#BookTokTrend #Trending #BookishTrend #FYP'
+  };
+  var hashtags=base+' '+(catTagMap[cat]||'#BookContent #ContentCreator #FYP')+' #PsychologicalThriller #DarkReads #ThrillerBooks #DarkRomance #TitlesbyTrish';
+
+  // VIDEO ANGLES
+  var allAngles=[
+    ['📸 Cover Reveal','Hold book spine-out facing camera. Slowly rotate to front cover. Use natural side-lighting — avoid flash directly on the book so the cover doesn\'t wash out.'],
+    ['🪞 Flat Lay','Lay book face-up on a textured surface (blanket, wooden table, dark cloth). Film from directly above. Add props: a candle, a cup of tea, bookmarks for texture.'],
+    ['📖 Reading POV','Hold book in your lap as if reading. Camera slightly above, angled down toward you. Feels authentic and relatable — great for vlogs and emotional reactions.'],
+    ['📚 Stack Shot','Stack 3–5 books with your main one on top or in front. Tilt the stack toward camera. Perfect for hauls, wrap-ups, or recommendation videos.'],
+    ['🎭 Face-First Reaction','Film your FACE first — no book visible. Express your reaction (shock, love, sadness). Then cut to the book. Creates curiosity and keeps viewers past the 3-second drop-off.'],
+    ['✨ Slow Pan','Book closed on a flat surface. Pan the camera slowly left to right across the cover. Works beautifully as a B-roll opener or transition shot.'],
+    ['🕯️ Mood Shot','Low light, candle nearby, book propped against a surface. Camera slightly below eye-level. Creates atmosphere — great for dark or emotional reads.'],
+    ['👀 Peek & Reveal','Start with hand covering the title. Slowly move hand to reveal book name. Builds suspense before you even speak.']
+  ];
+  var usedAngles={};
+  var pickedAngles=[];
+  while(pickedAngles.length<3){
+    var a=rnd(allAngles);
+    if(!usedAngles[a[0]]){usedAngles[a[0]]=1;pickedAngles.push(a);}
+  }
+
+  // BEST POST TIME
+  var bestTime='';
+  if(typeof postTimes!=='undefined'&&postTimes&&postTimes.length){
+    var sorted=postTimes.slice().sort(function(a,b){return(b.avg||0)-(a.avg||0);});
+    if(sorted[0])bestTime='Based on your analytics — '+sorted[0].day+' around '+sorted[0].time+' is your best window.';
+  }
+  if(!bestTime){
+    var timeSugg=[
+      'Tuesday–Thursday, 7–9 PM your local time — peak BookTok scroll hours when people are winding down.',
+      'Wednesday evenings (7–9 PM) and Saturday mornings (9–11 AM) are the highest-engagement windows for BookTok content.',
+      'Sunday 6–9 PM tends to drive the most saves and shares for book content — people planning their week\'s reading.'
+    ];
+    bestTime=rnd(timeSugg);
+  }
+
+  // CALL TO ACTION
+  var allCTAs=[
+    'Drop a 🖤 in the comments if you\'ve already read this — I need to know if you saw that ending coming!',
+    'Rate this book in the comments ⭐⭐⭐⭐⭐ — I want your honest take!',
+    'Tell me below — 5-star read or hard DNF? No wrong answers 👇',
+    'Tag a friend who NEEDS this on their TBR right now 🖤',
+    'Save this video so you remember the title — and follow for more dark reads every week 📖',
+    'Comment "SEND IT" and I\'ll drop my full review in the replies 🖤',
+    'Which part sounds most interesting to you? Drop it below 👇',
+    'Recommend me YOUR next book in the comments — I\'m building my TBR and I need help 📚',
+    'If this is already on your TBR, drop a 🖤 and let\'s be reading twins',
+    'Follow for more BookTok recs delivered to your FYP every week — I won\'t let you down 📖✨',
+    'Comment the last 5-star book you read — I\'m taking recommendations 👇',
+    'Tell me: do you judge a book by its cover? Because this one had me from the front table 📖'
+  ];
+  var cta1=rnd(allCTAs);
+  var cta2=rnd(allCTAs.filter(function(c){return c!==cta1;}));
+
+  return{hook:hook,script:script,caption:caption,hashtags:hashtags,angles:pickedAngles,bestTime:bestTime,cta1:cta1,cta2:cta2};
+}
+
+function renderPkgHTML(pkg){
+  function section(icon,label,bodyHtml,copyText){
+    return '<div style="margin-bottom:12px;border:1px solid var(--border);border-radius:6px;overflow:hidden;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 14px;background:var(--bg3);border-bottom:1px solid var(--border);">'
+      +'<div style="font-family:\'IM Fell English SC\',serif;font-size:12px;letter-spacing:2px;color:var(--gold);">'+icon+' '+label+'</div>'
+      +'<button onclick="copyPkgSection(this.dataset.cp)" style="font-size:12px;padding:3px 10px;background:rgba(200,160,80,.1);border:1px solid rgba(200,160,80,.25);border-radius:3px;color:var(--gold-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;" data-cp="'+copyText.replace(/"/g,'&quot;')+'">Copy</button>'
+      +'</div>'
+      +'<div style="padding:12px 14px;font-size:14px;color:var(--text);line-height:1.7;white-space:pre-line;">'+bodyHtml+'</div>'
+      +'</div>';
+  }
+
+  var anglesHtml=pkg.angles.map(function(a){
+    return '<div style="margin-bottom:10px;"><div style="font-size:13px;color:var(--gold-dim);font-weight:600;margin-bottom:2px;">'+a[0]+'</div>'
+      +'<div style="font-size:14px;color:var(--text);line-height:1.6;">'+a[1]+'</div></div>';
+  }).join('');
+  var anglesText=pkg.angles.map(function(a){return a[0]+': '+a[1];}).join('\n\n');
+
+  return section('📋','SCRIPT',pkg.script,pkg.script)
+    +section('✍️','CAPTION',pkg.caption,pkg.caption)
+    +section('#','HASHTAGS',pkg.hashtags,pkg.hashtags)
+    +'<div style="margin-bottom:12px;border:1px solid var(--border);border-radius:6px;overflow:hidden;">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 14px;background:var(--bg3);border-bottom:1px solid var(--border);">'
+    +'<div style="font-family:\'IM Fell English SC\',serif;font-size:12px;letter-spacing:2px;color:var(--gold);">🎬 VIDEO ANGLES</div>'
+    +'<button onclick="copyPkgSection(this.dataset.cp)" data-cp="'+anglesText.replace(/"/g,'&quot;')+'" style="font-size:12px;padding:3px 10px;background:rgba(200,160,80,.1);border:1px solid rgba(200,160,80,.25);border-radius:3px;color:var(--gold-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Copy</button>'
+    +'</div>'
+    +'<div style="padding:12px 14px;">'+anglesHtml+'</div>'
+    +'</div>'
+    +section('⏰','BEST TIME TO POST',pkg.bestTime,pkg.bestTime)
+    +'<div style="border:1px solid var(--border);border-radius:6px;overflow:hidden;">'
+    +'<div style="padding:9px 14px;background:var(--bg3);border-bottom:1px solid var(--border);font-family:\'IM Fell English SC\',serif;font-size:12px;letter-spacing:2px;color:var(--gold);">💬 CALL TO ACTION</div>'
+    +'<div style="padding:12px 14px;">'
+    +'<div style="font-size:14px;color:var(--text);line-height:1.7;margin-bottom:10px;">'+pkg.cta1+'</div>'
+    +'<div style="font-size:12px;color:var(--text-dim);margin-bottom:8px;">— or try this one —</div>'
+    +'<div style="font-size:14px;color:var(--text);line-height:1.7;margin-bottom:10px;">'+pkg.cta2+'</div>'
+    +'<button onclick="copyPkgSection(\''+pkg.cta1.replace(/'/g,"\\'")+'\');" style="font-size:12px;padding:4px 12px;background:rgba(200,160,80,.1);border:1px solid rgba(200,160,80,.25);border-radius:3px;color:var(--gold-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Copy Option 1</button>'
+    +'</div>'
+    +'</div>';
 }
 
 // ═══════════════════════════════════════════════
@@ -8320,6 +8499,23 @@ function resetQuiz(){quizAnswers={};initQuiz();}
 </div>
 
 <!-- BOOK NOTES MODAL -->
+<div class="sc-modal-bg" id="vidpkg-modal">
+  <div class="sc-modal" style="max-height:85vh;overflow-y:auto;-webkit-overflow-scrolling:touch;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;position:sticky;top:0;background:var(--bg2);padding-bottom:12px;z-index:1;">
+      <div>
+        <h2 style="margin:0 0 4px;">✦ CONTENT PACKAGE</h2>
+        <div id="vidpkg-idea-title" style="font-size:14px;color:var(--text-dim);font-style:italic;line-height:1.4;"></div>
+      </div>
+      <button onclick="closeVidPkg()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;flex-shrink:0;margin-left:10px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>
+    </div>
+    <div id="vidpkg-content"></div>
+    <div class="sc-modal-actions" style="position:sticky;bottom:0;background:var(--bg2);padding-top:12px;margin-top:4px;">
+      <button class="sc-btn-cancel" onclick="closeVidPkg()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Close</button>
+      <button class="sc-btn-save" onclick="regenerateVidPkg()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">↻ Regenerate</button>
+    </div>
+  </div>
+</div>
+
 <div id="sc-booknotes-modal" class="sc-modal-overlay" style="display:none;">
   <div class="sc-modal-box">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
