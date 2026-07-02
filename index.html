@@ -900,7 +900,10 @@ canvas{width:100%!important;}
   <div class="card-box" style="margin-top:12px;">
     <div class="label-sm">Add a Reminder</div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
-      <input type="text" id="alarm-label" placeholder="e.g. Film this week's videos" style="font-size:15px;">
+      <div class="mic-row">
+        <input type="text" id="alarm-label" placeholder="e.g. Film this week's videos" style="font-size:15px;">
+        <button class="mic-btn" onclick="startVoice('alarm-label',false)" title="Speak your reminder" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎙️</button>
+      </div>
       <div class="grid-2">
         <div><div class="label-sm">Day</div>
           <select id="alarm-day">
