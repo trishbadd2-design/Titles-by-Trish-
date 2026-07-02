@@ -888,6 +888,31 @@ canvas{width:100%!important;}
   </div>
 
   <div id="calendar"></div>
+
+  <div class="card-box" style="margin-top:16px;">
+    <div class="label-sm">🔔 Reminders</div>
+    <div style="font-size:14px;color:var(--text-dim);font-style:italic;margin-bottom:12px;line-height:1.6;">
+      Your phone will notify you when it's time to film or post. Enable the ones you want, or add your own below.
+    </div>
+    <div class="alarm-list" id="alarm-list"></div>
+  </div>
+
+  <div class="card-box" style="margin-top:12px;">
+    <div class="label-sm">Add a Reminder</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+      <input type="text" id="alarm-label" placeholder="e.g. Film this week's videos" style="font-size:15px;">
+      <div class="grid-2">
+        <div><div class="label-sm">Day</div>
+          <select id="alarm-day">
+            <option>Saturday</option><option>Sunday</option><option>Monday</option>
+            <option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option>
+          </select>
+        </div>
+        <div><div class="label-sm">Time</div><input type="time" id="alarm-time" value="10:00"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addAlarm()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Add & Enable Reminder</button>
+    </div>
+  </div>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -1156,28 +1181,9 @@ canvas{width:100%!important;}
     </div>
   </div>
 
-  <div class="card-box">
-    <div class="label-sm">Recording Reminders</div>
-    <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:12px;line-height:1.7;">
-      Enable these reminders — your browser will notify you when it's time to film or post. Make sure notifications are allowed for this page.
-    </div>
-    <div class="alarm-list" id="alarm-list"></div>
-  </div>
-
-  <div class="card-box" style="margin-top:12px;">
-    <div class="label-sm">Add Custom Reminder</div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
-      <input type="text" id="alarm-label" placeholder="e.g. Film this week's videos">
-      <div class="grid-2">
-        <div><div class="label-sm">Day</div>
-          <select id="alarm-day">
-            <option>Saturday</option><option>Sunday</option><option>Monday</option>
-            <option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option>
-          </select>
-        </div>
-        <div><div class="label-sm">Time</div><input type="time" id="alarm-time" value="10:00"></div>
-      </div>
-      <button class="btn btn-primary" onclick="addAlarm()">✦ Add Reminder</button>
+  <div class="card-box" style="margin-top:4px;">
+    <div style="font-size:14px;color:var(--text-dim);font-style:italic;line-height:1.7;">
+      💡 Your reminders have moved to the <strong style="color:var(--text);">📅 Calendar</strong> tab — scroll to the bottom of it to set them up.
     </div>
   </div>
 </div>
@@ -3261,15 +3267,17 @@ function renderBooks(){
 // ALARMS & SCHEDULE
 // ═══════════════════════════════════════════════
 function addAlarm(){
-  const label=document.getElementById('alarm-label').value;
+  const label=document.getElementById('alarm-label').value.trim();
   const day=document.getElementById('alarm-day').value;
   const time=document.getElementById('alarm-time').value;
-  if(!label){toast('Please enter a reminder label');return;}
-  alarms.push({id:'a'+Date.now(),label,day,time,active:false});
+  if(!label){toast('Type your reminder first!');return;}
+  const newAlarm={id:'a'+Date.now(),label,day,time,active:false};
+  alarms.push(newAlarm);
   save('tbtrish_alarms',alarms);
   document.getElementById('alarm-label').value='';
   renderAlarms();
-  toast('✦ Reminder added!');
+  // auto-enable immediately
+  toggleAlarm(newAlarm.id);
 }
 
 function toggleAlarm(id){
