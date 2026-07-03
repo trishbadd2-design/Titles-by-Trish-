@@ -1863,6 +1863,27 @@ canvas{width:100%!important;}
       </div>
     </div>
     <div class="sc-msec" style="margin-top:10px;">
+      <div class="sc-msec-title">💌 Who Recommended It?</div>
+      <div class="sc-field">
+        <label>How did you hear about it?</label>
+        <select id="sc-f-tbr-recsrc" onchange="tbrRecSrcChange()">
+          <option value="">— Select —</option>
+          <option value="TikToker / BookToker">TikToker / BookToker</option>
+          <option value="Friend">Friend</option>
+          <option value="Reading Group">Reading Group</option>
+          <option value="Blindly Bought">Blindly Bought It</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="sc-field" id="sc-f-tbr-recname-row" style="display:none;">
+        <label id="sc-f-tbr-recname-label">Who recommended it?</label>
+        <div class="mic-row">
+          <input type="text" id="sc-f-tbr-recname" class="" placeholder="e.g. @bookwitch, Sarah, Dark Reads Club"/>
+          <button class="mic-btn" onclick="startVoice('sc-f-tbr-recname',false)" title="Speak name">🎤</button>
+        </div>
+      </div>
+    </div>
+    <div class="sc-msec" style="margin-top:10px;">
       <div class="sc-msec-title">📖 Where Can You Read This?</div>
       <div class="sc-plat-pills" id="sc-plat-pills-tbr">
         <div class="sc-plat-pill" data-p="Kindle" onclick="scTogglePlat(this,'tbr')">📱 Kindle</div>
@@ -4585,6 +4606,7 @@ function scRenderTBR() {
         ${t.genre?`<div style="display:inline-block;font-size:12px;padding:2px 8px;border-radius:10px;background:rgba(200,160,80,.12);color:var(--gold-dim);border:1px solid var(--border);margin-top:4px;">${t.genre}</div>`:''}
         ${t.priority ? `<div style="font-size:13px;color:var(--text-dim);margin-top:3px;">${t.priority}</div>` : ''}
         ${t.why ? `<div style="font-size:14px;color:var(--text-dim);margin-top:4px;font-style:italic;">${t.why}</div>` : ''}
+        ${t.recSrc ? `<div style="font-size:13px;margin-top:5px;color:var(--text-dim);">💌 ${t.recSrc==='Blindly Bought'?'Blindly Bought It':(t.recName?t.recSrc+' — <span style="color:var(--gold);">'+t.recName+'</span>':t.recSrc)}</div>` : ''}
         ${scPlatBadgesHtml(t.platforms)}
       </div>
       <div style="display:flex;gap:5px;flex-direction:column;align-items:flex-end;">
@@ -4595,6 +4617,17 @@ function scRenderTBR() {
     </div>`).join('');
 }
 function setTBRGenre(g){tbrGenreFilter=g;scRenderTBR();}
+function tbrRecSrcChange(){
+  var src=document.getElementById('sc-f-tbr-recsrc').value;
+  var row=document.getElementById('sc-f-tbr-recname-row');
+  var lbl=document.getElementById('sc-f-tbr-recname-label');
+  var needsName=src&&src!=='Blindly Bought';
+  row.style.display=needsName?'':'none';
+  if(src==='TikToker / BookToker')lbl.textContent='Their @handle or name';
+  else if(src==='Friend')lbl.textContent="Friend's name";
+  else if(src==='Reading Group')lbl.textContent='Group name';
+  else lbl.textContent='Who recommended it?';
+}
 
 function scPopulateYears() {
   const sel = document.getElementById('sc-year-select');
@@ -4981,7 +5014,8 @@ function scOpenAdd(mode, prefill) {
   // Clear
   ['sc-f-title','sc-f-author','sc-f-tropes','sc-f-similar','sc-f-review','sc-f-tbr-title','sc-f-tbr-author','sc-f-why'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   ['sc-f-dstart','sc-f-dend'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  ['sc-f-genre','sc-f-emotional','sc-f-priority'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  ['sc-f-genre','sc-f-emotional','sc-f-priority','sc-f-tbr-recsrc','sc-f-tbr-recname','sc-f-tbr-genre'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  var _rrow=document.getElementById('sc-f-tbr-recname-row');if(_rrow)_rrow.style.display='none';
   document.getElementById('sc-f-botm').checked = false;
   document.querySelectorAll('input[name="sc-shelf"]').forEach(r => r.checked = false);
   document.querySelectorAll('#sc-star-pick span').forEach(s => s.classList.remove('lit'));
@@ -5030,7 +5064,7 @@ function scSaveBook() {
     const author = document.getElementById('sc-f-tbr-author').value.trim();
     if (!title || !author) { toast('Title and author are required!'); return; }
     const existingTBR = eid ? scTBR.find(x => x.id === eid) : null;
-    const item = { id: eid || Date.now().toString(), title, author, interest: scSelectedInterest, why: document.getElementById('sc-f-why').value, priority: document.getElementById('sc-f-priority').value, genre: document.getElementById('sc-f-tbr-genre').value, coverUrl: _pendingCoverUrl || (existingTBR && existingTBR.coverUrl) || '', platforms: [..._scPlatforms] };
+    const item = { id: eid || Date.now().toString(), title, author, interest: scSelectedInterest, why: document.getElementById('sc-f-why').value, priority: document.getElementById('sc-f-priority').value, genre: document.getElementById('sc-f-tbr-genre').value, recSrc: document.getElementById('sc-f-tbr-recsrc').value, recName: document.getElementById('sc-f-tbr-recname').value.trim(), coverUrl: _pendingCoverUrl || (existingTBR && existingTBR.coverUrl) || '', platforms: [..._scPlatforms] };
     if (eid) { const i = scTBR.findIndex(x => x.id === eid); if (i > -1) scTBR[i] = item; } else scTBR.unshift(item);
     if (!item.coverUrl) { autoFetchCover(item.id, title, author, 'tbr'); }
   }
