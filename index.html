@@ -856,6 +856,7 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="replies" onclick="showPanel('replies')">💬 Replies</button>
   <button class="nav-btn" data-panel="timer" onclick="showPanel('timer')">⏱️ Timer</button>
   <button class="nav-btn" data-panel="mood" onclick="showPanel('mood')">🎭 Mood Picker</button>
+  <button class="nav-btn" data-panel="inspo" onclick="showPanel('inspo')">✨ Inspo List</button>
 </div>
 
 <div class="sub-nav" id="subnav-growth">
@@ -2748,6 +2749,7 @@ var crossPostData=JSON.parse(localStorage.getItem('tbtrish_crosspost')||'{}');
 var qnaBank=JSON.parse(localStorage.getItem('tbtrish_qna')||'[]');
 var brandDeals=JSON.parse(localStorage.getItem('tbtrish_branddeals')||'[]');
 var folGoals=JSON.parse(localStorage.getItem('tbtrish_folgoals')||'[]');
+var inspoList=JSON.parse(localStorage.getItem('tbtrish_inspo')||'[]');
 var paceData=JSON.parse(localStorage.getItem('tbtrish_pace')||'{"book":"","total":0,"deadline":"","log":[]}');
 var auditState=JSON.parse(localStorage.getItem('tbtrish_audit')||'{}');
 var moodboard=JSON.parse(localStorage.getItem('tbtrish_moodboard')||'{}');
@@ -2767,7 +2769,7 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 // ═══════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',timer:'content',mood:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business'};
+var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',timer:'content',mood:'content',inspo:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -2819,6 +2821,7 @@ function showPanel(id){
   if(id==='posttimes'){renderPostTimes();}
   if(id==='ratecard'){renderRateCard();}
   if(id==='quiz'){initQuiz();}
+  if(id==='inspo'){renderInspo();}
   _currentPanel=id;
   localStorage.setItem('tbtrish_lastpanel',id);
 }
@@ -3476,6 +3479,73 @@ function renderPkgHTML(pkg){
 
 // ═══════════════════════════════════════════════
 // BOOK BANK
+// ══════════════════════════════════════════
+// CREATOR INSPO LIST
+// ══════════════════════════════════════════
+var _inspoFilter='all';
+
+function setInspoFilter(f,btn){
+  _inspoFilter=f;
+  document.querySelectorAll('#panel-inspo .idea-filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderInspo();
+}
+
+function addInspo(){
+  var name=document.getElementById('inspo-name').value.trim();
+  if(!name){toast('Enter their name or handle first!');return;}
+  inspoList.unshift({
+    id:Date.now(),
+    name:name,
+    platform:document.getElementById('inspo-platform').value,
+    niche:document.getElementById('inspo-niche').value.trim(),
+    why:document.getElementById('inspo-why').value.trim(),
+    ts:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+  });
+  localStorage.setItem('tbtrish_inspo',JSON.stringify(inspoList));
+  document.getElementById('inspo-name').value='';
+  document.getElementById('inspo-niche').value='';
+  document.getElementById('inspo-why').value='';
+  renderInspo();
+  toast('✦ Creator saved!');
+}
+
+function deleteInspo(id){
+  inspoList=inspoList.filter(function(c){return c.id!==id;});
+  localStorage.setItem('tbtrish_inspo',JSON.stringify(inspoList));
+  renderInspo();
+}
+
+function renderInspo(){
+  var el=document.getElementById('inspo-list');
+  if(!el)return;
+  var filtered=_inspoFilter==='all'?inspoList:inspoList.filter(function(c){return c.platform===_inspoFilter;});
+  if(!filtered.length){
+    el.innerHTML='<div style="text-align:center;padding:32px 16px;font-style:italic;color:var(--text-dim);font-size:15px;">'
+      +(_inspoFilter==='all'?'No creators saved yet — add one above ✨':'No creators found on '+_inspoFilter)
+      +'</div>';
+    return;
+  }
+  var platColors={'TikTok / BookTok':'rgba(255,0,80,.7)','Instagram':'rgba(200,80,200,.7)','Facebook':'rgba(60,130,250,.7)','YouTube':'rgba(255,60,60,.7)','Multiple Platforms':'var(--gold)'};
+  el.innerHTML=filtered.map(function(c){
+    var col=platColors[c.platform]||'var(--gold-dim)';
+    return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;margin-bottom:10px;padding:14px 14px 12px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;">'
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:15px;color:var(--text);margin-bottom:5px;">'+c.name+'</div>'
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:'+(c.niche||c.why?'8':'0')+'px;">'
+      +'<span style="font-size:11px;padding:3px 8px;border-radius:12px;background:'+col.replace(')',', .12)')+';border:1px solid '+col+';color:'+col+';">'+c.platform+'</span>'
+      +(c.niche?'<span style="font-size:11px;padding:3px 8px;border-radius:12px;background:rgba(200,160,80,.08);border:1px solid var(--border);color:var(--text-dim);">'+c.niche+'</span>':'')
+      +'</div>'
+      +(c.why?'<div style="font-size:14px;color:var(--text-dim);font-style:italic;line-height:1.5;">'+c.why+'</div>':'')
+      +'</div>'
+      +'<button onclick="deleteInspo('+c.id+')" style="background:none;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;flex-shrink:0;margin-left:8px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'</div>'
+      +'<div style="font-size:11px;color:var(--text-dim);margin-top:8px;">Saved '+c.ts+'</div>'
+      +'</div>';
+  }).join('');
+}
+
 // ══════════════════════════════════════════
 // FOLLOWER GOAL TRACKER
 // ══════════════════════════════════════════
@@ -9018,6 +9088,49 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       </div>
     </div>
   </div>
+</div>
+
+<!-- INSPO LIST -->
+<div class="panel" id="panel-inspo">
+  <div class="section-title">✨ Creator Inspo List</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:16px;line-height:1.7;">Save the TikTokers and creators you love so you never forget them — and see what's inspiring you.</p>
+
+  <div class="card-box" style="margin-bottom:16px;">
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:14px;">✦ ADD A CREATOR</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="mic-row">
+        <input type="text" id="inspo-name" class="input-field" placeholder="Name or @handle *" style="font-size:15px;">
+        <button class="mic-btn" onclick="startVoice('inspo-name',false)" title="Speak their name" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎙️</button>
+      </div>
+      <div class="grid-2">
+        <div><div class="label-sm">Where I Found Them</div>
+          <select id="inspo-platform" class="input-field">
+            <option>TikTok / BookTok</option>
+            <option>Instagram</option>
+            <option>Facebook</option>
+            <option>YouTube</option>
+            <option>Multiple Platforms</option>
+          </select>
+        </div>
+        <div><div class="label-sm">Niche / Vibe</div>
+          <input type="text" id="inspo-niche" class="input-field" placeholder="e.g. Dark reads, cozy vibes">
+        </div>
+      </div>
+      <input type="text" id="inspo-why" class="input-field" placeholder="Why do you love them? (optional)" style="font-size:14px;">
+      <button class="btn btn-primary" onclick="addInspo()" style="padding:11px;font-size:15px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Save Creator</button>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+    <button class="idea-filter-btn active" onclick="setInspoFilter('all',this)">All</button>
+    <button class="idea-filter-btn" onclick="setInspoFilter('TikTok / BookTok',this)">TikTok / BookTok</button>
+    <button class="idea-filter-btn" onclick="setInspoFilter('Instagram',this)">Instagram</button>
+    <button class="idea-filter-btn" onclick="setInspoFilter('Facebook',this)">Facebook</button>
+    <button class="idea-filter-btn" onclick="setInspoFilter('YouTube',this)">YouTube</button>
+    <button class="idea-filter-btn" onclick="setInspoFilter('Multiple Platforms',this)">Multiple</button>
+  </div>
+
+  <div id="inspo-list"></div>
 </div>
 
 <!-- SAVED REPLIES -->
