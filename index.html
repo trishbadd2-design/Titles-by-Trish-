@@ -964,6 +964,19 @@ canvas{width:100%!important;}
     <div class="label-sm">History</div>
     <div class="follower-log" id="fol-log"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No entries yet</div></div>
   </div>
+
+  <div class="card-box" style="margin-top:16px;">
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:14px;">🎯 FOLLOWER GOALS</div>
+    <div id="fol-goals-bars" style="margin-bottom:16px;"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div class="label-sm">Add a Milestone</div>
+      <div style="display:flex;gap:8px;">
+        <input type="number" id="fol-goal-target" placeholder="e.g. 10000" class="input-field" style="flex:1;">
+        <input type="text" id="fol-goal-label" placeholder="Label (e.g. 10k! 🎉)" class="input-field" style="flex:1.2;">
+      </div>
+      <button class="btn btn-primary" onclick="addFollowerGoal()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Add Goal</button>
+    </div>
+  </div>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -1341,6 +1354,7 @@ canvas{width:100%!important;}
     <button class="sc-tab" onclick="scSwitchTab('releases',this)">📅 Releases</button>
     <button class="sc-tab" onclick="scSwitchTab('rereads',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔁 Re-reads</button>
     <button class="sc-tab" onclick="scSwitchTab('predictions',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔮 Predictions</button>
+    <button class="sc-tab" onclick="scSwitchTab('pace',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📖 Pace</button>
   </div>
 
   <!-- CURRENTLY READING -->
@@ -1496,6 +1510,33 @@ canvas{width:100%!important;}
       </div>
     </div>
     <div id="sc-preds-list"></div>
+  </div>
+
+  <!-- PACE TRACKER -->
+  <div id="sc-section-pace" class="sc-section">
+    <div style="font-size:14px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.6;">Track your daily reading so you always know if you'll finish before filming day. 📖</div>
+    <div class="card-box" style="margin-bottom:14px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:12px;">📚 CURRENT BOOK</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <input type="text" id="pace-book" class="input-field" placeholder="Book title...">
+        <div class="grid-2">
+          <div><div class="label-sm">Total Pages</div><input type="number" id="pace-total" class="input-field" placeholder="e.g. 352" min="1"></div>
+          <div><div class="label-sm">Filming Day</div><input type="date" id="pace-deadline" class="input-field"></div>
+        </div>
+        <button class="btn btn-primary" onclick="setPaceBook()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Set Book</button>
+      </div>
+    </div>
+    <div id="pace-status-card" style="display:none;" class="card-box">
+      <div id="pace-status-content"></div>
+      <div style="margin-top:14px;">
+        <div class="label-sm" style="margin-bottom:8px;">Log Today's Page</div>
+        <div style="display:flex;gap:8px;">
+          <input type="number" id="pace-current-page" class="input-field" placeholder="I'm on page..." min="1" style="flex:1;">
+          <button class="btn btn-primary" onclick="logPacePage()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Log</button>
+        </div>
+      </div>
+    </div>
+    <div id="pace-log-list" style="margin-top:12px;"></div>
   </div>
 
   <!-- STATS -->
@@ -2204,6 +2245,7 @@ canvas{width:100%!important;}
     <button class="an-tab" id="an-tab-biolink" onclick="switchAnTab('biolink',this)">🔗 Bio Link</button>
     <button class="an-tab" id="an-tab-contentcal" onclick="switchAnTab('contentcal',this)">📅 Content Cal</button>
     <button class="an-tab" id="an-tab-posttimes" onclick="switchAnTab('posttimes',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">⏰ Post Times</button>
+    <button class="an-tab" id="an-tab-audit" onclick="switchAnTab('audit',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✅ Audit</button>
   </div>
 
   <!-- GROWTH LOG -->
@@ -2443,6 +2485,17 @@ canvas{width:100%!important;}
     <div style="font-size:14px;color:var(--text-dim);margin-bottom:10px;">Use the <strong style="color:var(--gold);">⏰ Post Times</strong> panel to log and track your best posting times.</div>
     <button class="sc-add-btn" onclick="showPanel('posttimes')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Go to Post Times Tracker</button>
   </div>
+
+  <!-- TIKTOK AUDIT -->
+  <div id="an-section-audit" class="an-section">
+    <div style="font-size:14px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.6;">Run this audit once a month to keep your profile sharp and professional. Check off each item — your score updates as you go.</div>
+    <div id="audit-score-bar" style="background:var(--bg2);border:1px solid var(--border-hi);border-radius:6px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);">PROFILE SCORE</div>
+      <div id="audit-score-num" style="font-family:'Cinzel',serif;font-size:22px;color:var(--gold);">0%</div>
+    </div>
+    <div id="audit-checklist"></div>
+    <button class="btn" onclick="resetAudit()" style="margin-top:14px;width:100%;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">↻ Reset for Next Month</button>
+  </div>
 </div>
 
 </div><!-- end app -->
@@ -2668,6 +2721,10 @@ var videoIdeas=JSON.parse(localStorage.getItem('tbtrish_videoideas')||'[]');
 var crossPostData=JSON.parse(localStorage.getItem('tbtrish_crosspost')||'{}');
 var qnaBank=JSON.parse(localStorage.getItem('tbtrish_qna')||'[]');
 var brandDeals=JSON.parse(localStorage.getItem('tbtrish_branddeals')||'[]');
+var folGoals=JSON.parse(localStorage.getItem('tbtrish_folgoals')||'[]');
+var paceData=JSON.parse(localStorage.getItem('tbtrish_pace')||'{"book":"","total":0,"deadline":"","log":[]}');
+var auditState=JSON.parse(localStorage.getItem('tbtrish_audit')||'{}');
+var moodboard=JSON.parse(localStorage.getItem('tbtrish_moodboard')||'{}');
 const savedBooks=new Set(JSON.parse(localStorage.getItem('tbtrish_savedbooks')||'[]'));
 const alarms=JSON.parse(localStorage.getItem('tbtrish_alarms')||JSON.stringify([
   {id:'a1',label:'🎬 Film Day — Record this week\'s videos',day:'Saturday',time:'10:00',active:false},
@@ -2707,7 +2764,7 @@ function showPanel(id){
   if(id==='timer'){renderTimerPanel();}
   if(id==='spending'){renderSpending();}
   if(id==='pipeline'){renderPipeline();}
-  if(id==='thumbnails'){renderThumbIdeas();}
+  if(id==='thumbnails'){renderThumbIdeas();renderMoodboard();}
   if(id==='replies'){renderReplies();}
   if(id==='collabwish'){renderCollabWish();}
   if(id==='milestones'){renderMilestones();}
@@ -2901,6 +2958,8 @@ function renderFollowers(){
     noData.style.display='none';canvas.style.display='block';
     drawChart(canvas,folLogs.map(l=>l.date.slice(5)),folLogs.map(l=>l.count));
   }
+
+  renderFollowerGoals();
 
   const logEl=document.getElementById('fol-log');
   if(!folLogs.length){logEl.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No entries yet</div>';return;}
@@ -3369,6 +3428,251 @@ function renderPkgHTML(pkg){
 
 // ═══════════════════════════════════════════════
 // BOOK BANK
+// ══════════════════════════════════════════
+// FOLLOWER GOAL TRACKER
+// ══════════════════════════════════════════
+function addFollowerGoal(){
+  var target=parseInt(document.getElementById('fol-goal-target').value);
+  var label=document.getElementById('fol-goal-label').value.trim();
+  if(!target||target<1){toast('Enter a target number!');return;}
+  folGoals.push({id:Date.now(),target:target,label:label||target.toLocaleString()+'followers'});
+  folGoals.sort(function(a,b){return a.target-b.target;});
+  localStorage.setItem('tbtrish_folgoals',JSON.stringify(folGoals));
+  document.getElementById('fol-goal-target').value='';
+  document.getElementById('fol-goal-label').value='';
+  renderFollowerGoals();
+  toast('✦ Goal added!');
+}
+
+function deleteFollowerGoal(id){
+  folGoals=folGoals.filter(function(g){return g.id!==id;});
+  localStorage.setItem('tbtrish_folgoals',JSON.stringify(folGoals));
+  renderFollowerGoals();
+}
+
+function renderFollowerGoals(){
+  var el=document.getElementById('fol-goals-bars');
+  if(!el)return;
+  var current=folLogs.length?folLogs[folLogs.length-1].count:0;
+  if(!folGoals.length){
+    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:14px;padding:4px 0 12px;">Add your first milestone below 🎯</div>';
+    return;
+  }
+  el.innerHTML=folGoals.map(function(g){
+    var pct=Math.min(100,Math.round((current/g.target)*100));
+    var done=current>=g.target;
+    var remaining=Math.max(0,g.target-current);
+    return '<div style="margin-bottom:14px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;">'
+      +'<div style="font-size:14px;color:'+(done?'var(--gold)':'var(--text)')+';">'+(done?'✓ ':'')+g.label+'</div>'
+      +'<div style="display:flex;align-items:center;gap:8px;">'
+      +'<div style="font-size:12px;color:var(--text-dim);">'+(done?'Reached! 🎉':remaining.toLocaleString()+' to go')+'</div>'
+      +'<button onclick="deleteFollowerGoal('+g.id+')" style="background:none;border:none;color:var(--text-dim);font-size:13px;cursor:pointer;padding:0;touch-action:manipulation;">✕</button>'
+      +'</div></div>'
+      +'<div style="background:var(--bg3);border-radius:20px;height:8px;overflow:hidden;">'
+      +'<div style="height:100%;width:'+pct+'%;background:'+(done?'var(--gold)':'linear-gradient(90deg,var(--red-dim),var(--gold))')+';border-radius:20px;transition:width .4s;"></div>'
+      +'</div>'
+      +'<div style="font-size:11px;color:var(--text-dim);margin-top:3px;">'+pct+'% — '+current.toLocaleString()+' / '+g.target.toLocaleString()+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// READING PACE TRACKER
+// ══════════════════════════════════════════
+function setPaceBook(){
+  var book=document.getElementById('pace-book').value.trim();
+  var total=parseInt(document.getElementById('pace-total').value);
+  var deadline=document.getElementById('pace-deadline').value;
+  if(!book||!total){toast('Enter the book title and total pages!');return;}
+  paceData.book=book;paceData.total=total;paceData.deadline=deadline;paceData.log=[];
+  localStorage.setItem('tbtrish_pace',JSON.stringify(paceData));
+  document.getElementById('pace-book').value='';
+  document.getElementById('pace-total').value='';
+  document.getElementById('pace-deadline').value='';
+  renderPaceStatus();
+  toast('✦ Book set! Log your pages each day.');
+}
+
+function logPacePage(){
+  var pg=parseInt(document.getElementById('pace-current-page').value);
+  if(!pg||pg<1){toast('Enter your current page number!');return;}
+  if(pg>paceData.total){toast('That\'s more than the total pages!');return;}
+  var today=new Date().toISOString().slice(0,10);
+  var existing=paceData.log.findIndex(function(l){return l.date===today;});
+  if(existing>-1)paceData.log[existing].page=pg;
+  else paceData.log.push({date:today,page:pg});
+  paceData.log.sort(function(a,b){return a.date.localeCompare(b.date);});
+  localStorage.setItem('tbtrish_pace',JSON.stringify(paceData));
+  document.getElementById('pace-current-page').value='';
+  renderPaceStatus();
+  toast('✦ Logged!');
+}
+
+function renderPaceStatus(){
+  var card=document.getElementById('pace-status-card');
+  var list=document.getElementById('pace-log-list');
+  if(!paceData.book||!paceData.total){if(card)card.style.display='none';return;}
+  if(card)card.style.display='';
+  var log=paceData.log;
+  var currentPage=log.length?log[log.length-1].page:0;
+  var pagesLeft=paceData.total-currentPage;
+  var pct=Math.round((currentPage/paceData.total)*100);
+  var avgPpd=0;
+  if(log.length>1){
+    var totalRead=log[log.length-1].page-(log[0].page||0);
+    var days=log.length-1||1;
+    avgPpd=Math.round(totalRead/days);
+  } else if(log.length===1){avgPpd=log[0].page;}
+  var daysToFinish=avgPpd>0?Math.ceil(pagesLeft/avgPpd):null;
+  var finishDate=daysToFinish?new Date(Date.now()+daysToFinish*86400000).toLocaleDateString('en-US',{month:'short',day:'numeric'}):null;
+  var onTrack=true;
+  if(paceData.deadline&&daysToFinish!==null){
+    var ddiff=Math.ceil((new Date(paceData.deadline)-Date.now())/86400000);
+    onTrack=daysToFinish<=ddiff;
+  }
+  var content=document.getElementById('pace-status-content');
+  if(content){
+    content.innerHTML='<div style="font-family:\'Cinzel\',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">📖 '+paceData.book+'</div>'
+      +'<div style="background:var(--bg3);border-radius:20px;height:8px;margin-bottom:6px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--gold);border-radius:20px;"></div></div>'
+      +'<div style="font-size:13px;color:var(--text-dim);margin-bottom:10px;">Page '+currentPage+' of '+paceData.total+' · '+pct+'% done</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center;">'
+      +'<div style="background:var(--bg3);border-radius:6px;padding:8px;"><div style="font-size:18px;color:var(--gold);font-family:\'Cinzel\',serif;">'+pagesLeft+'</div><div style="font-size:11px;color:var(--text-dim);">Pages Left</div></div>'
+      +'<div style="background:var(--bg3);border-radius:6px;padding:8px;"><div style="font-size:18px;color:var(--gold);font-family:\'Cinzel\',serif;">'+(avgPpd||'—')+'</div><div style="font-size:11px;color:var(--text-dim);">Avg Pages/Day</div></div>'
+      +'</div>'
+      +(finishDate?'<div style="margin-top:10px;font-size:14px;color:'+(onTrack?'rgba(80,200,120,1)':'#e05555')+';text-align:center;padding:8px;border-radius:6px;background:'+(onTrack?'rgba(80,200,120,.08)':'rgba(220,60,60,.08)')+';border:1px solid '+(onTrack?'rgba(80,200,120,.3)':'rgba(220,60,60,.3)')+';">'+(onTrack?'✓ On track — finish ~'+finishDate:'⚠️ Behind — at this pace you finish ~'+finishDate+(paceData.deadline?' (deadline '+new Date(paceData.deadline+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})+')':''))+'</div>':'');
+  }
+  if(list){
+    list.innerHTML=log.length?'<div class="label-sm" style="margin-bottom:8px;">Daily Log</div>'+log.slice().reverse().map(function(l){
+      return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:14px;">'
+        +'<div style="color:var(--text-dim);">'+new Date(l.date+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div>'
+        +'<div style="color:var(--text);">Page '+l.page+'</div>'
+        +'</div>';
+    }).join(''):'';
+  }
+}
+
+// ══════════════════════════════════════════
+// TIKTOK PROFILE AUDIT
+// ══════════════════════════════════════════
+var AUDIT_ITEMS=[
+  {id:'pic',cat:'Profile',label:'Profile picture is clear, on-brand, and high quality'},
+  {id:'bio',cat:'Profile',label:'Bio clearly says who you are and what content you make'},
+  {id:'bio_hook',cat:'Profile',label:'Bio has a hook — gives people a reason to follow'},
+  {id:'link',cat:'Profile',label:'Bio link is active and goes somewhere useful'},
+  {id:'name',cat:'Profile',label:'Username is consistent across TikTok and Instagram'},
+  {id:'pinned1',cat:'Pinned Videos',label:'First pinned video is your best intro / most viral video'},
+  {id:'pinned2',cat:'Pinned Videos',label:'Pinned videos show your range (review + haul + rec)'},
+  {id:'pinned3',cat:'Pinned Videos',label:'All pinned videos have strong thumbnails / cover frames'},
+  {id:'consistency',cat:'Content',label:'Posting at least 3× per week consistently'},
+  {id:'captions',cat:'Content',label:'Every video has captions / text on screen'},
+  {id:'hashtags',cat:'Content',label:'Using a consistent hashtag set including #TitlesByTrish'},
+  {id:'hook3',cat:'Content',label:'Every video hooks within the first 3 seconds'},
+  {id:'cta',cat:'Content',label:'Every video ends with a clear call to action'},
+  {id:'thumbnail',cat:'Content',label:'Cover frames / thumbnails are consistent and recognizable'},
+  {id:'sound',cat:'Content',label:'Audio is clear — no background noise, good volume levels'},
+  {id:'engage',cat:'Engagement',label:'Replying to comments within 24 hours of posting'},
+  {id:'stitch',cat:'Engagement',label:'Engaging with other BookTok creators this month'},
+  {id:'niche',cat:'Niche',label:'Content is clearly focused on dark/psych thriller reads'},
+  {id:'mindscale',cat:'Niche',label:'Mind Scale ratings are present in book review videos'},
+  {id:'series',cat:'Niche',label:'Have at least one ongoing series or recurring content format'},
+];
+
+function renderAuditChecklist(){
+  var el=document.getElementById('audit-checklist');
+  if(!el)return;
+  var cats={};
+  AUDIT_ITEMS.forEach(function(item){
+    if(!cats[item.cat])cats[item.cat]=[];
+    cats[item.cat].push(item);
+  });
+  var checked=Object.values(auditState).filter(Boolean).length;
+  var pct=Math.round((checked/AUDIT_ITEMS.length)*100);
+  var scoreEl=document.getElementById('audit-score-num');
+  if(scoreEl){
+    scoreEl.textContent=pct+'%';
+    scoreEl.style.color=pct>=80?'rgba(80,200,120,1)':pct>=50?'var(--gold)':'#e05555';
+  }
+  el.innerHTML=Object.keys(cats).map(function(cat){
+    return '<div class="card-box" style="margin-bottom:12px;">'
+      +'<div style="font-family:\'IM Fell English SC\',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">'+cat+'</div>'
+      +cats[cat].map(function(item){
+        var checked=!!auditState[item.id];
+        return '<label style="display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
+          +'<input type="checkbox" '+(checked?'checked':'')+' onchange="toggleAuditItem(\''+item.id+'\')" style="margin-top:3px;accent-color:var(--gold);width:16px;height:16px;flex-shrink:0;">'
+          +'<span style="font-size:14px;color:'+(checked?'var(--text-dim)':'var(--text)')+';'+(checked?'text-decoration:line-through;':'')+' line-height:1.5;">'+item.label+'</span>'
+          +'</label>';
+      }).join('')
+      +'</div>';
+  }).join('');
+}
+
+function toggleAuditItem(id){
+  auditState[id]=!auditState[id];
+  localStorage.setItem('tbtrish_audit',JSON.stringify(auditState));
+  renderAuditChecklist();
+}
+
+function resetAudit(){
+  auditState={};
+  localStorage.setItem('tbtrish_audit',JSON.stringify(auditState));
+  renderAuditChecklist();
+  toast('Audit reset for next month!');
+}
+
+// ══════════════════════════════════════════
+// AESTHETIC MOOD BOARD
+// ══════════════════════════════════════════
+function toggleMoodboardEdit(){
+  var form=document.getElementById('moodboard-form');
+  var btn=document.getElementById('moodboard-edit-btn');
+  var open=form.style.display==='none';
+  form.style.display=open?'':'none';
+  btn.textContent=open?'✕ Cancel':'✦ Edit Mood Board';
+  if(open){
+    document.getElementById('mb-colors').value=moodboard.colors||'';
+    document.getElementById('mb-vibes').value=moodboard.vibes||'';
+    document.getElementById('mb-fonts').value=moodboard.fonts||'';
+    document.getElementById('mb-setup').value=moodboard.setup||'';
+    document.getElementById('mb-signature').value=moodboard.signature||'';
+    document.getElementById('mb-hashtags').value=moodboard.hashtags||'';
+  }
+}
+
+function saveMoodboard(){
+  moodboard={
+    colors:document.getElementById('mb-colors').value.trim(),
+    vibes:document.getElementById('mb-vibes').value.trim(),
+    fonts:document.getElementById('mb-fonts').value.trim(),
+    setup:document.getElementById('mb-setup').value.trim(),
+    signature:document.getElementById('mb-signature').value.trim(),
+    hashtags:document.getElementById('mb-hashtags').value.trim()
+  };
+  localStorage.setItem('tbtrish_moodboard',JSON.stringify(moodboard));
+  document.getElementById('moodboard-form').style.display='none';
+  document.getElementById('moodboard-edit-btn').textContent='✦ Edit Mood Board';
+  renderMoodboard();
+  toast('✦ Mood board saved!');
+}
+
+function renderMoodboard(){
+  var el=document.getElementById('moodboard-display');
+  if(!el)return;
+  var empty=!moodboard.colors&&!moodboard.vibes&&!moodboard.fonts&&!moodboard.setup&&!moodboard.signature&&!moodboard.hashtags;
+  if(empty){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:14px;padding:4px 0 8px;">Tap Edit to fill in your brand identity 🎨</div>';return;}
+  function row(icon,label,val){
+    if(!val)return '';
+    return '<div style="margin-bottom:10px;"><div style="font-size:11px;letter-spacing:2px;color:var(--gold-dim);font-family:\'IM Fell English SC\',serif;margin-bottom:3px;">'+icon+' '+label+'</div>'
+      +'<div style="font-size:14px;color:var(--text);line-height:1.6;">'+val+'</div></div>';
+  }
+  el.innerHTML=row('🎨','COLORS',moodboard.colors)
+    +row('✨','VIBE WORDS',moodboard.vibes)
+    +row('🖋️','FONTS / TEXT',moodboard.fonts)
+    +row('🎬','FILMING SETUP',moodboard.setup)
+    +row('⭐','SIGNATURE ELEMENTS',moodboard.signature)
+    +row('#','HASHTAG SIGNATURE',moodboard.hashtags);
+}
+
 // ══════════════════════════════════════════
 // AUDIENCE Q&A BANK
 // ══════════════════════════════════════════
@@ -4047,6 +4351,7 @@ function scSwitchTab(t, el) {
   if (t === 'series') scRenderSeries();
   if (t === 'wishlist') renderWishlist();
   if (t === 'goals') renderGoals();
+  if (t === 'pace') renderPaceStatus();
 }
 
 function scRenderStars(n, sz) {
@@ -6147,6 +6452,7 @@ function switchAnTab(tab,btn){
   if(tab==='collabs')renderCollabList();
   if(tab==='biolink')renderBioLink();
   if(tab==='contentcal')renderCCal();
+  if(tab==='audit')renderAuditChecklist();
 }
 
 // ── Growth Log ──
@@ -8646,6 +8952,24 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     </div>
   </div>
   <div id="thumb-list"></div>
+
+  <div class="card-box" style="margin-top:20px;">
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:14px;">🎨 AESTHETIC MOOD BOARD</div>
+    <div style="font-size:14px;color:var(--text-dim);font-style:italic;margin-bottom:14px;line-height:1.6;">Your brand identity in one place — keep your content consistent.</div>
+    <div id="moodboard-display"></div>
+    <button class="sc-add-btn" onclick="toggleMoodboardEdit()" id="moodboard-edit-btn" style="margin-top:10px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Edit Mood Board</button>
+    <div id="moodboard-form" style="display:none;margin-top:12px;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div><div class="label-sm">Brand Colors (e.g. deep burgundy, matte black, gold)</div><input type="text" id="mb-colors" class="input-field" placeholder="Your color palette..."></div>
+        <div><div class="label-sm">Vibe Words (3–5 words that describe your content)</div><input type="text" id="mb-vibes" class="input-field" placeholder="e.g. Dark, moody, intelligent, literary, unhinged"></div>
+        <div><div class="label-sm">Fonts / Text Style</div><input type="text" id="mb-fonts" class="input-field" placeholder="e.g. Serif headers, minimal caps, gold accents"></div>
+        <div><div class="label-sm">Filming Setup Notes</div><textarea id="mb-setup" rows="3" class="input-field" placeholder="e.g. Ring light left side, dark backdrop, candle right, books stacked..." style="resize:vertical;line-height:1.6;"></textarea></div>
+        <div><div class="label-sm">Signature Elements</div><input type="text" id="mb-signature" class="input-field" placeholder="e.g. Black bookmark, Mind Scale rating, dark background always"></div>
+        <div><div class="label-sm">Hashtag Signature</div><input type="text" id="mb-hashtags" class="input-field" placeholder="e.g. #TitlesByTrish #DarkReads #BookTok"></div>
+        <button class="btn btn-primary" onclick="saveMoodboard()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Save Mood Board</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- SAVED REPLIES -->
