@@ -864,6 +864,7 @@ canvas{width:100%!important;}
     <div class="stat-box"><div class="stat-num" id="stat-total">75</div><div class="stat-label">Total Videos</div></div>
     <div class="stat-box"><div class="stat-num" id="stat-done">0</div><div class="stat-label">Posted</div></div>
     <div class="stat-box"><div class="stat-num" id="stat-pct">0%</div><div class="stat-label">Progress</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-streak">🔥 0</div><div class="stat-label">Day Streak</div></div>
   </div>
 
   <div class="progress-wrap">
@@ -915,6 +916,14 @@ canvas{width:100%!important;}
       </div>
       <button class="btn btn-primary" onclick="addAlarm()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Add & Enable Reminder</button>
     </div>
+  </div>
+
+  <div class="card-box" style="margin-top:16px;">
+    <div class="label-sm">🔁 Cross-Post Tracker</div>
+    <div style="font-size:14px;color:var(--text-dim);font-style:italic;margin-bottom:12px;line-height:1.6;">
+      Track which posted videos have been shared to each platform.
+    </div>
+    <div id="crosspost-list"><div style="font-style:italic;color:var(--text-dim);font-size:14px;padding:8px 0;">Mark a video as posted (✓ button in the calendar) to track it here.</div></div>
   </div>
 </div>
 
@@ -1044,6 +1053,7 @@ canvas{width:100%!important;}
   <div style="display:flex;gap:8px;margin-bottom:16px;">
     <button class="sc-tab active" id="ideas-subtab-gen" onclick="switchIdeasTab('gen',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Idea Generator</button>
     <button class="sc-tab" id="ideas-subtab-video" onclick="switchIdeasTab('video',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📹 My Video Ideas</button>
+    <button class="sc-tab" id="ideas-subtab-qna" onclick="switchIdeasTab('qna',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">💌 Q&amp;A Bank</button>
   </div>
 
   <div id="ideas-tab-gen">
@@ -1106,6 +1116,20 @@ canvas{width:100%!important;}
       <button class="btn btn-primary" onclick="addVideoIdea()" style="width:100%;padding:11px;font-size:15px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add Idea</button>
     </div>
     <div id="videoideas-list"></div>
+  </div>
+
+  <div id="ideas-tab-qna" style="display:none;">
+    <div class="card-box" style="margin-bottom:16px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:14px;">💌 AUDIENCE Q&amp;A BANK</div>
+      <div style="font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">Save questions your followers ask in comments so you never lose them — and turn them into video ideas.</div>
+      <div class="mic-row" style="margin-bottom:10px;">
+        <input type="text" id="qna-input" class="input-field" placeholder="Paste or speak a follower question..." onkeydown="if(event.key==='Enter'){addQnA();}" style="font-size:15px;">
+        <button class="mic-btn" onclick="startVoice('qna-input',false)" title="Speak the question" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎙️</button>
+      </div>
+      <input type="text" id="qna-from" class="input-field" placeholder="From @username (optional)" style="margin-bottom:10px;font-size:14px;">
+      <button class="btn btn-primary" onclick="addQnA()" style="width:100%;padding:11px;font-size:15px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Save Question</button>
+    </div>
+    <div id="qna-list"></div>
   </div>
 </div>
 
@@ -2073,7 +2097,14 @@ canvas{width:100%!important;}
 <!-- PANEL: PIPELINE            -->
 <!-- ═══════════════════════════ -->
 <div class="panel" id="panel-pipeline">
-  <div class="section-title">🤝 Collab Pipeline</div>
+  <div class="section-title">🤝 Pipeline</div>
+
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <button class="sc-tab active" id="pipe-subtab-collabs" onclick="switchPipeTab('collabs',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🤝 Collabs</button>
+    <button class="sc-tab" id="pipe-subtab-deals" onclick="switchPipeTab('deals',this)" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">💰 Brand Deals</button>
+  </div>
+
+  <div id="pipe-tab-collabs">
   <div class="card-box" style="margin-bottom:16px;">
     <div id="pipeline-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;"></div>
   </div>
@@ -2117,6 +2148,36 @@ canvas{width:100%!important;}
     </div>
   </div>
   <div id="pipeline-list" style="margin-top:8px;"></div>
+  </div>
+
+  <div id="pipe-tab-deals" style="display:none;">
+    <div class="card-box" style="margin-bottom:14px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:14px;">💰 BRAND DEAL TRACKER</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <input type="text" id="bd-brand" class="input-field" placeholder="Brand name *" style="font-size:15px;">
+        <div class="grid-2">
+          <div><div class="label-sm">Deal Type</div>
+            <select id="bd-type" class="input-field">
+              <option>Sponsored Post</option>
+              <option>Affiliate</option>
+              <option>Brand Partnership</option>
+              <option>Gifted / PR</option>
+              <option>Ambassador</option>
+            </select>
+          </div>
+          <div><div class="label-sm">Fee ($)</div><input type="number" id="bd-fee" class="input-field" placeholder="0.00" min="0" step="0.01"></div>
+        </div>
+        <div class="grid-2">
+          <div><div class="label-sm">Post Deadline</div><input type="date" id="bd-deadline" class="input-field"></div>
+          <div><div class="label-sm">Payment Due</div><input type="date" id="bd-payday" class="input-field"></div>
+        </div>
+        <input type="text" id="bd-deliverables" class="input-field" placeholder="Deliverables (e.g. 1 TikTok + 1 Reel)" style="font-size:14px;">
+        <input type="text" id="bd-contact" class="input-field" placeholder="Contact (email or @handle)" style="font-size:14px;">
+        <button class="btn btn-primary" onclick="saveBrandDeal()" style="padding:11px;font-size:15px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Add Brand Deal</button>
+      </div>
+    </div>
+    <div id="branddeals-list"></div>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════ -->
@@ -2604,6 +2665,9 @@ const engLogs=JSON.parse(localStorage.getItem('tbtrish_eng')||'[]');
 const arcList=JSON.parse(localStorage.getItem('tbtrish_arc')||'[]');
 const savedIdeas=JSON.parse(localStorage.getItem('tbtrish_ideas')||'[]');
 var videoIdeas=JSON.parse(localStorage.getItem('tbtrish_videoideas')||'[]');
+var crossPostData=JSON.parse(localStorage.getItem('tbtrish_crosspost')||'{}');
+var qnaBank=JSON.parse(localStorage.getItem('tbtrish_qna')||'[]');
+var brandDeals=JSON.parse(localStorage.getItem('tbtrish_branddeals')||'[]');
 const savedBooks=new Set(JSON.parse(localStorage.getItem('tbtrish_savedbooks')||'[]'));
 const alarms=JSON.parse(localStorage.getItem('tbtrish_alarms')||JSON.stringify([
   {id:'a1',label:'🎬 Film Day — Record this week\'s videos',day:'Saturday',time:'10:00',active:false},
@@ -2725,6 +2789,72 @@ function updateStats(){
   document.getElementById('stat-pct').textContent=pct+'%';
   document.getElementById('prog-label').textContent=`${done} / ${videos.length} posted`;
   document.getElementById('prog-fill').style.width=pct+'%';
+  updateStreak();
+  renderCrossPost();
+}
+
+function updateStreak(){
+  var monthMap={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  var dates=[];
+  doneSet.forEach(function(id){
+    var v=videos.find(function(x){return x.id===id;});
+    if(!v||!v.date)return;
+    var parts=v.date.trim().split(' ');
+    if(parts.length<3)return;
+    var mon=monthMap[parts[1]];
+    var day=parseInt(parts[2]);
+    if(mon===undefined||isNaN(day))return;
+    var yr=new Date().getFullYear();
+    // try current year; if that weekday doesn't match try last year
+    var d=new Date(yr,mon,day);
+    dates.push(d.toISOString().slice(0,10));
+  });
+  var unique=[...new Set(dates)].sort();
+  if(!unique.length){document.getElementById('stat-streak').textContent='🔥 0';return;}
+  var streak=1;
+  for(var i=unique.length-1;i>0;i--){
+    var cur=new Date(unique[i]+'T12:00');
+    var prev=new Date(unique[i-1]+'T12:00');
+    var diff=(cur-prev)/(1000*60*60*24);
+    if(diff===1)streak++;
+    else break;
+  }
+  document.getElementById('stat-streak').textContent='🔥 '+streak;
+}
+
+// ══════════════════════════════════════════
+// CROSS-POST TRACKER
+// ══════════════════════════════════════════
+function renderCrossPost(){
+  var el=document.getElementById('crosspost-list');
+  if(!el)return;
+  var postedVideos=videos.filter(function(v){return doneSet.has(v.id);}).slice(-10).reverse();
+  if(!postedVideos.length){
+    el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:14px;padding:8px 0;">Mark a video as posted (✓ button in the calendar) to track it here.</div>';
+    return;
+  }
+  el.innerHTML=postedVideos.map(function(v){
+    var cp=crossPostData[v.id]||{};
+    function chk(platform,label){
+      var checked=cp[platform]?'checked':'';
+      var col=cp[platform]?'var(--gold)':'var(--text-dim)';
+      return '<label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;color:'+col+';touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
+        +'<input type="checkbox" '+checked+' onchange="toggleCrossPost('+v.id+',\''+platform+'\')" style="accent-color:var(--gold);width:15px;height:15px;"> '+label+'</label>';
+    }
+    var allDone=cp.tiktok&&cp.ig&&cp.yt;
+    return '<div style="padding:10px 0;border-bottom:1px solid var(--border);">'
+      +'<div style="font-size:14px;color:'+(allDone?'var(--gold)':'var(--text)')+';margin-bottom:6px;line-height:1.4;">'+(allDone?'✓ ':'')+'<strong>'+v.title+'</strong> <span style="font-size:12px;color:var(--text-dim);">'+v.date+'</span></div>'
+      +'<div style="display:flex;gap:16px;flex-wrap:wrap;">'+chk('tiktok','TikTok')+chk('ig','Instagram')+chk('yt','YouTube')+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function toggleCrossPost(videoId,platform){
+  if(!crossPostData[videoId])crossPostData[videoId]={};
+  crossPostData[videoId][platform]=!crossPostData[videoId][platform];
+  localStorage.setItem('tbtrish_crosspost',JSON.stringify(crossPostData));
+  renderCrossPost();
+  if(crossPostData[videoId].tiktok&&crossPostData[videoId].ig&&crossPostData[videoId].yt)toast('✦ All platforms — nice work!');
 }
 
 // ═══════════════════════════════════════════════
@@ -3013,9 +3143,11 @@ function renderSavedIdeas(){
 function switchIdeasTab(tab,btn){
   document.getElementById('ideas-tab-gen').style.display=tab==='gen'?'':'none';
   document.getElementById('ideas-tab-video').style.display=tab==='video'?'':'none';
+  document.getElementById('ideas-tab-qna').style.display=tab==='qna'?'':'none';
   document.querySelectorAll('#panel-ideas .sc-tab').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
   if(tab==='video')renderVideoIdeas();
+  if(tab==='qna')renderQnA();
 }
 
 function addVideoIdea(){
@@ -3237,6 +3369,137 @@ function renderPkgHTML(pkg){
 
 // ═══════════════════════════════════════════════
 // BOOK BANK
+// ══════════════════════════════════════════
+// AUDIENCE Q&A BANK
+// ══════════════════════════════════════════
+function addQnA(){
+  var inp=document.getElementById('qna-input');
+  var from=document.getElementById('qna-from');
+  var text=inp?inp.value.trim():'';
+  if(!text){toast('Paste or speak a question first!');return;}
+  qnaBank.unshift({id:Date.now(),text:text,from:from?from.value.trim():'',ts:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  localStorage.setItem('tbtrish_qna',JSON.stringify(qnaBank));
+  if(inp)inp.value='';
+  if(from)from.value='';
+  renderQnA();
+  toast('✦ Question saved!');
+}
+
+function deleteQnA(id){
+  qnaBank=qnaBank.filter(function(q){return q.id!==id;});
+  localStorage.setItem('tbtrish_qna',JSON.stringify(qnaBank));
+  renderQnA();
+}
+
+function useQnAAsIdea(id){
+  var q=qnaBank.find(function(x){return x.id===id;});
+  if(!q)return;
+  videoIdeas.unshift({id:Date.now(),text:'Answer: '+q.text,category:'Other',ts:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  localStorage.setItem('tbtrish_videoideas',JSON.stringify(videoIdeas));
+  toast('✦ Added to My Video Ideas!');
+}
+
+function renderQnA(){
+  var el=document.getElementById('qna-list');
+  if(!el)return;
+  if(!qnaBank.length){
+    el.innerHTML='<div style="text-align:center;padding:32px 16px;font-style:italic;color:var(--text-dim);font-size:15px;">No questions saved yet — copy one from your comments 💌</div>';
+    return;
+  }
+  el.innerHTML=qnaBank.map(function(q){
+    return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;margin-bottom:10px;overflow:hidden;">'
+      +'<div style="padding:12px 14px;">'
+      +(q.from?'<div style="font-size:11px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:4px;font-family:\'IM Fell English SC\',serif;">'+q.from+'</div>':'')
+      +'<div style="font-size:15px;color:var(--text);line-height:1.5;word-break:break-word;margin-bottom:4px;">'+q.text+'</div>'
+      +'<div style="font-size:12px;color:var(--text-dim);">'+q.ts+'</div>'
+      +'</div>'
+      +'<div style="display:flex;border-top:1px solid var(--border);">'
+      +'<button onclick="useQnAAsIdea('+q.id+')" style="flex:1;padding:8px;background:rgba(200,160,80,.08);border:none;color:var(--gold-dim);font-size:12px;letter-spacing:1px;cursor:pointer;font-family:\'IM Fell English SC\',serif;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">→ Use as Video Idea</button>'
+      +'<button onclick="deleteQnA('+q.id+')" style="padding:8px 14px;background:none;border:none;border-left:1px solid var(--border);color:var(--text-dim);cursor:pointer;font-size:14px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// BRAND DEAL TRACKER
+// ══════════════════════════════════════════
+function switchPipeTab(tab,btn){
+  document.getElementById('pipe-tab-collabs').style.display=tab==='collabs'?'':'none';
+  document.getElementById('pipe-tab-deals').style.display=tab==='deals'?'':'none';
+  document.querySelectorAll('#panel-pipeline .sc-tab').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  if(tab==='deals')renderBrandDeals();
+}
+
+function saveBrandDeal(){
+  var brand=document.getElementById('bd-brand').value.trim();
+  if(!brand){toast('Enter a brand name first!');return;}
+  brandDeals.unshift({
+    id:Date.now(),
+    brand:brand,
+    type:document.getElementById('bd-type').value,
+    fee:parseFloat(document.getElementById('bd-fee').value)||0,
+    deadline:document.getElementById('bd-deadline').value,
+    payday:document.getElementById('bd-payday').value,
+    deliverables:document.getElementById('bd-deliverables').value.trim(),
+    contact:document.getElementById('bd-contact').value.trim(),
+    posted:false,paid:false,disclosed:false
+  });
+  localStorage.setItem('tbtrish_branddeals',JSON.stringify(brandDeals));
+  ['bd-brand','bd-fee','bd-deadline','bd-payday','bd-deliverables','bd-contact'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  renderBrandDeals();
+  toast('✦ Brand deal added!');
+}
+
+function toggleBrandField(id,field){
+  var deal=brandDeals.find(function(d){return d.id===id;});
+  if(!deal)return;
+  deal[field]=!deal[field];
+  localStorage.setItem('tbtrish_branddeals',JSON.stringify(brandDeals));
+  renderBrandDeals();
+}
+
+function deleteBrandDeal(id){
+  brandDeals=brandDeals.filter(function(d){return d.id!==id;});
+  localStorage.setItem('tbtrish_branddeals',JSON.stringify(brandDeals));
+  renderBrandDeals();
+}
+
+function renderBrandDeals(){
+  var el=document.getElementById('branddeals-list');
+  if(!el)return;
+  if(!brandDeals.length){
+    el.innerHTML='<div style="text-align:center;padding:32px 16px;font-style:italic;color:var(--text-dim);font-size:15px;">No brand deals yet — add one above 💰</div>';
+    return;
+  }
+  var today=new Date();today.setHours(0,0,0,0);
+  el.innerHTML=brandDeals.map(function(d){
+    var overdue=d.deadline&&!d.posted&&new Date(d.deadline)<today;
+    var borderCol=overdue?'rgba(220,60,60,.5)':d.posted&&d.paid&&d.disclosed?'rgba(80,200,80,.4)':'var(--border)';
+    function pill(active,label,field,col){
+      return '<button onclick="toggleBrandField('+d.id+',\''+field+'\')" style="padding:4px 10px;border-radius:20px;border:1px solid '+(active?col:'var(--border)')+';background:'+(active?col.replace(')',', .15)'):'none')+';color:'+(active?col:'var(--text-dim)')+';font-size:12px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+(active?'✓ ':'')+label+'</button>';
+    }
+    return '<div style="background:var(--bg2);border:1px solid '+borderCol+';border-radius:6px;margin-bottom:12px;overflow:hidden;">'
+      +'<div style="padding:12px 14px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">'
+      +'<div><div style="font-family:\'Cinzel\',serif;font-size:15px;color:var(--text);">'+d.brand+'</div>'
+      +'<div style="font-size:12px;color:var(--gold-dim);margin-top:2px;">'+d.type+(d.fee?' · $'+d.fee.toFixed(2):'')+'</div></div>'
+      +'<button onclick="deleteBrandDeal('+d.id+')" style="background:none;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'</div>'
+      +(d.deliverables?'<div style="font-size:13px;color:var(--text-dim);margin-bottom:4px;">📋 '+d.deliverables+'</div>':'')
+      +(d.deadline?'<div style="font-size:13px;color:'+(overdue?'#e05555':'var(--text-dim)')+';margin-bottom:2px;">📅 Post by: '+new Date(d.deadline+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})+(overdue?' ⚠️ OVERDUE':'')+'</div>':'')
+      +(d.payday?'<div style="font-size:13px;color:var(--text-dim);margin-bottom:4px;">💳 Payment: '+new Date(d.payday+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div>':'')
+      +'</div>'
+      +'<div style="display:flex;gap:6px;padding:8px 14px;border-top:1px solid var(--border);flex-wrap:wrap;">'
+      +pill(d.posted,'Posted','posted','rgba(80,180,255,1)')
+      +pill(d.disclosed,'Disclosed','disclosed','rgba(200,160,80,1)')
+      +pill(d.paid,'Paid','paid','rgba(80,200,120,1)')
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
 // ═══════════════════════════════════════════════
 function setBookFilter(f,btn){
   bookFilter=f;
