@@ -43,6 +43,12 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 
 /* ── NAV TABS ── */
 .nav-tabs{display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:14px;padding-top:2px;}
+.group-nav{display:flex;border-bottom:2px solid var(--border);margin-bottom:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.group-nav::-webkit-scrollbar{display:none;}
+.group-btn{flex:1;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;padding:12px 6px;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;background:transparent;color:var(--text-dim);cursor:pointer;white-space:nowrap;transition:all .2s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-width:60px;text-align:center;}
+.group-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.sub-nav{display:none;gap:6px;padding:12px 0 12px;flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:20px;}
+.sub-nav.active{display:flex;}
 .nav-btn{font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .25s;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 .nav-btn:hover{border-color:var(--border-hi);color:var(--text);background:rgba(200,160,80,.05);}
 .nav-btn.active{border-color:var(--gold);background:rgba(200,160,80,.12);color:var(--gold);box-shadow:0 0 14px rgba(200,160,80,.15);}
@@ -817,34 +823,54 @@ canvas{width:100%!important;}
   </div>
 </div>
 
-<!-- NAV -->
-<div class="nav-tabs">
-  <button class="nav-btn active" onclick="showPanel('calendar')">📅 Calendar</button>
-  <button class="nav-btn" onclick="showPanel('followers')">📈 Followers</button>
-  <button class="nav-btn" onclick="showPanel('engagement')">🎯 Engagement</button>
-  <button class="nav-btn" onclick="showPanel('arc')">📬 ARCs & Collabs</button>
-  <button class="nav-btn" onclick="showPanel('ideas')">💡 Idea Generator</button>
-  <button class="nav-btn" onclick="showPanel('books')">🖤 Book Bank</button>
-  <button class="nav-btn" onclick="showPanel('schedule')">⏰ Post Schedule</button>
-  <button class="nav-btn" onclick="showPanel('planner')">📆 My Planner</button>
-  <button class="nav-btn" onclick="showPanel('scorecard')">📖 Scorecard</button>
-  <button class="nav-btn" onclick="showPanel('captions')">✍️ Captions</button>
-  <button class="nav-btn" onclick="showPanel('hashtags')">🏷️ Hashtags</button>
-  <button class="nav-btn" onclick="showPanel('wins')">🏆 Wins Journal</button>
-  <button class="nav-btn" onclick="showPanel('bookquotes')">📝 Quotes</button>
-  <button class="nav-btn" onclick="showPanel('monthlypicks')">📚 Monthly Picks</button>
-  <button class="nav-btn" onclick="showPanel('analytics')">📊 Analytics</button>
-  <button class="nav-btn" onclick="showPanel('timer')">⏱️ Timer</button>
-  <button class="nav-btn" onclick="showPanel('spending')">💰 Spending</button>
-  <button class="nav-btn" onclick="showPanel('pipeline')">🤝 Pipeline</button>
-  <button class="nav-btn" onclick="showPanel('mood')">🎭 Mood Picker</button>
-  <button class="nav-btn" onclick="showPanel('spin')">🎡 Spin the Wheel</button>
-  <button class="nav-btn" onclick="showPanel('thumbnails')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎨 Thumbnails</button>
-  <button class="nav-btn" onclick="showPanel('replies')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">💬 Saved Replies</button>
-  <button class="nav-btn" onclick="showPanel('collabwish')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🌟 Collab Wishlist</button>
+<!-- GROUP NAV -->
+<div class="group-nav">
+  <button class="group-btn active" data-group="home" onclick="showGroup('home',this)">📅 Home</button>
+  <button class="group-btn" data-group="reading" onclick="showGroup('reading',this)">📖 Reading</button>
+  <button class="group-btn" data-group="content" onclick="showGroup('content',this)">✍️ Content</button>
+  <button class="group-btn" data-group="growth" onclick="showGroup('growth',this)">📈 Growth</button>
+  <button class="group-btn" data-group="business" onclick="showGroup('business',this)">🤝 Business</button>
+</div>
 
-  <button class="nav-btn" onclick="showPanel('ratecard')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">💰 Rate Card</button>
-  <button class="nav-btn" onclick="showPanel('quiz')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🧠 Reader Quiz</button>
+<!-- SUB-NAVS -->
+<div class="sub-nav active" id="subnav-home">
+  <button class="nav-btn active" data-panel="calendar" onclick="showPanel('calendar')">📅 Calendar</button>
+  <button class="nav-btn" data-panel="planner" onclick="showPanel('planner')">📆 Planner</button>
+  <button class="nav-btn" data-panel="schedule" onclick="showPanel('schedule')">⏰ Schedule</button>
+</div>
+
+<div class="sub-nav" id="subnav-reading">
+  <button class="nav-btn" data-panel="scorecard" onclick="showPanel('scorecard')">📖 Scorecard</button>
+  <button class="nav-btn" data-panel="books" onclick="showPanel('books')">🖤 Book Bank</button>
+  <button class="nav-btn" data-panel="monthlypicks" onclick="showPanel('monthlypicks')">📚 Monthly Picks</button>
+  <button class="nav-btn" data-panel="bookquotes" onclick="showPanel('bookquotes')">📝 Quotes</button>
+  <button class="nav-btn" data-panel="spin" onclick="showPanel('spin')">🎡 Spin the Wheel</button>
+  <button class="nav-btn" data-panel="quiz" onclick="showPanel('quiz')">🧠 Reader Quiz</button>
+</div>
+
+<div class="sub-nav" id="subnav-content">
+  <button class="nav-btn" data-panel="ideas" onclick="showPanel('ideas')">💡 Ideas</button>
+  <button class="nav-btn" data-panel="captions" onclick="showPanel('captions')">✍️ Captions</button>
+  <button class="nav-btn" data-panel="hashtags" onclick="showPanel('hashtags')">🏷️ Hashtags</button>
+  <button class="nav-btn" data-panel="thumbnails" onclick="showPanel('thumbnails')">🎨 Thumbnails</button>
+  <button class="nav-btn" data-panel="replies" onclick="showPanel('replies')">💬 Replies</button>
+  <button class="nav-btn" data-panel="timer" onclick="showPanel('timer')">⏱️ Timer</button>
+  <button class="nav-btn" data-panel="mood" onclick="showPanel('mood')">🎭 Mood Picker</button>
+</div>
+
+<div class="sub-nav" id="subnav-growth">
+  <button class="nav-btn" data-panel="followers" onclick="showPanel('followers')">📈 Followers</button>
+  <button class="nav-btn" data-panel="engagement" onclick="showPanel('engagement')">🎯 Engagement</button>
+  <button class="nav-btn" data-panel="analytics" onclick="showPanel('analytics')">📊 Analytics</button>
+  <button class="nav-btn" data-panel="spending" onclick="showPanel('spending')">💰 Spending</button>
+</div>
+
+<div class="sub-nav" id="subnav-business">
+  <button class="nav-btn" data-panel="pipeline" onclick="showPanel('pipeline')">🤝 Pipeline</button>
+  <button class="nav-btn" data-panel="arc" onclick="showPanel('arc')">📬 ARCs & Collabs</button>
+  <button class="nav-btn" data-panel="ratecard" onclick="showPanel('ratecard')">💰 Rate Card</button>
+  <button class="nav-btn" data-panel="wins" onclick="showPanel('wins')">🏆 Wins</button>
+  <button class="nav-btn" data-panel="collabwish" onclick="showPanel('collabwish')">🌟 Collab Wishlist</button>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -2741,12 +2767,34 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 // ═══════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════
+var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',timer:'content',mood:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business'};
+
+function showGroup(group,btn){
+  document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.sub-nav').forEach(function(n){n.classList.remove('active');});
+  btn.classList.add('active');
+  var subnav=document.getElementById('subnav-'+group);
+  if(subnav)subnav.classList.add('active');
+  var first=subnav&&subnav.querySelector('.nav-btn[data-panel]');
+  if(first)showPanel(first.getAttribute('data-panel'));
+}
+
 function showPanel(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('panel-'+id).classList.add('active');
-  const map={calendar:0,followers:1,engagement:2,arc:3,ideas:4,books:5,schedule:6,planner:7,scorecard:8,captions:9,hashtags:10,wins:11,bookquotes:12,monthlypicks:13,analytics:14,timer:15,spending:16,pipeline:17,mood:18,spin:19,thumbnails:20,replies:21,collabwish:22,ratecard:23,quiz:24};
-  if(map[id]!==undefined){var _nb=document.querySelectorAll('.nav-btn')[map[id]];if(_nb)_nb.classList.add('active');}
+  var panelEl=document.getElementById('panel-'+id);
+  if(panelEl)panelEl.classList.add('active');
+  var nb=document.querySelector('.nav-btn[data-panel="'+id+'"]');
+  if(nb)nb.classList.add('active');
+  var group=PANEL_GROUP[id];
+  if(group){
+    document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
+    var gb=document.querySelector('.group-btn[data-group="'+group+'"]');
+    if(gb)gb.classList.add('active');
+    document.querySelectorAll('.sub-nav').forEach(function(n){n.classList.remove('active');});
+    var sn=document.getElementById('subnav-'+group);
+    if(sn)sn.classList.add('active');
+  }
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
   if(id==='arc')renderARC();
