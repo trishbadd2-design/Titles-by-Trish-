@@ -110,6 +110,8 @@ textarea{resize:vertical;min-height:80px;}
 .card-title{font-family:'Cinzel',serif;font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px;line-height:1.3;}
 .card-type{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:3px;color:var(--text-dim);}
 .card-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.btn-mv{width:24px;height:24px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0;}
+.btn-mv:hover{border-color:var(--gold);color:var(--gold);}
 .btn-done{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:15px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
 .btn-done:hover{border-color:rgba(60,160,60,.5);color:#4a9a4a;}
 .video-card.done .btn-done{background:rgba(60,160,60,.2);border-color:rgba(60,160,60,.5);color:#4a9a4a;}
@@ -915,6 +917,10 @@ canvas{width:100%!important;}
     <button class="nav-btn" onclick="setCalTab('done',this)">Posted ✓</button>
   </div>
 
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+    <div style="font-size:13px;color:var(--text-dim);font-style:italic;">Tap ↑ ↓ on any video to reorder it within its week.</div>
+    <button onclick="resetCalOrder()" style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Reset Order</button>
+  </div>
   <div id="calendar"></div>
 
   <div class="card-box" style="margin-top:16px;">
@@ -2772,6 +2778,7 @@ var brandDeals=JSON.parse(localStorage.getItem('tbtrish_branddeals')||'[]');
 var folGoals=JSON.parse(localStorage.getItem('tbtrish_folgoals')||'[]');
 var inspoList=JSON.parse(localStorage.getItem('tbtrish_inspo')||'[]');
 var paceData=JSON.parse(localStorage.getItem('tbtrish_pace')||'{"book":"","total":0,"deadline":"","log":[]}');
+var calCustomOrder=JSON.parse(localStorage.getItem('tbtrish_calorder')||'null');
 var auditState=JSON.parse(localStorage.getItem('tbtrish_audit')||'{}');
 var moodboard=JSON.parse(localStorage.getItem('tbtrish_moodboard')||'{}');
 const savedBooks=new Set(JSON.parse(localStorage.getItem('tbtrish_savedbooks')||'[]'));
@@ -2869,6 +2876,15 @@ function renderCalendar(){
 
   const weeks={};
   filtered.forEach(v=>{if(!weeks[v.week])weeks[v.week]=[];weeks[v.week].push(v);});
+  // Apply custom order within each week
+  if(calCustomOrder){
+    Object.keys(weeks).forEach(function(wk){
+      weeks[wk].sort(function(a,b){
+        var ai=calCustomOrder.indexOf(a.id);var bi=calCustomOrder.indexOf(b.id);
+        if(ai===-1)ai=99999;if(bi===-1)bi=99999;return ai-bi;
+      });
+    });
+  }
 
   // Build month lookup from first video in each week
   const weekMonthMap={};
@@ -2883,13 +2899,17 @@ function renderCalendar(){
     const mn=monthDisplayMap[weekMonthMap[week]]||weekMonthMap[week]||'Unknown';
     if(mn!==lastMonth){html+=`<div class="month-header">✦ ${mn} 2026 ✦</div>`;lastMonth=mn;}
     html+=`<div class="week-label">${week}</div>`;
-    weeks[week].forEach(v=>{
+    weeks[week].forEach(function(v,vi){
       const done=doneSet.has(v.id);
+      const wkList=weeks[week];
+      const canUp=vi>0;const canDown=vi<wkList.length-1;
       html+=`<div class="video-card${done?' done':''}" id="card-${v.id}">
         <div class="card-top" onclick="toggleCard(${v.id})">
           <div class="card-date">${v.date}</div>
           <div class="card-info"><div class="card-title">${v.title}</div><div class="card-type">${v.type}</div></div>
           <div class="card-actions" onclick="event.stopPropagation()">
+            <button class="btn-mv" onclick="moveCalCard(${v.id},'up')" title="Move up" style="opacity:${canUp?1:.25};cursor:${canUp?'pointer':'default'};">↑</button>
+            <button class="btn-mv" onclick="moveCalCard(${v.id},'down')" title="Move down" style="opacity:${canDown?1:.25};cursor:${canDown?'pointer':'default'};">↓</button>
             <button class="btn-done" onclick="toggleDone(${v.id})" title="${done?'Mark pending':'Mark posted'}">${done?'✓':'○'}</button>
             <button class="btn-script" onclick="openModal(${v.id})">Script</button>
             <button class="btn-expand" onclick="toggleCard(${v.id})">▾</button>
@@ -2910,6 +2930,26 @@ function renderCalendar(){
 
 function toggleCard(id){document.getElementById('card-'+id).classList.toggle('expanded');}
 function toggleDone(id){if(doneSet.has(id))doneSet.delete(id);else doneSet.add(id);saveDone();renderCalendar();}
+function moveCalCard(id,dir){
+  var v=videos.find(function(x){return x.id===id;});if(!v)return;
+  var weekVideos=videos.filter(function(x){return x.week===v.week;});
+  if(!calCustomOrder)calCustomOrder=videos.map(function(x){return x.id;});
+  var weekOrdered=weekVideos.slice().sort(function(a,b){
+    var ai=calCustomOrder.indexOf(a.id);var bi=calCustomOrder.indexOf(b.id);
+    if(ai===-1)ai=99999;if(bi===-1)bi=99999;return ai-bi;
+  });
+  var idx=weekOrdered.findIndex(function(x){return x.id===id;});
+  var swapIdx=dir==='up'?idx-1:idx+1;
+  if(swapIdx<0||swapIdx>=weekOrdered.length)return;
+  var posA=calCustomOrder.indexOf(weekOrdered[idx].id);
+  var posB=calCustomOrder.indexOf(weekOrdered[swapIdx].id);
+  if(posA===-1){calCustomOrder.push(weekOrdered[idx].id);posA=calCustomOrder.length-1;}
+  if(posB===-1){calCustomOrder.push(weekOrdered[swapIdx].id);posB=calCustomOrder.length-1;}
+  var tmp=calCustomOrder[posA];calCustomOrder[posA]=calCustomOrder[posB];calCustomOrder[posB]=tmp;
+  localStorage.setItem('tbtrish_calorder',JSON.stringify(calCustomOrder));
+  renderCalendar();
+}
+function resetCalOrder(){calCustomOrder=null;localStorage.removeItem('tbtrish_calorder');renderCalendar();toast('Calendar order reset to original 🖤');}
 
 function updateStats(){
   const total=videos.length,done=doneSet.size,pct=Math.round((done/total)*100);
