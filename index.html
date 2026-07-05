@@ -2025,20 +2025,56 @@ canvas{width:100%!important;}
 <div class="panel" id="panel-spin">
   <div class="section-title">🎡 What Should I Read Next?</div>
 
-  <!-- SPIN THE WHEEL (always visible) -->
-  <div id="spin-section-wheel">
-    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:12px;">🎡 SPIN THE WHEEL</div>
-    <div class="spin-wrap">
-      <div id="spin-display" class="spin-display-box">
-        <div id="spin-reel-title" class="spin-display-title">Tap Spin to pick your next read 🖤</div>
-        <div id="spin-reel-author" class="spin-display-author"></div>
-      </div>
-      <button id="spin-btn" onclick="spinWheel()" class="btn btn-primary" style="padding:14px 48px;font-size:16px;letter-spacing:3px;touch-action:manipulation;width:100%;max-width:320px;-webkit-tap-highlight-color:transparent;">✦ Spin the Wheel</button>
-      <div style="text-align:center;margin-top:4px;">
-        <div class="spin-result" id="spin-result"></div>
-        <div class="spin-result-author" id="spin-result-author"></div>
+  <!-- Always-visible spin display -->
+  <div class="spin-wrap">
+    <div id="spin-display" class="spin-display-box">
+      <div id="spin-reel-title" class="spin-display-title">Tap Spin to pick your next read 🖤</div>
+      <div id="spin-reel-author" class="spin-display-author"></div>
+    </div>
+    <button id="spin-btn" onclick="spinWheel()" class="btn btn-primary" style="padding:14px 48px;font-size:16px;letter-spacing:3px;touch-action:manipulation;width:100%;max-width:320px;-webkit-tap-highlight-color:transparent;">✦ Spin the Wheel</button>
+    <div style="text-align:center;margin-top:4px;">
+      <div class="spin-result" id="spin-result"></div>
+      <div class="spin-result-author" id="spin-result-author"></div>
+    </div>
+  </div>
+
+  <!-- Source tabs -->
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin:20px 0 14px;">
+    <button class="idea-filter-btn active" id="spin-tab-tbr" onclick="setSpinTab('tbr',this)">📚 Full TBR</button>
+    <button class="idea-filter-btn" id="spin-tab-custom" onclick="setSpinTab('custom',this)">✨ Custom Shortlist</button>
+  </div>
+
+  <!-- TBR source section -->
+  <div id="spin-section-tbr">
+    <div id="spin-tbr-note" style="font-size:14px;color:var(--text-dim);font-style:italic;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:12px 14px;line-height:1.7;">
+      Spinning from your full TBR pile. Add books in Reading → Scorecard → TBR to grow the mix. 🖤
+    </div>
+  </div>
+
+  <!-- Custom shortlist section -->
+  <div id="spin-section-custom" style="display:none;">
+    <p style="font-size:14px;color:var(--text-dim);font-style:italic;margin:0 0 14px;line-height:1.7;">
+      Add just the books you're deciding between — 3, 5, 10, however many — then spin to let fate choose. 🖤
+    </p>
+    <div class="card-box" style="margin-bottom:14px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:12px;">✦ ADD A BOOK</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="mic-row">
+          <input type="text" id="spin-custom-title" class="input-field" placeholder='Book title *' style="font-size:15px;">
+          <button class="mic-btn" onclick="startVoice('spin-custom-title',false)" title="Speak title" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎙️</button>
+        </div>
+        <div class="mic-row">
+          <input type="text" id="spin-custom-author" class="input-field" placeholder='Author (optional)' style="font-size:14px;">
+          <button class="mic-btn" onclick="startVoice('spin-custom-author',false)" title="Speak author" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎙️</button>
+        </div>
+        <button class="btn btn-primary" onclick="addSpinBook()" style="padding:11px;font-size:15px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add to Shortlist</button>
       </div>
     </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div id="spin-custom-count" style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold-dim);">0 BOOKS IN THE MIX</div>
+      <button onclick="clearSpinList()" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Clear All</button>
+    </div>
+    <div id="spin-custom-list"></div>
   </div>
 
 </div>
@@ -2836,7 +2872,7 @@ function showPanel(id){
   if(id==='hashtags'){renderHashtags();}
   if(id==='wins'){renderWins();}
   if(id==='bookquotes'){renderBookQuotes();}
-  if(id==='spin'){initSpin();}
+  if(id==='spin'){initSpin();renderSpinList();spinUpdateDisplay();}
   if(id==='monthlypicks'){initMonthlyPicks();}
   if(id==='analytics'){initAnalytics();}
   if(id==='timer'){renderTimerPanel();}
@@ -5842,6 +5878,8 @@ function renderWins(){
 // SPIN THE WHEEL
 // ══════════════════════════════════════════
 var spinBooks=[], _spinRunning=false, _spinTimer=null;
+var spinList=JSON.parse(localStorage.getItem('tbtrish_spinlist')||'[]');
+var _spinTab='tbr';
 
 function initSpin(){
   var tbr;
@@ -5859,13 +5897,87 @@ function initSpin(){
   var reelAuthor=document.getElementById('spin-reel-author');
   if(reelTitle)reelTitle.textContent='Tap Spin to pick your next read 🖤';
   if(reelAuthor)reelAuthor.textContent=spinBooks.length+' books ready';
+  var note=document.getElementById('spin-tbr-note');
+  if(note)note.textContent='Spinning from your full TBR pile — '+spinBooks.length+' books in the mix. Add more in Reading → Scorecard → TBR. 🖤';
   document.getElementById('spin-result').textContent='';
   document.getElementById('spin-result-author').textContent='';
 }
 
+function setSpinTab(tab,btn){
+  _spinTab=tab;
+  document.querySelectorAll('#panel-spin .idea-filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('spin-section-tbr').style.display=tab==='tbr'?'':'none';
+  document.getElementById('spin-section-custom').style.display=tab==='custom'?'':'none';
+  if(tab==='tbr'){initSpin();}
+  else{spinBooks=spinList.slice();spinUpdateDisplay();}
+}
+
+function spinUpdateDisplay(){
+  var reelTitle=document.getElementById('spin-reel-title');
+  var reelAuthor=document.getElementById('spin-reel-author');
+  if(reelTitle)reelTitle.textContent='Tap Spin to pick your next read 🖤';
+  if(reelAuthor)reelAuthor.textContent=spinBooks.length+(spinBooks.length===1?' book':' books')+' in the mix';
+  var countEl=document.getElementById('spin-custom-count');
+  if(countEl)countEl.textContent=spinList.length+(spinList.length===1?' BOOK':' BOOKS')+' IN THE MIX';
+}
+
+function addSpinBook(){
+  var titleEl=document.getElementById('spin-custom-title');
+  var authorEl=document.getElementById('spin-custom-author');
+  var title=(titleEl?titleEl.value:'').trim();
+  if(!title){toast('Enter a book title!');return;}
+  var book={id:Date.now().toString(),title:title,author:authorEl?authorEl.value.trim():''};
+  spinList.push(book);
+  localStorage.setItem('tbtrish_spinlist',JSON.stringify(spinList));
+  if(titleEl)titleEl.value='';
+  if(authorEl)authorEl.value='';
+  spinBooks=spinList.slice();
+  renderSpinList();
+  spinUpdateDisplay();
+  toast('❖ Added to shortlist!');
+}
+
+function removeSpinBook(id){
+  spinList=spinList.filter(function(b){return b.id!==id;});
+  localStorage.setItem('tbtrish_spinlist',JSON.stringify(spinList));
+  spinBooks=spinList.slice();
+  renderSpinList();
+  spinUpdateDisplay();
+}
+
+function clearSpinList(){
+  if(!spinList.length)return;
+  if(!confirm('Clear your entire shortlist?'))return;
+  spinList=[];
+  localStorage.setItem('tbtrish_spinlist',JSON.stringify(spinList));
+  spinBooks=[];
+  renderSpinList();
+  spinUpdateDisplay();
+}
+
+function renderSpinList(){
+  var el=document.getElementById('spin-custom-list');
+  if(!el)return;
+  if(!spinList.length){
+    el.innerHTML='<div style="text-align:center;padding:24px;color:var(--text-dim);font-style:italic;">No books yet — add some above to spin! 🖤</div>';
+    return;
+  }
+  el.innerHTML=spinList.map(function(b,i){
+    return '<div style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 13px;margin-bottom:7px;">'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:13px;color:var(--gold-dim);min-width:20px;text-align:center;">'+(i+1)+'</div>'
+      +'<div style="flex:1;min-width:0;">'
+        +'<div style="font-weight:700;color:var(--text);font-size:15px;">'+b.title+'</div>'
+        +(b.author?'<div style="font-size:13px;color:var(--text-dim);">by '+b.author+'</div>':'')
+      +'</div>'
+      +'<button onclick="removeSpinBook(\''+b.id+'\')" style="background:transparent;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;padding:4px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;" title="Remove">✕</button>'
+    +'</div>';
+  }).join('');
+}
+
 function spinWheel(){
   if(_spinRunning){return;}
-  if(!spinBooks.length){toast('Add books to your TBR first! 📚');return;}
+  if(!spinBooks.length){toast(_spinTab==='custom'?'Add books to your shortlist first! ✨':'Add books to your TBR first! 📚');return;}
   var display=document.getElementById('spin-display');
   var reelTitle=document.getElementById('spin-reel-title');
   var reelAuthor=document.getElementById('spin-reel-author');
