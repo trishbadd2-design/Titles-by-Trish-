@@ -5255,7 +5255,12 @@ scheduleAlarmCheck();
 document.getElementById('fol-date').value=new Date().toISOString().split('T')[0];
 document.getElementById('win-date').value=new Date().toISOString().split('T')[0];
 // Restore last visited panel
-(function(){const lp=localStorage.getItem('tbtrish_lastpanel');if(lp&&document.getElementById('panel-'+lp))showPanel(lp);})();
+(function(){
+  var lp=localStorage.getItem('tbtrish_lastpanel');
+  if(lp&&document.getElementById('panel-'+lp)){
+    try{showPanel(lp);}catch(e){console.warn('Panel restore failed:',lp,e);}
+  }
+})();
 // ── BACKUP / RESTORE ──
 const ALL_BACKUP_KEYS=[
   'tbtrish_done','tbtrish_fol','tbtrish_eng','tbtrish_arc',
@@ -8886,6 +8891,7 @@ var QUIZ_RESULTS={
   D:{type:'The Thoughtful Reader 📚',desc:'You care about the craft — beautiful sentences, thematic depth, and books that say something real. You bring a literary perspective to BookTok that sets you apart.',tip:'Content idea: "Underrated books that deserve more attention" — your audience trusts your taste and wants your deep dives.'}
 };
 function initQuiz(){
+  if(typeof quizAnswers==='undefined'||typeof QUIZ_QS==='undefined')return;
   if(Object.keys(quizAnswers).length>0&&document.getElementById('quiz-result').style.display!=='none')return;
   quizAnswers={};
   document.getElementById('quiz-result').style.display='none';
