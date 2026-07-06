@@ -8895,7 +8895,7 @@ function initQuiz(){
   if(Object.keys(quizAnswers).length>0&&document.getElementById('quiz-result').style.display!=='none')return;
   quizAnswers={};
   document.getElementById('quiz-result').style.display='none';
-  document.getElementById('quiz-body').style.display='block';
+  document.getElementById('quiz-questions').style.display='';
   document.getElementById('quiz-submit-row').style.display='none';
   var opts=['A','B','C','D'];
   document.getElementById('quiz-questions').innerHTML=QUIZ_QS.map(function(q,qi){
@@ -8927,13 +8927,13 @@ function submitQuiz(){
     var winner=Object.keys(counts).reduce(function(a,b){return counts[a]>=counts[b]?a:b;});
     var result=QUIZ_RESULTS&&QUIZ_RESULTS[winner];
     if(!result){toast('Hmm — try answering all 6 questions!');return;}
-    document.getElementById('quiz-body').style.display='none';
+    document.getElementById('quiz-questions').style.display='none';
+    document.getElementById('quiz-submit-row').style.display='none';
     var resEl=document.getElementById('quiz-result');
     resEl.style.display='block';
     document.getElementById('quiz-result-type').textContent=result.type;
     document.getElementById('quiz-result-desc').textContent=result.desc;
     document.getElementById('quiz-result-tip').textContent='💡 '+result.tip;
-    resEl.scrollIntoView({behavior:'smooth',block:'start'});
   }catch(e){toast('Error: '+e.message);}
 }
 function resetQuiz(){quizAnswers={};initQuiz();}
@@ -9450,12 +9450,12 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <div id="quiz-submit-row" style="display:none;margin-top:16px;">
       <button class="sc-add-btn" onclick="submitQuiz()">✦ See My Reader Type</button>
     </div>
-  </div>
-  <div id="quiz-result" style="display:none;text-align:center;padding:20px;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--gold);border-radius:10px;">
-    <div id="quiz-result-type" style="font-family:'Cinzel',serif;font-size:22px;font-weight:900;color:var(--gold);margin-bottom:10px;"></div>
-    <div id="quiz-result-desc" style="font-size:15px;color:var(--text);line-height:1.7;margin-bottom:14px;font-style:italic;"></div>
-    <div id="quiz-result-tip" style="font-size:13px;color:var(--gold-dim);border-top:1px solid var(--border);padding-top:12px;"></div>
-    <button class="sc-add-btn" style="margin-top:16px;" onclick="resetQuiz()">↩ Retake Quiz</button>
+    <div id="quiz-result" style="display:none;margin-top:20px;text-align:center;padding:20px;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--gold);border-radius:10px;">
+      <div id="quiz-result-type" style="font-family:'Cinzel',serif;font-size:22px;font-weight:900;color:var(--gold);margin-bottom:10px;"></div>
+      <div id="quiz-result-desc" style="font-size:15px;color:var(--text);line-height:1.7;margin-bottom:14px;font-style:italic;"></div>
+      <div id="quiz-result-tip" style="font-size:13px;color:var(--gold-dim);border-top:1px solid var(--border);padding-top:12px;"></div>
+      <button class="sc-add-btn" style="margin-top:16px;" onclick="resetQuiz()">↩ Retake Quiz</button>
+    </div>
   </div>
 </div>
 
