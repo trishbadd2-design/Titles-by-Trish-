@@ -9148,22 +9148,53 @@ function renderBulkQueue(){
         +(item.coverUrl?'<img src="'+item.coverUrl+'" style="width:34px;height:50px;object-fit:cover;border-radius:2px;flex-shrink:0;"/>':'')
         +'<div><div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.4;">'+item.title+'</div>'
         +'<div style="font-size:12px;color:var(--gold);">'+item.author+'</div></div></div>';
-    }else statusHtml='<span style="font-size:12px;color:rgba(200,100,100,.9);">Could not identify — skip or add manually after</span>';
-    var borderCol=item.status==='found'&&item.keep?'var(--gold)':item.status==='notfound'?'rgba(200,100,100,.3)':'var(--border)';
-    var opacity=item.status==='found'&&!item.keep?'opacity:0.4;':'';
+    }else if(item.status==='notfound'){
+      if(item.manualTitle){
+        statusHtml='<div><div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.4;">'+item.manualTitle+'</div>'
+          +(item.manualAuthor?'<div style="font-size:12px;color:var(--gold);">'+item.manualAuthor+'</div>':'<div style="font-size:11px;color:var(--text-dim);font-style:italic;">No author — tap to edit</div>')+'</div>';
+      }else{
+        statusHtml='<div style="font-size:12px;color:rgba(200,100,100,.9);margin-bottom:6px;">Could not identify</div>'
+          +'<input placeholder="Title" value="" oninput="setBulkManual(\''+item.id+'\',\'title\',this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:5px 8px;color:#fff;font-size:12px;margin-bottom:4px;box-sizing:border-box;"/>'
+          +'<input placeholder="Author (optional)" oninput="setBulkManual(\''+item.id+'\',\'author\',this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:5px 8px;color:#fff;font-size:12px;box-sizing:border-box;"/>';
+      }
+    }
+    var isReady=(item.status==='found'&&item.keep)||(item.status==='notfound'&&item.manualTitle);
+    var borderCol=isReady?'var(--gold)':item.status==='notfound'?'rgba(200,100,100,.3)':'var(--border)';
+    var opacity=(item.status==='found'&&!item.keep)?'opacity:0.4;':'';
     return '<div style="display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:6px;margin-bottom:8px;background:var(--bg2);border:1px solid '+borderCol+';'+opacity+'">'
       +'<img src="'+item.thumb+'" style="width:48px;height:64px;object-fit:cover;border-radius:3px;flex-shrink:0;background:var(--bg3);"/>'
       +'<div style="flex:1;min-width:0;">'+statusHtml+'</div>'
       +(item.status==='found'?'<button onclick="toggleBulkKeep(\''+item.id+'\')" style="background:'+(item.keep?'var(--gold)':'var(--bg3)')+';border:1px solid var(--border);color:'+(item.keep?'#000':'var(--text-dim)')+';font-size:13px;font-weight:700;padding:5px 10px;border-radius:4px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+(item.keep?'✓ Add':'✕')+'</button>':'')
+      +(item.status==='notfound'&&item.manualTitle?'<button onclick="clearBulkManual(\''+item.id+'\')" style="background:transparent;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>':'')
       +'</div>';
   }).join('');
 }
+function setBulkManual(id,field,val){
+  var item=_bulkQueue.find(function(x){return x.id===id;});if(!item)return;
+  if(field==='title')item.manualTitle=val.trim();
+  else item.manualAuthor=val.trim();
+  // Update add button count
+  var ready=_bulkQueue.filter(function(x){return (x.status==='found'&&x.keep)||(x.status==='notfound'&&x.manualTitle);});
+  if(ready.length){document.getElementById('bulk-add-count').textContent=ready.length;document.getElementById('bulk-add-btn').style.display='block';}
+  else document.getElementById('bulk-add-btn').style.display='none';
+  // Re-render border only (lightweight — don't re-render whole list or input focus breaks)
+}
+function clearBulkManual(id){
+  var item=_bulkQueue.find(function(x){return x.id===id;});if(!item)return;
+  item.manualTitle='';item.manualAuthor='';
+  var ready=_bulkQueue.filter(function(x){return (x.status==='found'&&x.keep)||(x.status==='notfound'&&x.manualTitle);});
+  document.getElementById('bulk-add-count').textContent=ready.length;
+  if(!ready.length)document.getElementById('bulk-add-btn').style.display='none';
+  renderBulkQueue();
+}
 function addBulkToTBR(){
-  var toAdd=_bulkQueue.filter(function(x){return x.status==='found'&&x.keep;});
+  var toAdd=_bulkQueue.filter(function(x){return (x.status==='found'&&x.keep)||(x.status==='notfound'&&x.manualTitle);});
   if(!toAdd.length){toast('No books selected to add!');return;}
   var base=Date.now();
   toAdd.forEach(function(item,i){
-    var tbrItem={id:(base+i).toString(),title:item.title,author:item.author,coverUrl:item.coverUrl,interest:0,why:'',priority:'Medium',genre:'',recSrc:'',recName:'',platforms:[]};
+    var title=item.status==='notfound'?item.manualTitle:item.title;
+    var author=item.status==='notfound'?(item.manualAuthor||''):item.author;
+    var tbrItem={id:(base+i).toString(),title:title,author:author,coverUrl:item.coverUrl||'',interest:0,why:'',priority:'Medium',genre:'',recSrc:'',recName:'',platforms:[]};
     scTBR.unshift(tbrItem);
     if(!tbrItem.coverUrl)autoFetchCover(tbrItem.id,tbrItem.title,tbrItem.author,'tbr');
   });
