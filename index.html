@@ -8927,17 +8927,82 @@ function renderSounds(){
 // VIDEO SERIES TRACKER
 // ══════════════════════════════════════════
 var _vsDefaults=[
+  // ── Core starters ──
   {id:'vs_d1',name:'Monthly Wrap-Up',cadence:'Monthly',ep:0,next:'All books finished this month + honest ratings',status:'Active',notes:'Film on the last Friday of the month',created:'Starter'},
   {id:'vs_d2',name:'Monthly TBR Reveal',cadence:'Monthly',ep:0,next:'What I plan to read this month',status:'Active',notes:'Film on the 1st of each month',created:'Starter'},
   {id:'vs_d3',name:'Rate My TBR',cadence:'Weekly',ep:0,next:'Community votes on what I read next',status:'Active',notes:'High engagement — let followers decide',created:'Starter'},
   {id:'vs_d4',name:'1 Star Review',cadence:'Weekly',ep:0,next:'The book that disappointed me most',status:'Active',notes:'Be dramatic, be honest — huge engagement',created:'Starter'},
   {id:'vs_d5',name:'Mini Review Monday',cadence:'Weekly',ep:0,next:'60-second rapid-fire review',status:'Active',notes:'Keep it under 60s for best retention',created:'Starter'},
-  {id:'vs_d6',name:'Dark Reads Drop',cadence:'Weekly',ep:0,next:'One dark & dramatic recommendation',status:'Active',notes:'Your signature vibe — own it 🖤',created:'Starter'},
+  {id:'vs_d6',name:'Dark Reads Drop',cadence:'Weekly',ep:0,next:'One dark & dramatic recommendation',status:'Active',notes:'Your signature vibe — own it',created:'Starter'},
   {id:'vs_d7',name:'BookTok Made Me Buy It',cadence:'Monthly',ep:0,next:'Honest verdict on hyped BookTok reads',status:'Active',notes:'Very relatable — high saves and shares',created:'Starter'},
-  {id:'vs_d8',name:'Book Haul',cadence:'Monthly',ep:0,next:'Show all new book acquisitions',status:'Active',notes:'Great for affiliate links and engagement',created:'Starter'}
+  {id:'vs_d8',name:'Book Haul',cadence:'Monthly',ep:0,next:'Show all new book acquisitions',status:'Active',notes:'Great for affiliate links and engagement',created:'Starter'},
+  // ── Reading Recaps ──
+  {id:'vs_d9',name:'Weekly Reading Check-In',cadence:'Weekly',ep:0,next:'What I read this week + quick thoughts',status:'Paused',notes:'Great for consistency and community building',created:'Starter'},
+  {id:'vs_d10',name:'DNF Diaries',cadence:'Monthly',ep:0,next:'Books I did not finish this month + why',status:'Paused',notes:'Honest content — followers love the transparency',created:'Starter'},
+  {id:'vs_d11',name:'Rereads: Better or Worse?',cadence:'Monthly',ep:0,next:'Revisit an old favorite and give a verdict',status:'Paused',notes:'Nostalgia + opinion = great engagement',created:'Starter'},
+  {id:'vs_d12',name:'Annual Reading Stats',cadence:'One-off',ep:0,next:'Year-end breakdown — books, genres, ratings',status:'Paused',notes:'Film in late December for New Year content',created:'Starter'},
+  // ── TBR Content ──
+  {id:'vs_d13',name:'TBR Tuesday',cadence:'Weekly',ep:0,next:'One book from the TBR pile, explained',status:'Paused',notes:'Quick, consistent, good for discovery',created:'Starter'},
+  {id:'vs_d14',name:'Unread Shelf Check',cadence:'Weekly',ep:0,next:'Pick a random unread book + explain why you bought it',status:'Paused',notes:'Relatable — everyone has an unread pile',created:'Starter'},
+  {id:'vs_d15',name:'TBR Jar Spin',cadence:'Weekly',ep:0,next:'Spin to pick the next read — react live',status:'Paused',notes:'Fun format, high replays',created:'Starter'},
+  // ── Reviews ──
+  {id:'vs_d16',name:'5 Star Reads Only',cadence:'Monthly',ep:0,next:'Every book I gave 5 stars this month',status:'Paused',notes:'Positive energy — good for recs and saves',created:'Starter'},
+  {id:'vs_d17',name:'Did It Live Up to the Hype?',cadence:'Monthly',ep:0,next:'Verdict on a super-hyped BookTok book',status:'Paused',notes:'Controversial = comments. Always wins.',created:'Starter'},
+  {id:'vs_d18',name:'Worst Book I Read This Month',cadence:'Monthly',ep:0,next:'The lowest-rated read this month',status:'Paused',notes:'Pair with 1 Star Review for drama',created:'Starter'},
+  // ── Recommendations ──
+  {id:'vs_d19',name:'Recs by Trope',cadence:'Weekly',ep:0,next:'Best books for one specific trope',status:'Paused',notes:'Enemies-to-lovers, slow burn, dark romance, etc.',created:'Starter'},
+  {id:'vs_d20',name:'If You Liked X, Read Y',cadence:'Weekly',ep:0,next:'Recommend a lesser-known book based on a popular one',status:'Paused',notes:'High saves — people want to find their next read',created:'Starter'},
+  {id:'vs_d21',name:'Hidden Gems',cadence:'Weekly',ep:0,next:'Underrated book nobody is talking about',status:'Paused',notes:'Great for boosting smaller authors',created:'Starter'},
+  {id:'vs_d22',name:'Genre Deep Dive',cadence:'Monthly',ep:0,next:'One month, one genre — all recs and reviews',status:'Paused',notes:'Dark romance month, gothic month, thriller month...',created:'Starter'},
+  // ── Hauls ──
+  {id:'vs_d23',name:'Bookstore Vlog',cadence:'Monthly',ep:0,next:'In-store haul vlog — what I picked up and why',status:'Paused',notes:'Film at local bookstore for authenticity',created:'Starter'},
+  {id:'vs_d24',name:'Blind Book Buy',cadence:'Monthly',ep:0,next:'Buy a book knowing nothing about it — then react',status:'Paused',notes:'Fun format — high engagement on the reaction',created:'Starter'},
+  {id:'vs_d25',name:'Thrift Store Book Finds',cadence:'Monthly',ep:0,next:'Best thrift store book haul this month',status:'Paused',notes:'Budget-friendly BookTok — very relatable',created:'Starter'},
+  // ── Rankings ──
+  {id:'vs_d26',name:'Book Boyfriend Bracket',cadence:'Monthly',ep:0,next:'Tournament-style ranking of book love interests',status:'Paused',notes:'Massive engagement — everyone has opinions',created:'Starter'},
+  {id:'vs_d27',name:'Best vs Worst of the Month',cadence:'Monthly',ep:0,next:'Head-to-head: top read vs biggest disappointment',status:'Paused',notes:'Quick format, great for end-of-month content',created:'Starter'},
+  {id:'vs_d28',name:'Author Backlog Ranking',cadence:'Monthly',ep:0,next:'Rank every book by one author I have read',status:'Paused',notes:'Great for author-specific communities',created:'Starter'},
+  {id:'vs_d29',name:'Cover Ranking',cadence:'Monthly',ep:0,next:'Judge books by their cover — ironically',status:'Paused',notes:'Lighthearted, shareable, visual content',created:'Starter'},
+  // ── Community ──
+  {id:'vs_d30',name:'Hot Takes',cadence:'Monthly',ep:0,next:'Controversial BookTok opinions — defend them',status:'Paused',notes:'Comments will go wild. Be ready.',created:'Starter'},
+  {id:'vs_d31',name:'Reader Mail',cadence:'Weekly',ep:0,next:'Answer follower book questions',status:'Paused',notes:'Great for community connection',created:'Starter'},
+  {id:'vs_d32',name:'Reading Along With My Followers',cadence:'One-off',ep:0,next:'Pick a book, read together, share updates',status:'Paused',notes:'Builds loyal community — pick a crowd-pleaser',created:'Starter'},
+  {id:'vs_d33',name:'Spicy Saturday',cadence:'Weekly',ep:0,next:'Rate or react to a spicy romance read',status:'Paused',notes:'Your most engaged audience is here for this',created:'Starter'},
+  // ── Vlogs ──
+  {id:'vs_d34',name:'Reading Vlog',cadence:'Weekly',ep:0,next:'Follow-along while I read this week',status:'Paused',notes:'Atmosphere + authenticity = saves',created:'Starter'},
+  {id:'vs_d35',name:'Reading Goal Check-In',cadence:'Monthly',ep:0,next:'Am I hitting my reading goals this month?',status:'Paused',notes:'Accountability content — followers root for you',created:'Starter'},
+  {id:'vs_d36',name:'Library Day Vlog',cadence:'Monthly',ep:0,next:'Library haul + what I borrowed and why',status:'Paused',notes:'Relatable and wholesome — great change of pace',created:'Starter'},
+  {id:'vs_d37',name:'Reading Tracker Setup',cadence:'One-off',ep:0,next:'Set up my reading journal or bullet journal',status:'Paused',notes:'Film in January or at start of a new season',created:'Starter'},
+  // ── Summer ──
+  {id:'vs_s1',name:'Summer Reading List',cadence:'One-off',ep:0,next:'My ultimate summer reading picks',status:'Active',notes:'SUMMER — beach reads, vacation picks, light & dark',created:'Starter'},
+  {id:'vs_s2',name:'Summer Book Haul',cadence:'One-off',ep:0,next:'Everything I bought for summer reading',status:'Active',notes:'SUMMER — film outdoors for aesthetic vibes',created:'Starter'},
+  {id:'vs_s3',name:'Beach Read Recs',cadence:'One-off',ep:0,next:'Best reads to bring on vacation',status:'Active',notes:'SUMMER — mix of light and dark for every mood',created:'Starter'},
+  {id:'vs_s4',name:'What I Read This Summer',cadence:'One-off',ep:0,next:'End-of-summer reading recap',status:'Paused',notes:'SUMMER — film in late August / early September',created:'Starter'},
+  // ── Fall & Halloween ──
+  {id:'vs_s5',name:'Spooky Season Reading List',cadence:'One-off',ep:0,next:'October horror, thriller, and dark picks',status:'Paused',notes:'FALL/HALLOWEEN — drop in late September',created:'Starter'},
+  {id:'vs_s6',name:'Booktober Challenge',cadence:'Monthly',ep:0,next:'Read one scary or dark book per week in October',status:'Paused',notes:'HALLOWEEN — community reads together all month',created:'Starter'},
+  {id:'vs_s7',name:'Psychological Thriller October',cadence:'Monthly',ep:0,next:'Best psych thrillers for the Halloween season',status:'Paused',notes:'HALLOWEEN — your dark content shines here',created:'Starter'},
+  {id:'vs_s8',name:'Dark Academia Fall Picks',cadence:'One-off',ep:0,next:'Moody, atmospheric reads for fall vibes',status:'Paused',notes:'FALL — dark academia aesthetic is peak fall content',created:'Starter'},
+  {id:'vs_s9',name:'Halloween Book Haul',cadence:'One-off',ep:0,next:'Haul of all my October spooky pickups',status:'Paused',notes:'HALLOWEEN — film with fall decor for the aesthetic',created:'Starter'},
+  {id:'vs_s10',name:'Spooky Wrap-Up',cadence:'One-off',ep:0,next:'Every scary and dark book I read in October',status:'Paused',notes:'HALLOWEEN — end of October, dramatic energy only',created:'Starter'},
+  {id:'vs_s11',name:'Cozy Fall Reads',cadence:'One-off',ep:0,next:'Dark cozy and autumnal reads for fall season',status:'Paused',notes:'FALL — candlelit aesthetic, warm vibes',created:'Starter'},
+  // ── Thanksgiving ──
+  {id:'vs_s12',name:'Books I Am Grateful I Read',cadence:'One-off',ep:0,next:'The reads that genuinely changed me this year',status:'Paused',notes:'THANKSGIVING — heartfelt, saves well',created:'Starter'},
+  {id:'vs_s13',name:'November Wrap-Up',cadence:'One-off',ep:0,next:'All reads from November + ratings',status:'Paused',notes:'THANKSGIVING MONTH — combine with gratitude angle',created:'Starter'},
+  // ── Winter & Christmas ──
+  {id:'vs_s14',name:'Holiday Gift Guide for Readers',cadence:'One-off',ep:0,next:'Best books to gift this Christmas',status:'Paused',notes:'CHRISTMAS — high saves, great for affiliate links',created:'Starter'},
+  {id:'vs_s15',name:'Cozy Winter Reads',cadence:'One-off',ep:0,next:'Best books for cold-weather reading season',status:'Paused',notes:'WINTER — blankets, candles, dark romance vibes',created:'Starter'},
+  {id:'vs_s16',name:'Christmas Book Haul',cadence:'One-off',ep:0,next:'Haul of everything I got or bought for the holidays',status:'Paused',notes:'CHRISTMAS — wrap them up for the aesthetic',created:'Starter'},
+  {id:'vs_s17',name:'New Year New TBR',cadence:'One-off',ep:0,next:'Setting my reading goals for the new year',status:'Paused',notes:'NEW YEAR — drop January 1st or first week',created:'Starter'},
+  {id:'vs_s18',name:'Year in Review',cadence:'One-off',ep:0,next:'Every book I read this year — stats, favs, worst',status:'Paused',notes:'DEC/JAN — biggest video of the year, plan it out',created:'Starter'},
+  // ── Spring ──
+  {id:'vs_s19',name:'Spring TBR Reveal',cadence:'One-off',ep:0,next:'What I plan to read this spring',status:'Paused',notes:'SPRING — fresh start energy, film in March',created:'Starter'},
+  {id:'vs_s20',name:'Spring Cleaning My TBR',cadence:'One-off',ep:0,next:'Decluttering the TBR pile ruthlessly',status:'Paused',notes:'SPRING — satisfying + relatable, good engagement',created:'Starter'},
+  {id:'vs_s21',name:'Fresh Start Reads',cadence:'One-off',ep:0,next:'Books to reset your mind and reading mood',status:'Paused',notes:'SPRING — good after a reading slump or rough winter',created:'Starter'}
 ];
-var videoSeriesList=localStorage.getItem('tbtrish_serieslist')?JSON.parse(localStorage.getItem('tbtrish_serieslist')):_vsDefaults.slice();
-if(!localStorage.getItem('tbtrish_serieslist'))localStorage.setItem('tbtrish_serieslist',JSON.stringify(videoSeriesList));
+var videoSeriesList=JSON.parse(localStorage.getItem('tbtrish_serieslist')||'[]');
+_vsDefaults.forEach(function(d){if(!videoSeriesList.find(function(s){return s.id===d.id;})){videoSeriesList.push(d);}});
+localStorage.setItem('tbtrish_serieslist',JSON.stringify(videoSeriesList));
 function openVideoSeriesForm(){document.getElementById('vseries-form').style.display='block';document.getElementById('vseries-edit-id').value='';}
 function closeVideoSeriesForm(){document.getElementById('vseries-form').style.display='none';clearVideoSeriesForm();}
 function clearVideoSeriesForm(){['vseries-f-name','vseries-f-next','vseries-f-notes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});var ep=document.getElementById('vseries-f-ep');if(ep)ep.value='1';var cad=document.getElementById('vseries-f-cadence');if(cad)cad.value='Weekly';var st=document.getElementById('vseries-f-status');if(st)st.value='Active';}
