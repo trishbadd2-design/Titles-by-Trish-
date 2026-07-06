@@ -858,6 +858,9 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="thumbnails" onclick="showPanel('thumbnails')">🎨 Thumbnails</button>
   <button class="nav-btn" data-panel="replies" onclick="showPanel('replies')">💬 Replies</button>
   <button class="nav-btn" data-panel="hookbank" onclick="showPanel('hookbank')">🪝 Hook Bank</button>
+  <button class="nav-btn" data-panel="ctabank" onclick="showPanel('ctabank')">📣 CTA Bank</button>
+  <button class="nav-btn" data-panel="sounds" onclick="showPanel('sounds')">🎵 Sounds</button>
+  <button class="nav-btn" data-panel="seriestracker" onclick="showPanel('seriestracker')">🎬 Series</button>
   <button class="nav-btn" data-panel="timer" onclick="showPanel('timer')">⏱️ Timer</button>
   <button class="nav-btn" data-panel="mood" onclick="showPanel('mood')">🎭 Mood Picker</button>
   <button class="nav-btn" data-panel="inspo" onclick="showPanel('inspo')">✨ Inspo List</button>
@@ -2835,7 +2838,7 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 // ═══════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',timer:'content',mood:'content',inspo:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business'};
+var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -2883,6 +2886,9 @@ function showPanel(id){
   if(id==='thumbnails'){renderThumbIdeas();renderMoodboard();}
   if(id==='replies'){renderReplies();}
   if(id==='hookbank'){renderHookBank();}
+  if(id==='ctabank'){renderCtas();}
+  if(id==='sounds'){renderSounds();}
+  if(id==='seriestracker'){renderVideoSeries();}
   if(id==='readjournal'){renderJournal();}
   if(id==='collabwish'){renderCollabWish();}
   if(id==='milestones'){renderMilestones();}
@@ -8802,6 +8808,154 @@ function renderJournal(){
 }
 
 // ══════════════════════════════════════════
+// CTA BANK
+// ══════════════════════════════════════════
+var ctaBank=JSON.parse(localStorage.getItem('tbtrish_ctabank')||'[]');
+var _ctaFilter='all';
+function setCtaFilter(cat,btn){_ctaFilter=cat;document.querySelectorAll('#panel-ctabank .idea-filter-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderCtas();}
+function addCta(){
+  var textEl=document.getElementById('cta-text');
+  var text=(textEl?textEl.value:'').trim();
+  if(!text){toast('Write a CTA first!');return;}
+  var cat=document.getElementById('cta-cat').value;
+  ctaBank.unshift({id:Date.now().toString(),text:text,cat:cat,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  localStorage.setItem('tbtrish_ctabank',JSON.stringify(ctaBank));
+  textEl.value='';
+  renderCtas();
+  toast('📣 CTA saved!');
+}
+function deleteCta(id){ctaBank=ctaBank.filter(function(c){return c.id!==id;});localStorage.setItem('tbtrish_ctabank',JSON.stringify(ctaBank));renderCtas();}
+function copyCta(id){var c=ctaBank.find(function(x){return x.id===id;});if(!c)return;navigator.clipboard&&navigator.clipboard.writeText(c.text).then(function(){toast('✦ CTA copied!');}).catch(function(){toast(c.text);});}
+function renderCtas(){
+  var el=document.getElementById('cta-list');if(!el)return;
+  var filtered=_ctaFilter==='all'?ctaBank:ctaBank.filter(function(c){return c.cat===_ctaFilter;});
+  if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">'+(ctaBank.length?'No '+_ctaFilter+' CTAs yet.':'No CTAs saved yet — add your first one above! 📣')+'</div>';return;}
+  var catColors={'Follow':'rgba(80,160,220,.25)','Engage':'rgba(200,140,60,.25)','Save':'rgba(140,80,220,.25)','Share':'rgba(80,200,120,.25)','Comment Prompt':'rgba(200,60,100,.25)','General':'rgba(100,100,100,.25)'};
+  el.innerHTML=filtered.map(function(c){
+    var col=catColors[c.cat]||'rgba(100,100,100,.25)';
+    return '<div class="card-box" style="margin-bottom:10px;padding:14px;border-left:3px solid rgba(255,255,255,.2);">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">'
+      +'<div style="flex:1;">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
+      +'<span style="font-size:12px;padding:2px 9px;border-radius:10px;background:'+col+';border:1px solid rgba(255,255,255,.1);color:#fff;">'+c.cat+'</span>'
+      +'<span style="font-size:12px;color:var(--text-dim);">'+c.date+'</span>'
+      +'</div>'
+      +'<div style="font-size:15px;color:var(--text);line-height:1.7;font-style:italic;">'+c.text+'</div>'
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">'
+      +'<button onclick="copyCta(\''+c.id+'\')" style="background:var(--gold);border:none;color:#000;font-size:12px;font-weight:700;padding:5px 10px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">COPY</button>'
+      +'<button onclick="deleteCta(\''+c.id+'\')" style="background:transparent;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'</div>'
+      +'</div></div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// TRENDING SOUNDS BANK
+// ══════════════════════════════════════════
+var soundsBank=JSON.parse(localStorage.getItem('tbtrish_soundsbank')||'[]');
+var _soundFilter='all';
+function setSoundFilter(cat,btn){_soundFilter=cat;document.querySelectorAll('#panel-sounds .idea-filter-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderSounds();}
+function addSound(){
+  var nameEl=document.getElementById('sound-name');
+  var name=(nameEl?nameEl.value:'').trim();
+  if(!name){toast('Enter the sound name first!');return;}
+  var vibe=document.getElementById('sound-vibe').value;
+  var notes=(document.getElementById('sound-notes')?document.getElementById('sound-notes').value.trim():'');
+  soundsBank.unshift({id:Date.now().toString(),name:name,vibe:vibe,notes:notes,used:false,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  localStorage.setItem('tbtrish_soundsbank',JSON.stringify(soundsBank));
+  nameEl.value='';if(document.getElementById('sound-notes'))document.getElementById('sound-notes').value='';
+  renderSounds();
+  toast('🎵 Sound saved!');
+}
+function deleteSound(id){soundsBank=soundsBank.filter(function(s){return s.id!==id;});localStorage.setItem('tbtrish_soundsbank',JSON.stringify(soundsBank));renderSounds();}
+function toggleSoundUsed(id){var s=soundsBank.find(function(x){return x.id===id;});if(s){s.used=!s.used;localStorage.setItem('tbtrish_soundsbank',JSON.stringify(soundsBank));renderSounds();}}
+function renderSounds(){
+  var el=document.getElementById('sounds-list');if(!el)return;
+  var filtered=_soundFilter==='all'?soundsBank:(_soundFilter==='unused'?soundsBank.filter(function(s){return !s.used;}):soundsBank.filter(function(s){return s.vibe===_soundFilter;}));
+  if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">'+(soundsBank.length?'No sounds in this category yet.':'No sounds saved yet — save your first trending audio! 🎵')+'</div>';return;}
+  var vibeColors={Dramatic:'rgba(200,60,100,.25)',Cozy:'rgba(200,140,60,.25)',Hype:'rgba(80,160,220,.25)',Funny:'rgba(80,200,120,.25)',Aesthetic:'rgba(140,80,220,.25)',Trending:'rgba(220,180,50,.25)',Sad:'rgba(100,140,220,.25)',General:'rgba(100,100,100,.25)'};
+  el.innerHTML=filtered.map(function(s){
+    var col=vibeColors[s.vibe]||'rgba(100,100,100,.25)';
+    return '<div class="card-box" style="margin-bottom:10px;padding:14px;'+(s.used?'opacity:0.55;':'')+'border-left:3px solid rgba(255,255,255,.2);">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">'
+      +'<div style="flex:1;">'
+      +'<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">'
+      +'<span style="font-size:12px;padding:2px 9px;border-radius:10px;background:'+col+';border:1px solid rgba(255,255,255,.1);color:#fff;">'+s.vibe+'</span>'
+      +(s.used?'<span style="font-size:11px;color:var(--text-dim);font-style:italic;">✓ used</span>':'')
+      +'<span style="font-size:12px;color:var(--text-dim);">'+s.date+'</span>'
+      +'</div>'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:15px;color:var(--gold);margin-bottom:'+(s.notes?'6':'0')+'px;">🎵 '+s.name+'</div>'
+      +(s.notes?'<div style="font-size:13px;color:var(--text-dim);font-style:italic;">'+s.notes+'</div>':'')
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;align-items:flex-end;">'
+      +'<button onclick="toggleSoundUsed(\''+s.id+'\')" style="background:'+(s.used?'var(--bg3)':'var(--gold)')+';border:1px solid var(--border);color:'+(s.used?'var(--text-dim)':'#000')+';font-size:11px;font-weight:700;padding:4px 8px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+(s.used?'UNUSED':'USED')+'</button>'
+      +'<button onclick="deleteSound(\''+s.id+'\')" style="background:transparent;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'</div>'
+      +'</div></div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// VIDEO SERIES TRACKER
+// ══════════════════════════════════════════
+var videoSeriesList=JSON.parse(localStorage.getItem('tbtrish_serieslist')||'[]');
+function openVideoSeriesForm(){document.getElementById('vseries-form').style.display='block';document.getElementById('vseries-edit-id').value='';}
+function closeVideoSeriesForm(){document.getElementById('vseries-form').style.display='none';clearVideoSeriesForm();}
+function clearVideoSeriesForm(){['vseries-f-name','vseries-f-next','vseries-f-notes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});var ep=document.getElementById('vseries-f-ep');if(ep)ep.value='1';var cad=document.getElementById('vseries-f-cadence');if(cad)cad.value='Weekly';var st=document.getElementById('vseries-f-status');if(st)st.value='Active';}
+function saveVideoSeries(){
+  var name=(document.getElementById('vseries-f-name').value||'').trim();
+  if(!name){toast('Series name is required!');return;}
+  var eid=document.getElementById('vseries-edit-id').value;
+  var ep=parseInt(document.getElementById('vseries-f-ep').value)||1;
+  var item={id:eid||Date.now().toString(),name:name,cadence:document.getElementById('vseries-f-cadence').value,ep:ep,next:(document.getElementById('vseries-f-next').value||'').trim(),status:document.getElementById('vseries-f-status').value,notes:(document.getElementById('vseries-f-notes').value||'').trim(),created:eid?(videoSeriesList.find(function(s){return s.id===eid;})||{}).created||new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})};
+  if(eid){videoSeriesList=videoSeriesList.map(function(s){return s.id===eid?item:s;});}else{videoSeriesList.unshift(item);}
+  localStorage.setItem('tbtrish_serieslist',JSON.stringify(videoSeriesList));
+  closeVideoSeriesForm();renderVideoSeries();
+  toast(eid?'✦ Series updated!':'🎬 Series added!');
+}
+function deleteVideoSeries(id){if(!confirm('Delete this series?'))return;videoSeriesList=videoSeriesList.filter(function(s){return s.id!==id;});localStorage.setItem('tbtrish_serieslist',JSON.stringify(videoSeriesList));renderVideoSeries();}
+function incrementEpisode(id){var s=videoSeriesList.find(function(x){return x.id===id;});if(s){s.ep=(s.ep||1)+1;localStorage.setItem('tbtrish_serieslist',JSON.stringify(videoSeriesList));renderVideoSeries();toast('Episode '+(s.ep)+' logged! 🎬');}}
+function editVideoSeries(id){
+  var s=videoSeriesList.find(function(x){return x.id===id;});if(!s)return;
+  document.getElementById('vseries-form').style.display='block';
+  document.getElementById('vseries-edit-id').value=s.id;
+  document.getElementById('vseries-f-name').value=s.name;
+  document.getElementById('vseries-f-cadence').value=s.cadence;
+  document.getElementById('vseries-f-ep').value=s.ep;
+  document.getElementById('vseries-f-next').value=s.next||'';
+  document.getElementById('vseries-f-status').value=s.status;
+  document.getElementById('vseries-f-notes').value=s.notes||'';
+  document.getElementById('vseries-form').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function renderVideoSeries(){
+  var el=document.getElementById('vseries-list');if(!el)return;
+  if(!videoSeriesList.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No series yet — start tracking your first recurring series!</div>';return;}
+  var statusColors={Active:'rgba(80,200,120,.25)',Paused:'rgba(200,140,60,.25)',Completed:'rgba(100,100,100,.25)'};
+  el.innerHTML=videoSeriesList.map(function(s){
+    var col=statusColors[s.status]||'rgba(100,100,100,.25)';
+    return '<div class="card-box" style="margin-bottom:12px;padding:14px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">'
+      +'<div style="flex:1;">'
+      +'<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px;">'
+      +'<span style="font-size:12px;padding:2px 9px;border-radius:10px;background:'+col+';border:1px solid rgba(255,255,255,.1);color:#fff;">'+s.status+'</span>'
+      +'<span style="font-size:12px;color:var(--text-dim);">'+s.cadence+'</span>'
+      +'</div>'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;">🎬 '+s.name+'</div>'
+      +'<div style="font-size:13px;color:var(--gold);margin-bottom:'+(s.next||s.notes?'8':'0')+'px;">Episode '+s.ep+' logged</div>'
+      +(s.next?'<div style="font-size:13px;color:var(--text-dim);margin-bottom:4px;">▶ Next: <span style="color:var(--text);font-style:italic;">'+s.next+'</span></div>':'')
+      +(s.notes?'<div style="font-size:13px;color:var(--text-dim);font-style:italic;">'+s.notes+'</div>':'')
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;align-items:flex-end;">'
+      +'<button onclick="incrementEpisode(\''+s.id+'\')" title="Log next episode" style="background:var(--gold);border:none;color:#000;font-size:13px;font-weight:700;padding:5px 10px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+EP</button>'
+      +'<button onclick="editVideoSeries(\''+s.id+'\')" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);font-size:12px;padding:4px 8px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Edit</button>'
+      +'<button onclick="deleteVideoSeries(\''+s.id+'\')" style="background:transparent;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'</div>'
+      +'</div></div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
 // COLLAB WISHLIST
 // ══════════════════════════════════════════
 var collabWish=JSON.parse(localStorage.getItem('tbtrish_collabwish')||'[]');
@@ -9484,6 +9638,144 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <button class="idea-filter-btn" onclick="setHookFilter('General',this)">💬 General</button>
   </div>
   <div id="hook-list"></div>
+</div>
+
+<!-- CTA BANK -->
+<div class="panel" id="panel-ctabank">
+  <div class="section-title">📣 CTA Bank</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Save your best calls-to-action. The hook gets them in — the CTA keeps them. One tap to copy.</p>
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px;">
+    <div class="sc-field">
+      <label>Your CTA *</label>
+      <div class="mic-row">
+        <textarea id="cta-text" rows="3" placeholder="e.g. Follow me if you want book recs that will ruin your life in the best way 🖤" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea>
+        <button class="mic-btn" onclick="startVoice('cta-text',false)" title="Speak CTA">🎤</button>
+      </div>
+    </div>
+    <div class="sc-field">
+      <label>Category</label>
+      <select id="cta-cat" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;">
+        <option value="Follow">Follow</option>
+        <option value="Engage">Engage</option>
+        <option value="Save">Save</option>
+        <option value="Share">Share</option>
+        <option value="Comment Prompt">Comment Prompt</option>
+        <option value="General">General</option>
+      </select>
+    </div>
+    <button class="sc-add-btn" style="margin-top:4px;" onclick="addCta()">✦ Save CTA</button>
+  </div>
+  <div class="idea-filter-row" style="margin-bottom:12px;">
+    <button class="idea-filter-btn active" onclick="setCtaFilter('all',this)">All</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('Follow',this)">➕ Follow</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('Engage',this)">💬 Engage</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('Save',this)">🔖 Save</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('Share',this)">📤 Share</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('Comment Prompt',this)">❓ Comment</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('General',this)">💬 General</button>
+  </div>
+  <div id="cta-list"></div>
+</div>
+
+<!-- TRENDING SOUNDS BANK -->
+<div class="panel" id="panel-sounds">
+  <div class="section-title">🎵 Trending Sounds Bank</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Save trending audios before you forget them. Tag by vibe, mark as used once you've filmed with it.</p>
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px;">
+    <div class="sc-field">
+      <label>Sound Name / Description *</label>
+      <div class="mic-row">
+        <input type="text" id="sound-name" placeholder="e.g. that dramatic orchestral one from @booktok, 'Clair de Lune' remix..."/>
+        <button class="mic-btn" onclick="startVoice('sound-name',false)" title="Speak sound name">🎤</button>
+      </div>
+    </div>
+    <div class="sc-field">
+      <label>Vibe</label>
+      <select id="sound-vibe" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;">
+        <option value="Dramatic">Dramatic</option>
+        <option value="Cozy">Cozy</option>
+        <option value="Hype">Hype</option>
+        <option value="Funny">Funny</option>
+        <option value="Aesthetic">Aesthetic</option>
+        <option value="Sad">Sad</option>
+        <option value="Trending">Trending</option>
+        <option value="General">General</option>
+      </select>
+    </div>
+    <div class="sc-field">
+      <label>Notes (optional)</label>
+      <input type="text" id="sound-notes" placeholder="where you heard it, what content fits it..."/>
+    </div>
+    <button class="sc-add-btn" style="margin-top:4px;" onclick="addSound()">✦ Save Sound</button>
+  </div>
+  <div class="idea-filter-row" style="margin-bottom:12px;">
+    <button class="idea-filter-btn active" onclick="setSoundFilter('all',this)">All</button>
+    <button class="idea-filter-btn" onclick="setSoundFilter('unused',this)">🆕 Unused</button>
+    <button class="idea-filter-btn" onclick="setSoundFilter('Dramatic',this)">🎭 Dramatic</button>
+    <button class="idea-filter-btn" onclick="setSoundFilter('Cozy',this)">🕯️ Cozy</button>
+    <button class="idea-filter-btn" onclick="setSoundFilter('Hype',this)">⚡ Hype</button>
+    <button class="idea-filter-btn" onclick="setSoundFilter('Funny',this)">😂 Funny</button>
+    <button class="idea-filter-btn" onclick="setSoundFilter('Aesthetic',this)">✨ Aesthetic</button>
+    <button class="idea-filter-btn" onclick="setSoundFilter('Sad',this)">💧 Sad</button>
+    <button class="idea-filter-btn" onclick="setSoundFilter('Trending',this)">🔥 Trending</button>
+  </div>
+  <div id="sounds-list"></div>
+</div>
+
+<!-- VIDEO SERIES TRACKER -->
+<div class="panel" id="panel-seriestracker">
+  <div class="section-title">🎬 Video Series Tracker</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Track your recurring series — episode count, what's next, and whether it's still running. Never lose your place.</p>
+  <button class="sc-add-btn" onclick="openVideoSeriesForm()">✦ Add Series</button>
+  <div id="vseries-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin:14px 0;">
+    <input type="hidden" id="vseries-edit-id"/>
+    <div class="sc-field">
+      <label>Series Name *</label>
+      <div class="mic-row">
+        <input type="text" id="vseries-f-name" placeholder="e.g. TBR Tuesday, Rate My Shelf, Monthly Wrap-Up..."/>
+        <button class="mic-btn" onclick="startVoice('vseries-f-name',false)" title="Speak name">🎤</button>
+      </div>
+    </div>
+    <div class="sc-two-col">
+      <div class="sc-field">
+        <label>Cadence</label>
+        <select id="vseries-f-cadence" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;">
+          <option value="Weekly">Weekly</option>
+          <option value="Biweekly">Biweekly</option>
+          <option value="Monthly">Monthly</option>
+          <option value="One-off">One-off</option>
+        </select>
+      </div>
+      <div class="sc-field">
+        <label>Episodes Logged So Far</label>
+        <input type="number" id="vseries-f-ep" min="1" value="1" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;"/>
+      </div>
+    </div>
+    <div class="sc-field">
+      <label>Next Episode Topic</label>
+      <div class="mic-row">
+        <input type="text" id="vseries-f-next" placeholder="What's the next one about?"/>
+        <button class="mic-btn" onclick="startVoice('vseries-f-next',false)" title="Speak next topic">🎤</button>
+      </div>
+    </div>
+    <div class="sc-field">
+      <label>Status</label>
+      <select id="vseries-f-status" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;">
+        <option value="Active">Active</option>
+        <option value="Paused">Paused</option>
+        <option value="Completed">Completed</option>
+      </select>
+    </div>
+    <div class="sc-field">
+      <label>Notes</label>
+      <input type="text" id="vseries-f-notes" placeholder="format ideas, what makes this series work..."/>
+    </div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeVideoSeriesForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveVideoSeries()">✦ Save Series</button>
+    </div>
+  </div>
+  <div id="vseries-list" style="margin-top:10px;"></div>
 </div>
 
 <!-- COLLAB WISHLIST -->
