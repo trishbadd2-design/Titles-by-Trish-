@@ -1705,6 +1705,7 @@ canvas{width:100%!important;}
   <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
     <button class="sc-add-btn" style="flex:1;background:rgba(139,26,26,.15);border-color:rgba(139,26,26,.4);color:rgba(220,140,140,.9);" onclick="openScanner()">📷 Scan Barcode</button>
     <button class="sc-add-btn" style="flex:1;background:rgba(80,60,139,.15);border-color:rgba(120,80,200,.4);color:rgba(180,140,255,.9);" onclick="openPhotoScan()">🖼️ Scan from Photo</button>
+    <button class="sc-add-btn" style="flex:1;background:rgba(40,120,80,.18);border-color:rgba(60,180,100,.4);color:rgba(120,220,160,.9);" onclick="openBulkScan()">📸 Bulk Photo Scan</button>
   </div>
 
   <div id="sc-read-fields">
@@ -9059,6 +9060,119 @@ function renderVideoSeries(){
 }
 
 // ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// BULK PHOTO SCAN
+// ══════════════════════════════════════════
+var _bulkQueue=[];
+function openBulkScan(){
+  document.getElementById('bulk-scan-overlay').style.display='flex';
+  document.getElementById('bulk-file-input').value='';
+  _bulkQueue=[];
+  renderBulkQueue();
+  document.getElementById('bulk-initial').style.display='block';
+  document.getElementById('bulk-queue-section').style.display='none';
+  document.getElementById('bulk-add-btn').style.display='none';
+}
+function closeBulkScan(){
+  document.getElementById('bulk-scan-overlay').style.display='none';
+  _bulkQueue=[];
+}
+async function handleBulkFiles(event){
+  var files=Array.from(event.target.files);
+  if(!files.length)return;
+  document.getElementById('bulk-initial').style.display='none';
+  document.getElementById('bulk-queue-section').style.display='block';
+  document.getElementById('bulk-add-btn').style.display='none';
+  _bulkQueue=files.map(function(f,i){return{id:'bq_'+i,file:f,thumb:'',status:'waiting',title:'',author:'',coverUrl:'',keep:true};});
+  await Promise.all(_bulkQueue.map(function(item){
+    return new Promise(function(resolve){
+      var reader=new FileReader();
+      reader.onload=function(e){item.thumb=e.target.result;resolve();};
+      reader.readAsDataURL(item.file);
+    });
+  }));
+  renderBulkQueue();
+  await loadTesseract();
+  for(var i=0;i<_bulkQueue.length;i++){
+    _bulkQueue[i].status='scanning';
+    renderBulkQueue();
+    await processBulkItem(_bulkQueue[i]);
+    renderBulkQueue();
+  }
+  var found=_bulkQueue.filter(function(x){return x.status==='found';});
+  if(found.length){
+    document.getElementById('bulk-add-count').textContent=found.length;
+    document.getElementById('bulk-add-btn').style.display='block';
+  }
+}
+async function processBulkItem(item){
+  try{
+    var text='';
+    if(window.Tesseract){
+      var worker=await Tesseract.createWorker('eng');
+      var result=await worker.recognize(item.file);
+      text=result.data.text;
+      await worker.terminate();
+    }
+    var lines=text.split('\n').map(function(l){return l.replace(/[^a-zA-Z0-9\s',.-]/g,' ').replace(/\s+/g,' ').trim();}).filter(function(l){return l.length>3;});
+    var query=lines.slice(0,4).join(' ').substring(0,100);
+    if(query.length<3){item.status='notfound';return;}
+    var res=await fetch('https://www.googleapis.com/books/v1/volumes?q='+encodeURIComponent(query)+'&maxResults=1');
+    var data=await res.json();
+    if(data.items&&data.items.length){
+      var info=data.items[0].volumeInfo||{};
+      item.title=info.title||'';
+      item.author=(info.authors||[]).join(', ');
+      item.coverUrl=((info.imageLinks||{}).thumbnail||'').replace('http://','https://');
+      item.status=(item.title&&item.author)?'found':'notfound';
+    }else{item.status='notfound';}
+  }catch(e){item.status='notfound';}
+}
+function toggleBulkKeep(id){
+  var item=_bulkQueue.find(function(x){return x.id===id;});
+  if(!item)return;
+  item.keep=!item.keep;
+  var found=_bulkQueue.filter(function(x){return x.status==='found'&&x.keep;});
+  document.getElementById('bulk-add-count').textContent=found.length;
+  renderBulkQueue();
+}
+function renderBulkQueue(){
+  var el=document.getElementById('bulk-queue');if(!el)return;
+  if(!_bulkQueue.length){el.innerHTML='';return;}
+  el.innerHTML=_bulkQueue.map(function(item){
+    var statusHtml='';
+    if(item.status==='waiting')statusHtml='<span style="color:var(--text-dim);font-size:12px;">Waiting...</span>';
+    else if(item.status==='scanning')statusHtml='<span style="color:var(--gold);font-size:13px;">Scanning image...</span>';
+    else if(item.status==='found'){
+      statusHtml='<div style="display:flex;align-items:flex-start;gap:8px;">'
+        +(item.coverUrl?'<img src="'+item.coverUrl+'" style="width:34px;height:50px;object-fit:cover;border-radius:2px;flex-shrink:0;"/>':'')
+        +'<div><div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.4;">'+item.title+'</div>'
+        +'<div style="font-size:12px;color:var(--gold);">'+item.author+'</div></div></div>';
+    }else statusHtml='<span style="font-size:12px;color:rgba(200,100,100,.9);">Could not identify — skip or add manually after</span>';
+    var borderCol=item.status==='found'&&item.keep?'var(--gold)':item.status==='notfound'?'rgba(200,100,100,.3)':'var(--border)';
+    var opacity=item.status==='found'&&!item.keep?'opacity:0.4;':'';
+    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:6px;margin-bottom:8px;background:var(--bg2);border:1px solid '+borderCol+';'+opacity+'">'
+      +'<img src="'+item.thumb+'" style="width:48px;height:64px;object-fit:cover;border-radius:3px;flex-shrink:0;background:var(--bg3);"/>'
+      +'<div style="flex:1;min-width:0;">'+statusHtml+'</div>'
+      +(item.status==='found'?'<button onclick="toggleBulkKeep(\''+item.id+'\')" style="background:'+(item.keep?'var(--gold)':'var(--bg3)')+';border:1px solid var(--border);color:'+(item.keep?'#000':'var(--text-dim)')+';font-size:13px;font-weight:700;padding:5px 10px;border-radius:4px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+(item.keep?'✓ Add':'✕')+'</button>':'')
+      +'</div>';
+  }).join('');
+}
+function addBulkToTBR(){
+  var toAdd=_bulkQueue.filter(function(x){return x.status==='found'&&x.keep;});
+  if(!toAdd.length){toast('No books selected to add!');return;}
+  var base=Date.now();
+  toAdd.forEach(function(item,i){
+    var tbrItem={id:(base+i).toString(),title:item.title,author:item.author,coverUrl:item.coverUrl,interest:0,why:'',priority:'Medium',genre:'',recSrc:'',recName:'',platforms:[]};
+    scTBR.unshift(tbrItem);
+    if(!tbrItem.coverUrl)autoFetchCover(tbrItem.id,tbrItem.title,tbrItem.author,'tbr');
+  });
+  scSave();
+  scRenderTBR();
+  closeBulkScan();
+  toast('📚 '+toAdd.length+' book'+(toAdd.length>1?'s':'')+' added to your TBR!');
+}
+
 // COLLAB WISHLIST
 // ══════════════════════════════════════════
 var collabWish=JSON.parse(localStorage.getItem('tbtrish_collabwish')||'[]');
@@ -10057,6 +10171,31 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <button class="sc-btn-cancel" onclick="closeBookNotes()">Close</button>
       <button class="sc-btn-save" onclick="saveBookNotes()">✦ Save Notes</button>
     </div>
+  </div>
+</div>
+
+<!-- BULK PHOTO SCAN OVERLAY -->
+<input type="file" id="bulk-file-input" accept="image/*" multiple style="display:none;" onchange="handleBulkFiles(event)"/>
+<div id="bulk-scan-overlay" style="display:none;position:fixed;inset:0;z-index:900;background:rgba(5,3,8,.97);flex-direction:column;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;">
+    <div style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;color:var(--gold);">📸 BULK BOOK SCAN</div>
+    <button onclick="closeBulkScan()" style="background:none;border:none;color:var(--text-dim);font-size:22px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px;">
+    <div id="bulk-initial" style="text-align:center;padding:30px 0;">
+      <div style="font-size:48px;margin-bottom:16px;">📚</div>
+      <div style="font-family:'Cinzel',serif;font-size:15px;color:var(--gold);margin-bottom:12px;letter-spacing:2px;">SCAN MULTIPLE BOOKS AT ONCE</div>
+      <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;margin-bottom:28px;max-width:360px;margin-left:auto;margin-right:auto;">Select 2–10 photos of book covers or spines. The app will read each one and automatically pull the title and author for your TBR.</div>
+      <label for="bulk-file-input" style="display:inline-block;padding:14px 32px;background:var(--gold);color:#000;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:2px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📷 SELECT PHOTOS</label>
+      <div style="font-size:12px;color:var(--text-dim);margin-top:16px;font-style:italic;">Tip: clear, front-facing cover photos work best</div>
+    </div>
+    <div id="bulk-queue-section" style="display:none;">
+      <div style="font-style:italic;font-size:13px;color:var(--text-dim);margin-bottom:16px;text-align:center;line-height:1.6;">Processing your books... tap <strong style="color:var(--gold);">✓ Add</strong> or <strong style="color:rgba(200,100,100,.9);">✕</strong> to include or skip each one.</div>
+      <div id="bulk-queue"></div>
+    </div>
+  </div>
+  <div id="bulk-add-btn" style="display:none;padding:16px 20px;background:var(--bg2);border-top:1px solid var(--border);flex-shrink:0;">
+    <button onclick="addBulkToTBR()" style="width:100%;padding:14px;background:var(--gold);border:none;color:#000;font-family:'Cinzel',serif;font-size:14px;font-weight:700;letter-spacing:2px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ ADD <span id="bulk-add-count">0</span> BOOKS TO MY TBR</button>
   </div>
 </div>
 
