@@ -8810,7 +8810,34 @@ function renderJournal(){
 // ══════════════════════════════════════════
 // CTA BANK
 // ══════════════════════════════════════════
-var ctaBank=JSON.parse(localStorage.getItem('tbtrish_ctabank')||'[]');
+var _ctaDefaults=[
+  {id:'cta_d1',text:"Who did a book haul this week? Drop it below 👇",cat:'Book Haul',date:'Starter'},
+  {id:'cta_d2',text:"Tag me in your book hauls — I love seeing what y'all are buying 🖖",cat:'Book Haul',date:'Starter'},
+  {id:'cta_d3',text:"Comment your most recent haul and I'll add it to my TBR 📚",cat:'Book Haul',date:'Starter'},
+  {id:'cta_d4',text:"What was your top read this month? I need to know 📚",cat:'Wrap-Up',date:'Starter'},
+  {id:'cta_d5',text:"Drop your monthly favorite below — what absolutely wrecked you?",cat:'Wrap-Up',date:'Starter'},
+  {id:'cta_d6',text:"Follow for my monthly wrap-up every last Friday 🖖",cat:'Wrap-Up',date:'Starter'},
+  {id:'cta_d7',text:"Tell me what I should read next — I'm taking requests 👇",cat:'TBR',date:'Starter'},
+  {id:'cta_d8',text:"What's sitting on YOUR TBR right now? Let's suffer together 📚",cat:'TBR',date:'Starter'},
+  {id:'cta_d9',text:"Vote: should this stay on my TBR or get dropped before I even start?",cat:'TBR',date:'Starter'},
+  {id:'cta_d10',text:"Have you read this? Drop your rating below 📖",cat:'Book Review',date:'Starter'},
+  {id:'cta_d11',text:"Follow for more honest, unfiltered book reviews 🖖",cat:'Book Review',date:'Starter'},
+  {id:'cta_d12',text:"Save this so you remember whether to read it or skip it",cat:'Book Review',date:'Starter'},
+  {id:'cta_d13',text:"Drop your best recommendation if you trust my taste 📚",cat:'Recommendation',date:'Starter'},
+  {id:'cta_d14',text:"What should I read if I loved this one? Tell me below",cat:'Recommendation',date:'Starter'},
+  {id:'cta_d15',text:"Follow me for daily recs that will ruin your life in the best way 🖖",cat:'Recommendation',date:'Starter'},
+  {id:'cta_d16',text:"Tell me where this would rank for YOU — drop your list below",cat:'Ranking',date:'Starter'},
+  {id:'cta_d17',text:"Follow for weekly rankings every Friday 🖖",cat:'Ranking',date:'Starter'},
+  {id:'cta_d18',text:"Comment your #1 all-time read and I'll judge it respectfully 👀",cat:'Ranking',date:'Starter'},
+  {id:'cta_d19',text:"What are you currently reading? We're reading together 👇",cat:'Reading Vlog',date:'Starter'},
+  {id:'cta_d20',text:"Save this if you want to read along with me",cat:'Reading Vlog',date:'Starter'},
+  {id:'cta_d21',text:"Follow along for my reading vlog updates all week",cat:'Reading Vlog',date:'Starter'},
+  {id:'cta_d22',text:"Follow for more BookTok content 🖖",cat:'General',date:'Starter'},
+  {id:'cta_d23',text:"Save this for your next book shopping trip 📚",cat:'General',date:'Starter'},
+  {id:'cta_d24',text:"Comment 'RECS' and I'll drop my full list",cat:'General',date:'Starter'}
+];
+var ctaBank=localStorage.getItem('tbtrish_ctabank')?JSON.parse(localStorage.getItem('tbtrish_ctabank')):_ctaDefaults.slice();
+if(!localStorage.getItem('tbtrish_ctabank'))localStorage.setItem('tbtrish_ctabank',JSON.stringify(ctaBank));
 var _ctaFilter='all';
 function setCtaFilter(cat,btn){_ctaFilter=cat;document.querySelectorAll('#panel-ctabank .idea-filter-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderCtas();}
 function addCta(){
@@ -8830,7 +8857,7 @@ function renderCtas(){
   var el=document.getElementById('cta-list');if(!el)return;
   var filtered=_ctaFilter==='all'?ctaBank:ctaBank.filter(function(c){return c.cat===_ctaFilter;});
   if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">'+(ctaBank.length?'No '+_ctaFilter+' CTAs yet.':'No CTAs saved yet — add your first one above! 📣')+'</div>';return;}
-  var catColors={'Follow':'rgba(80,160,220,.25)','Engage':'rgba(200,140,60,.25)','Save':'rgba(140,80,220,.25)','Share':'rgba(80,200,120,.25)','Comment Prompt':'rgba(200,60,100,.25)','General':'rgba(100,100,100,.25)'};
+  var catColors={'Book Haul':'rgba(200,140,60,.25)','Wrap-Up':'rgba(80,160,220,.25)','TBR':'rgba(140,80,220,.25)','Book Review':'rgba(200,60,100,.25)','Recommendation':'rgba(80,200,120,.25)','Ranking':'rgba(220,180,50,.25)','Reading Vlog':'rgba(100,160,220,.25)','General':'rgba(100,100,100,.25)'};
   el.innerHTML=filtered.map(function(c){
     var col=catColors[c.cat]||'rgba(100,100,100,.25)';
     return '<div class="card-box" style="margin-bottom:10px;padding:14px;border-left:3px solid rgba(255,255,255,.2);">'
@@ -8899,7 +8926,18 @@ function renderSounds(){
 // ══════════════════════════════════════════
 // VIDEO SERIES TRACKER
 // ══════════════════════════════════════════
-var videoSeriesList=JSON.parse(localStorage.getItem('tbtrish_serieslist')||'[]');
+var _vsDefaults=[
+  {id:'vs_d1',name:'Monthly Wrap-Up',cadence:'Monthly',ep:0,next:'All books finished this month + honest ratings',status:'Active',notes:'Film on the last Friday of the month',created:'Starter'},
+  {id:'vs_d2',name:'Monthly TBR Reveal',cadence:'Monthly',ep:0,next:'What I plan to read this month',status:'Active',notes:'Film on the 1st of each month',created:'Starter'},
+  {id:'vs_d3',name:'Rate My TBR',cadence:'Weekly',ep:0,next:'Community votes on what I read next',status:'Active',notes:'High engagement — let followers decide',created:'Starter'},
+  {id:'vs_d4',name:'1 Star Review',cadence:'Weekly',ep:0,next:'The book that disappointed me most',status:'Active',notes:'Be dramatic, be honest — huge engagement',created:'Starter'},
+  {id:'vs_d5',name:'Mini Review Monday',cadence:'Weekly',ep:0,next:'60-second rapid-fire review',status:'Active',notes:'Keep it under 60s for best retention',created:'Starter'},
+  {id:'vs_d6',name:'Dark Reads Drop',cadence:'Weekly',ep:0,next:'One dark & dramatic recommendation',status:'Active',notes:'Your signature vibe — own it 🖤',created:'Starter'},
+  {id:'vs_d7',name:'BookTok Made Me Buy It',cadence:'Monthly',ep:0,next:'Honest verdict on hyped BookTok reads',status:'Active',notes:'Very relatable — high saves and shares',created:'Starter'},
+  {id:'vs_d8',name:'Book Haul',cadence:'Monthly',ep:0,next:'Show all new book acquisitions',status:'Active',notes:'Great for affiliate links and engagement',created:'Starter'}
+];
+var videoSeriesList=localStorage.getItem('tbtrish_serieslist')?JSON.parse(localStorage.getItem('tbtrish_serieslist')):_vsDefaults.slice();
+if(!localStorage.getItem('tbtrish_serieslist'))localStorage.setItem('tbtrish_serieslist',JSON.stringify(videoSeriesList));
 function openVideoSeriesForm(){document.getElementById('vseries-form').style.display='block';document.getElementById('vseries-edit-id').value='';}
 function closeVideoSeriesForm(){document.getElementById('vseries-form').style.display='none';clearVideoSeriesForm();}
 function clearVideoSeriesForm(){['vseries-f-name','vseries-f-next','vseries-f-notes'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});var ep=document.getElementById('vseries-f-ep');if(ep)ep.value='1';var cad=document.getElementById('vseries-f-cadence');if(cad)cad.value='Weekly';var st=document.getElementById('vseries-f-status');if(st)st.value='Active';}
@@ -9655,23 +9693,27 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <div class="sc-field">
       <label>Category</label>
       <select id="cta-cat" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;">
-        <option value="Follow">Follow</option>
-        <option value="Engage">Engage</option>
-        <option value="Save">Save</option>
-        <option value="Share">Share</option>
-        <option value="Comment Prompt">Comment Prompt</option>
-        <option value="General">General</option>
+        <option value="Book Haul">🛍️ Book Haul</option>
+        <option value="Wrap-Up">📅 Wrap-Up</option>
+        <option value="TBR">📚 TBR</option>
+        <option value="Book Review">📖 Book Review</option>
+        <option value="Recommendation">💌 Recommendation</option>
+        <option value="Ranking">🏆 Ranking</option>
+        <option value="Reading Vlog">🎥 Reading Vlog</option>
+        <option value="General">💬 General</option>
       </select>
     </div>
     <button class="sc-add-btn" style="margin-top:4px;" onclick="addCta()">✦ Save CTA</button>
   </div>
   <div class="idea-filter-row" style="margin-bottom:12px;">
     <button class="idea-filter-btn active" onclick="setCtaFilter('all',this)">All</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('Follow',this)">➕ Follow</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('Engage',this)">💬 Engage</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('Save',this)">🔖 Save</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('Share',this)">📤 Share</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('Comment Prompt',this)">❓ Comment</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('Book Haul',this)">🛍️ Haul</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('Wrap-Up',this)">📅 Wrap-Up</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('TBR',this)">📚 TBR</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('Book Review',this)">📖 Review</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('Recommendation',this)">💌 Rec</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('Ranking',this)">🏆 Ranking</button>
+    <button class="idea-filter-btn" onclick="setCtaFilter('Reading Vlog',this)">🎥 Vlog</button>
     <button class="idea-filter-btn" onclick="setCtaFilter('General',this)">💬 General</button>
   </div>
   <div id="cta-list"></div>
