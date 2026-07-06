@@ -848,6 +848,7 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="bookquotes" onclick="showPanel('bookquotes')">📝 Quotes</button>
   <button class="nav-btn" data-panel="spin" onclick="showPanel('spin')">🎡 Spin the Wheel</button>
   <button class="nav-btn" data-panel="quiz" onclick="showPanel('quiz')">🧠 Reader Quiz</button>
+  <button class="nav-btn" data-panel="readjournal" onclick="showPanel('readjournal')">📔 Journal</button>
 </div>
 
 <div class="sub-nav" id="subnav-content">
@@ -856,6 +857,7 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="hashtags" onclick="showPanel('hashtags')">🏷️ Hashtags</button>
   <button class="nav-btn" data-panel="thumbnails" onclick="showPanel('thumbnails')">🎨 Thumbnails</button>
   <button class="nav-btn" data-panel="replies" onclick="showPanel('replies')">💬 Replies</button>
+  <button class="nav-btn" data-panel="hookbank" onclick="showPanel('hookbank')">🪝 Hook Bank</button>
   <button class="nav-btn" data-panel="timer" onclick="showPanel('timer')">⏱️ Timer</button>
   <button class="nav-btn" data-panel="mood" onclick="showPanel('mood')">🎭 Mood Picker</button>
   <button class="nav-btn" data-panel="inspo" onclick="showPanel('inspo')">✨ Inspo List</button>
@@ -2833,7 +2835,7 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 // ═══════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',timer:'content',mood:'content',inspo:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business'};
+var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',timer:'content',mood:'content',inspo:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -2880,6 +2882,8 @@ function showPanel(id){
   if(id==='pipeline'){renderPipeline();}
   if(id==='thumbnails'){renderThumbIdeas();renderMoodboard();}
   if(id==='replies'){renderReplies();}
+  if(id==='hookbank'){renderHookBank();}
+  if(id==='readjournal'){renderJournal();}
   if(id==='collabwish'){renderCollabWish();}
   if(id==='milestones'){renderMilestones();}
   if(id==='posttimes'){renderPostTimes();}
@@ -8685,6 +8689,7 @@ function renderThumbIdeas(){
 // SAVED REPLIES
 // ══════════════════════════════════════════
 var savedReplies=JSON.parse(localStorage.getItem('tbtrish_replies')||'[]');
+var _replyFilter='all';
 function openReplyForm(){document.getElementById('reply-form').style.display='block';}
 function closeReplyForm(){document.getElementById('reply-form').style.display='none';}
 function saveReply(){
@@ -8698,11 +8703,13 @@ function saveReply(){
 }
 function deleteReply(id){if(!confirm('Delete this reply?'))return;savedReplies=savedReplies.filter(function(r){return r.id!==id;});localStorage.setItem('tbtrish_replies',JSON.stringify(savedReplies));renderReplies();}
 function copyReply(id){var r=savedReplies.find(function(x){return x.id===id;});if(!r)return;navigator.clipboard&&navigator.clipboard.writeText(r.reply).then(function(){toast('✦ Copied!');}).catch(function(){toast(r.reply);});}
+function setReplyFilter(cat,btn){_replyFilter=cat;document.querySelectorAll('#panel-replies .idea-filter-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderReplies();}
 function renderReplies(){
   var el=document.getElementById('reply-list');if(!el)return;
-  if(!savedReplies.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No saved replies yet!</div>';return;}
+  var filtered=_replyFilter==='all'?savedReplies:savedReplies.filter(function(r){return r.category===_replyFilter;});
+  if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">'+(savedReplies.length?'No '+_replyFilter+' replies saved yet.':'No saved replies yet — add your first one above! 🖤')+'</div>';return;}
   var catColors={'Book Recs':'rgba(200,160,80,.2)','Questions':'rgba(80,120,200,.2)','Positive':'rgba(42,180,42,.2)','Negative':'rgba(180,42,42,.2)','General':'rgba(100,100,100,.2)'};
-  el.innerHTML=savedReplies.map(function(r){
+  el.innerHTML=filtered.map(function(r){
     return '<div class="card-box" style="margin-bottom:10px;padding:14px;">'
       +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'
       +(r.trigger?'<div style="font-size:13px;color:var(--text-dim);font-style:italic;">💬 "'+r.trigger+'"</div>':'<div></div>')
@@ -8712,6 +8719,84 @@ function renderReplies(){
       +'<div style="display:flex;gap:8px;">'
       +'<button onclick="copyReply(\''+r.id+'\')" class="btn btn-primary" style="flex:1;padding:8px;font-size:14px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Copy</button>'
       +'<button onclick="deleteReply(\''+r.id+'\')" class="btn btn-danger" style="padding:8px 12px;font-size:14px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'</div></div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// HOOK BANK
+// ══════════════════════════════════════════
+var hookBank=JSON.parse(localStorage.getItem('tbtrish_hookbank')||'[]');
+var _hookFilter='all';
+function setHookFilter(cat,btn){_hookFilter=cat;document.querySelectorAll('#panel-hookbank .idea-filter-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderHookBank();}
+function addHook(){
+  var textEl=document.getElementById('hook-text');
+  var text=(textEl?textEl.value:'').trim();
+  if(!text){toast('Write a hook first!');return;}
+  var cat=document.getElementById('hook-cat').value;
+  hookBank.unshift({id:Date.now().toString(),text:text,cat:cat,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  localStorage.setItem('tbtrish_hookbank',JSON.stringify(hookBank));
+  textEl.value='';
+  renderHookBank();
+  toast('🪝 Hook saved!');
+}
+function deleteHook(id){hookBank=hookBank.filter(function(h){return h.id!==id;});localStorage.setItem('tbtrish_hookbank',JSON.stringify(hookBank));renderHookBank();}
+function copyHook(id){var h=hookBank.find(function(x){return x.id===id;});if(!h)return;navigator.clipboard&&navigator.clipboard.writeText(h.text).then(function(){toast('✦ Hook copied!');}).catch(function(){toast(h.text);});}
+function renderHookBank(){
+  var el=document.getElementById('hook-list');if(!el)return;
+  var filtered=_hookFilter==='all'?hookBank:hookBank.filter(function(h){return h.cat===_hookFilter;});
+  if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">'+(hookBank.length?'No '+_hookFilter+' hooks yet.':'No hooks saved yet — add your first one above! 🪝')+'</div>';return;}
+  var catColors={'Dark & Dramatic':'rgba(160,40,160,.25)','Chaotic Unhinged':'rgba(220,80,40,.25)','Cozy Mood':'rgba(80,140,200,.25)','Book Review':'rgba(200,160,80,.25)','Recommendation':'rgba(40,160,100,.25)','Book Haul':'rgba(200,120,40,.25)','Ranking':'rgba(120,80,220,.25)','General':'rgba(100,100,100,.2)'};
+  el.innerHTML=filtered.map(function(h){
+    return '<div class="card-box" style="margin-bottom:10px;padding:14px;border-left:2px solid var(--gold);">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px;">'
+      +'<div style="font-size:15px;color:var(--text);line-height:1.6;flex:1;">"'+h.text+'"</div>'
+      +'<button onclick="deleteHook(\''+h.id+'\')" style="background:transparent;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'</div>'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">'
+      +'<div style="display:flex;gap:6px;align-items:center;">'
+      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+(catColors[h.cat]||'rgba(100,100,100,.2)')+';color:var(--text);">'+h.cat+'</span>'
+      +(h.date?'<span style="font-size:12px;color:var(--text-dim);">'+h.date+'</span>':'')
+      +'</div>'
+      +'<button onclick="copyHook(\''+h.id+'\')" class="btn btn-primary" style="padding:6px 14px;font-size:13px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Copy Hook</button>'
+      +'</div></div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+// READING JOURNAL
+// ══════════════════════════════════════════
+var readJournal=JSON.parse(localStorage.getItem('tbtrish_readjournal')||'[]');
+var RJ_TYPES={'First Look':{e:'👁️',c:'rgba(80,180,120,.7)'},'Midpoint Reaction':{e:'😰',c:'rgba(200,140,60,.7)'},'Plot Twist Moment':{e:'🤯',c:'rgba(200,60,100,.7)'},'Final Thoughts':{e:'📖',c:'rgba(140,80,220,.7)'},'Random Thought':{e:'💭',c:'rgba(100,160,220,.7)'},'Quote Moment':{e:'✍️',c:'var(--gold)'}};
+function addJournalEntry(){
+  var book=(document.getElementById('rj-book').value||'').trim();
+  var note=(document.getElementById('rj-note').value||'').trim();
+  if(!book||!note){toast('Book title and a note are required!');return;}
+  var type=document.getElementById('rj-type').value;
+  readJournal.unshift({id:Date.now().toString(),book:book,type:type,note:note,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})});
+  localStorage.setItem('tbtrish_readjournal',JSON.stringify(readJournal));
+  document.getElementById('rj-book').value='';
+  document.getElementById('rj-note').value='';
+  renderJournal();
+  toast('📔 Journal entry saved!');
+}
+function deleteJournalEntry(id){readJournal=readJournal.filter(function(e){return e.id!==id;});localStorage.setItem('tbtrish_readjournal',JSON.stringify(readJournal));renderJournal();}
+function renderJournal(){
+  var el=document.getElementById('rj-list');if(!el)return;
+  if(!readJournal.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No entries yet — jot your first thought while reading! 📔</div>';return;}
+  el.innerHTML=readJournal.map(function(e){
+    var t=RJ_TYPES[e.type]||{e:'📝',c:'var(--gold)'};
+    return '<div class="card-box" style="margin-bottom:10px;padding:14px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">'
+      +'<div style="flex:1;">'
+      +'<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:8px;">'
+      +'<span style="font-size:12px;padding:2px 9px;border-radius:10px;background:var(--bg3);border:1px solid '+t.c+';color:#fff;">'+t.e+' '+e.type+'</span>'
+      +'<span style="font-family:\'Cinzel\',serif;font-size:13px;color:var(--gold);">📚 '+e.book+'</span>'
+      +'<span style="font-size:12px;color:var(--text-dim);">'+e.date+'</span>'
+      +'</div>'
+      +'<div style="font-size:15px;color:var(--text);line-height:1.7;font-style:italic;">'+e.note+'</div>'
+      +'</div>'
+      +'<button onclick="deleteJournalEntry(\''+e.id+'\')" style="background:transparent;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
       +'</div></div>';
   }).join('');
 }
@@ -9340,6 +9425,14 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   <div class="section-title">💬 Saved Replies</div>
   <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Store your go-to responses to common comments — one tap to copy and paste.</p>
   <button class="sc-add-btn" onclick="openReplyForm()">✦ Add Saved Reply</button>
+  <div class="idea-filter-row" style="margin:14px 0 4px;">
+    <button class="idea-filter-btn active" onclick="setReplyFilter('all',this)">All</button>
+    <button class="idea-filter-btn" onclick="setReplyFilter('Book Recs',this)">📚 Book Recs</button>
+    <button class="idea-filter-btn" onclick="setReplyFilter('Questions',this)">❓ Questions</button>
+    <button class="idea-filter-btn" onclick="setReplyFilter('Positive',this)">💚 Positive</button>
+    <button class="idea-filter-btn" onclick="setReplyFilter('Negative',this)">🔴 Negative</button>
+    <button class="idea-filter-btn" onclick="setReplyFilter('General',this)">💬 General</button>
+  </div>
   <div id="reply-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
     <div class="sc-field"><label>Trigger (what comment is this for?)</label><input id="rep-f-trigger" placeholder="e.g. What book do you recommend for..."/></div>
     <div class="sc-field"><label>Your Reply *</label><textarea id="rep-f-reply" rows="4" placeholder="Your saved response..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;"></textarea></div>
@@ -9350,6 +9443,47 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     </div>
   </div>
   <div id="reply-list"></div>
+</div>
+
+<!-- HOOK BANK -->
+<div class="panel" id="panel-hookbank">
+  <div class="section-title">🪝 Hook Bank</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Save your best opening lines so you never start a video blank. Categorize by vibe and copy with one tap.</p>
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px;">
+    <div class="sc-field">
+      <label>Your Hook *</label>
+      <div class="mic-row">
+        <textarea id="hook-text" rows="3" placeholder="e.g. POV: you asked me to recommend a book and I said no because I KNEW you weren't ready..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea>
+        <button class="mic-btn" onclick="startVoice('hook-text',false)" title="Speak hook">🎤</button>
+      </div>
+    </div>
+    <div class="sc-field">
+      <label>Category</label>
+      <select id="hook-cat" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;">
+        <option value="Dark &amp; Dramatic">Dark &amp; Dramatic</option>
+        <option value="Chaotic Unhinged">Chaotic Unhinged</option>
+        <option value="Cozy Mood">Cozy Mood</option>
+        <option value="Book Review">Book Review</option>
+        <option value="Recommendation">Recommendation</option>
+        <option value="Book Haul">Book Haul</option>
+        <option value="Ranking">Ranking</option>
+        <option value="General">General</option>
+      </select>
+    </div>
+    <button class="sc-add-btn" style="margin-top:4px;" onclick="addHook()">✦ Save Hook</button>
+  </div>
+  <div class="idea-filter-row" style="margin-bottom:12px;">
+    <button class="idea-filter-btn active" onclick="setHookFilter('all',this)">All</button>
+    <button class="idea-filter-btn" onclick="setHookFilter('Dark &amp; Dramatic',this)">🖤 Dark</button>
+    <button class="idea-filter-btn" onclick="setHookFilter('Chaotic Unhinged',this)">🌀 Chaotic</button>
+    <button class="idea-filter-btn" onclick="setHookFilter('Cozy Mood',this)">🕯️ Cozy</button>
+    <button class="idea-filter-btn" onclick="setHookFilter('Book Review',this)">📖 Review</button>
+    <button class="idea-filter-btn" onclick="setHookFilter('Recommendation',this)">💌 Rec</button>
+    <button class="idea-filter-btn" onclick="setHookFilter('Book Haul',this)">🛍️ Haul</button>
+    <button class="idea-filter-btn" onclick="setHookFilter('Ranking',this)">🏆 Ranking</button>
+    <button class="idea-filter-btn" onclick="setHookFilter('General',this)">💬 General</button>
+  </div>
+  <div id="hook-list"></div>
 </div>
 
 <!-- COLLAB WISHLIST -->
@@ -9457,6 +9591,41 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <button class="sc-add-btn" style="margin-top:16px;" onclick="resetQuiz()">↩ Retake Quiz</button>
     </div>
   </div>
+</div>
+
+<!-- READING JOURNAL -->
+<div class="panel" id="panel-readjournal">
+  <div class="section-title">📔 Reading Journal</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Capture your raw reactions as you read — first impressions, plot twist moments, final thoughts. Your feelings in real time.</p>
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px;">
+    <div class="sc-field">
+      <label>Book Title *</label>
+      <div class="mic-row">
+        <input type="text" id="rj-book" placeholder="Which book are you reacting to?"/>
+        <button class="mic-btn" onclick="startVoice('rj-book',false)" title="Speak title">🎤</button>
+      </div>
+    </div>
+    <div class="sc-field">
+      <label>Entry Type</label>
+      <select id="rj-type" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;">
+        <option value="First Look">👁️ First Look</option>
+        <option value="Midpoint Reaction">😰 Midpoint Reaction</option>
+        <option value="Plot Twist Moment">🤯 Plot Twist Moment</option>
+        <option value="Final Thoughts">📖 Final Thoughts</option>
+        <option value="Random Thought">💭 Random Thought</option>
+        <option value="Quote Moment">✍️ Quote Moment</option>
+      </select>
+    </div>
+    <div class="sc-field">
+      <label>Your Reaction / Note *</label>
+      <div class="mic-row">
+        <textarea id="rj-note" rows="4" placeholder="What are you thinking right now?..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea>
+        <button class="mic-btn" onclick="startVoice('rj-note',false)" title="Speak reaction">🎤</button>
+      </div>
+    </div>
+    <button class="sc-add-btn" style="margin-top:4px;" onclick="addJournalEntry()">✦ Save Entry</button>
+  </div>
+  <div id="rj-list"></div>
 </div>
 
 <!-- BOOK NOTES MODAL -->
