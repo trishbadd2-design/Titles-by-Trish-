@@ -8913,18 +8913,28 @@ function selectAnswer(q,opt){
   opts.forEach(function(o){var b=document.getElementById('quiz-opt-'+q+'-'+o);if(b)b.classList.remove('sel');});
   var btn=document.getElementById('quiz-opt-'+q+'-'+opt);if(btn)btn.classList.add('sel');
   quizAnswers[q]=opt;
-  if(Object.keys(quizAnswers).length===QUIZ_QS.length){document.getElementById('quiz-submit-row').style.display='block';}
+  if(Object.keys(quizAnswers).length===QUIZ_QS.length){
+    var sr=document.getElementById('quiz-submit-row');
+    sr.style.display='block';
+    setTimeout(function(){sr.scrollIntoView({behavior:'smooth',block:'nearest'});},100);
+  }
 }
 function submitQuiz(){
-  var counts={A:0,B:0,C:0,D:0};
-  Object.values(quizAnswers).forEach(function(v){if(counts[v]!==undefined)counts[v]++;});
-  var winner=Object.keys(counts).reduce(function(a,b){return counts[a]>=counts[b]?a:b;});
-  var result=QUIZ_RESULTS[winner];
-  document.getElementById('quiz-body').style.display='none';
-  document.getElementById('quiz-result').style.display='block';
-  document.getElementById('quiz-result-type').textContent=result.type;
-  document.getElementById('quiz-result-desc').textContent=result.desc;
-  document.getElementById('quiz-result-tip').textContent='💡 '+result.tip;
+  try{
+    var counts={A:0,B:0,C:0,D:0};
+    var vals=Object.keys(quizAnswers).map(function(k){return quizAnswers[k];});
+    vals.forEach(function(v){if(counts[v]!==undefined)counts[v]++;});
+    var winner=Object.keys(counts).reduce(function(a,b){return counts[a]>=counts[b]?a:b;});
+    var result=QUIZ_RESULTS&&QUIZ_RESULTS[winner];
+    if(!result){toast('Hmm — try answering all 6 questions!');return;}
+    document.getElementById('quiz-body').style.display='none';
+    var resEl=document.getElementById('quiz-result');
+    resEl.style.display='block';
+    document.getElementById('quiz-result-type').textContent=result.type;
+    document.getElementById('quiz-result-desc').textContent=result.desc;
+    document.getElementById('quiz-result-tip').textContent='💡 '+result.tip;
+    resEl.scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){toast('Error: '+e.message);}
 }
 function resetQuiz(){quizAnswers={};initQuiz();}
 
