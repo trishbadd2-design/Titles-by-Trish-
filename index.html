@@ -850,6 +850,8 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="quiz" onclick="showPanel('quiz')">🧠 Reader Quiz</button>
   <button class="nav-btn" data-panel="readjournal" onclick="showPanel('readjournal')">📔 Journal</button>
   <button class="nav-btn" data-panel="wrapped" onclick="showPanel('wrapped')">🎁 Wrapped</button>
+  <button class="nav-btn" data-panel="upcoming" onclick="showPanel('upcoming')">🗓️ Upcoming</button>
+  <button class="nav-btn" data-panel="challenges" onclick="showPanel('challenges')">🏆 Challenges</button>
 </div>
 
 <div class="sub-nav" id="subnav-content">
@@ -867,6 +869,8 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="inspo" onclick="showPanel('inspo')">✨ Inspo List</button>
   <button class="nav-btn" data-panel="filmsession" onclick="showPanel('filmsession')">🎥 Film Sessions</button>
   <button class="nav-btn" data-panel="commentmine" onclick="showPanel('commentmine')">💎 Comment Mining</button>
+  <button class="nav-btn" data-panel="checklist" onclick="showPanel('checklist')">📋 Checklist</button>
+  <button class="nav-btn" data-panel="dmtemplates" onclick="showPanel('dmtemplates')">💌 DM Templates</button>
 </div>
 
 <div class="sub-nav" id="subnav-growth">
@@ -2857,7 +2861,7 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 // ═══════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',wrapped:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',filmsession:'content',commentmine:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
+var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -2910,6 +2914,10 @@ function showPanel(id){
   if(id==='seriestracker'){renderVideoSeries();}
   if(id==='readjournal'){renderJournal();}
   if(id==='wrapped'){renderWrapped();}
+  if(id==='upcoming'){renderUpcoming();}
+  if(id==='challenges'){renderChallenges();}
+  if(id==='checklist'){renderChecklist();}
+  if(id==='dmtemplates'){renderDMTemplates();}
   if(id==='filmsession'){renderFilmSessions();}
   if(id==='commentmine'){renderCommentMine();}
   if(id==='videoperf'){renderVideoPerfLog();}
@@ -9247,6 +9255,247 @@ function addBulkToTBR(){
   toast('📚 '+toAdd.length+' book'+(toAdd.length>1?'s':'')+' added to your TBR!');
 }
 
+// UPCOMING RELEASES TRACKER
+// ══════════════════════════════════════════
+var upcomingList=JSON.parse(localStorage.getItem('tbtrish_upcoming')||'[]');
+function openUpcomingForm(){document.getElementById('upcoming-form').style.display='block';}
+function closeUpcomingForm(){document.getElementById('upcoming-form').style.display='none';document.getElementById('up-f-editid').value='';}
+function saveUpcoming(){
+  var title=document.getElementById('up-f-title').value.trim();
+  var releaseDate=document.getElementById('up-f-date').value;
+  if(!title){toast('Book title is required!');return;}
+  var eid=document.getElementById('up-f-editid').value;
+  var entry={id:eid||Date.now().toString(),title:title,author:document.getElementById('up-f-author').value.trim(),genre:document.getElementById('up-f-genre').value.trim(),releaseDate:releaseDate,preorderLink:document.getElementById('up-f-link').value.trim(),notes:document.getElementById('up-f-notes').value.trim(),notify:document.getElementById('up-f-notify').checked,read:false};
+  if(eid){var idx=upcomingList.findIndex(function(u){return u.id===eid;});if(idx>-1)upcomingList[idx]=entry;}
+  else{upcomingList.push(entry);}
+  upcomingList.sort(function(a,b){if(!a.releaseDate)return 1;if(!b.releaseDate)return -1;return a.releaseDate.localeCompare(b.releaseDate);});
+  localStorage.setItem('tbtrish_upcoming',JSON.stringify(upcomingList));
+  renderUpcoming();closeUpcomingForm();
+  ['up-f-title','up-f-author','up-f-genre','up-f-link','up-f-notes'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('up-f-date').value='';document.getElementById('up-f-notify').checked=false;
+  toast('📅 Release saved!');
+}
+function deleteUpcoming(id){if(!confirm('Remove this release?'))return;upcomingList=upcomingList.filter(function(u){return u.id!==id;});localStorage.setItem('tbtrish_upcoming',JSON.stringify(upcomingList));renderUpcoming();}
+function toggleUpcomingRead(id){var u=upcomingList.find(function(x){return x.id===id;});if(u){u.read=!u.read;localStorage.setItem('tbtrish_upcoming',JSON.stringify(upcomingList));renderUpcoming();}}
+function editUpcoming(id){
+  var u=upcomingList.find(function(x){return x.id===id;});if(!u)return;
+  document.getElementById('up-f-title').value=u.title;
+  document.getElementById('up-f-author').value=u.author||'';
+  document.getElementById('up-f-genre').value=u.genre||'';
+  document.getElementById('up-f-date').value=u.releaseDate||'';
+  document.getElementById('up-f-link').value=u.preorderLink||'';
+  document.getElementById('up-f-notes').value=u.notes||'';
+  document.getElementById('up-f-notify').checked=!!u.notify;
+  document.getElementById('up-f-editid').value=u.id;
+  openUpcomingForm();
+}
+function copyUpcomingLink(link){navigator.clipboard.writeText(link).then(function(){toast('🔗 Pre-order link copied!');}).catch(function(){toast('Copy failed.');});}
+function renderUpcoming(){
+  var el=document.getElementById('upcoming-list');if(!el)return;
+  var today=new Date();today.setHours(0,0,0,0);
+  var unread=upcomingList.filter(function(u){return !u.read;});
+  var read=upcomingList.filter(function(u){return u.read;});
+  if(!upcomingList.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No upcoming releases tracked yet. Add your most anticipated books!</div>';return;}
+  function renderGroup(list,isRead){
+    return list.map(function(u){
+      var releaseDate=u.releaseDate?new Date(u.releaseDate+'T12:00'):null;
+      var daysUntil=releaseDate?Math.ceil((releaseDate-today)/(1000*60*60*24)):null;
+      var released=daysUntil!==null&&daysUntil<=0;
+      var countdown=daysUntil===null?'':(released?'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(42,180,42,.2);color:rgba(140,220,140,.9);">✅ Out Now!</span>':daysUntil===1?'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(200,160,80,.2);color:var(--gold);">🔥 Tomorrow!</span>':daysUntil<=7?'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(200,160,80,.15);color:var(--gold);">📅 '+daysUntil+' days</span>':'<span style="font-size:11px;color:var(--text-dim);">📅 '+u.releaseDate+'</span>');
+      return '<div class="card-box" style="margin-bottom:10px;padding:14px;opacity:'+(isRead?'0.55':'1')+';"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div style="flex:1;"><div style="font-family:\'Cinzel\',serif;font-size:15px;font-weight:700;color:var(--text);">'+(u.notify?'🔔 ':'')+u.title+'</div>'+(u.author?'<div style="font-size:13px;color:var(--text-dim);margin-top:2px;">by '+u.author+'</div>':'')+'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;align-items:center;">'+(u.genre?'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(200,160,80,.12);color:var(--gold-dim);">'+u.genre+'</span>':'')+countdown+'</div></div><div style="display:flex;gap:6px;align-items:center;flex-shrink:0;"><button onclick="toggleUpcomingRead(\''+u.id+'\')" style="font-size:11px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);background:'+(isRead?'rgba(42,180,42,.2)':'transparent')+';color:'+(isRead?'rgba(140,220,140,.9)':'var(--text-dim)')+';cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+(isRead?'✅ Read':'○ Read')+'</button><button onclick="editUpcoming(\''+u.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;">✏️</button><button onclick="deleteUpcoming(\''+u.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button></div></div>'+(u.notes?'<div style="font-size:13px;color:var(--text-dim);margin-top:8px;font-style:italic;">📌 '+u.notes+'</div>':'')+(u.preorderLink?'<div style="margin-top:8px;"><button onclick="copyUpcomingLink(\''+u.preorderLink.replace(/'/g,'&#39;')+'\')" style="padding:6px 14px;background:var(--gold);border:none;color:#000;font-family:\'Cinzel\',serif;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔗 Copy Pre-order Link</button></div>':'')+'</div>';
+    }).join('');
+  }
+  var html=renderGroup(unread,false);
+  if(read.length)html+='<div style="font-size:12px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin:16px 0 8px;font-family:\'Cinzel\',serif;">Already Read</div>'+renderGroup(read,true);
+  el.innerHTML=html;
+}
+
+// READING CHALLENGE TRACKER
+// ══════════════════════════════════════════
+var challengeList=JSON.parse(localStorage.getItem('tbtrish_challenges')||'[]');
+var _challengeDefaults=[
+  {id:'ch_d1',name:'Goodreads Reading Goal',type:'count',target:52,books:[],notes:'Read 52 books this year — one a week!'},
+  {id:'ch_d2',name:'12 Genres in 12 Months',type:'list',target:12,books:[],notes:'Read one new genre each month of the year.'},
+  {id:'ch_d3',name:'BIPOC Authors',type:'count',target:12,books:[],notes:'Read at least 12 books by BIPOC authors.'},
+  {id:'ch_d4',name:'Debut Novels',type:'count',target:6,books:[],notes:'Support debut authors — read 6 first-time novels.'},
+  {id:'ch_d5',name:'Series Completions',type:'count',target:3,books:[],notes:'Finish 3 book series start to finish.'},
+  {id:'ch_d6',name:'Books Under 300 Pages',type:'count',target:10,books:[],notes:'Perfect for reading slumps — short and sweet reads.'},
+  {id:'ch_d7',name:'Books Over 500 Pages',type:'count',target:5,books:[],notes:'Challenge yourself with the big ones.'},
+  {id:'ch_d8',name:'BookTok Made Me Read It',type:'count',target:10,books:[],notes:'Books you picked up because BookTok hyped them.'},
+  {id:'ch_d9',name:'Re-reads',type:'count',target:3,books:[],notes:'Revisit old favorites and see them with fresh eyes.'},
+  {id:'ch_d10',name:'Books Set Outside the US',type:'count',target:8,books:[],notes:'Explore the world through fiction.'}
+];
+_challengeDefaults.forEach(function(d){if(!challengeList.find(function(c){return c.id===d.id;}))challengeList.push(d);});
+localStorage.setItem('tbtrish_challenges',JSON.stringify(challengeList));
+var challengeExpanded={};
+function openChallengeForm(){document.getElementById('challenge-form').style.display='block';}
+function closeChallengeForm(){document.getElementById('challenge-form').style.display='none';}
+function saveChallenge(){
+  var name=document.getElementById('ch-f-name').value.trim();
+  var target=parseInt(document.getElementById('ch-f-target').value)||0;
+  if(!name){toast('Challenge name is required!');return;}
+  challengeList.unshift({id:Date.now().toString(),name:name,type:'count',target:target,books:[],notes:document.getElementById('ch-f-notes').value.trim()});
+  localStorage.setItem('tbtrish_challenges',JSON.stringify(challengeList));
+  renderChallenges();closeChallengeForm();
+  document.getElementById('ch-f-name').value='';document.getElementById('ch-f-target').value='';document.getElementById('ch-f-notes').value='';
+  toast('🏆 Challenge added!');
+}
+function deleteChallenge(id){if(!confirm('Delete this challenge?'))return;challengeList=challengeList.filter(function(c){return c.id!==id;});localStorage.setItem('tbtrish_challenges',JSON.stringify(challengeList));renderChallenges();}
+function toggleChallengeExpand(id){challengeExpanded[id]=!challengeExpanded[id];renderChallenges();}
+function addBookToChallenge(id){
+  var c=challengeList.find(function(x){return x.id===id;});if(!c)return;
+  var inp=document.getElementById('ch-book-inp-'+id);if(!inp)return;
+  var title=inp.value.trim();if(!title)return;
+  if(!c.books)c.books=[];
+  c.books.push({id:Date.now().toString(),title:title});
+  localStorage.setItem('tbtrish_challenges',JSON.stringify(challengeList));
+  renderChallenges();
+}
+function removeBookFromChallenge(cid,bid){var c=challengeList.find(function(x){return x.id===cid;});if(!c)return;c.books=c.books.filter(function(b){return b.id!==bid;});localStorage.setItem('tbtrish_challenges',JSON.stringify(challengeList));renderChallenges();}
+function renderChallenges(){
+  var el=document.getElementById('challenge-list');if(!el)return;
+  if(!challengeList.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No challenges yet!</div>';return;}
+  el.innerHTML=challengeList.map(function(c){
+    var books=c.books||[];
+    var count=books.length;
+    var pct=c.target>0?Math.min(100,Math.round(count/c.target*100)):0;
+    var expanded=!!challengeExpanded[c.id];
+    var booksHtml='';
+    if(expanded){
+      booksHtml='<div style="margin-top:12px;">';
+      if(books.length)booksHtml+=books.map(function(b){return'<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text);">'+b.title+'<button onclick="removeBookFromChallenge(\''+c.id+'\',\''+b.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;flex-shrink:0;">✕</button></div>';}).join('');
+      else booksHtml+='<div style="color:var(--text-dim);font-style:italic;font-size:13px;padding:4px 0;">No books logged yet.</div>';
+      booksHtml+='<div style="display:flex;gap:6px;margin-top:10px;"><input id="ch-book-inp-'+c.id+'" placeholder="Add a book title..." style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:8px;color:#fff;font-size:13px;font-family:inherit;" onkeydown="if(event.key===\'Enter\')addBookToChallenge(\''+c.id+'\')"/><button onclick="addBookToChallenge(\''+c.id+'\')" style="padding:8px 14px;background:var(--gold);border:none;color:#000;font-family:\'Cinzel\',serif;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add</button></div></div>';
+    }
+    return '<div class="card-box" style="margin-bottom:12px;padding:14px;"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div style="flex:1;cursor:pointer;" onclick="toggleChallengeExpand(\''+c.id+'\')"><div style="font-family:\'Cinzel\',serif;font-size:15px;font-weight:700;color:var(--text);">'+c.name+'</div>'+(c.notes?'<div style="font-size:13px;color:var(--text-dim);margin-top:2px;font-style:italic;">'+c.notes+'</div>':'')+'</div><div style="display:flex;gap:6px;align-items:center;flex-shrink:0;"><span style="font-family:\'Cinzel\',serif;font-size:13px;color:var(--gold);">'+count+(c.target?' / '+c.target:'')+'</span><button onclick="deleteChallenge(\''+c.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button></div></div><div style="margin-top:10px;background:var(--bg3);border-radius:4px;height:6px;overflow:hidden;"><div style="height:100%;background:var(--gold);border-radius:4px;transition:width .4s;width:'+pct+'%;"></div></div><div style="font-size:11px;color:var(--text-dim);margin-top:4px;display:flex;justify-content:space-between;"><span>'+pct+'% complete</span><span style="cursor:pointer;color:var(--gold-dim);" onclick="toggleChallengeExpand(\''+c.id+'\')">'+(expanded?'▲ Hide books':'▼ '+(count?'See '+count+' books':'Add books'))+'</span></div>'+booksHtml+'</div>';
+  }).join('');
+}
+
+// CONTENT CHECKLIST
+// ══════════════════════════════════════════
+var _checklistDefaults=[
+  {id:'cl_d1',text:'Camera battery charged',category:'Gear'},
+  {id:'cl_d2',text:'Memory card cleared / enough space',category:'Gear'},
+  {id:'cl_d3',text:'Lighting set up and tested',category:'Gear'},
+  {id:'cl_d4',text:'Tripod / phone stand secured',category:'Gear'},
+  {id:'cl_d5',text:'Backdrop / shelf styled',category:'Setup'},
+  {id:'cl_d6',text:'Books staged and ready',category:'Setup'},
+  {id:'cl_d7',text:'Outfit / appearance checked',category:'Setup'},
+  {id:'cl_d8',text:'Hooks written out',category:'Content'},
+  {id:'cl_d9',text:'CTAs ready',category:'Content'},
+  {id:'cl_d10',text:'Sounds / music chosen',category:'Content'},
+  {id:'cl_d11',text:'Script or talking points ready',category:'Content'},
+  {id:'cl_d12',text:'Post schedule confirmed',category:'After'},
+  {id:'cl_d13',text:'Captions drafted',category:'After'},
+  {id:'cl_d14',text:'Hashtags copied',category:'After'},
+  {id:'cl_d15',text:'Thumbnail text decided',category:'After'}
+];
+var checklistItems=JSON.parse(localStorage.getItem('tbtrish_checklist_items')||'null');
+if(!checklistItems){checklistItems=_checklistDefaults.slice();localStorage.setItem('tbtrish_checklist_items',JSON.stringify(checklistItems));}
+else{_checklistDefaults.forEach(function(d){if(!checklistItems.find(function(c){return c.id===d.id;}))checklistItems.push(d);});}
+var checklistDone=new Set(JSON.parse(localStorage.getItem('tbtrish_checklist_done')||'[]'));
+function saveChecklistItems(){localStorage.setItem('tbtrish_checklist_items',JSON.stringify(checklistItems));}
+function saveChecklistDone(){localStorage.setItem('tbtrish_checklist_done',JSON.stringify([...checklistDone]));}
+function toggleChecklistItem(id){if(checklistDone.has(id))checklistDone.delete(id);else checklistDone.add(id);saveChecklistDone();renderChecklist();}
+function resetChecklist(){checklistDone.clear();saveChecklistDone();renderChecklist();toast('✦ Checklist reset for next session!');}
+function addChecklistItem(){
+  var inp=document.getElementById('cl-new-item');if(!inp)return;
+  var text=inp.value.trim();if(!text)return;
+  checklistItems.push({id:Date.now().toString(),text:text,category:'Custom'});
+  saveChecklistItems();inp.value='';renderChecklist();
+}
+function deleteChecklistItem(id){checklistItems=checklistItems.filter(function(c){return c.id!==id;});checklistDone.delete(id);saveChecklistItems();saveChecklistDone();renderChecklist();}
+function renderChecklist(){
+  var el=document.getElementById('checklist-body');if(!el)return;
+  var total=checklistItems.length;
+  var done=checklistItems.filter(function(c){return checklistDone.has(c.id);}).length;
+  var pct=total>0?Math.round(done/total*100):0;
+  var cats={};
+  checklistItems.forEach(function(c){var cat=c.category||'Other';if(!cats[cat])cats[cat]=[];cats[cat].push(c);});
+  var catOrder=['Gear','Setup','Content','After','Custom','Other'];
+  var catHtml=catOrder.filter(function(cat){return cats[cat]&&cats[cat].length;}).map(function(cat){
+    return '<div style="margin-bottom:14px;">'
+      +'<div style="font-size:11px;letter-spacing:2px;color:var(--gold-dim);text-transform:uppercase;margin-bottom:8px;font-family:\'Cinzel\',serif;">'+cat+'</div>'
+      +cats[cat].map(function(c){
+        var checked=checklistDone.has(c.id);
+        return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;margin-bottom:6px;cursor:pointer;opacity:'+(checked?'0.5':'1')+';touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="toggleChecklistItem(\''+c.id+'\')">'
+          +'<div style="width:20px;height:20px;border-radius:50%;border:2px solid '+(checked?'rgba(140,220,140,.9)':'var(--border)')+';background:'+(checked?'rgba(42,180,42,.3)':'transparent')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;">'+(checked?'✓':'')+'</div>'
+          +'<div style="flex:1;font-size:14px;color:var(--text);text-decoration:'+(checked?'line-through':'none')+';">'+c.text+'</div>'
+          +'<button onclick="event.stopPropagation();deleteChecklistItem(\''+c.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;opacity:0.5;flex-shrink:0;">✕</button>'
+          +'</div>';
+      }).join('')
+      +'</div>';
+  }).join('');
+  el.innerHTML='<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div style="font-family:\'Cinzel\',serif;font-size:14px;color:var(--gold);">'+done+' / '+total+' complete</div><button onclick="resetChecklist()" style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">↺ Reset</button></div><div style="background:var(--bg3);border-radius:4px;height:8px;overflow:hidden;"><div style="height:100%;background:'+(pct===100?'rgba(42,180,42,.7)':'var(--gold)')+';border-radius:4px;transition:width .4s;width:'+pct+'%;"></div></div></div>'
+    +catHtml
+    +'<div style="display:flex;gap:6px;margin-top:8px;"><input id="cl-new-item" placeholder="Add your own item..." style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;font-family:inherit;" onkeydown="if(event.key===\'Enter\')addChecklistItem()"/><button onclick="addChecklistItem()" style="padding:10px 16px;background:var(--gold);border:none;color:#000;font-family:\'Cinzel\',serif;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add</button></div>';
+}
+
+// DM TEMPLATES
+// ══════════════════════════════════════════
+var _dmDefaults=[
+  {id:'dm_d1',category:'Book Recs',title:'What should I read next?',text:'Omg I love recommending books! 🖤 What genres do you usually love? I want to make sure I suggest something perfect for you!'},
+  {id:'dm_d2',category:'Book Recs',title:'What book is that?',text:'That\'s [BOOK TITLE] by [AUTHOR]! 📚 It\'s absolutely amazing — you can find my full review on my page or grab it at the link in my bio!'},
+  {id:'dm_d3',category:'Book Recs',title:'Something like [popular book]',text:'If you loved that one, I think you\'d be obsessed with [RECOMMENDATION]! Same vibes — [brief reason]. Let me know if you read it! 🖤'},
+  {id:'dm_d4',category:'Collabs',title:'Collab / partnership inquiry',text:'Hi! Thank you so much for reaching out 🖤 I\'d love to learn more! Could you send over your rate card or details about the campaign? My email for official inquiries is [YOUR EMAIL]. Looking forward to connecting!'},
+  {id:'dm_d5',category:'Collabs',title:'Free product only offer',text:'Hi! Thank you so much for thinking of me! I do partner with brands I love, but I\'m currently only taking paid partnerships. If that\'s something you\'d be open to, I\'d love to chat! 🖤'},
+  {id:'dm_d6',category:'Collabs',title:'Author collab request',text:'Hi! I\'m so flattered you reached out! 🖤 I would absolutely love to feature your book. Could you tell me a little more about it and what you\'re envisioning? I\'m excited to hear more!'},
+  {id:'dm_d7',category:'Community',title:'Where do you get your books?',text:'Mostly a mix of buying, my local library, and NetGalley for ARCs! 📚 I also use Bookshop.org to support indie bookstores — link in my bio if you want to check it out!'},
+  {id:'dm_d8',category:'Community',title:'How do you read so fast?',text:'Honestly it took practice! 📖 I listen to audiobooks during commutes and errands, and I try to read every night before bed — even just 20 minutes adds up fast. What are you currently reading?'},
+  {id:'dm_d9',category:'Community',title:'How did you start your BookTok?',text:'I just started posting about books I loved and it grew from there! 🖤 My biggest tip: be yourself, post consistently, and don\'t overthink it. The BookTok community is SO welcoming. You should start — I\'d follow you!'},
+  {id:'dm_d10',category:'Negative',title:'Dealing with negative comment',text:'Hi! I appreciate you sharing your thoughts. I always try to give honest reviews — not every book is for everyone and that\'s totally okay! 🖤 Hoping the next book I recommend is more your vibe!'},
+  {id:'dm_d11',category:'ARCs',title:'Requesting an ARC',text:'Hi! I\'m a BookTok creator with [X] followers and would love to be considered for an early copy of [BOOK TITLE]. I post consistent book content and my audience loves [GENRE]. Happy to share my media kit — just let me know!'},
+  {id:'dm_d12',category:'General',title:'Thank you for the follow!',text:'Thank you so much for following! 🖤 Welcome to the little corner of BookTok! I hope I can put some great reads on your radar. What\'s the last book you absolutely loved?'}
+];
+var dmTemplates=JSON.parse(localStorage.getItem('tbtrish_dmtemplates')||'null');
+if(!dmTemplates){dmTemplates=_dmDefaults.slice();localStorage.setItem('tbtrish_dmtemplates',JSON.stringify(dmTemplates));}
+else{_dmDefaults.forEach(function(d){if(!dmTemplates.find(function(t){return t.id===d.id;}))dmTemplates.push(d);});localStorage.setItem('tbtrish_dmtemplates',JSON.stringify(dmTemplates));}
+var dmFilter='all';
+function openDMForm(){document.getElementById('dm-form').style.display='block';}
+function closeDMForm(){document.getElementById('dm-form').style.display='none';document.getElementById('dm-f-editid').value='';}
+function saveDMTemplate(){
+  var title=document.getElementById('dm-f-title').value.trim();
+  var text=document.getElementById('dm-f-text').value.trim();
+  if(!title||!text){toast('Title and template text are required!');return;}
+  var eid=document.getElementById('dm-f-editid').value;
+  var entry={id:eid||Date.now().toString(),category:document.getElementById('dm-f-category').value,title:title,text:text};
+  if(eid){var idx=dmTemplates.findIndex(function(t){return t.id===eid;});if(idx>-1)dmTemplates[idx]=entry;}
+  else{dmTemplates.unshift(entry);}
+  localStorage.setItem('tbtrish_dmtemplates',JSON.stringify(dmTemplates));
+  renderDMTemplates();closeDMForm();
+  document.getElementById('dm-f-title').value='';document.getElementById('dm-f-text').value='';
+  toast('💌 Template saved!');
+}
+function deleteDMTemplate(id){if(!confirm('Delete this template?'))return;dmTemplates=dmTemplates.filter(function(t){return t.id!==id;});localStorage.setItem('tbtrish_dmtemplates',JSON.stringify(dmTemplates));renderDMTemplates();}
+function editDMTemplate(id){
+  var t=dmTemplates.find(function(x){return x.id===id;});if(!t)return;
+  document.getElementById('dm-f-title').value=t.title;
+  document.getElementById('dm-f-text').value=t.text;
+  document.getElementById('dm-f-category').value=t.category||'General';
+  document.getElementById('dm-f-editid').value=t.id;
+  openDMForm();
+}
+function copyDMTemplate(id){
+  var t=dmTemplates.find(function(x){return x.id===id;});if(!t)return;
+  navigator.clipboard.writeText(t.text).then(function(){toast('💌 Copied! Paste it in your DMs.');}).catch(function(){toast('Copy failed.');});
+}
+function setDMFilter(f){
+  dmFilter=f;
+  document.querySelectorAll('.dm-filter-btn').forEach(function(b){b.style.background='transparent';b.style.color='var(--text-dim)';});
+  var active=document.querySelector('.dm-filter-btn[data-f="'+f+'"]');
+  if(active){active.style.background='rgba(200,160,80,.15)';active.style.color='var(--gold)';}
+  renderDMTemplates();
+}
+function renderDMTemplates(){
+  var el=document.getElementById('dm-list');if(!el)return;
+  var filtered=dmFilter==='all'?dmTemplates:dmTemplates.filter(function(t){return t.category===dmFilter;});
+  var catColors={'Book Recs':'rgba(200,160,80,.2)','Collabs':'rgba(160,80,220,.2)','Community':'rgba(42,180,42,.2)','Negative':'rgba(200,80,80,.2)','ARCs':'rgba(80,120,200,.2)','General':'rgba(100,100,100,.2)'};
+  if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No templates in this category.</div>';return;}
+  el.innerHTML=filtered.map(function(t){
+    return '<div class="card-box" style="margin-bottom:12px;padding:14px;"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;"><div><span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+(catColors[t.category]||'rgba(100,100,100,.2)')+';color:var(--text);">'+t.category+'</span><div style="font-family:\'Cinzel\',serif;font-size:14px;font-weight:700;color:var(--text);margin-top:6px;">'+t.title+'</div></div><div style="display:flex;gap:6px;flex-shrink:0;"><button onclick="editDMTemplate(\''+t.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;">✏️</button><button onclick="deleteDMTemplate(\''+t.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button></div></div><div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;font-style:italic;">'+t.text+'</div><button onclick="copyDMTemplate(\''+t.id+'\')" style="width:100%;padding:10px;background:var(--gold);border:none;color:#000;font-family:\'Cinzel\',serif;font-size:13px;font-weight:700;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">💌 Copy Template</button></div>';
+  }).join('');
+}
+
 // READING WRAPPED
 // ══════════════════════════════════════════
 function renderWrapped(){
@@ -10517,6 +10766,89 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <button class="sc-btn-save" onclick="saveBookNotes()">✦ Save Notes</button>
     </div>
   </div>
+</div>
+
+<!-- UPCOMING RELEASES -->
+<div class="panel" id="panel-upcoming">
+  <div class="section-title">🗓️ Upcoming Releases</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Track hyped releases with countdown timers and pre-order links. Never miss a drop date again.</p>
+  <button class="sc-add-btn" onclick="openUpcomingForm()">✦ Add a Release</button>
+  <div id="upcoming-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <input type="hidden" id="up-f-editid"/>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Title *</label><input id="up-f-title" placeholder="e.g. The Familiar..."/></div>
+      <div class="sc-field"><label>Author</label><input id="up-f-author" placeholder="e.g. Leigh Bardugo..."/></div>
+    </div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Genre</label><input id="up-f-genre" placeholder="e.g. Fantasy..."/></div>
+      <div class="sc-field"><label>Release Date</label><input type="date" id="up-f-date"/></div>
+    </div>
+    <div class="sc-field"><label>Pre-order Link</label><input id="up-f-link" placeholder="https://..."/></div>
+    <div class="sc-field"><label>Notes</label><input id="up-f-notes" placeholder="what you're excited about, content ideas..."/></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+      <input type="checkbox" id="up-f-notify" style="cursor:pointer;accent-color:var(--gold);width:16px;height:16px;"/>
+      <label for="up-f-notify" style="font-size:14px;color:var(--text-dim);cursor:pointer;">🔔 Pin as high priority</label>
+    </div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeUpcomingForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveUpcoming()">✦ Save</button>
+    </div>
+  </div>
+  <div id="upcoming-list"></div>
+</div>
+
+<!-- READING CHALLENGES -->
+<div class="panel" id="panel-challenges">
+  <div class="section-title">🏆 Reading Challenges</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Track your reading challenges and log which books count. Pre-loaded with popular BookTok challenges — tap any to add books.</p>
+  <button class="sc-add-btn" onclick="openChallengeForm()">✦ Add a Challenge</button>
+  <div id="challenge-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Challenge Name *</label><input id="ch-f-name" placeholder="e.g. Read 52 Books..."/></div>
+      <div class="sc-field"><label>Goal (# of books)</label><input type="number" id="ch-f-target" placeholder="e.g. 52"/></div>
+    </div>
+    <div class="sc-field"><label>Notes</label><input id="ch-f-notes" placeholder="what counts, rules..."/></div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeChallengeForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveChallenge()">✦ Add Challenge</button>
+    </div>
+  </div>
+  <div id="challenge-list"></div>
+</div>
+
+<!-- CONTENT CHECKLIST -->
+<div class="panel" id="panel-checklist">
+  <div class="section-title">📋 Filming Checklist</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Run through this before every filming session. Tap any item to check it off. Hit Reset when you start a new session.</p>
+  <div id="checklist-body"></div>
+</div>
+
+<!-- DM TEMPLATES -->
+<div class="panel" id="panel-dmtemplates">
+  <div class="section-title">💌 DM Templates</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Copy-paste replies for your most common DMs. Pre-loaded with templates for book recs, collabs, and community questions. Edit any to make it yours.</p>
+  <button class="sc-add-btn" onclick="openDMForm()">✦ Add Template</button>
+  <div id="dm-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <input type="hidden" id="dm-f-editid"/>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Template Title *</label><input id="dm-f-title" placeholder="e.g. What should I read next?"/></div>
+      <div class="sc-field"><label>Category</label><select id="dm-f-category"><option>Book Recs</option><option>Collabs</option><option>Community</option><option>Negative</option><option>ARCs</option><option>General</option></select></div>
+    </div>
+    <div class="sc-field"><label>Template Text *</label><textarea id="dm-f-text" rows="4" placeholder="Your DM reply template... use [PLACEHOLDERS] for things you'll swap out." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;line-height:1.7;"></textarea></div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeDMForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveDMTemplate()">✦ Save</button>
+    </div>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+    <button class="dm-filter-btn" data-f="all" onclick="setDMFilter('all')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(200,160,80,.15);color:var(--gold);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">All</button>
+    <button class="dm-filter-btn" data-f="Book Recs" onclick="setDMFilter('Book Recs')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📚 Book Recs</button>
+    <button class="dm-filter-btn" data-f="Collabs" onclick="setDMFilter('Collabs')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🤝 Collabs</button>
+    <button class="dm-filter-btn" data-f="Community" onclick="setDMFilter('Community')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">💚 Community</button>
+    <button class="dm-filter-btn" data-f="ARCs" onclick="setDMFilter('ARCs')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📬 ARCs</button>
+    <button class="dm-filter-btn" data-f="Negative" onclick="setDMFilter('Negative')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🛡️ Negative</button>
+  </div>
+  <div id="dm-list"></div>
 </div>
 
 <!-- READING WRAPPED -->
