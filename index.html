@@ -2944,6 +2944,7 @@ function showPanel(id){
     var sn=document.getElementById('subnav-'+group);
     if(sn)sn.classList.add('active');
   }
+  if(id==='calendar'){renderCalendar();renderNowReading();}
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
   if(id==='arc')renderARC();
@@ -3006,7 +3007,7 @@ function renderCalendar(){
   var allMonths=['january','february','march','april','may','june','july','august','september','october','november','december'];
   // Merge pre-loaded videos with custom entries
   var allEntries=videos.slice();
-  customCalEntries.forEach(function(ce){if(!allEntries.find(function(v){return v.id===ce.id;})){allEntries.push(ce);}});
+  (customCalEntries||[]).forEach(function(ce){if(!allEntries.find(function(v){return v.id===ce.id;})){allEntries.push(ce);}});
   let filtered=allEntries;
   if(calTab==='archived'){filtered=allEntries.filter(v=>calArchiveSet.has(v.id));}
   else{
@@ -5388,7 +5389,6 @@ scInitRecPills();
 // INIT
 // ═══════════════════════════════════════════════
 renderCalendar();
-renderNowReading();
 renderSavedIdeas();
 scheduleAlarmCheck();
 // Set today's date as default for follower log
