@@ -849,6 +849,7 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="spin" onclick="showPanel('spin')">🎡 Spin the Wheel</button>
   <button class="nav-btn" data-panel="quiz" onclick="showPanel('quiz')">🧠 Reader Quiz</button>
   <button class="nav-btn" data-panel="readjournal" onclick="showPanel('readjournal')">📔 Journal</button>
+  <button class="nav-btn" data-panel="wrapped" onclick="showPanel('wrapped')">🎁 Wrapped</button>
 </div>
 
 <div class="sub-nav" id="subnav-content">
@@ -864,6 +865,8 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="timer" onclick="showPanel('timer')">⏱️ Timer</button>
   <button class="nav-btn" data-panel="mood" onclick="showPanel('mood')">🎭 Mood Picker</button>
   <button class="nav-btn" data-panel="inspo" onclick="showPanel('inspo')">✨ Inspo List</button>
+  <button class="nav-btn" data-panel="filmsession" onclick="showPanel('filmsession')">🎥 Film Sessions</button>
+  <button class="nav-btn" data-panel="commentmine" onclick="showPanel('commentmine')">💎 Comment Mining</button>
 </div>
 
 <div class="sub-nav" id="subnav-growth">
@@ -871,6 +874,7 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="engagement" onclick="showPanel('engagement')">🎯 Engagement</button>
   <button class="nav-btn" data-panel="analytics" onclick="showPanel('analytics')">📊 Analytics</button>
   <button class="nav-btn" data-panel="spending" onclick="showPanel('spending')">💰 Spending</button>
+  <button class="nav-btn" data-panel="videoperf" onclick="showPanel('videoperf')">📊 Video Performance</button>
 </div>
 
 <div class="sub-nav" id="subnav-business">
@@ -879,6 +883,7 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="ratecard" onclick="showPanel('ratecard')">💰 Rate Card</button>
   <button class="nav-btn" data-panel="wins" onclick="showPanel('wins')">🏆 Wins</button>
   <button class="nav-btn" data-panel="collabwish" onclick="showPanel('collabwish')">🌟 Collab Wishlist</button>
+  <button class="nav-btn" data-panel="affiliates" onclick="showPanel('affiliates')">🔗 Affiliate Links</button>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -2839,7 +2844,7 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 // ═══════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business'};
+var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',wrapped:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',filmsession:'content',commentmine:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -2891,6 +2896,11 @@ function showPanel(id){
   if(id==='sounds'){renderSounds();}
   if(id==='seriestracker'){renderVideoSeries();}
   if(id==='readjournal'){renderJournal();}
+  if(id==='wrapped'){renderWrapped();}
+  if(id==='filmsession'){renderFilmSessions();}
+  if(id==='commentmine'){renderCommentMine();}
+  if(id==='videoperf'){renderVideoPerfLog();}
+  if(id==='affiliates'){renderAffiliates();}
   if(id==='collabwish'){renderCollabWish();}
   if(id==='milestones'){renderMilestones();}
   if(id==='posttimes'){renderPostTimes();}
@@ -9204,6 +9214,269 @@ function addBulkToTBR(){
   toast('📚 '+toAdd.length+' book'+(toAdd.length>1?'s':'')+' added to your TBR!');
 }
 
+// READING WRAPPED
+// ══════════════════════════════════════════
+function renderWrapped(){
+  var el=document.getElementById('wrapped-body');if(!el)return;
+  var yearSel=document.getElementById('wrapped-year');
+  var year=yearSel?parseInt(yearSel.value):new Date().getFullYear();
+  var allBooks=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var books=allBooks.filter(function(b){if(!b.dateEnd)return false;return new Date(b.dateEnd+'T12:00').getFullYear()===year;});
+  if(!books.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-dim);font-style:italic;">No books logged for '+year+' yet. Log books in your Scorecard first!</div>';return;}
+  var rated=books.filter(function(b){return b.rating>0;});
+  var avgRating=rated.length?(rated.reduce(function(s,b){return s+b.rating;},0)/rated.length).toFixed(1):'—';
+  var fiveStars=books.filter(function(b){return b.rating===5;}).length;
+  var totalPages=books.reduce(function(s,b){return s+(parseInt(b.pages)||0);},0);
+  var genreCounts={};
+  books.forEach(function(b){if(b.genre)genreCounts[b.genre]=(genreCounts[b.genre]||0)+1;});
+  var topGenre=Object.keys(genreCounts).sort(function(a,b){return genreCounts[b]-genreCounts[a];})[0]||'—';
+  var authorCounts={};
+  books.forEach(function(b){if(b.author)authorCounts[b.author]=(authorCounts[b.author]||0)+1;});
+  var topAuthor=Object.keys(authorCounts).sort(function(a,b){return authorCounts[b]-authorCounts[a];})[0]||'—';
+  var monthCounts={};
+  books.forEach(function(b){if(b.dateEnd){var m=new Date(b.dateEnd+'T12:00').getMonth();monthCounts[m]=(monthCounts[m]||0)+1;}});
+  var mnNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var bestMonthIdx=Object.keys(monthCounts).sort(function(a,b){return monthCounts[b]-monthCounts[a];})[0];
+  var bestMonth=bestMonthIdx!==undefined?mnNames[parseInt(bestMonthIdx)]:'—';
+  var fav=books.filter(function(b){return b.rating>0;}).sort(function(a,b){return b.rating-a.rating||(new Date(b.dateEnd+'T12:00')-new Date(a.dateEnd+'T12:00'));})[0];
+  function wCard(icon,label,val){
+    return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">'
+      +'<div style="font-size:20px;margin-bottom:4px;">'+icon+'</div>'
+      +'<div style="font-family:\'Cinzel\',serif;font-size:18px;font-weight:900;color:var(--gold);">'+val+'</div>'
+      +'<div style="font-size:10px;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;margin-top:3px;">'+label+'</div>'
+      +'</div>';
+  }
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:10px;">'
+    +wCard('📚','Books Read',books.length)
+    +wCard('⭐','Avg Rating',avgRating)
+    +wCard('✨','5-Star Reads',fiveStars)
+    +wCard('📄','Pages Read',totalPages>0?totalPages.toLocaleString():'—')
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;">'
+    +wCard('🏷️','Top Genre',topGenre)
+    +wCard('✍️','Top Author',topAuthor.split(' ').pop())
+    +wCard('📅','Best Month',bestMonth.slice(0,3))
+    +'</div>'
+    +'<div style="background:linear-gradient(135deg,rgba(200,160,80,.15),rgba(200,160,80,.05));border:1px solid rgba(200,160,80,.3);border-radius:8px;padding:16px;margin-bottom:16px;text-align:center;">'
+    +'<div style="font-size:11px;letter-spacing:2px;color:var(--text-dim);margin-bottom:8px;text-transform:uppercase;">❤️ Favorite Read of '+year+'</div>'
+    +'<div style="font-family:\'Cinzel\',serif;font-size:17px;color:var(--gold);font-weight:700;">'+(fav?fav.title:'—')+'</div>'
+    +(fav&&fav.author?'<div style="font-size:13px;color:var(--text-dim);margin-top:4px;font-style:italic;">by '+fav.author+'</div>':'')
+    +'</div>'
+    +'<button class="sc-add-btn" onclick="copyWrappedStats('+year+')" style="width:100%;margin-bottom:10px;">📋 Copy Stats as Text</button>'
+    +'<div style="font-size:12px;color:var(--text-dim);text-align:center;font-style:italic;">📸 Screenshot this panel to share your reading wrapped!</div>';
+}
+function copyWrappedStats(year){
+  var allBooks=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var books=allBooks.filter(function(b){return b.dateEnd&&new Date(b.dateEnd+'T12:00').getFullYear()===year;});
+  if(!books.length){toast('No books logged for '+year);return;}
+  var rated=books.filter(function(b){return b.rating>0;});
+  var avgRating=rated.length?(rated.reduce(function(s,b){return s+b.rating;},0)/rated.length).toFixed(1):'N/A';
+  var fiveStars=books.filter(function(b){return b.rating===5;}).length;
+  var totalPages=books.reduce(function(s,b){return s+(parseInt(b.pages)||0);},0);
+  var genreCounts={};books.forEach(function(b){if(b.genre)genreCounts[b.genre]=(genreCounts[b.genre]||0)+1;});
+  var topGenre=Object.keys(genreCounts).sort(function(a,b){return genreCounts[b]-genreCounts[a];})[0]||'N/A';
+  var authorCounts={};books.forEach(function(b){if(b.author)authorCounts[b.author]=(authorCounts[b.author]||0)+1;});
+  var topAuthor=Object.keys(authorCounts).sort(function(a,b){return authorCounts[b]-authorCounts[a];})[0]||'N/A';
+  var monthCounts={};books.forEach(function(b){if(b.dateEnd){var m=new Date(b.dateEnd+'T12:00').getMonth();monthCounts[m]=(monthCounts[m]||0)+1;}});
+  var mnNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var bestMonthIdx=Object.keys(monthCounts).sort(function(a,b){return monthCounts[b]-monthCounts[a];})[0];
+  var bestMonth=bestMonthIdx!==undefined?mnNames[parseInt(bestMonthIdx)]:'N/A';
+  var fav=books.filter(function(b){return b.rating>0;}).sort(function(a,b){return b.rating-a.rating;})[0];
+  var txt='📚 MY '+year+' READING WRAPPED\n\n'
+    +'📖 Books Read: '+books.length+'\n'
+    +'⭐ Avg Rating: '+avgRating+'/5\n'
+    +'✨ 5-Star Reads: '+fiveStars+'\n'
+    +(totalPages>0?'📄 Pages Read: ~'+totalPages.toLocaleString()+'\n':'')
+    +'🏷️ Top Genre: '+topGenre+'\n'
+    +'✍️ Fave Author: '+topAuthor+'\n'
+    +'📅 Best Month: '+bestMonth+'\n'
+    +(fav?'❤️ Fave Read: '+fav.title+(fav.author?' by '+fav.author:'')+'\n':'')
+    +'\n#BookTok #ReadingWrapped #'+year+'Reading';
+  navigator.clipboard.writeText(txt).then(function(){toast('📋 Stats copied!');}).catch(function(){toast('Copy failed — try manually.');});
+}
+
+// FILMING SESSION PLANNER
+// ══════════════════════════════════════════
+var filmSessions=JSON.parse(localStorage.getItem('tbtrish_filmsessions')||'[]');
+function openFilmSessionForm(){document.getElementById('filmsession-form').style.display='block';}
+function closeFilmSessionForm(){document.getElementById('filmsession-form').style.display='none';}
+function saveFilmSession(){
+  var date=document.getElementById('fs-f-date').value;
+  var notes=document.getElementById('fs-f-notes').value.trim();
+  if(!date){toast('Please pick a filming date!');return;}
+  filmSessions.unshift({id:Date.now().toString(),date:date,notes:notes,slots:[],expanded:true});
+  localStorage.setItem('tbtrish_filmsessions',JSON.stringify(filmSessions));
+  renderFilmSessions();closeFilmSessionForm();
+  document.getElementById('fs-f-date').value='';document.getElementById('fs-f-notes').value='';
+  toast('🎥 Session created!');
+}
+function deleteFilmSession(id){if(!confirm('Delete this filming session?'))return;filmSessions=filmSessions.filter(function(s){return s.id!==id;});localStorage.setItem('tbtrish_filmsessions',JSON.stringify(filmSessions));renderFilmSessions();}
+function toggleFilmSession(id){var s=filmSessions.find(function(x){return x.id===id;});if(s){s.expanded=!s.expanded;localStorage.setItem('tbtrish_filmsessions',JSON.stringify(filmSessions));renderFilmSessions();}}
+function addFilmSlot(sessionId){var s=filmSessions.find(function(x){return x.id===sessionId;});if(!s)return;s.slots.push({id:Date.now().toString(),book:'',hook:'',cta:'',sound:'',notes:'',filmed:false});localStorage.setItem('tbtrish_filmsessions',JSON.stringify(filmSessions));renderFilmSessions();}
+function updateFilmSlot(sessionId,slotId,field,value){var s=filmSessions.find(function(x){return x.id===sessionId;});if(!s)return;var slot=s.slots.find(function(x){return x.id===slotId;});if(slot){slot[field]=value;localStorage.setItem('tbtrish_filmsessions',JSON.stringify(filmSessions));}}
+function toggleFilmSlot(sessionId,slotId){var s=filmSessions.find(function(x){return x.id===sessionId;});if(!s)return;var slot=s.slots.find(function(x){return x.id===slotId;});if(slot){slot.filmed=!slot.filmed;localStorage.setItem('tbtrish_filmsessions',JSON.stringify(filmSessions));renderFilmSessions();}}
+function deleteFilmSlot(sessionId,slotId){var s=filmSessions.find(function(x){return x.id===sessionId;});if(!s)return;s.slots=s.slots.filter(function(x){return x.id!==slotId;});localStorage.setItem('tbtrish_filmsessions',JSON.stringify(filmSessions));renderFilmSessions();}
+function renderFilmSessions(){
+  var el=document.getElementById('filmsession-list');if(!el)return;
+  var hooks=JSON.parse(localStorage.getItem('tbtrish_hookbank')||'[]');
+  var ctas=JSON.parse(localStorage.getItem('tbtrish_ctabank')||'[]');
+  var sounds=JSON.parse(localStorage.getItem('tbtrish_soundsbank')||'[]');
+  var hookOpts=hooks.map(function(h){return'<option value="'+h.text.replace(/"/g,'&quot;')+'">'; }).join('');
+  var ctaOpts=ctas.map(function(c){return'<option value="'+c.text.replace(/"/g,'&quot;')+'">'; }).join('');
+  var soundOpts=sounds.map(function(s){return'<option value="'+s.name.replace(/"/g,'&quot;')+'">'; }).join('');
+  var html='<datalist id="fs-hooks">'+hookOpts+'</datalist><datalist id="fs-ctas">'+ctaOpts+'</datalist><datalist id="fs-sounds">'+soundOpts+'</datalist>';
+  if(!filmSessions.length){el.innerHTML=html+'<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No filming sessions yet — batch your filming days!</div>';return;}
+  html+=filmSessions.map(function(s){
+    var filmed=s.slots.filter(function(sl){return sl.filmed;}).length;
+    var total=s.slots.length;
+    var slotsHtml='';
+    if(s.expanded){
+      slotsHtml='<div style="margin-top:12px;">';
+      if(s.slots.length){
+        slotsHtml+=s.slots.map(function(sl,i){
+          return '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:12px;margin-bottom:8px;opacity:'+(sl.filmed?'0.55':'1')+';"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:12px;font-weight:700;color:var(--text-dim);">VIDEO '+(i+1)+'</span><div style="display:flex;gap:8px;align-items:center;"><label style="font-size:12px;color:var(--text-dim);cursor:pointer;display:flex;align-items:center;gap:5px;"><input type="checkbox"'+(sl.filmed?' checked':'')+' onchange="toggleFilmSlot(\''+s.id+'\',\''+sl.id+'\')" style="cursor:pointer;accent-color:var(--gold);"> Filmed</label><button onclick="deleteFilmSlot(\''+s.id+'\',\''+sl.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;">✕</button></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"><input placeholder="📚 Book..." value="'+(sl.book||'').replace(/"/g,'&quot;')+'" onblur="updateFilmSlot(\''+s.id+'\',\''+sl.id+'\',\'book\',this.value)" style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:8px;color:#fff;font-size:13px;font-family:inherit;"/><input placeholder="🪝 Hook..." value="'+(sl.hook||'').replace(/"/g,'&quot;')+'" list="fs-hooks" onblur="updateFilmSlot(\''+s.id+'\',\''+sl.id+'\',\'hook\',this.value)" style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:8px;color:#fff;font-size:13px;font-family:inherit;"/><input placeholder="📣 CTA..." value="'+(sl.cta||'').replace(/"/g,'&quot;')+'" list="fs-ctas" onblur="updateFilmSlot(\''+s.id+'\',\''+sl.id+'\',\'cta\',this.value)" style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:8px;color:#fff;font-size:13px;font-family:inherit;"/><input placeholder="🎵 Sound..." value="'+(sl.sound||'').replace(/"/g,'&quot;')+'" list="fs-sounds" onblur="updateFilmSlot(\''+s.id+'\',\''+sl.id+'\',\'sound\',this.value)" style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:8px;color:#fff;font-size:13px;font-family:inherit;"/></div><input placeholder="📝 Notes..." value="'+(sl.notes||'').replace(/"/g,'&quot;')+'" onblur="updateFilmSlot(\''+s.id+'\',\''+sl.id+'\',\'notes\',this.value)" style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:8px;color:#fff;font-size:13px;font-family:inherit;margin-top:6px;"/></div>';
+        }).join('');
+      }else{slotsHtml+='<div style="color:var(--text-dim);font-style:italic;font-size:14px;text-align:center;padding:10px;">No videos planned yet.</div>';}
+      slotsHtml+='<button onclick="addFilmSlot(\''+s.id+'\')" style="margin-top:8px;padding:8px 14px;background:rgba(200,160,80,.1);border:1px dashed rgba(200,160,80,.35);border-radius:4px;color:var(--gold);cursor:pointer;font-size:13px;width:100%;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add Video Slot</button></div>';
+    }
+    return '<div class="card-box" style="margin-bottom:12px;padding:14px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleFilmSession(\''+s.id+'\')">'
+      +'<div><div style="font-family:\'Cinzel\',serif;font-size:15px;font-weight:700;color:var(--gold);">🎥 '+s.date+'</div>'
+      +(s.notes?'<div style="font-size:13px;color:var(--text-dim);margin-top:2px;">'+s.notes+'</div>':'')
+      +'</div><div style="display:flex;gap:8px;align-items:center;">'
+      +(total>0?'<span style="font-size:12px;color:'+(filmed===total&&total>0?'rgba(140,220,140,.9)':'var(--text-dim)')+';">'+filmed+'/'+total+' filmed</span>':'')
+      +'<span style="color:var(--text-dim);">'+(s.expanded?'▲':'▼')+'</span>'
+      +'<button onclick="event.stopPropagation();deleteFilmSession(\''+s.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button>'
+      +'</div></div>'+slotsHtml+'</div>';
+  }).join('');
+  el.innerHTML=html;
+}
+
+// COMMENT MINING
+// ══════════════════════════════════════════
+var commentMineList=JSON.parse(localStorage.getItem('tbtrish_commentmine')||'[]');
+var commentMineFilter='all';
+function openCommentForm(){document.getElementById('commentmine-form').style.display='block';}
+function closeCommentForm(){document.getElementById('commentmine-form').style.display='none';}
+function saveComment(){
+  var text=document.getElementById('cm-f-text').value.trim();
+  if(!text){toast('Paste the comment text first!');return;}
+  commentMineList.unshift({id:Date.now().toString(),text:text,category:document.getElementById('cm-f-category').value,source:document.getElementById('cm-f-source').value.trim(),actioned:false,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})});
+  localStorage.setItem('tbtrish_commentmine',JSON.stringify(commentMineList));
+  renderCommentMine();closeCommentForm();
+  document.getElementById('cm-f-text').value='';document.getElementById('cm-f-source').value='';
+  toast('💎 Comment saved!');
+}
+function deleteComment(id){if(!confirm('Delete this comment?'))return;commentMineList=commentMineList.filter(function(c){return c.id!==id;});localStorage.setItem('tbtrish_commentmine',JSON.stringify(commentMineList));renderCommentMine();}
+function toggleActioned(id){var c=commentMineList.find(function(x){return x.id===id;});if(c){c.actioned=!c.actioned;localStorage.setItem('tbtrish_commentmine',JSON.stringify(commentMineList));renderCommentMine();}}
+function setCommentFilter(f){
+  commentMineFilter=f;
+  document.querySelectorAll('.cm-filter-btn').forEach(function(b){b.style.background='transparent';b.style.color='var(--text-dim)';});
+  var active=document.querySelector('.cm-filter-btn[data-f="'+f+'"]');
+  if(active){active.style.background='rgba(200,160,80,.15)';active.style.color='var(--gold)';}
+  renderCommentMine();
+}
+function renderCommentMine(){
+  var el=document.getElementById('commentmine-list');if(!el)return;
+  var catColors={'Content Idea':'rgba(200,160,80,.2)','FAQ':'rgba(80,120,200,.2)','Praise':'rgba(42,180,42,.2)','Question':'rgba(160,220,80,.2)','Negative':'rgba(200,80,80,.2)','Collab Request':'rgba(160,80,220,.2)'};
+  var filtered=commentMineFilter==='all'?commentMineList:commentMineList.filter(function(c){return c.category===commentMineFilter;});
+  if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">'+(commentMineFilter==='all'?'No comments saved yet! Paste comments from your videos here.':'No '+commentMineFilter+' comments yet.')+'</div>';return;}
+  el.innerHTML=filtered.map(function(c){
+    return '<div class="card-box" style="margin-bottom:10px;padding:14px;opacity:'+(c.actioned?'0.55':'1')+';"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+(catColors[c.category]||'rgba(100,100,100,.2)')+';color:var(--text);">'+c.category+'</span><div style="display:flex;gap:6px;align-items:center;"><button onclick="toggleActioned(\''+c.id+'\')" style="font-size:11px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);background:'+(c.actioned?'rgba(42,180,42,.2)':'transparent')+';color:'+(c.actioned?'rgba(140,220,140,.9)':'var(--text-dim)')+';cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+(c.actioned?'✅ Done':'◯ Act')+'</button><button onclick="deleteComment(\''+c.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button></div></div><div style="font-size:15px;color:var(--text);margin-top:8px;line-height:1.6;">"'+c.text+'"</div><div style="font-size:12px;color:var(--text-dim);margin-top:6px;">'+(c.source?'📍 '+c.source+' · ':'')+c.date+'</div></div>';
+  }).join('');
+}
+
+// PER-VIDEO PERFORMANCE LOG
+// ══════════════════════════════════════════
+var videoPerfList=JSON.parse(localStorage.getItem('tbtrish_videoperf')||'[]');
+var videoPerfView='log';
+function openVideoPerfForm(){document.getElementById('videoperf-form').style.display='block';}
+function closeVideoPerfForm(){document.getElementById('videoperf-form').style.display='none';}
+function saveVideoPerf(){
+  var title=document.getElementById('vp-f-title').value.trim();
+  if(!title){toast('Video title is required!');return;}
+  videoPerfList.unshift({id:Date.now().toString(),title:title,type:document.getElementById('vp-f-type').value,date:document.getElementById('vp-f-date').value,views:parseInt(document.getElementById('vp-f-views').value)||0,likes:parseInt(document.getElementById('vp-f-likes').value)||0,saves:parseInt(document.getElementById('vp-f-saves').value)||0,shares:parseInt(document.getElementById('vp-f-shares').value)||0,comments:parseInt(document.getElementById('vp-f-comments').value)||0,notes:document.getElementById('vp-f-notes').value.trim()});
+  localStorage.setItem('tbtrish_videoperf',JSON.stringify(videoPerfList));
+  renderVideoPerfLog();closeVideoPerfForm();
+  ['vp-f-title','vp-f-views','vp-f-likes','vp-f-saves','vp-f-shares','vp-f-comments','vp-f-notes'].forEach(function(id){document.getElementById(id).value='';});
+  toast('📊 Video logged!');
+}
+function deleteVideoPerf(id){if(!confirm('Delete this log entry?'))return;videoPerfList=videoPerfList.filter(function(v){return v.id!==id;});localStorage.setItem('tbtrish_videoperf',JSON.stringify(videoPerfList));renderVideoPerfLog();}
+function setVideoPerfView(v){
+  videoPerfView=v;
+  document.querySelectorAll('.vp-view-btn').forEach(function(b){b.style.background='transparent';b.style.color='var(--text-dim)';});
+  var active=document.querySelector('.vp-view-btn[data-v="'+v+'"]');
+  if(active){active.style.background='rgba(200,160,80,.15)';active.style.color='var(--gold)';}
+  renderVideoPerfLog();
+}
+function renderVideoPerfLog(){
+  var el=document.getElementById('videoperf-list');if(!el)return;
+  if(!videoPerfList.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No videos logged yet! Start tracking your performance.</div>';return;}
+  if(videoPerfView==='stats'){
+    var typeMap={};
+    videoPerfList.forEach(function(v){var t=v.type||'Other';if(!typeMap[t])typeMap[t]={count:0,views:0,likes:0,saves:0,shares:0,comments:0};typeMap[t].count++;typeMap[t].views+=v.views||0;typeMap[t].likes+=v.likes||0;typeMap[t].saves+=v.saves||0;typeMap[t].shares+=v.shares||0;typeMap[t].comments+=v.comments||0;});
+    var types=Object.keys(typeMap).sort(function(a,b){return typeMap[b].views-typeMap[a].views;});
+    el.innerHTML=types.map(function(t){
+      var d=typeMap[t];
+      var avg=function(x){return d.count>0?Math.round(x/d.count).toLocaleString():'0';};
+      return '<div class="card-box" style="margin-bottom:10px;padding:14px;"><div style="font-family:\'Cinzel\',serif;font-size:14px;font-weight:700;color:var(--gold);margin-bottom:10px;">'+t+' <span style="font-size:12px;color:var(--text-dim);font-family:inherit;font-weight:400;">('+d.count+' video'+(d.count>1?'s':'')+')</span></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;"><div><div style="font-size:16px;font-weight:700;color:var(--text);">'+avg(d.views)+'</div><div style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;">Avg Views</div></div><div><div style="font-size:16px;font-weight:700;color:var(--text);">'+avg(d.likes)+'</div><div style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;">Avg Likes</div></div><div><div style="font-size:16px;font-weight:700;color:var(--text);">'+avg(d.saves)+'</div><div style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;">Avg Saves</div></div></div></div>';
+    }).join('');
+  }else{
+    el.innerHTML=videoPerfList.map(function(v){
+      var engRate=v.views>0?((((v.likes||0)+(v.saves||0)+(v.comments||0))/v.views)*100).toFixed(1):'—';
+      return '<div class="card-box" style="margin-bottom:10px;padding:14px;"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div style="flex:1;"><div style="font-family:\'Cinzel\',serif;font-size:14px;font-weight:700;color:var(--text);">'+v.title+'</div><div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;"><span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(200,160,80,.15);color:var(--gold-dim);">'+v.type+'</span>'+(v.date?'<span style="font-size:11px;color:var(--text-dim);">'+v.date+'</span>':'')+'</div></div><button onclick="deleteVideoPerf(\''+v.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;flex-shrink:0;">✕</button></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px;text-align:center;"><div><div style="font-size:14px;font-weight:700;color:var(--text);">'+(v.views||0).toLocaleString()+'</div><div style="font-size:10px;color:var(--text-dim);">Views</div></div><div><div style="font-size:14px;font-weight:700;color:var(--text);">'+(v.likes||0).toLocaleString()+'</div><div style="font-size:10px;color:var(--text-dim);">Likes</div></div><div><div style="font-size:14px;font-weight:700;color:var(--text);">'+(v.saves||0).toLocaleString()+'</div><div style="font-size:10px;color:var(--text-dim);">Saves</div></div><div><div style="font-size:14px;font-weight:700;color:var(--text);">'+(v.shares||0).toLocaleString()+'</div><div style="font-size:10px;color:var(--text-dim);">Shares</div></div><div><div style="font-size:14px;font-weight:700;color:var(--text);">'+engRate+'%</div><div style="font-size:10px;color:var(--text-dim);">Eng%</div></div></div>'+(v.notes?'<div style="font-size:13px;color:var(--text-dim);margin-top:8px;font-style:italic;">📝 '+v.notes+'</div>':'')+'</div>';
+    }).join('');
+  }
+}
+
+// AFFILIATE LINK MANAGER
+// ══════════════════════════════════════════
+var affiliateList=JSON.parse(localStorage.getItem('tbtrish_affiliates')||'[]');
+function openAffiliateForm(){document.getElementById('affiliate-form').style.display='block';}
+function closeAffiliateForm(){document.getElementById('affiliate-form').style.display='none';document.getElementById('af-f-editid').value='';}
+function saveAffiliate(){
+  var book=document.getElementById('af-f-book').value.trim();
+  var link=document.getElementById('af-f-link').value.trim();
+  if(!book||!link){toast('Book title and link are required!');return;}
+  var eid=document.getElementById('af-f-editid').value;
+  if(eid){
+    var idx=affiliateList.findIndex(function(a){return a.id===eid;});
+    if(idx>-1){affiliateList[idx].book=book;affiliateList[idx].author=document.getElementById('af-f-author').value.trim();affiliateList[idx].platform=document.getElementById('af-f-platform').value;affiliateList[idx].link=link;affiliateList[idx].notes=document.getElementById('af-f-notes').value.trim();}
+    document.getElementById('af-f-editid').value='';
+  }else{
+    affiliateList.unshift({id:Date.now().toString(),book:book,author:document.getElementById('af-f-author').value.trim(),platform:document.getElementById('af-f-platform').value,link:link,notes:document.getElementById('af-f-notes').value.trim(),active:true});
+  }
+  localStorage.setItem('tbtrish_affiliates',JSON.stringify(affiliateList));
+  renderAffiliates();closeAffiliateForm();
+  ['af-f-book','af-f-author','af-f-link','af-f-notes'].forEach(function(id){document.getElementById(id).value='';});
+  toast('🔗 Affiliate link saved!');
+}
+function deleteAffiliate(id){if(!confirm('Delete this affiliate link?'))return;affiliateList=affiliateList.filter(function(a){return a.id!==id;});localStorage.setItem('tbtrish_affiliates',JSON.stringify(affiliateList));renderAffiliates();}
+function toggleAffiliateActive(id){var a=affiliateList.find(function(x){return x.id===id;});if(a){a.active=!a.active;localStorage.setItem('tbtrish_affiliates',JSON.stringify(affiliateList));renderAffiliates();}}
+function copyAffiliateLink(link){navigator.clipboard.writeText(link).then(function(){toast('🔗 Link copied!');}).catch(function(){toast('Copy failed.');});}
+function editAffiliate(id){
+  var a=affiliateList.find(function(x){return x.id===id;});if(!a)return;
+  document.getElementById('af-f-book').value=a.book;
+  document.getElementById('af-f-author').value=a.author||'';
+  document.getElementById('af-f-platform').value=a.platform||'Amazon';
+  document.getElementById('af-f-link').value=a.link;
+  document.getElementById('af-f-notes').value=a.notes||'';
+  document.getElementById('af-f-editid').value=a.id;
+  openAffiliateForm();
+}
+function renderAffiliates(){
+  var el=document.getElementById('affiliate-list');if(!el)return;
+  var searchEl=document.getElementById('af-search');
+  var q=searchEl?searchEl.value.toLowerCase():'';
+  var filtered=q?affiliateList.filter(function(a){return a.book.toLowerCase().includes(q)||(a.author||'').toLowerCase().includes(q)||a.platform.toLowerCase().includes(q);}):affiliateList;
+  if(!filtered.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">'+(q?'No results for "'+q+'"':'No affiliate links yet! Add your first book link.')+'</div>';return;}
+  var platColors={'Amazon':'rgba(255,153,0,.2)','Bookshop.org':'rgba(42,180,42,.2)','Other':'rgba(100,100,100,.2)'};
+  el.innerHTML=filtered.map(function(a){
+    var safeLink=a.link.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    return '<div class="card-box" style="margin-bottom:10px;padding:14px;opacity:'+(a.active?'1':'0.55')+';"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div style="flex:1;"><div style="font-family:\'Cinzel\',serif;font-size:15px;font-weight:700;color:var(--text);">'+a.book+'</div>'+(a.author?'<div style="font-size:13px;color:var(--text-dim);margin-top:2px;">by '+a.author+'</div>':'')+'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+(platColors[a.platform]||'rgba(100,100,100,.2)')+';color:var(--text);margin-top:6px;display:inline-block;">'+a.platform+'</span></div><div style="display:flex;gap:6px;align-items:center;flex-shrink:0;"><button onclick="toggleAffiliateActive(\''+a.id+'\')" style="font-size:11px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);background:'+(a.active?'rgba(42,180,42,.2)':'transparent')+';color:'+(a.active?'rgba(140,220,140,.9)':'var(--text-dim)')+';cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+(a.active?'✅ Active':'○ Inactive')+'</button><button onclick="editAffiliate(\''+a.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;">✏️</button><button onclick="deleteAffiliate(\''+a.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button></div></div><div style="margin-top:10px;display:flex;gap:8px;align-items:center;"><div style="flex:1;font-size:12px;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+a.link+'</div><button onclick="copyAffiliateLink(\''+safeLink+'\')" style="padding:6px 14px;background:var(--gold);border:none;color:#000;font-family:\'Cinzel\',serif;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;flex-shrink:0;">COPY</button></div>'+(a.notes?'<div style="font-size:12px;color:var(--text-dim);margin-top:6px;font-style:italic;">📌 '+a.notes+'</div>':'')+'</div>';
+  }).join('');
+}
+
 // COLLAB WISHLIST
 // ══════════════════════════════════════════
 var collabWish=JSON.parse(localStorage.getItem('tbtrish_collabwish')||'[]');
@@ -10203,6 +10476,126 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <button class="sc-btn-save" onclick="saveBookNotes()">✦ Save Notes</button>
     </div>
   </div>
+</div>
+
+<!-- READING WRAPPED -->
+<div class="panel" id="panel-wrapped">
+  <div class="section-title">🎁 Reading Wrapped</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Your year-end reading stats pulled from your Scorecard. See your top genre, favorite author, best month, and more.</p>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <label style="font-size:14px;color:var(--text-dim);">Year:</label>
+    <select id="wrapped-year" onchange="renderWrapped()" style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:#fff;font-size:14px;font-family:inherit;">
+      <option value="2026">2026</option>
+      <option value="2025">2025</option>
+      <option value="2024">2024</option>
+    </select>
+  </div>
+  <div id="wrapped-body"></div>
+</div>
+
+<!-- FILMING SESSION PLANNER -->
+<div class="panel" id="panel-filmsession">
+  <div class="section-title">🎥 Film Sessions</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Plan your batch filming days. Add a session for each day you film, then add video slots with book, hook, CTA, and sound.</p>
+  <button class="sc-add-btn" onclick="openFilmSessionForm()">✦ New Filming Session</button>
+  <div id="filmsession-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Filming Date *</label><input type="date" id="fs-f-date"/></div>
+      <div class="sc-field"><label>Session Notes</label><input id="fs-f-notes" placeholder="e.g. filming 5 hauls in studio..."/></div>
+    </div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeFilmSessionForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveFilmSession()">✦ Create Session</button>
+    </div>
+  </div>
+  <div id="filmsession-list"></div>
+</div>
+
+<!-- COMMENT MINING -->
+<div class="panel" id="panel-commentmine">
+  <div class="section-title">💎 Comment Mining</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Save and categorize comments from your videos. Turn your audience's words into content ideas, FAQs, and collab leads.</p>
+  <button class="sc-add-btn" onclick="openCommentForm()">✦ Save a Comment</button>
+  <div id="commentmine-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <div class="sc-field"><label>Comment Text *</label><textarea id="cm-f-text" rows="3" placeholder="Paste the comment here..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;"></textarea></div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Category</label><select id="cm-f-category"><option>Content Idea</option><option>FAQ</option><option>Praise</option><option>Question</option><option>Negative</option><option>Collab Request</option></select></div>
+      <div class="sc-field"><label>Source Video</label><input id="cm-f-source" placeholder="video title or URL..."/></div>
+    </div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeCommentForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveComment()">✦ Save</button>
+    </div>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+    <button class="cm-filter-btn" data-f="all" onclick="setCommentFilter('all')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(200,160,80,.15);color:var(--gold);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">All</button>
+    <button class="cm-filter-btn" data-f="Content Idea" onclick="setCommentFilter('Content Idea')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">💡 Ideas</button>
+    <button class="cm-filter-btn" data-f="FAQ" onclick="setCommentFilter('FAQ')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">❓ FAQ</button>
+    <button class="cm-filter-btn" data-f="Praise" onclick="setCommentFilter('Praise')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">💚 Praise</button>
+    <button class="cm-filter-btn" data-f="Question" onclick="setCommentFilter('Question')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🙋 Question</button>
+    <button class="cm-filter-btn" data-f="Collab Request" onclick="setCommentFilter('Collab Request')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🤝 Collab</button>
+  </div>
+  <div id="commentmine-list"></div>
+</div>
+
+<!-- VIDEO PERFORMANCE LOG -->
+<div class="panel" id="panel-videoperf">
+  <div class="section-title">📊 Video Performance</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Log each video's numbers. Switch to Stats view to see your average performance by content type.</p>
+  <button class="sc-add-btn" onclick="openVideoPerfForm()">✦ Log a Video</button>
+  <div id="videoperf-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Video Title *</label><input id="vp-f-title" placeholder="e.g. 5 Books I Read in June..."/></div>
+      <div class="sc-field"><label>Content Type</label><select id="vp-f-type"><option>Book Haul</option><option>Wrap-Up</option><option>Book Review</option><option>TBR</option><option>Recommendation</option><option>Ranking</option><option>Reading Vlog</option><option>Storytime</option><option>Other</option></select></div>
+    </div>
+    <div class="sc-field"><label>Date Posted</label><input type="date" id="vp-f-date"/></div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Views</label><input type="number" id="vp-f-views" placeholder="0"/></div>
+      <div class="sc-field"><label>Likes</label><input type="number" id="vp-f-likes" placeholder="0"/></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+      <div class="sc-field"><label>Saves</label><input type="number" id="vp-f-saves" placeholder="0"/></div>
+      <div class="sc-field"><label>Shares</label><input type="number" id="vp-f-shares" placeholder="0"/></div>
+      <div class="sc-field"><label>Comments</label><input type="number" id="vp-f-comments" placeholder="0"/></div>
+    </div>
+    <div class="sc-field"><label>Notes</label><input id="vp-f-notes" placeholder="what worked, what didn't..."/></div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeVideoPerfForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveVideoPerf()">✦ Log Video</button>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:14px;">
+    <button class="vp-view-btn" data-v="log" onclick="setVideoPerfView('log')" style="font-size:13px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:rgba(200,160,80,.15);color:var(--gold);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Log</button>
+    <button class="vp-view-btn" data-v="stats" onclick="setVideoPerfView('stats')" style="font-size:13px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📊 Stats by Type</button>
+  </div>
+  <div id="videoperf-list"></div>
+</div>
+
+<!-- AFFILIATE LINKS -->
+<div class="panel" id="panel-affiliates">
+  <div class="section-title">🔗 Affiliate Links</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Store your Amazon, Bookshop.org, and other affiliate links by book. Tap COPY to grab any link instantly while filming or captioning.</p>
+  <div style="display:flex;gap:8px;margin-bottom:12px;">
+    <button class="sc-add-btn" style="flex:1;margin:0;" onclick="openAffiliateForm()">✦ Add Link</button>
+    <input id="af-search" placeholder="🔍 Search books..." oninput="renderAffiliates()" style="flex:2;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;font-family:inherit;"/>
+  </div>
+  <div id="affiliate-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+    <input type="hidden" id="af-f-editid"/>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Book Title *</label><input id="af-f-book" placeholder="e.g. Fourth Wing..."/></div>
+      <div class="sc-field"><label>Author</label><input id="af-f-author" placeholder="e.g. Rebecca Yarros..."/></div>
+    </div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Platform</label><select id="af-f-platform"><option>Amazon</option><option>Bookshop.org</option><option>Other</option></select></div>
+      <div class="sc-field"><label>Affiliate Link *</label><input id="af-f-link" placeholder="https://..."/></div>
+    </div>
+    <div class="sc-field"><label>Notes</label><input id="af-f-notes" placeholder="commission rate, promo details..."/></div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeAffiliateForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveAffiliate()">✦ Save Link</button>
+    </div>
+  </div>
+  <div id="affiliate-list"></div>
 </div>
 
 <!-- BULK PHOTO SCAN OVERLAY -->
