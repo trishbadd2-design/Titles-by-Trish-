@@ -852,6 +852,10 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="wrapped" onclick="showPanel('wrapped')">🎁 Wrapped</button>
   <button class="nav-btn" data-panel="upcoming" onclick="showPanel('upcoming')">🗓️ Upcoming</button>
   <button class="nav-btn" data-panel="challenges" onclick="showPanel('challenges')">🏆 Challenges</button>
+  <button class="nav-btn" data-panel="halloffame" onclick="showPanel('halloffame')">⭐ Hall of Fame</button>
+  <button class="nav-btn" data-panel="tropes" onclick="showPanel('tropes')">🌀 Tropes</button>
+  <button class="nav-btn" data-panel="pacecalc" onclick="showPanel('pacecalc')">📖 Pace Calc</button>
+  <button class="nav-btn" data-panel="reviewbuilder" onclick="showPanel('reviewbuilder')">📝 Review Builder</button>
 </div>
 
 <div class="sub-nav" id="subnav-content">
@@ -879,6 +883,8 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="analytics" onclick="showPanel('analytics')">📊 Analytics</button>
   <button class="nav-btn" data-panel="spending" onclick="showPanel('spending')">💰 Spending</button>
   <button class="nav-btn" data-panel="videoperf" onclick="showPanel('videoperf')">📊 Video Performance</button>
+  <button class="nav-btn" data-panel="milestones" onclick="showPanel('milestones')">🎯 Milestones</button>
+  <button class="nav-btn" data-panel="posttimes" onclick="showPanel('posttimes')">⏰ Post Times</button>
 </div>
 
 <div class="sub-nav" id="subnav-business">
@@ -894,6 +900,32 @@ canvas{width:100%!important;}
 <!-- PANEL 1: CALENDAR          -->
 <!-- ═══════════════════════════ -->
 <div class="panel active" id="panel-calendar">
+
+  <div id="now-reading-widget" style="display:none;background:rgba(200,160,80,.06);border:1px solid rgba(200,160,80,.25);border-radius:6px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div id="nr-cover" style="width:36px;height:50px;border-radius:3px;background:var(--bg3);border:1px solid var(--border);overflow:hidden;flex-shrink:0;"></div>
+      <div>
+        <div style="font-size:10px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;font-family:'Cinzel',serif;">Now Reading</div>
+        <div id="nr-title" style="font-family:'Cinzel',serif;font-size:14px;color:var(--gold);font-weight:700;"></div>
+        <div id="nr-author" style="font-size:12px;color:var(--text-dim);"></div>
+      </div>
+    </div>
+    <button onclick="openNowReadingEdit()" style="font-size:11px;padding:3px 10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✏️ Edit</button>
+  </div>
+  <div id="now-reading-empty" style="text-align:right;margin-bottom:6px;">
+    <button onclick="openNowReadingEdit()" style="font-size:12px;padding:4px 10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📖 Set Now Reading</button>
+  </div>
+  <div id="now-reading-modal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px;width:100%;max-width:380px;">
+      <div style="font-family:'Cinzel',serif;font-size:14px;color:var(--gold);margin-bottom:14px;">📖 What Are You Reading?</div>
+      <div class="sc-field"><label>Book Title</label><input id="nr-inp-title" placeholder="e.g. The Silent Patient..."/></div>
+      <div class="sc-field"><label>Author</label><input id="nr-inp-author" placeholder="e.g. Alex Michaelides..."/></div>
+      <div class="sc-modal-actions" style="margin-top:10px;">
+        <button class="sc-btn-cancel" onclick="closeNowReadingEdit()">Cancel</button>
+        <button class="sc-btn-save" onclick="saveNowReading()">✦ Save</button>
+      </div>
+    </div>
+  </div>
 
   <div id="countdown-widget" style="background:rgba(200,160,80,.07);border:1px solid var(--border-hi);border-radius:6px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
     <div>
@@ -920,10 +952,15 @@ canvas{width:100%!important;}
 
   <div class="nav-tabs" style="border-bottom:none;padding-bottom:0;margin-bottom:16px;flex-wrap:wrap;">
     <button class="nav-btn active" onclick="setCalTab('all',this)">All</button>
-    <button class="nav-btn" onclick="setCalTab('june',this)">🌸 June</button>
-    <button class="nav-btn" onclick="setCalTab('july',this)">☀️ July</button>
-    <button class="nav-btn" onclick="setCalTab('august',this)">🌊 August</button>
-    <button class="nav-btn" onclick="setCalTab('september',this)">🍂 Sept</button>
+    <button class="nav-btn" onclick="setCalTab('january',this)">❄️ Jan</button>
+    <button class="nav-btn" onclick="setCalTab('february',this)">💝 Feb</button>
+    <button class="nav-btn" onclick="setCalTab('march',this)">🌱 Mar</button>
+    <button class="nav-btn" onclick="setCalTab('april',this)">🌸 Apr</button>
+    <button class="nav-btn" onclick="setCalTab('may',this)">🌺 May</button>
+    <button class="nav-btn" onclick="setCalTab('june',this)">☀️ Jun</button>
+    <button class="nav-btn" onclick="setCalTab('july',this)">🌊 Jul</button>
+    <button class="nav-btn" onclick="setCalTab('august',this)">🏖 Aug</button>
+    <button class="nav-btn" onclick="setCalTab('september',this)">🍂 Sep</button>
     <button class="nav-btn" onclick="setCalTab('october',this)">🎃 Oct</button>
     <button class="nav-btn" onclick="setCalTab('november',this)">🍁 Nov</button>
     <button class="nav-btn" onclick="setCalTab('december',this)">🎄 Dec</button>
@@ -934,7 +971,25 @@ canvas{width:100%!important;}
 
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
     <div style="font-size:13px;color:var(--text-dim);font-style:italic;">Tap ↑ ↓ on any video to reorder it within its week.</div>
-    <button onclick="resetCalOrder()" style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Reset Order</button>
+    <div style="display:flex;gap:6px;">
+      <button onclick="openCustomCalForm()" style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid rgba(200,160,80,.4);background:rgba(200,160,80,.1);color:var(--gold);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add Entry</button>
+      <button onclick="resetCalOrder()" style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Reset Order</button>
+    </div>
+  </div>
+  <div id="custom-cal-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:14px;">
+    <div style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold);margin-bottom:12px;">✦ Add Custom Calendar Entry</div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Title *</label><input id="ccal-f-title" placeholder="e.g. July Wrap-Up Video..."/></div>
+      <div class="sc-field"><label>Content Type</label><select id="ccal-f-type"><option>Monthly Wrap Up</option><option>Book Haul</option><option>Book Review</option><option>TBR</option><option>Recommendation</option><option>Ranking</option><option>Reading Vlog</option><option>Storytime</option><option>Engagement</option><option>Other</option></select></div>
+    </div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Date *</label><input type="date" id="ccal-f-date"/></div>
+      <div class="sc-field"><label>Notes / Hook</label><input id="ccal-f-notes" placeholder="quick hook or idea..."/></div>
+    </div>
+    <div class="sc-modal-actions" style="margin-top:10px;">
+      <button class="sc-btn-cancel" onclick="closeCustomCalForm()">Cancel</button>
+      <button class="sc-btn-save" onclick="saveCustomCalEntry()">✦ Add to Calendar</button>
+    </div>
   </div>
   <div id="calendar"></div>
 
@@ -2861,7 +2916,7 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 // ═══════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
+var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',halloffame:'reading',tropes:'reading',pacecalc:'reading',reviewbuilder:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',milestones:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -2916,6 +2971,11 @@ function showPanel(id){
   if(id==='wrapped'){renderWrapped();}
   if(id==='upcoming'){renderUpcoming();}
   if(id==='challenges'){renderChallenges();}
+  if(id==='halloffame'){renderHallOfFame();}
+  if(id==='tropes'){renderTropes();}
+  if(id==='pacecalc'){renderPaceCalc();}
+  if(id==='reviewbuilder'){populateReviewBookList();}
+  if(id==='bookquotes'){renderBookQuotes();populateBQBookList();}
   if(id==='checklist'){renderChecklist();}
   if(id==='dmtemplates'){renderDMTemplates();}
   if(id==='filmsession'){renderFilmSessions();}
@@ -2943,11 +3003,14 @@ function setCalTab(t,btn){
 }
 
 function renderCalendar(){
-  const allMonths=['june','july','august','september','october','november','december'];
-  let filtered=videos;
-  if(calTab==='archived'){filtered=videos.filter(v=>calArchiveSet.has(v.id));}
+  var allMonths=['january','february','march','april','may','june','july','august','september','october','november','december'];
+  // Merge pre-loaded videos with custom entries
+  var allEntries=videos.slice();
+  customCalEntries.forEach(function(ce){if(!allEntries.find(function(v){return v.id===ce.id;})){allEntries.push(ce);}});
+  let filtered=allEntries;
+  if(calTab==='archived'){filtered=allEntries.filter(v=>calArchiveSet.has(v.id));}
   else{
-    filtered=videos.filter(v=>!calArchiveSet.has(v.id));
+    filtered=allEntries.filter(v=>!calArchiveSet.has(v.id));
     if(allMonths.includes(calTab))filtered=filtered.filter(v=>v.month===calTab);
     else if(calTab==='pending')filtered=filtered.filter(v=>!doneSet.has(v.id));
     else if(calTab==='done')filtered=filtered.filter(v=>doneSet.has(v.id));
@@ -2974,12 +3037,15 @@ function renderCalendar(){
     if(!weekMonthMap[v.week])weekMonthMap[v.week]=v.month;
   });
 
-  const monthDisplayMap={june:'June',july:'July',august:'August',september:'September',october:'October',november:'November',december:'December'};
+  const monthDisplayMap={january:'January',february:'February',march:'March',april:'April',may:'May',june:'June',july:'July',august:'August',september:'September',october:'October',november:'November',december:'December'};
+  function getWeekYear(wk){var m=wk.match(/\b(202[5-9])\b/);return m?m[1]:'2026';}
 
-  let html='';let lastMonth='';
+  let html='';let lastMonthYear='';
   Object.keys(weeks).forEach(week=>{
+    var yr=getWeekYear(week);
     const mn=monthDisplayMap[weekMonthMap[week]]||weekMonthMap[week]||'Unknown';
-    if(mn!==lastMonth){html+=`<div class="month-header">✦ ${mn} 2026 ✦</div>`;lastMonth=mn;}
+    var mnYr=mn+' '+yr;
+    if(mnYr!==lastMonthYear){html+=`<div class="month-header">✦ ${mn} ${yr} ✦</div>`;lastMonthYear=mnYr;}
     html+=`<div class="week-label">${week}</div>`;
     weeks[week].forEach(function(v,vi){
       const done=doneSet.has(v.id);
@@ -2997,15 +3063,18 @@ function renderCalendar(){
               ?`<button class="btn-script" onclick="unarchiveCalCard(${v.id})" title="Restore to calendar" style="font-size:12px;">↩ Restore</button>`
               :`<button class="btn-script" onclick="archiveCalCard(${v.id})" title="Archive this entry" style="font-size:12px;">🗂 Archive</button>`
             }
-            <button class="btn-script" onclick="openModal(${v.id})">Script</button>
+            ${v.custom?`<button class="btn-script" onclick="deleteCustomCalEntry('${v.id}')" title="Delete entry" style="font-size:12px;color:rgba(255,100,100,.8);">✕ Delete</button>`:`<button class="btn-script" onclick="openModal(${v.id})">Script</button>`}
             <button class="btn-expand" onclick="toggleCard(${v.id})">▾</button>
           </div>
         </div>
         <div class="card-details">
-          <div class="detail-section"><div class="detail-label">✦ Thumbnail Text</div><div class="detail-text"><strong>${v.thumbnail}</strong></div></div>
+          ${v.custom
+            ?`<div class="detail-section"><div class="detail-label">✦ Notes</div><div class="detail-text">${v.notes||'No notes added.'}</div></div>`
+            :`<div class="detail-section"><div class="detail-label">✦ Thumbnail Text</div><div class="detail-text"><strong>${v.thumbnail}</strong></div></div>
           <div class="detail-section"><div class="detail-label">✦ Hook</div><div class="detail-text">"${v.hook}"</div></div>
           <div class="detail-section"><div class="detail-label">✦ Call to Action</div><div class="detail-text">"${v.cta}"</div></div>
-          <div class="detail-section"><div class="detail-label">✦ Hashtags</div><div class="hashtag-row">${v.hashtags.map(h=>`<span class="hashtag">${h}</span>`).join('')}</div></div>
+          <div class="detail-section"><div class="detail-label">✦ Hashtags</div><div class="hashtag-row">${v.hashtags.map(h=>`<span class="hashtag">${h}</span>`).join('')}</div></div>`
+          }
         </div>
       </div>`;
     });
@@ -3298,12 +3367,20 @@ function renderARC(){
   const el=document.getElementById('arc-list');
   if(!arcList.length){el.innerHTML='<div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No ARCs or collabs yet</div>';return;}
   const statusClass={pending:'status-pending',reading:'status-reading',posted:'status-posted',overdue:'status-overdue'};
+  const today=new Date();today.setHours(0,0,0,0);
   el.innerHTML=arcList.map(a=>{
-    const isOverdue=a.deadline&&new Date(a.deadline)<new Date()&&a.status!=='posted';
+    const isOverdue=a.deadline&&new Date(a.deadline)<today&&a.status!=='posted';
     const st=isOverdue?'overdue':a.status;
+    let dueBadge='';
+    if(a.deadline&&a.status!=='posted'){
+      const daysLeft=Math.ceil((new Date(a.deadline)-today)/(1000*60*60*24));
+      if(daysLeft<=0)dueBadge='<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(220,40,40,.3);color:rgba(255,90,90,1);font-weight:700;margin-left:6px;">⚠️ OVERDUE</span>';
+      else if(daysLeft<=3)dueBadge='<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(220,40,40,.25);color:rgba(255,90,90,1);font-weight:700;margin-left:6px;">🔥 Due in '+daysLeft+'d!</span>';
+      else if(daysLeft<=7)dueBadge='<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:rgba(200,80,80,.2);color:rgba(255,120,120,.9);font-weight:600;margin-left:6px;">📅 '+daysLeft+' days left</span>';
+    }
     return `<div class="arc-row">
       <div class="arc-info">
-        <div class="arc-title">${a.title}</div>
+        <div class="arc-title">${a.title}${dueBadge}</div>
         <div class="arc-meta">${a.author||'Unknown'} · ${a.type}${a.deadline?' · Due: '+a.deadline:''}</div>
         ${a.notes?`<div style="font-size:15px;color:var(--text-dim);margin-top:4px;font-style:italic;">${a.notes}</div>`:''}
         <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
@@ -5311,6 +5388,7 @@ scInitRecPills();
 // INIT
 // ═══════════════════════════════════════════════
 renderCalendar();
+renderNowReading();
 renderSavedIdeas();
 scheduleAlarmCheck();
 // Set today's date as default for follower log
@@ -9367,7 +9445,7 @@ function renderChallenges(){
       else booksHtml+='<div style="color:var(--text-dim);font-style:italic;font-size:13px;padding:4px 0;">No books logged yet.</div>';
       booksHtml+='<div style="display:flex;gap:6px;margin-top:10px;"><input id="ch-book-inp-'+c.id+'" placeholder="Add a book title..." style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:8px;color:#fff;font-size:13px;font-family:inherit;" onkeydown="if(event.key===\'Enter\')addBookToChallenge(\''+c.id+'\')"/><button onclick="addBookToChallenge(\''+c.id+'\')" style="padding:8px 14px;background:var(--gold);border:none;color:#000;font-family:\'Cinzel\',serif;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add</button></div></div>';
     }
-    return '<div class="card-box" style="margin-bottom:12px;padding:14px;"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div style="flex:1;cursor:pointer;" onclick="toggleChallengeExpand(\''+c.id+'\')"><div style="font-family:\'Cinzel\',serif;font-size:15px;font-weight:700;color:var(--text);">'+c.name+'</div>'+(c.notes?'<div style="font-size:13px;color:var(--text-dim);margin-top:2px;font-style:italic;">'+c.notes+'</div>':'')+'</div><div style="display:flex;gap:6px;align-items:center;flex-shrink:0;"><span style="font-family:\'Cinzel\',serif;font-size:13px;color:var(--gold);">'+count+(c.target?' / '+c.target:'')+'</span><button onclick="deleteChallenge(\''+c.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button></div></div><div style="margin-top:10px;background:var(--bg3);border-radius:4px;height:6px;overflow:hidden;"><div style="height:100%;background:var(--gold);border-radius:4px;transition:width .4s;width:'+pct+'%;"></div></div><div style="font-size:11px;color:var(--text-dim);margin-top:4px;display:flex;justify-content:space-between;"><span>'+pct+'% complete</span><span style="cursor:pointer;color:var(--gold-dim);" onclick="toggleChallengeExpand(\''+c.id+'\')">'+(expanded?'▲ Hide books':'▼ '+(count?'See '+count+' books':'Add books'))+'</span></div>'+booksHtml+'</div>';
+    return '<div class="card-box" style="margin-bottom:12px;padding:14px;"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div style="flex:1;cursor:pointer;" onclick="toggleChallengeExpand(\''+c.id+'\')"><div style="font-family:\'Cinzel\',serif;font-size:15px;font-weight:700;color:var(--text);">'+c.name+'</div>'+(c.notes?'<div style="font-size:13px;color:var(--text-dim);margin-top:2px;font-style:italic;">'+c.notes+'</div>':'')+'</div><div style="display:flex;gap:6px;align-items:center;flex-shrink:0;"><span style="font-family:\'Cinzel\',serif;font-size:13px;color:var(--gold);">'+count+' / </span><input type="number" value="'+(c.target||0)+'" min="1" onclick="event.stopPropagation()" onblur="updateChallengeTarget(\''+c.id+'\',this.value)" style="width:44px;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--gold);font-family:\'Cinzel\',serif;font-size:13px;text-align:center;padding:0 2px;"/><button onclick="deleteChallenge(\''+c.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button></div></div><div style="margin-top:10px;background:var(--bg3);border-radius:4px;height:6px;overflow:hidden;"><div style="height:100%;background:var(--gold);border-radius:4px;transition:width .4s;width:'+pct+'%;"></div></div><div style="font-size:11px;color:var(--text-dim);margin-top:4px;display:flex;justify-content:space-between;"><span>'+pct+'% complete</span><span style="cursor:pointer;color:var(--gold-dim);" onclick="toggleChallengeExpand(\''+c.id+'\')">'+(expanded?'▲ Hide books':'▼ '+(count?'See '+count+' books':'Add books'))+'</span></div>'+booksHtml+'</div>';
   }).join('');
 }
 
@@ -9494,6 +9572,250 @@ function renderDMTemplates(){
   el.innerHTML=filtered.map(function(t){
     return '<div class="card-box" style="margin-bottom:12px;padding:14px;"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;"><div><span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+(catColors[t.category]||'rgba(100,100,100,.2)')+';color:var(--text);">'+t.category+'</span><div style="font-family:\'Cinzel\',serif;font-size:14px;font-weight:700;color:var(--text);margin-top:6px;">'+t.title+'</div></div><div style="display:flex;gap:6px;flex-shrink:0;"><button onclick="editDMTemplate(\''+t.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;">✏️</button><button onclick="deleteDMTemplate(\''+t.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button></div></div><div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;font-style:italic;">'+t.text+'</div><button onclick="copyDMTemplate(\''+t.id+'\')" style="width:100%;padding:10px;background:var(--gold);border:none;color:#000;font-family:\'Cinzel\',serif;font-size:13px;font-weight:700;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">💌 Copy Template</button></div>';
   }).join('');
+}
+
+// NOW READING WIDGET
+// ══════════════════════════════════════════
+var nowReadingData=JSON.parse(localStorage.getItem('tbtrish_nowreading')||'null');
+function openNowReadingEdit(){
+  document.getElementById('nr-inp-title').value=nowReadingData?nowReadingData.title:'';
+  document.getElementById('nr-inp-author').value=nowReadingData?nowReadingData.author:'';
+  document.getElementById('now-reading-modal').style.display='flex';
+}
+function closeNowReadingEdit(){document.getElementById('now-reading-modal').style.display='none';}
+function saveNowReading(){
+  var title=document.getElementById('nr-inp-title').value.trim();
+  var author=document.getElementById('nr-inp-author').value.trim();
+  if(!title){nowReadingData=null;localStorage.removeItem('tbtrish_nowreading');}
+  else{nowReadingData={title:title,author:author};localStorage.setItem('tbtrish_nowreading',JSON.stringify(nowReadingData));}
+  renderNowReading();closeNowReadingEdit();
+}
+function renderNowReading(){
+  var widget=document.getElementById('now-reading-widget');
+  var empty=document.getElementById('now-reading-empty');
+  if(!widget)return;
+  if(nowReadingData&&nowReadingData.title){
+    document.getElementById('nr-title').textContent=nowReadingData.title;
+    document.getElementById('nr-author').textContent=nowReadingData.author?'by '+nowReadingData.author:'';
+    var cover=document.getElementById('nr-cover');
+    var found=scBooks.find(function(b){return b.title&&b.title.toLowerCase()===nowReadingData.title.toLowerCase();});
+    cover.innerHTML=found&&found.coverUrl?'<img src="'+found.coverUrl+'" style="width:100%;height:100%;object-fit:cover;">':'';
+    widget.style.display='flex';if(empty)empty.style.display='none';
+  }else{
+    widget.style.display='none';if(empty)empty.style.display='block';
+  }
+}
+
+// CUSTOM CALENDAR ENTRIES
+// ══════════════════════════════════════════
+var customCalEntries=JSON.parse(localStorage.getItem('tbtrish_customcal')||'[]');
+function openCustomCalForm(){document.getElementById('custom-cal-form').style.display='block';}
+function closeCustomCalForm(){document.getElementById('custom-cal-form').style.display='none';}
+function saveCustomCalEntry(){
+  var title=document.getElementById('ccal-f-title').value.trim();
+  var date=document.getElementById('ccal-f-date').value;
+  if(!title||!date){toast('Title and date are required!');return;}
+  var d=new Date(date+'T12:00');
+  var dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var monthKey=monthNames[d.getMonth()].toLowerCase();
+  var displayDate=dayNames[d.getDay()]+' '+monthNames[d.getMonth()].slice(0,3)+' '+d.getDate();
+  var weekLabel=monthNames[d.getMonth()]+' '+d.getFullYear()+' — Custom';
+  customCalEntries.push({id:'cc_'+Date.now(),date:displayDate,sortDate:date,week:weekLabel,month:monthKey,title:title,type:document.getElementById('ccal-f-type').value,notes:document.getElementById('ccal-f-notes').value.trim(),custom:true});
+  customCalEntries.sort(function(a,b){return a.sortDate.localeCompare(b.sortDate);});
+  localStorage.setItem('tbtrish_customcal',JSON.stringify(customCalEntries));
+  renderCalendar();closeCustomCalForm();
+  document.getElementById('ccal-f-title').value='';document.getElementById('ccal-f-date').value='';document.getElementById('ccal-f-notes').value='';
+  toast('📅 Added to calendar!');
+}
+function deleteCustomCalEntry(id){if(!confirm('Remove this entry?'))return;customCalEntries=customCalEntries.filter(function(e){return e.id!==id;});localStorage.setItem('tbtrish_customcal',JSON.stringify(customCalEntries));renderCalendar();}
+
+// CHALLENGE TARGET EDIT
+function updateChallengeTarget(id,val){var c=challengeList.find(function(x){return x.id===id;});if(c){c.target=parseInt(val)||0;localStorage.setItem('tbtrish_challenges',JSON.stringify(challengeList));renderChallenges();}}
+
+// BOOK QUOTES AUTOCOMPLETE
+function populateBQBookList(){
+  var dl=document.getElementById('bq-books-list');if(!dl)return;
+  var books=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  dl.innerHTML=books.map(function(b){return'<option value="'+b.title.replace(/"/g,'&quot;')+'">';}).join('');
+}
+
+// REVIEW BUILDER BOOK LIST
+function populateReviewBookList(){
+  var dl=document.getElementById('rb-books-list');if(!dl)return;
+  var books=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  dl.innerHTML=books.map(function(b){return'<option value="'+b.title.replace(/"/g,'&quot;')+'">';}).join('');
+}
+function autoFillReview(){
+  var title=document.getElementById('rb-f-title').value.trim();if(!title)return;
+  var books=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var found=books.find(function(b){return b.title&&b.title.toLowerCase()===title.toLowerCase();});
+  if(!found)return;
+  if(found.author)document.getElementById('rb-f-author').value=found.author;
+  if(found.genre)document.getElementById('rb-f-genre').value=found.genre;
+  if(found.pages)document.getElementById('rb-f-pages').value=found.pages;
+  if(found.rating)document.getElementById('rb-f-rating').value=found.rating;
+  toast('✦ Auto-filled from your Scorecard!');
+}
+function generateReviewScript(){
+  var title=document.getElementById('rb-f-title').value.trim();
+  if(!title){toast('Book title is required!');return;}
+  var author=document.getElementById('rb-f-author').value.trim();
+  var genre=document.getElementById('rb-f-genre').value.trim();
+  var pages=document.getElementById('rb-f-pages').value.trim();
+  var rating=document.getElementById('rb-f-rating').value;
+  var chars=document.getElementById('rb-f-chars').value.trim();
+  var plot=document.getElementById('rb-f-plot').value.trim();
+  var style=document.getElementById('rb-f-style').value.trim();
+  var pacing=document.getElementById('rb-f-pacing').value;
+  var loved=document.getElementById('rb-f-loved').value.trim();
+  var didnt=document.getElementById('rb-f-didnt').value.trim();
+  var tw=document.getElementById('rb-f-tw').value.trim();
+  var perfectfor=document.getElementById('rb-f-for').value.trim();
+  var hook=document.getElementById('rb-f-hook').value.trim();
+  var verdict=document.getElementById('rb-f-verdict').value.trim();
+  var stars='⭐'.repeat(parseInt(rating)||0);
+  var script='📚 BOOK REVIEW: '+title.toUpperCase()+'\n';
+  script+=(author?'by '+author+'\n':'');
+  script+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+  script+='🎬 OPENING HOOK:\n'+(hook?'"'+hook+'"':'[Your catchy opening line here]')+'\n\n';
+  script+='📖 THE BOOK:\n';
+  script+=title+(author?' by '+author:'')+'\n';
+  if(genre||pages)script+=(genre?genre:'')+(genre&&pages?' · ':'')+( pages?pages+' pages':'')+'\n';
+  script+=(stars?'My Rating: '+stars+'\n':'')+'\n';
+  if(chars)script+='👥 MAIN CHARACTERS:\n'+chars+'\n\n';
+  if(plot)script+='📖 WHAT IT\'S ABOUT:\n'+plot+'\n(Spoiler-free — don\'t give it away!)\n\n';
+  script+='✍️ THE WRITING:\n';
+  if(style)script+='Style: '+style+'\n';
+  script+='Pacing: '+pacing+'\n\n';
+  if(loved)script+='❤️ WHAT I LOVED:\n'+loved+'\n\n';
+  if(didnt)script+='💔 WHAT DIDN\'T WORK:\n'+didnt+'\n\n';
+  if(tw)script+='⚠️ TRIGGER WARNINGS:\n'+tw+'\n\n';
+  if(perfectfor)script+='🎯 PERFECT FOR:\n'+perfectfor+'\n\n';
+  script+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+  script+='💬 FINAL VERDICT:\n'+(verdict?'"'+verdict+'"':'[Your one powerful sentence — make it land]')+'\n\n';
+  script+='#BookTok #BookReview #'+title.replace(/\s+/g,'')+(genre?' #'+genre.replace(/\s+/g,''):'')+' #TitlesByTrish';
+  document.getElementById('rb-script-output').style.display='block';
+  document.getElementById('rb-script-text').value=script;
+  document.getElementById('rb-script-text').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function copyReviewScript(){
+  var text=document.getElementById('rb-script-text').value;
+  if(!text)return;
+  navigator.clipboard.writeText(text).then(function(){toast('📋 Script copied! You\'re ready to film.');}).catch(function(){toast('Copy failed.');});
+}
+function clearReviewForm(){
+  ['rb-f-title','rb-f-author','rb-f-genre','rb-f-pages','rb-f-chars','rb-f-plot','rb-f-style','rb-f-loved','rb-f-didnt','rb-f-tw','rb-f-for','rb-f-hook','rb-f-verdict'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('rb-f-rating').value='5';
+  document.getElementById('rb-f-pacing').value='Balanced';
+  document.getElementById('rb-script-output').style.display='none';
+}
+
+// HALL OF FAME
+// ══════════════════════════════════════════
+function renderHallOfFame(){
+  var el=document.getElementById('hof-list');if(!el)return;
+  var allBooks=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var stars=allBooks.filter(function(b){return b.rating===5;}).sort(function(a,b){return (b.dateEnd||'').localeCompare(a.dateEnd||'');});
+  if(!stars.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-dim);font-style:italic;">No 5-star reads yet — they\'ll appear here automatically when you rate a book 5 stars in your Scorecard.</div>';return;}
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;">'+stars.map(function(b){
+    return '<div style="background:var(--bg2);border:1px solid rgba(200,160,80,.3);border-radius:8px;padding:12px;text-align:center;">'
+      +(b.coverUrl?'<img src="'+b.coverUrl+'" style="width:100%;height:140px;object-fit:cover;border-radius:4px;margin-bottom:8px;">':'<div style="width:100%;height:140px;background:var(--bg3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:8px;">📚</div>')
+      +'<div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:4px;">'+b.title+'</div>'
+      +(b.author?'<div style="font-size:11px;color:var(--text-dim);">'+b.author+'</div>':'')
+      +'<div style="color:var(--gold);margin-top:4px;font-size:14px;">⭐⭐⭐⭐⭐</div>'
+      +(b.dateEnd?'<div style="font-size:10px;color:var(--text-dim);margin-top:3px;">'+b.dateEnd+'</div>':'')
+      +'</div>';
+  }).join('')+'</div>';
+}
+
+// TROPE TRACKER
+// ══════════════════════════════════════════
+var _tropeDefaults=['Enemies to Lovers','Slow Burn','Forced Proximity','Dark Romance','Found Family','Chosen One','Redemption Arc','Second Chance','Forbidden Love','Unreliable Narrator','Morally Grey Hero','Villain Love Interest','Friends to Lovers','Fake Dating','One Bed','Grumpy × Sunshine','Age Gap','Revenge Arc','Political Intrigue','Secret Identity','Twisted Love Triangle','Gothic Romance','Psychological Thriller Twists','Sibling Rivalry','Mentor × Student'];
+var tropeData=JSON.parse(localStorage.getItem('tbtrish_tropes')||'null');
+if(!tropeData){tropeData={custom:[],bookTropes:{}};localStorage.setItem('tbtrish_tropes',JSON.stringify(tropeData));}
+function saveTropeData(){localStorage.setItem('tbtrish_tropes',JSON.stringify(tropeData));}
+function addCustomTrope(){
+  var inp=document.getElementById('trope-new-inp');if(!inp)return;
+  var t=inp.value.trim();if(!t)return;
+  if(!tropeData.custom)tropeData.custom=[];
+  if(tropeData.custom.indexOf(t)===-1)tropeData.custom.push(t);
+  saveTropeData();inp.value='';renderTropes();
+}
+function renderTropes(){
+  var el=document.getElementById('tropes-body');if(!el)return;
+  var allTropes=_tropeDefaults.concat(tropeData.custom||[]);
+  var books=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  // Build trope counts from book tropes field
+  var tropeCounts={};
+  books.forEach(function(b){
+    if(b.tropes){
+      var trps=Array.isArray(b.tropes)?b.tropes:(typeof b.tropes==='string'?b.tropes.split(','):[]);
+      trps.forEach(function(t){var tr=t.trim();if(tr)tropeCounts[tr]=(tropeCounts[tr]||0)+1;});
+    }
+  });
+  var sorted=allTropes.slice().sort(function(a,b){return (tropeCounts[b]||0)-(tropeCounts[a]||0);});
+  var maxCount=sorted.reduce(function(m,t){return Math.max(m,tropeCounts[t]||0);},0)||1;
+  el.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">'
+    +sorted.map(function(t){
+      var count=tropeCounts[t]||0;
+      var pct=Math.round((count/maxCount)*100);
+      var bg=count>0?'rgba(200,160,80,'+(0.1+pct/200)+')':'rgba(100,100,100,.1)';
+      var col=count>0?'var(--gold)':'var(--text-dim)';
+      return '<div style="padding:6px 14px;border-radius:20px;border:1px solid '+(count>0?'rgba(200,160,80,.4)':'var(--border)')+';background:'+bg+';color:'+col+';font-size:13px;cursor:default;" title="'+count+' book'+(count!==1?'s':'')+'">'+t+(count>0?' <span style="font-size:11px;opacity:.8;">('+count+')</span>':'')+'</div>';
+    }).join('')
+    +'</div>'
+    +(maxCount>0?'<div style="font-size:12px;color:var(--text-dim);font-style:italic;margin-bottom:8px;">Tropes are pulled from your Scorecard\'s trope tags. The more you log, the more accurate this gets!</div>':'')
+    +'<div style="display:flex;gap:6px;margin-top:8px;"><input id="trope-new-inp" placeholder="Add a custom trope..." style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;font-family:inherit;" onkeydown="if(event.key===\'Enter\')addCustomTrope()"/><button onclick="addCustomTrope()" style="padding:10px 16px;background:var(--gold);border:none;color:#000;font-family:\'Cinzel\',serif;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add</button></div>';
+}
+
+// READING PACE CALCULATOR
+// ══════════════════════════════════════════
+function renderPaceCalc(){
+  var el=document.getElementById('pacecalc-body');if(!el)return;
+  el.innerHTML='<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">'
+    +'<div style="font-family:\'Cinzel\',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">YOUR BOOK</div>'
+    +'<div class="sc-two-col">'
+    +'<div class="sc-field"><label>Total Pages</label><input type="number" id="pc-total" placeholder="e.g. 432" oninput="calcPace()"/></div>'
+    +'<div class="sc-field"><label>Current Page</label><input type="number" id="pc-current" placeholder="e.g. 120" oninput="calcPace()"/></div>'
+    +'</div>'
+    +'<div class="sc-two-col">'
+    +'<div class="sc-field"><label>Pages Per Day</label><input type="number" id="pc-ppd" placeholder="e.g. 30" oninput="calcPace()"/></div>'
+    +'<div class="sc-field"><label>ARC Deadline (optional)</label><input type="date" id="pc-deadline" oninput="calcPace()"/></div>'
+    +'</div>'
+    +'</div>'
+    +'<div id="pc-result" style="display:none;background:var(--bg2);border:1px solid rgba(200,160,80,.3);border-radius:8px;padding:16px;"></div>';
+}
+function calcPace(){
+  var total=parseInt(document.getElementById('pc-total').value)||0;
+  var current=parseInt(document.getElementById('pc-current').value)||0;
+  var ppd=parseInt(document.getElementById('pc-ppd').value)||0;
+  var deadline=document.getElementById('pc-deadline').value;
+  var res=document.getElementById('pc-result');if(!res)return;
+  if(!total||!ppd||current>=total){res.style.display='none';return;}
+  var pagesLeft=total-current;
+  var daysNeeded=Math.ceil(pagesLeft/ppd);
+  var finishDate=new Date();finishDate.setDate(finishDate.getDate()+daysNeeded);
+  var finishStr=finishDate.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  var pct=Math.round((current/total)*100);
+  var html='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;text-align:center;">'
+    +'<div><div style="font-size:20px;font-weight:900;color:var(--gold);font-family:\'Cinzel\',serif;">'+pagesLeft+'</div><div style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;">Pages Left</div></div>'
+    +'<div><div style="font-size:20px;font-weight:900;color:var(--gold);font-family:\'Cinzel\',serif;">'+daysNeeded+'</div><div style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;">Days Needed</div></div>'
+    +'<div><div style="font-size:20px;font-weight:900;color:var(--gold);font-family:\'Cinzel\',serif;">'+pct+'%</div><div style="font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;">Complete</div></div>'
+    +'</div>'
+    +'<div style="font-size:14px;color:var(--text);margin-bottom:10px;">📅 Estimated finish: <strong style="color:var(--gold);">'+finishStr+'</strong></div>';
+  if(deadline){
+    var dl=new Date(deadline+'T12:00');
+    var daysUntilDL=Math.ceil((dl-new Date())/(1000*60*60*24));
+    var onTime=daysNeeded<=daysUntilDL;
+    var ppd_needed=daysUntilDL>0?Math.ceil(pagesLeft/daysUntilDL):pagesLeft;
+    html+='<div style="padding:10px 14px;border-radius:6px;background:'+(onTime?'rgba(42,180,42,.15)':'rgba(200,80,80,.15)')+';border:1px solid '+(onTime?'rgba(42,180,42,.3)':'rgba(200,80,80,.3)')+';">'
+      +(onTime?'✅ You\'re on track! ARC due in <strong>'+daysUntilDL+' days</strong> — you\'ll finish '+Math.round((daysUntilDL-daysNeeded))+' day(s) early.'
+        :'⚠️ You need to read <strong>'+ppd_needed+' pages/day</strong> to finish before your ARC deadline ('+daysUntilDL+' days away).')
+      +'</div>';
+  }
+  html+='</div>';
+  res.innerHTML=html;res.style.display='block';
 }
 
 // READING WRAPPED
@@ -10290,7 +10612,8 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   </div>
   <button class="sc-add-btn" onclick="openBQForm()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Add a Quote</button>
   <div class="bq-add-form" id="bq-add-form">
-    <div class="sc-field"><label>Book Title *</label><input id="bq-f-booktitle" placeholder="title of the book..."/></div>
+    <datalist id="bq-books-list"></datalist>
+    <div class="sc-field"><label>Book Title *</label><input id="bq-f-booktitle" list="bq-books-list" placeholder="title of the book..."/></div>
     <div class="sc-two-col">
       <div class="sc-field"><label>Author (optional)</label><input id="bq-f-author" placeholder="author name..."/></div>
       <div class="sc-field"><label>Page # (optional)</label><input type="number" id="bq-f-page" placeholder="e.g. 142"/></div>
@@ -10969,6 +11292,115 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     </div>
   </div>
   <div id="affiliate-list"></div>
+</div>
+
+<!-- HALL OF FAME -->
+<div class="panel" id="panel-halloffame">
+  <div class="section-title">⭐ Hall of Fame</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:20px;line-height:1.7;">Your 5-star reads — the books that absolutely destroyed you in the best possible way. Pulled automatically from your Scorecard.</p>
+  <div id="hof-list"></div>
+</div>
+
+<!-- TROPE TRACKER -->
+<div class="panel" id="panel-tropes">
+  <div class="section-title">🌀 Trope Tracker</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:20px;line-height:1.7;">See which tropes appear most in your reading. Sizes grow with frequency — pulled from the Tropes field in your Scorecard. Add custom tropes below.</p>
+  <div id="tropes-body"></div>
+</div>
+
+<!-- READING PACE CALCULATOR -->
+<div class="panel" id="panel-pacecalc">
+  <div class="section-title">📖 Reading Pace Calculator</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:20px;line-height:1.7;">Figure out when you'll finish your current book — and whether you'll make your ARC deadline. Enter your pages per day and watch the math happen.</p>
+  <div id="pacecalc-body"></div>
+</div>
+
+<!-- BOOK REVIEW BUILDER -->
+<div class="panel" id="panel-reviewbuilder">
+  <div class="section-title">📝 Book Review Builder</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:4px;line-height:1.7;">Your filming script, every time. Fill in the details below and tap Generate — you'll get a ready-to-film review script that's informative, fun, and keeps viewers hooked.</p>
+  <p style="color:var(--text-dim);font-size:12px;font-style:italic;margin-bottom:18px;">💡 Tip: Select a book from your Scorecard to auto-fill details.</p>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
+    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">AUTO-FILL FROM SCORECARD</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <select id="rb-book-select" style="flex:1;min-width:180px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;font-family:inherit;">
+        <option value="">— Pick a book to auto-fill —</option>
+      </select>
+      <button onclick="autoFillReview()" style="padding:10px 18px;background:var(--gold);border:none;color:#000;font-family:'Cinzel',serif;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Auto-Fill</button>
+    </div>
+  </div>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
+    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">📚 THE BOOK</div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Book Title *</label><input id="rb-f-title" placeholder="e.g. Fourth Wing"/></div>
+      <div class="sc-field"><label>Author</label><input id="rb-f-author" placeholder="e.g. Rebecca Yarros"/></div>
+    </div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Genre</label><input id="rb-f-genre" placeholder="e.g. Fantasy, Psych Thriller..."/></div>
+      <div class="sc-field"><label>Pages</label><input type="number" id="rb-f-pages" placeholder="e.g. 498"/></div>
+    </div>
+    <div class="sc-field">
+      <label>My Rating</label>
+      <select id="rb-f-rating" style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;font-family:inherit;width:100%;">
+        <option value="5">⭐⭐⭐⭐⭐ — 5 Stars</option>
+        <option value="4">⭐⭐⭐⭐ — 4 Stars</option>
+        <option value="3">⭐⭐⭐ — 3 Stars</option>
+        <option value="2">⭐⭐ — 2 Stars</option>
+        <option value="1">⭐ — 1 Star</option>
+      </select>
+    </div>
+  </div>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
+    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">👥 CHARACTERS & PLOT</div>
+    <div class="sc-field"><label>Main Characters</label><input id="rb-f-chars" placeholder="e.g. Violet (fierce), Xaden (morally grey villain love interest)..."/></div>
+    <div class="sc-field"><label>What It's About (Spoiler-Free)</label><textarea id="rb-f-plot" rows="3" placeholder="Short, punchy plot summary — tease it, don't spoil it..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+  </div>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
+    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">✍️ THE WRITING</div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Writing Style</label><input id="rb-f-style" placeholder="e.g. lyrical, punchy, atmospheric, cinematic..."/></div>
+      <div class="sc-field">
+        <label>Pacing</label>
+        <select id="rb-f-pacing" style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;font-family:inherit;width:100%;">
+          <option>Slow Burn — worth every second</option>
+          <option>Balanced — never a dull moment</option>
+          <option>Fast &amp; Furious — couldn't put it down</option>
+          <option>Uneven — starts slow, ends strong</option>
+          <option>Uneven — starts strong, drags at end</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
+    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">❤️ THE VERDICT</div>
+    <div class="sc-field"><label>What I Loved</label><textarea id="rb-f-loved" rows="2" placeholder="The specific things that made this book unforgettable..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+    <div class="sc-field"><label>What Didn't Work (be honest!)</label><textarea id="rb-f-didnt" rows="2" placeholder="Even 5-star books have something — your audience trusts honest reviews..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+    <div class="sc-field"><label>Trigger Warnings</label><input id="rb-f-tw" placeholder="e.g. violence, addiction, loss — be thorough and kind..."/></div>
+    <div class="sc-field"><label>Perfect For...</label><input id="rb-f-for" placeholder="e.g. fans of dark romance who survived Haunting of Hill House..."/></div>
+  </div>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
+    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">🎬 YOUR SCRIPT HOOKS</div>
+    <div class="sc-field"><label>Opening Hook</label><textarea id="rb-f-hook" rows="2" placeholder="Your first line on camera — make them stop scrolling. Strong opinion, dramatic statement, or question..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+    <div class="sc-field"><label>Final Verdict (one powerful sentence)</label><textarea id="rb-f-verdict" rows="2" placeholder="The line they'll screenshot. Your definitive take — bold, memorable, unmistakably you..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+    <button onclick="generateReviewScript()" style="flex:1;padding:14px;background:var(--gold);border:none;color:#000;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:1px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ GENERATE MY SCRIPT</button>
+    <button onclick="clearReviewForm()" style="padding:14px 18px;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Cinzel',serif;font-size:12px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Clear</button>
+  </div>
+
+  <div id="rb-script-output" style="display:none;">
+    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">🎬 YOUR FILMING SCRIPT</div>
+    <div style="font-size:12px;color:var(--text-dim);font-style:italic;margin-bottom:10px;">Read this on camera. Edit as you film — it's your guide, not a teleprompter.</div>
+    <textarea id="rb-script-text" rows="28" readonly style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid rgba(200,160,80,.3);border-radius:6px;padding:14px;color:var(--text);font-size:13px;line-height:1.8;font-family:inherit;resize:vertical;"></textarea>
+    <button onclick="copyReviewScript()" style="margin-top:10px;width:100%;padding:14px;background:var(--gold);border:none;color:#000;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:1px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 COPY SCRIPT — READY TO FILM</button>
+  </div>
 </div>
 
 <!-- BULK PHOTO SCAN OVERLAY -->
