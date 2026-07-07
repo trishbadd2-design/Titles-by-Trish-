@@ -925,6 +925,7 @@ canvas{width:100%!important;}
     <button class="nav-btn" onclick="setCalTab('december',this)">🎄 Dec</button>
     <button class="nav-btn" onclick="setCalTab('pending',this)">To Post</button>
     <button class="nav-btn" onclick="setCalTab('done',this)">Posted ✓</button>
+    <button class="nav-btn" onclick="setCalTab('archived',this)">🗂 Archived</button>
   </div>
 
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
@@ -2814,6 +2815,7 @@ let ideaFilter='all';
 let bookFilter='all';
 let currentIdea=null;
 const doneSet=new Set(JSON.parse(localStorage.getItem('tbtrish_done')||'[]'));
+var calArchiveSet=new Set(JSON.parse(localStorage.getItem('tbtrish_calarchive')||'[]'));
 const folLogs=JSON.parse(localStorage.getItem('tbtrish_fol')||'[]');
 const engLogs=JSON.parse(localStorage.getItem('tbtrish_eng')||'[]');
 const arcList=JSON.parse(localStorage.getItem('tbtrish_arc')||'[]');
@@ -2839,6 +2841,17 @@ const alarms=JSON.parse(localStorage.getItem('tbtrish_alarms')||JSON.stringify([
 
 function save(key,val){localStorage.setItem(key,JSON.stringify(val));}
 function saveDone(){save('tbtrish_done',[...doneSet]);}
+function saveCalArchive(){save('tbtrish_calarchive',[...calArchiveSet]);}
+function archiveCalCard(id){calArchiveSet.add(id);saveCalArchive();renderCalendar();toast('🗂 Archived! Find it in the Archived tab.');}
+function unarchiveCalCard(id){calArchiveSet.delete(id);saveCalArchive();renderCalendar();toast('↩ Restored to calendar.');}
+var ideasShowArchived=false;
+function archiveVideoIdea(id){var v=videoIdeas.find(function(x){return x.id===id;});if(v){v.archived=true;localStorage.setItem('tbtrish_videoideas',JSON.stringify(videoIdeas));renderVideoIdeas();toast('🗂 Idea archived!');}}
+function unarchiveVideoIdea(id){var v=videoIdeas.find(function(x){return x.id===id;});if(v){v.archived=false;localStorage.setItem('tbtrish_videoideas',JSON.stringify(videoIdeas));renderVideoIdeas();toast('↩ Idea restored!');}}
+function toggleIdeasArchived(){ideasShowArchived=!ideasShowArchived;renderVideoIdeas();}
+function archiveFilmSession(id){var s=filmSessions.find(function(x){return x.id===id;});if(s){s.archived=true;localStorage.setItem('tbtrish_filmsessions',JSON.stringify(filmSessions));renderFilmSessions();toast('🗂 Session archived!');}}
+function unarchiveFilmSession(id){var s=filmSessions.find(function(x){return x.id===id;});if(s){s.archived=false;localStorage.setItem('tbtrish_filmsessions',JSON.stringify(filmSessions));renderFilmSessions();toast('↩ Session restored!');}}
+var filmShowArchived=false;
+function toggleFilmArchived(){filmShowArchived=!filmShowArchived;renderFilmSessions();}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 // ═══════════════════════════════════════════════
@@ -2924,9 +2937,13 @@ function setCalTab(t,btn){
 function renderCalendar(){
   const allMonths=['june','july','august','september','october','november','december'];
   let filtered=videos;
-  if(allMonths.includes(calTab))filtered=videos.filter(v=>v.month===calTab);
-  else if(calTab==='pending')filtered=videos.filter(v=>!doneSet.has(v.id));
-  else if(calTab==='done')filtered=videos.filter(v=>doneSet.has(v.id));
+  if(calTab==='archived'){filtered=videos.filter(v=>calArchiveSet.has(v.id));}
+  else{
+    filtered=videos.filter(v=>!calArchiveSet.has(v.id));
+    if(allMonths.includes(calTab))filtered=filtered.filter(v=>v.month===calTab);
+    else if(calTab==='pending')filtered=filtered.filter(v=>!doneSet.has(v.id));
+    else if(calTab==='done')filtered=filtered.filter(v=>doneSet.has(v.id));
+  }
 
   const cal=document.getElementById('calendar');
   if(!filtered.length){cal.innerHTML='<div style="text-align:center;padding:50px;color:var(--text-dim);font-style:italic;">No videos in this view 🖤</div>';return;}
@@ -2968,6 +2985,10 @@ function renderCalendar(){
             <button class="btn-mv" onclick="moveCalCard(${v.id},'up')" title="Move up" style="opacity:${canUp?1:.25};cursor:${canUp?'pointer':'default'};">↑</button>
             <button class="btn-mv" onclick="moveCalCard(${v.id},'down')" title="Move down" style="opacity:${canDown?1:.25};cursor:${canDown?'pointer':'default'};">↓</button>
             <button class="btn-done" onclick="toggleDone(${v.id})" title="${done?'Mark pending':'Mark posted'}">${done?'✓':'○'}</button>
+            ${calTab==='archived'
+              ?`<button class="btn-script" onclick="unarchiveCalCard(${v.id})" title="Restore to calendar" style="font-size:12px;">↩ Restore</button>`
+              :`<button class="btn-script" onclick="archiveCalCard(${v.id})" title="Archive this entry" style="font-size:12px;">🗂 Archive</button>`
+            }
             <button class="btn-script" onclick="openModal(${v.id})">Script</button>
             <button class="btn-expand" onclick="toggleCard(${v.id})">▾</button>
           </div>
@@ -3400,11 +3421,18 @@ function deleteVideoIdea(id){
 function renderVideoIdeas(){
   var el=document.getElementById('videoideas-list');
   if(!el)return;
-  if(!videoIdeas.length){
-    el.innerHTML='<div style="text-align:center;padding:32px 16px;font-style:italic;color:var(--text-dim);font-size:15px;">No video ideas yet — jot one down above 🎬</div>';
+  var active=videoIdeas.filter(function(v){return !v.archived;});
+  var archived=videoIdeas.filter(function(v){return v.archived;});
+  var list=ideasShowArchived?archived:active;
+  var toggleLabel=ideasShowArchived
+    ?'← Back to Active Ideas'
+    :(archived.length?'🗂 Archived ('+archived.length+')':'');
+  var toggleBtn=toggleLabel?'<div style="text-align:right;margin-bottom:10px;"><button onclick="toggleIdeasArchived()" style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+toggleLabel+'</button></div>':'';
+  if(!list.length){
+    el.innerHTML=toggleBtn+'<div style="text-align:center;padding:32px 16px;font-style:italic;color:var(--text-dim);font-size:15px;">'+(ideasShowArchived?'No archived ideas.':'No video ideas yet — jot one down above 🎬')+'</div>';
     return;
   }
-  el.innerHTML=videoIdeas.map(function(v){
+  el.innerHTML=toggleBtn+list.map(function(v){
     return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;margin-bottom:10px;overflow:hidden;">'
       +'<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;">'
       +'<div style="flex:1;min-width:0;">'
@@ -3412,9 +3440,14 @@ function renderVideoIdeas(){
       +'<div style="font-size:15px;color:var(--text);line-height:1.5;word-break:break-word;">'+v.text+'</div>'
       +'<div style="font-size:12px;color:var(--text-dim);margin-top:4px;">'+v.ts+'</div>'
       +'</div>'
-      +'<button class="del-btn" onclick="deleteVideoIdea('+v.id+')" style="flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'<div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;">'
+      +(ideasShowArchived
+        ?'<button onclick="unarchiveVideoIdea('+v.id+')" style="font-size:11px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">↩ Restore</button>'
+        :'<button onclick="archiveVideoIdea('+v.id+')" style="font-size:11px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🗂</button>')
+      +'<button class="del-btn" onclick="deleteVideoIdea('+v.id+')" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
       +'</div>'
-      +'<button onclick="openVidPkg('+v.id+')" style="width:100%;padding:9px;background:rgba(200,160,80,.08);border:none;border-top:1px solid var(--border);color:var(--gold-dim);font-family:\'IM Fell English SC\',serif;font-size:13px;letter-spacing:2px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Generate Content Package</button>'
+      +'</div>'
+      +(ideasShowArchived?'':'<button onclick="openVidPkg('+v.id+')" style="width:100%;padding:9px;background:rgba(200,160,80,.08);border:none;border-top:1px solid var(--border);color:var(--gold-dim);font-family:\'IM Fell English SC\',serif;font-size:13px;letter-spacing:2px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Generate Content Package</button>')
       +'</div>';
   }).join('');
 }
@@ -9325,8 +9358,13 @@ function renderFilmSessions(){
   var ctaOpts=ctas.map(function(c){return'<option value="'+c.text.replace(/"/g,'&quot;')+'">'; }).join('');
   var soundOpts=sounds.map(function(s){return'<option value="'+s.name.replace(/"/g,'&quot;')+'">'; }).join('');
   var html='<datalist id="fs-hooks">'+hookOpts+'</datalist><datalist id="fs-ctas">'+ctaOpts+'</datalist><datalist id="fs-sounds">'+soundOpts+'</datalist>';
-  if(!filmSessions.length){el.innerHTML=html+'<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">No filming sessions yet — batch your filming days!</div>';return;}
-  html+=filmSessions.map(function(s){
+  var activeSessions=filmSessions.filter(function(s){return !s.archived;});
+  var archivedSessions=filmSessions.filter(function(s){return s.archived;});
+  var displayList=filmShowArchived?archivedSessions:activeSessions;
+  var fsToggleLabel=filmShowArchived?'← Active Sessions':(archivedSessions.length?'🗂 Archived ('+archivedSessions.length+')':'');
+  if(fsToggleLabel)html+='<div style="text-align:right;margin-bottom:10px;"><button onclick="toggleFilmArchived()" style="font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+fsToggleLabel+'</button></div>';
+  if(!displayList.length){el.innerHTML=html+'<div style="text-align:center;padding:30px;color:var(--text-dim);font-style:italic;">'+(filmShowArchived?'No archived sessions.':'No filming sessions yet — batch your filming days!')+'</div>';return;}
+  html+=displayList.map(function(s){
     var filmed=s.slots.filter(function(sl){return sl.filmed;}).length;
     var total=s.slots.length;
     var slotsHtml='';
@@ -9346,6 +9384,9 @@ function renderFilmSessions(){
       +'</div><div style="display:flex;gap:8px;align-items:center;">'
       +(total>0?'<span style="font-size:12px;color:'+(filmed===total&&total>0?'rgba(140,220,140,.9)':'var(--text-dim)')+';">'+filmed+'/'+total+' filmed</span>':'')
       +'<span style="color:var(--text-dim);">'+(s.expanded?'▲':'▼')+'</span>'
+      +(filmShowArchived
+        ?'<button onclick="event.stopPropagation();unarchiveFilmSession(\''+s.id+'\')" style="font-size:11px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">↩ Restore</button>'
+        :'<button onclick="event.stopPropagation();archiveFilmSession(\''+s.id+'\')" style="font-size:11px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🗂</button>')
       +'<button onclick="event.stopPropagation();deleteFilmSession(\''+s.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;">✕</button>'
       +'</div></div>'+slotsHtml+'</div>';
   }).join('');
