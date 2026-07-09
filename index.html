@@ -14,13 +14,13 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#e8dfc8;--bg2:#dbd0b0;--bg3:#cec09c;
-  --gold:#2a5c22;--gold-dim:rgba(42,92,34,.85);--gold-faint:rgba(42,92,34,.12);
-  --brown:#7a3d15;--brown-dim:rgba(122,61,21,.70);
+  --bg:#d6c99a;--bg2:#c8b882;--bg3:#baa870;
+  --gold:#1a4814;--gold-dim:rgba(26,72,20,.88);--gold-faint:rgba(26,72,20,.14);
+  --brown:#5c2008;--brown-dim:rgba(92,32,8,.80);
   --red:#8b1a1a;--red-dim:rgba(139,26,26,.3);
   --purple:#5a2080;--green:#1a6020;
-  --text:#2a1a06;--text-dim:rgba(42,26,6,.68);
-  --border:rgba(122,61,21,.25);--border-hi:rgba(122,61,21,.52);
+  --text:#1a0e04;--text-dim:rgba(26,14,4,.72);
+  --border:rgba(92,32,8,.40);--border-hi:rgba(92,32,8,.70);
 }
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Playfair Display',serif;font-weight:500;min-height:100vh;}
@@ -28,8 +28,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:150px;}
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse at 20% 20%,rgba(42,92,34,.06) 0%,transparent 55%),
-  radial-gradient(ellipse at 80% 80%,rgba(42,92,34,.04) 0%,transparent 50%);}
+  background:radial-gradient(ellipse at 20% 20%,rgba(92,32,8,.08) 0%,transparent 55%),
+  radial-gradient(ellipse at 80% 80%,rgba(26,72,20,.06) 0%,transparent 50%);}
 
 /* ── LAYOUT ── */
 #app{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 20px 80px;}
@@ -802,30 +802,31 @@ canvas{width:100%!important;}
 .posttimes-day:last-child{border-bottom:none;}
 .posttimes-day.best{color:var(--gold);font-weight:700;}
 
-/* ── WARM CREAM OVERRIDES ── */
+/* ── LIGHT THEME OVERRIDES ── */
 .site-header h1{color:var(--text);}
 .site-header .tagline{color:var(--text-dim);}
-.stat-num{color:var(--text);text-shadow:0 0 20px rgba(42,92,34,.2);}
+.stat-num{color:var(--text);text-shadow:none;}
 .stat-label{color:var(--text-dim);}
 .month-header,.growth-entry-followers,.vp-title,.idea-text,.book-title,
 .modal-title,.ht-set-name,.win-title,.spin-result,.mp-title,
 .ms-series-name,.photo-title,.photo-result-title,.scanner-title,
 .scanner-found-title,.cr-title{color:var(--text);}
 .sc-modal h2,.sc-progress-label{color:var(--text);}
-.card-box{background:rgba(255,255,255,.72);box-shadow:0 2px 10px rgba(0,0,0,.06);}
-.card-box:hover{box-shadow:0 6px 24px rgba(0,0,0,.10);}
-.video-card{background:rgba(255,255,255,.72);box-shadow:0 2px 8px rgba(0,0,0,.06);}
-.video-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.10);}
-.stat-box{background:rgba(255,255,255,.72);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+/* Cards: white surface so they pop off the golden background */
+.card-box{background:#fffdf4;box-shadow:0 2px 14px rgba(0,0,0,.12);border-color:var(--border);}
+.card-box:hover{box-shadow:0 6px 28px rgba(0,0,0,.18);}
+.video-card{background:#fffdf4;box-shadow:0 2px 10px rgba(0,0,0,.10);}
+.video-card:hover{box-shadow:0 5px 20px rgba(0,0,0,.16);}
+.stat-box{background:#fffdf4;box-shadow:0 2px 10px rgba(0,0,0,.10);}
 .progress-wrap,.an-add-form,.an-stat,.idea-display,.script-block,
 .sc-goal-card,.sc-stat,.sc-book-card,.sc-tbr-card,.sc-notes-area,
-.sc-search,.cap-text,.photo-search-input{background:rgba(255,255,255,.60);}
-.progress-track,.sc-progress-track{background:rgba(0,0,0,.1);}
-.sc-tabs{background:rgba(0,0,0,.06);}
-.sc-chart-bg{background:rgba(0,0,0,.08);}
-input,select,textarea{background:rgba(255,255,255,.75);}
+.sc-search,.cap-text,.photo-search-input{background:#fffdf4;}
+.progress-track,.sc-progress-track{background:rgba(0,0,0,.15);}
+.sc-tabs{background:rgba(0,0,0,.08);}
+.sc-chart-bg{background:rgba(0,0,0,.12);}
+input,select,textarea{background:#fffdf4;color:var(--text);}
 .sc-field input,.sc-field textarea,.sc-field select,
-.sc-year-sel,.sc-goal-edit input{background:rgba(255,255,255,.75);}
+.sc-year-sel,.sc-goal-edit input{background:#fffdf4;}
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
