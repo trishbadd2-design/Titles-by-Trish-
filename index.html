@@ -14,12 +14,12 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#030a05;--bg2:#060f08;--bg3:#0a1a0d;
-  --gold:#c8a050;--gold-dim:rgba(200,160,80,.85);--gold-faint:rgba(200,160,80,.1);
-  --red:#8b1a1a;--red-dim:rgba(139,26,26,.4);
-  --purple:#5a2080;--green:#2a7a2a;
-  --text:#ffffff;--text-dim:rgba(255,255,255,.90);
-  --border:rgba(200,160,80,.18);--border-hi:rgba(200,160,80,.45);
+  --bg:#f5f0e8;--bg2:#ede5d0;--bg3:#e4d8c2;
+  --gold:#907025;--gold-dim:rgba(120,90,25,.85);--gold-faint:rgba(120,90,25,.12);
+  --red:#8b1a1a;--red-dim:rgba(139,26,26,.3);
+  --purple:#5a2080;--green:#1a6020;
+  --text:#2a1a06;--text-dim:rgba(42,26,6,.68);
+  --border:rgba(120,90,25,.22);--border-hi:rgba(120,90,25,.50);
 }
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Playfair Display',serif;font-weight:500;min-height:100vh;}
@@ -27,8 +27,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:150px;}
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse at 20% 20%,rgba(139,26,26,.12) 0%,transparent 55%),
-  radial-gradient(ellipse at 80% 80%,rgba(90,32,128,.1) 0%,transparent 50%);}
+  background:radial-gradient(ellipse at 20% 20%,rgba(200,160,80,.07) 0%,transparent 55%),
+  radial-gradient(ellipse at 80% 80%,rgba(180,130,60,.05) 0%,transparent 50%);}
 
 /* ── LAYOUT ── */
 #app{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 20px 80px;}
@@ -82,7 +82,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 /* ── INPUTS ── */
 input,select,textarea{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Playfair Display',serif;font-size:16px;padding:10px 13px;width:100%;outline:none;transition:border-color .2s,box-shadow .2s;}
 input:focus,select:focus,textarea:focus{border-color:var(--border-hi);box-shadow:0 0 0 3px rgba(200,160,80,.07);}
-select option{background:#0a1a0d;color:var(--text);}
+select option{background:var(--bg3);color:var(--text);}
 textarea{resize:vertical;min-height:80px;}
 
 /* ── PROGRESS ── */
@@ -395,7 +395,7 @@ canvas{width:100%!important;}
 .sc-field input,.sc-field textarea,.sc-field select{width:100%;border:1px solid var(--border);border-radius:3px;padding:7px 10px;font-family:'Playfair Display',serif;font-size:15px;color:var(--text);background:rgba(255,255,255,.04);outline:none;}
 .sc-field input:focus,.sc-field textarea:focus,.sc-field select:focus{border-color:var(--border-hi);}
 .sc-field textarea{resize:vertical;min-height:55px;}
-.sc-field select option{background:#0a1a0d;}
+.sc-field select option{background:var(--bg3);}
 .sc-star-pick{display:flex;gap:4px;}
 .sc-star-pick span{font-size:20px;cursor:pointer;color:rgba(200,160,80,.2);transition:color .1s;}
 .sc-star-pick span.lit{color:var(--gold);}
@@ -800,6 +800,31 @@ canvas{width:100%!important;}
 .posttimes-day{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:14px;}
 .posttimes-day:last-child{border-bottom:none;}
 .posttimes-day.best{color:var(--gold);font-weight:700;}
+
+/* ── WARM CREAM OVERRIDES ── */
+.site-header h1{color:var(--text);}
+.site-header .tagline{color:var(--text-dim);}
+.stat-num{color:var(--text);text-shadow:0 0 20px rgba(120,90,25,.2);}
+.stat-label{color:var(--text-dim);}
+.month-header,.growth-entry-followers,.vp-title,.idea-text,.book-title,
+.modal-title,.ht-set-name,.win-title,.spin-result,.mp-title,
+.ms-series-name,.photo-title,.photo-result-title,.scanner-title,
+.scanner-found-title,.cr-title{color:var(--text);}
+.sc-modal h2,.sc-progress-label{color:var(--text);}
+.card-box{background:rgba(255,255,255,.72);box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.card-box:hover{box-shadow:0 6px 24px rgba(0,0,0,.10);}
+.video-card{background:rgba(255,255,255,.72);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.video-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.10);}
+.stat-box{background:rgba(255,255,255,.72);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.progress-wrap,.an-add-form,.an-stat,.idea-display,.script-block,
+.sc-goal-card,.sc-stat,.sc-book-card,.sc-tbr-card,.sc-notes-area,
+.sc-search,.cap-text,.photo-search-input{background:rgba(255,255,255,.60);}
+.progress-track,.sc-progress-track{background:rgba(0,0,0,.1);}
+.sc-tabs{background:rgba(0,0,0,.06);}
+.sc-chart-bg{background:rgba(0,0,0,.08);}
+input,select,textarea{background:rgba(255,255,255,.75);}
+.sc-field input,.sc-field textarea,.sc-field select,
+.sc-year-sel,.sc-goal-edit input{background:rgba(255,255,255,.75);}
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
@@ -875,6 +900,7 @@ canvas{width:100%!important;}
   <button class="nav-btn" data-panel="commentmine" onclick="showPanel('commentmine')">💎 Comment Mining</button>
   <button class="nav-btn" data-panel="checklist" onclick="showPanel('checklist')">📋 Checklist</button>
   <button class="nav-btn" data-panel="dmtemplates" onclick="showPanel('dmtemplates')">💌 DM Templates</button>
+  <button class="nav-btn" data-panel="contentgen" onclick="showPanel('contentgen')">⚡ Quick Script</button>
 </div>
 
 <div class="sub-nav" id="subnav-growth">
@@ -2916,7 +2942,7 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 // ═══════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',halloffame:'reading',tropes:'reading',pacecalc:'reading',reviewbuilder:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',milestones:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
+var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',halloffame:'reading',tropes:'reading',pacecalc:'reading',reviewbuilder:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',milestones:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -2979,6 +3005,7 @@ function showPanel(id){
   if(id==='bookquotes'){renderBookQuotes();populateBQBookList();}
   if(id==='checklist'){renderChecklist();}
   if(id==='dmtemplates'){renderDMTemplates();}
+  if(id==='contentgen'){renderCgenBooks();}
   if(id==='filmsession'){renderFilmSessions();}
   if(id==='commentmine'){renderCommentMine();}
   if(id==='videoperf'){renderVideoPerfLog();}
@@ -9711,6 +9738,81 @@ function clearReviewForm(){
   document.getElementById('rb-script-output').style.display='none';
 }
 
+// QUICK VIDEO SCRIPT GENERATOR
+// ══════════════════════════════════════════
+var cgenBooks=[];
+var cgenBookId=0;
+var CGEN_HOOKS={
+  'Book Haul':['I went book shopping and I have absolutely no regrets — new haul just dropped 🖤','New books just landed on my shelf and we need to talk about all of them','I may have had a tiny book shopping situation and I need to show you everything','The book haul is here and my wallet is officially in crisis mode'],
+  'TBR Reveal':['Here\'s what I\'m reading this month — and I already know at least one of these is going to wreck me','Monthly TBR reveal and I am fully prepared to be emotionally destroyed','This is what I am reading this month and I have very high hopes for my own suffering'],
+  'Monthly Wrap-Up':['The month is done and I have a lot of feelings — wrap up time','Monthly wrap up is here and some of these books permanently changed me',"Let's talk about everything I read this month because I need to process all of it"],
+  'Book Review':['I need to talk about this book right now and I will not be taking questions','Just finished this and I am not okay — full review time','This book had me in a chokehold from page one and I\'m still not free'],
+  'Recommendations':['If you read dark fiction these books need to be on your radar immediately','Books that will absolutely ruin you — in the best possible way','The dark fiction recommendations nobody asked for but everyone needs right now'],
+  'Ranking':["I'm ranking everything I've read recently and the results are chaotic",'Tier list time — ranking my recent reads from devastating to life-changing','Hot takes incoming — I am ranking my recent reads and you will have opinions']
+};
+var CGEN_CTAS={
+  'Book Haul':['Tell me which one you think is going to ruin me first','Which one should I read first — drop a comment 🖤','Have you read either of these? Tell me everything'],
+  'TBR Reveal':['Tell me your most anticipated read this month','Which one do you think is going to destroy me — comment below','What are you reading this month? Let me know below 🖤'],
+  'Monthly Wrap-Up':['Tell me your favorite read this month','What was the best book you read this month?','Tell me — are you a mood reader or a strict TBR reader?'],
+  'Book Review':['Have you read this? I need someone to talk to about it immediately','Tell me your thoughts if you\'ve read this one 🖤','Drop your rating in the comments — I want to know if we agree'],
+  'Recommendations':['Tell me which one is already on your TBR','Which one are you adding first — comment below 🖤','Have you read any of these? Drop your Mind Scale rating'],
+  'Ranking':['Tell me if you agree with my rankings or I got it completely wrong','Drop your hot take — which book deserves to be higher?','Do you agree or am I completely wrong — comment below 🖤']
+};
+function cgenAddBook(){var id=++cgenBookId;cgenBooks.push({id:id});renderCgenBooks();}
+function cgenRemoveBook(id){cgenBooks=cgenBooks.filter(function(b){return b.id!==id;});renderCgenBooks();}
+function renderCgenBooks(){
+  var el=document.getElementById('cgen-books');if(!el)return;
+  if(!cgenBooks.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-dim);font-style:italic;font-size:14px;">No books added yet — tap + Add Book above.</div>';return;}
+  el.innerHTML=cgenBooks.map(function(b){
+    return '<div style="background:rgba(255,255,255,.6);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px;position:relative;">'
+      +'<button onclick="cgenRemoveBook('+b.id+')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;line-height:1;">✕</button>'
+      +'<div class="sc-two-col" style="padding-right:24px;">'
+      +'<div class="sc-field"><label>Book Title *</label><input id="cgen-title-'+b.id+'" placeholder="e.g. The Body"/></div>'
+      +'<div class="sc-field"><label>Author</label><input id="cgen-author-'+b.id+'" placeholder="e.g. Bethany"/></div>'
+      +'</div>'
+      +'<div class="sc-field"><label>Your excitement / vibe on this one</label><input id="cgen-vibe-'+b.id+'" placeholder="e.g. been on my radar for months, sounds completely unhinged..."/></div>'
+      +'</div>';
+  }).join('');
+}
+function generateContent(){
+  var type=document.getElementById('cgen-type').value;
+  var extra=document.getElementById('cgen-extra').value.trim();
+  var books=cgenBooks.map(function(b){
+    return {
+      title:(document.getElementById('cgen-title-'+b.id)||{value:''}).value.trim(),
+      author:(document.getElementById('cgen-author-'+b.id)||{value:''}).value.trim(),
+      vibe:(document.getElementById('cgen-vibe-'+b.id)||{value:''}).value.trim()
+    };
+  }).filter(function(b){return b.title;});
+  if(!books.length){toast('Add at least one book first!');return;}
+  var hooks=CGEN_HOOKS[type]||CGEN_HOOKS['Book Haul'];
+  var hook=hooks[Math.floor(Math.random()*hooks.length)];
+  var ctas=CGEN_CTAS[type]||CGEN_CTAS['Book Haul'];
+  var cta=ctas[Math.floor(Math.random()*ctas.length)];
+  var bookList=books.map(function(b){return b.title+(b.author?' by '+b.author:'');}).join(' + ');
+  var bookLines=books.map(function(b){var line='📖 '+b.title+(b.author?' by '+b.author:'');if(b.vibe)line+='\n'+b.vibe;return line;}).join('\n\n');
+  var script='🎬 OPENING HOOK:\n"'+hook+'"\n\n';
+  if(type==='Book Haul'){script+='📚 THE BOOKS:\n\n'+bookLines+'\n\n';}
+  else if(type==='TBR Reveal'){script+='📚 THIS MONTH I\'M READING:\n\n'+books.map(function(b,i){var l=(i+1)+'. '+b.title+(b.author?' by '+b.author:'');if(b.vibe)l+='\n   '+b.vibe;return l;}).join('\n\n')+'\n\n';}
+  else if(type==='Monthly Wrap-Up'){script+='📊 THE READS:\n\n'+books.map(function(b){var l='✦ '+b.title+(b.author?' — '+b.author:'');if(b.vibe)l+='\n  '+b.vibe;return l;}).join('\n\n')+'\n\n';}
+  else{script+='📚 THE BOOKS:\n\n'+bookLines+'\n\n';}
+  if(extra)script+='💬 EXTRA NOTES:\n'+extra+'\n\n';
+  script+='📣 CALL TO ACTION:\n"'+cta+'"';
+  var caption='';
+  if(type==='Book Haul'){caption='Book haul 🖤 '+bookList+' just joined the shelf.'+(books.length>1?' I have a feeling at least one of these is going to absolutely destroy me.':' I cannot wait to start this one.')+'\n\n'+cta+'\n\n#BookHaul #BookTok #DarkFiction #TitlesByTrish';}
+  else if(type==='TBR Reveal'){caption='Monthly TBR 📚 '+bookList+'. My expectations are high and I am fully prepared to be emotionally wrecked.\n\n'+cta+'\n\n#TBR #BookTok #DarkFiction #TitlesByTrish';}
+  else if(type==='Monthly Wrap-Up'){caption=books.length+' book'+(books.length!==1?'s':'')+' read this month. I have survived — barely. Full wrap up now live 🖤\n\n'+cta+'\n\n#MonthlyWrapUp #BookTok #DarkFiction #TitlesByTrish';}
+  else if(type==='Book Review'){caption=books[0].title+(books[0].author?' by '+books[0].author:'')+' 🖤 I need to talk about this book. Full review now live.\n\n'+cta+'\n\n#BookReview #BookTok #DarkFiction #TitlesByTrish';}
+  else{caption='Dark fiction that will ruin your life in the best way 🖤 '+bookList+'\n\n'+cta+'\n\n#DarkFiction #BookRecommendations #BookTok #TitlesByTrish';}
+  document.getElementById('cgen-output').style.display='block';
+  document.getElementById('cgen-out-script').value=script;
+  document.getElementById('cgen-out-caption').value=caption;
+  document.getElementById('cgen-output').scrollIntoView({behavior:'smooth',block:'nearest'});
+  toast('✦ Script generated!');
+}
+function copyCgenSection(id){var el=document.getElementById(id);if(!el)return;navigator.clipboard.writeText(el.value).then(function(){toast('📋 Copied!');}).catch(function(){toast('Copy failed.');});}
+function resetCgen(){cgenBooks=[];cgenBookId=0;renderCgenBooks();var ex=document.getElementById('cgen-extra');if(ex)ex.value='';document.getElementById('cgen-output').style.display='none';toast('✦ Reset!');}
+
 // HALL OF FAME
 // ══════════════════════════════════════════
 function renderHallOfFame(){
@@ -11172,6 +11274,60 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <button class="dm-filter-btn" data-f="Negative" onclick="setDMFilter('Negative')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🛡️ Negative</button>
   </div>
   <div id="dm-list"></div>
+</div>
+
+<!-- QUICK VIDEO SCRIPT GENERATOR -->
+<div class="panel" id="panel-contentgen">
+  <div class="section-title">⚡ Quick Script</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:18px;line-height:1.7;">Tell me what you're filming and I'll write your hook, talking points, call to action, and caption — ready to copy and use.</p>
+
+  <div class="sc-field" style="margin-bottom:16px;">
+    <label style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:6px;">Video Type</label>
+    <select id="cgen-type" style="width:100%;box-sizing:border-box;">
+      <option>Book Haul</option>
+      <option>TBR Reveal</option>
+      <option>Monthly Wrap-Up</option>
+      <option>Book Review</option>
+      <option>Recommendations</option>
+      <option>Ranking</option>
+    </select>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <div style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);">Books in This Video</div>
+    <button onclick="cgenAddBook()" style="background:var(--gold-faint);border:1px solid var(--border);color:var(--gold);font-size:12px;padding:6px 14px;border-radius:12px;cursor:pointer;letter-spacing:.08em;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add Book</button>
+  </div>
+  <div id="cgen-books"></div>
+
+  <div class="sc-field" style="margin-top:14px;margin-bottom:18px;">
+    <label style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:6px;">Anything Else to Mention? <span style="color:var(--text-dim);font-size:11px;text-transform:none;letter-spacing:0;">(optional — one sentence reviews, disclaimers, etc.)</span></label>
+    <textarea id="cgen-extra" rows="3" placeholder="e.g. got these as ARCs, no spoilers, the covers are stunning..." style="width:100%;box-sizing:border-box;line-height:1.6;"></textarea>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button onclick="generateContent()" style="background:var(--gold);color:#fff;font-size:13px;font-weight:700;padding:12px 24px;border-radius:6px;border:none;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;touch-action:manipulation;-webkit-tap-highlight-color:transparent;flex:1;min-width:140px;">⚡ Generate Script</button>
+    <button onclick="resetCgen()" style="background:transparent;border:1px solid var(--border);color:var(--text-dim);font-size:13px;padding:12px 20px;border-radius:6px;cursor:pointer;letter-spacing:.08em;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">↺ Reset</button>
+  </div>
+
+  <div id="cgen-output" style="display:none;margin-top:24px;border-top:1px solid var(--border);padding-top:20px;">
+    <div style="font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">✦ Your Generated Content</div>
+
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <label style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);">🎬 Video Script</label>
+        <button onclick="copyCgenSection('cgen-out-script')" style="background:var(--gold-faint);border:1px solid var(--border);color:var(--gold);font-size:11px;padding:4px 12px;border-radius:10px;cursor:pointer;letter-spacing:.06em;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Copy</button>
+      </div>
+      <textarea id="cgen-out-script" rows="14" readonly style="width:100%;box-sizing:border-box;line-height:1.7;"></textarea>
+    </div>
+
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <label style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);">📝 Caption</label>
+        <button onclick="copyCgenSection('cgen-out-caption')" style="background:var(--gold-faint);border:1px solid var(--border);color:var(--gold);font-size:11px;padding:4px 12px;border-radius:10px;cursor:pointer;letter-spacing:.06em;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Copy</button>
+      </div>
+      <textarea id="cgen-out-caption" rows="6" readonly style="width:100%;box-sizing:border-box;line-height:1.7;"></textarea>
+    </div>
+  </div>
 </div>
 
 <!-- READING WRAPPED -->
