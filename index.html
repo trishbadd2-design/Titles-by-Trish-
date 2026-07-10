@@ -46,11 +46,11 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 .nav-tabs{display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:14px;padding-top:2px;}
 .group-nav{display:flex;border-bottom:2px solid var(--border);margin-bottom:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .group-nav::-webkit-scrollbar{display:none;}
-.group-btn{flex:1;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1px;padding:12px 6px;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;background:transparent;color:var(--text-dim);cursor:pointer;white-space:nowrap;transition:all .2s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-width:60px;text-align:center;}
+.group-btn{flex:1;font-family:'Cinzel',serif;font-size:12px;letter-spacing:1px;font-weight:700;padding:12px 6px;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;background:transparent;color:var(--text-dim);cursor:pointer;white-space:nowrap;transition:all .2s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-width:60px;text-align:center;}
 .group-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
 .sub-nav{display:none;gap:6px;padding:12px 0 12px;flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:20px;}
 .sub-nav.active{display:flex;}
-.nav-btn{font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .25s;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.nav-btn{font-family:'Cinzel',serif;font-size:13px;letter-spacing:1.5px;font-weight:700;padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .25s;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 .nav-btn:hover{border-color:var(--border-hi);color:var(--text);background:rgba(42,92,34,.05);}
 .nav-btn.active{border-color:var(--gold);background:rgba(42,92,34,.12);color:var(--gold);box-shadow:0 0 14px rgba(42,92,34,.15);}
 
@@ -60,7 +60,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 @keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── SHARED ── */
-.section-title{font-family:'Cinzel',serif;font-weight:900;font-size:13px;letter-spacing:4px;color:var(--gold);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.section-title{font-family:'Cinzel',serif;font-weight:900;font-size:15px;letter-spacing:3px;color:var(--gold);margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid var(--border);}
 .card-box{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin-bottom:12px;box-shadow:0 4px 24px rgba(0,0,0,.3);transition:border-color .25s,box-shadow .25s;}
 .card-box:hover{border-color:rgba(42,92,34,.28);box-shadow:0 6px 32px rgba(0,0,0,.4);}
 .label-sm{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:4px;color:var(--brown-dim);margin-bottom:6px;}
@@ -113,8 +113,8 @@ textarea{resize:vertical;min-height:80px;}
 }
 .card-date{font-family:'Cinzel',serif;font-size:14px;letter-spacing:2px;color:var(--brown-dim);white-space:nowrap;min-width:86px;}
 .card-info{flex:1;}
-.card-title{font-family:'Cinzel',serif;font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px;line-height:1.3;}
-.card-type{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:3px;color:var(--text-dim);}
+.card-title{font-family:'Cinzel',serif;font-weight:900;font-size:16px;color:var(--text);margin-bottom:2px;line-height:1.3;}
+.card-type{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:3px;color:var(--brown-dim);font-weight:700;}
 .card-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
 .btn-mv{width:24px;height:24px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text-dim);font-size:14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;padding:0;}
 .btn-mv:hover{border-color:var(--gold);color:var(--gold);}
@@ -848,8 +848,8 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <div style="margin-top:14px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
     <button class="btn btn-primary" onclick="exportData()" style="font-size:16px;padding:6px 14px;">⬇ Backup My Data</button>
     <label class="btn" style="font-size:16px;padding:6px 14px;cursor:pointer;">⬆ Restore Backup<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
-    <button class="btn" onclick="shareData()" style="font-size:16px;padding:6px 14px;background:rgba(90,32,128,.25);border-color:rgba(150,80,220,.4);color:rgba(200,160,255,.9);">📡 Share to Other Device</button>
-    <button class="btn" onclick="openSyncModal()" style="font-size:16px;padding:6px 14px;background:rgba(42,122,42,.2);border-color:rgba(80,200,80,.35);color:rgba(140,220,140,.95);">🔄 Sync Code</button>
+    <button class="btn" onclick="shareData()" style="font-size:16px;padding:6px 14px;background:rgba(92,32,8,.12);border-color:rgba(92,32,8,.45);color:var(--brown);font-weight:700;">📡 Share to Other Device</button>
+    <button class="btn" onclick="openSyncModal()" style="font-size:16px;padding:6px 14px;background:rgba(26,72,20,.12);border-color:rgba(26,72,20,.45);color:var(--gold);font-weight:700;">🔄 Sync Code</button>
   </div>
   <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
     <button id="notif-btn" onclick="toggleNotifications()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--text-dim);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;padding:5px 14px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔔 Enable Reminders</button>
