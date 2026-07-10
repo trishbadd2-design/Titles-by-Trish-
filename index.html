@@ -9855,6 +9855,7 @@ function openShelfForm(id){
   document.getElementById('shelf-f-cover').value=book?(book.cover||''):'';
   document.getElementById('shelf-f-status').value=book?book.status:shelfTab;
   document.getElementById('shelf-f-rating').value=book?(book.rating||''):'';
+  renderShelfFormStars(book?book.rating:'');
   document.getElementById('shelf-f-notes').value=book?(book.notes||''):'';
   document.getElementById('shelf-f-dateFinished').value=book?(book.dateFinished||''):'';
   var lbl=document.getElementById('shelf-form-label');if(lbl)lbl.textContent=id?'EDIT BOOK':'ADD A BOOK';
@@ -9918,6 +9919,19 @@ function openShelfDetail(id){
   m.style.display='flex';
 }
 function closeShelfDetail(){var m=document.getElementById('shelf-detail-modal');if(m)m.style.display='none';}
+function renderShelfFormStars(current){
+  var stars=parseInt(current)||0;
+  var el=document.getElementById('shelf-form-stars');if(!el)return;
+  el.innerHTML=[1,2,3,4,5].map(function(n){
+    return '<button type="button" onclick="setShelfFormRating('+n+')" style="font-size:32px;line-height:1;background:none;border:none;padding:2px 3px;cursor:pointer;color:'+(stars>=n?'#c8a030':'rgba(0,0,0,.18)')+';touch-action:manipulation;-webkit-tap-highlight-color:transparent;">★</button>';
+  }).join('')+(stars?'<span style="font-size:13px;color:var(--text-dim);margin-left:6px;font-weight:700;line-height:1;">'+stars+' / 5</span>':'<span style="font-size:11px;color:var(--text-dim);margin-left:6px;font-style:italic;line-height:1;">tap to rate</span>');
+}
+function setShelfFormRating(n){
+  var cur=document.getElementById('shelf-f-rating').value;
+  var val=(String(cur)===String(n))?0:n;
+  document.getElementById('shelf-f-rating').value=val;
+  renderShelfFormStars(val);
+}
 function shelfRateBook(id,rating){
   var book=shelfBooks.find(function(b){return b.id===id;});if(!book)return;
   book.rating=(String(book.rating)===String(rating))?0:rating;
@@ -11692,14 +11706,8 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <option value="finished">Finished</option>
     </select>
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Rating</label>
-    <select id="shelf-f-rating" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 12px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
-      <option value="">No rating</option>
-      <option value="1">1 ★</option>
-      <option value="2">2 ★★</option>
-      <option value="3">3 ★★★</option>
-      <option value="4">4 ★★★★</option>
-      <option value="5">5 ★★★★★</option>
-    </select>
+    <div id="shelf-form-stars" style="display:flex;align-items:center;gap:2px;margin:5px 0 14px;"></div>
+    <input type="hidden" id="shelf-f-rating" value="">
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Notes / Review</label>
     <textarea id="shelf-f-notes" rows="3" placeholder="Your thoughts…" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 12px;font-size:14px;font-family:inherit;line-height:1.6;background:#fffdf4;color:var(--text);"></textarea>
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Date Finished</label>
