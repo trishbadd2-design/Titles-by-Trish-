@@ -832,6 +832,23 @@ canvas{width:100%!important;}
 input,select,textarea{background:#fffdf4;color:var(--text);}
 .sc-field input,.sc-field textarea,.sc-field select,
 .sc-year-sel,.sc-goal-edit input{background:#fffdf4;}
+/* ── HAMBURGER + DRAWER NAV ── */
+.hamburger-btn{position:fixed;top:52px;right:14px;z-index:1001;background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;width:48px;height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;box-shadow:0 2px 14px rgba(0,0,0,.20);touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.hamburger-btn span{display:block;width:22px;height:2.5px;background:var(--text);border-radius:2px;transition:transform .2s,opacity .2s;}
+.hamburger-btn.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg);}
+.hamburger-btn.open span:nth-child(2){opacity:0;}
+.hamburger-btn.open span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg);}
+.nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1002;display:none;}
+.nav-overlay.open{display:block;}
+.nav-drawer{position:fixed;top:0;left:-290px;width:270px;height:100%;background:var(--bg);border-right:2px solid var(--border);z-index:1003;transition:left .25s ease;box-shadow:8px 0 36px rgba(0,0,0,.22);overflow-y:auto;display:flex;flex-direction:column;}
+.nav-drawer.open{left:0;}
+.drawer-head{padding:48px 20px 18px;border-bottom:2px solid var(--border);background:var(--bg2);}
+.drawer-head h2{font-family:Cinzel,serif;font-size:18px;font-weight:900;color:var(--gold);letter-spacing:.06em;}
+.drawer-head p{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);margin-top:4px;}
+.drawer-item{display:flex;align-items:center;gap:14px;padding:17px 20px;font-family:Cinzel,serif;font-size:15px;font-weight:700;color:var(--text);letter-spacing:.04em;cursor:pointer;border-bottom:1px solid var(--border);touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:background .12s;}
+.drawer-item:active{background:var(--gold-faint);}
+.drawer-icon{font-size:22px;width:30px;text-align:center;flex-shrink:0;}
+.drawer-bottom{margin-top:auto;border-top:2px solid var(--border);}
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
@@ -845,20 +862,34 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <h1>TitlesByTrish</h1>
   <div class="tagline">Your complete BookTok home base</div>
   <div class="header-rule"></div>
-  <div style="margin-top:14px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
-    <button class="btn btn-primary" onclick="exportData()" style="font-size:16px;padding:6px 14px;">⬇ Backup My Data</button>
-    <label class="btn" style="font-size:16px;padding:6px 14px;cursor:pointer;">⬆ Restore Backup<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
-    <button class="btn" onclick="shareData()" style="font-size:16px;padding:6px 14px;background:rgba(92,32,8,.12);border-color:rgba(92,32,8,.45);color:var(--brown);font-weight:700;">📡 Share to Other Device</button>
-    <button class="btn" onclick="openSyncModal()" style="font-size:16px;padding:6px 14px;background:rgba(26,72,20,.12);border-color:rgba(26,72,20,.45);color:var(--gold);font-weight:700;">🔄 Sync Code</button>
+</div>
+
+<!-- HAMBURGER BUTTON -->
+<button class="hamburger-btn" id="hamburger-btn" onclick="toggleDrawer()">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- NAV OVERLAY -->
+<div class="nav-overlay" id="nav-overlay" onclick="closeDrawer()"></div>
+
+<!-- NAV DRAWER -->
+<div class="nav-drawer" id="nav-drawer">
+  <div class="drawer-head">
+    <h2>✦ TitlesByTrish</h2>
+    <p>BookTok Command Center</p>
   </div>
-  <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;">
-    <button id="notif-btn" onclick="toggleNotifications()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--text-dim);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;padding:5px 14px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔔 Enable Reminders</button>
-    <button onclick="openThemePicker()" style="background:none;border:1px solid var(--border);border-radius:20px;color:var(--text-dim);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;padding:5px 14px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎨 Theme</button>
+  <div class="drawer-item" onclick="showGroup('home');closeDrawer();"><span class="drawer-icon">📅</span>Home</div>
+  <div class="drawer-item" onclick="showGroup('reading');closeDrawer();"><span class="drawer-icon">📖</span>Reading</div>
+  <div class="drawer-item" onclick="showGroup('content');closeDrawer();"><span class="drawer-icon">✍️</span>Content</div>
+  <div class="drawer-item" onclick="showGroup('growth');closeDrawer();"><span class="drawer-icon">📈</span>Growth</div>
+  <div class="drawer-item" onclick="showGroup('business');closeDrawer();"><span class="drawer-icon">🤝</span>Business</div>
+  <div class="drawer-bottom">
+    <div class="drawer-item" onclick="showPanel('settings');closeDrawer();"><span class="drawer-icon">⚙️</span>Settings</div>
   </div>
 </div>
 
-<!-- GROUP NAV -->
-<div class="group-nav">
+<!-- GROUP NAV (hidden — kept for JS compatibility) -->
+<div class="group-nav" style="display:none;">
   <button class="group-btn active" data-group="home" onclick="showGroup('home',this)">📅 Home</button>
   <button class="group-btn" data-group="reading" onclick="showGroup('reading',this)">📖 Reading</button>
   <button class="group-btn" data-group="content" onclick="showGroup('content',this)">✍️ Content</button>
@@ -2948,6 +2979,13 @@ function toggleFilmArchived(){filmShowArchived=!filmShowArchived;renderFilmSessi
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 // ═══════════════════════════════════════════════
+// DRAWER NAV
+// ═══════════════════════════════════════════════
+var drawerOpen=false;
+function openDrawer(){drawerOpen=true;document.getElementById('nav-drawer').classList.add('open');document.getElementById('nav-overlay').classList.add('open');document.getElementById('hamburger-btn').classList.add('open');}
+function closeDrawer(){drawerOpen=false;document.getElementById('nav-drawer').classList.remove('open');document.getElementById('nav-overlay').classList.remove('open');document.getElementById('hamburger-btn').classList.remove('open');}
+function toggleDrawer(){if(drawerOpen)closeDrawer();else openDrawer();}
+
 // NAVIGATION
 // ═══════════════════════════════════════════════
 var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',shelf:'reading',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',halloffame:'reading',tropes:'reading',pacecalc:'reading',reviewbuilder:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',milestones:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
@@ -2978,6 +3016,7 @@ function showPanel(id){
     var sn=document.getElementById('subnav-'+group);
     if(sn)sn.classList.add('active');
   }
+  if(id==='settings'){document.querySelectorAll('.sub-nav').forEach(function(n){n.classList.remove('active');});document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});}
   if(id==='calendar'){renderCalendar();renderNowReading();}
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
@@ -9747,6 +9786,9 @@ function clearReviewForm(){
   document.getElementById('rb-script-output').style.display='none';
 }
 
+// SHARED UTILITIES
+function escHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
 // MY SHELF — BOOK TRACKER
 // ══════════════════════════════════════════
 var shelfBooks=JSON.parse(localStorage.getItem('tbtrish_shelf')||'[]');
@@ -11457,6 +11499,32 @@ function resetQuiz(){quizAnswers={};initQuiz();}
         <button onclick="copyCgenSection('cgen-out-caption')" style="background:var(--gold-faint);border:1px solid var(--border);color:var(--gold);font-size:11px;padding:4px 12px;border-radius:10px;cursor:pointer;letter-spacing:.06em;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Copy</button>
       </div>
       <textarea id="cgen-out-caption" rows="6" readonly style="width:100%;box-sizing:border-box;line-height:1.7;"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="panel" id="panel-settings">
+  <div class="section-title">⚙️ Settings</div>
+
+  <!-- Data backup -->
+  <div style="background:#fffdf4;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;">
+    <div style="font-family:Cinzel,serif;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">💾 Data &amp; Backup</div>
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.7;margin-bottom:16px;">Your data lives on this device. Back it up regularly so you never lose your books, stats, or content.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button class="btn btn-primary" onclick="exportData()" style="font-size:15px;padding:12px 16px;width:100%;font-weight:900;letter-spacing:.06em;">⬇ Download Backup</button>
+      <label class="btn" style="font-size:15px;padding:12px 16px;cursor:pointer;width:100%;box-sizing:border-box;text-align:center;font-weight:900;letter-spacing:.06em;">⬆ Restore from Backup<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
+      <button class="btn" onclick="shareData()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(92,32,8,.10);border-color:rgba(92,32,8,.45);color:var(--brown);font-weight:900;letter-spacing:.06em;">📡 Share to Other Device</button>
+      <button class="btn" onclick="openSyncModal()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(26,72,20,.10);border-color:rgba(26,72,20,.45);color:var(--gold);font-weight:900;letter-spacing:.06em;">🔄 Sync Code</button>
+    </div>
+  </div>
+
+  <!-- Appearance & Notifications -->
+  <div style="background:#fffdf4;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;">
+    <div style="font-family:Cinzel,serif;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">🎨 Appearance &amp; Alerts</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="openThemePicker()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(26,72,20,.10);border:1px solid rgba(26,72,20,.40);border-radius:10px;color:var(--gold);font-family:Cinzel,serif;font-weight:900;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎨 Change Theme</button>
+      <button id="notif-btn" onclick="toggleNotifications()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(92,32,8,.10);border:1px solid rgba(92,32,8,.40);border-radius:10px;color:var(--brown);font-family:Cinzel,serif;font-weight:900;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔔 Enable Reminders</button>
     </div>
   </div>
 </div>
