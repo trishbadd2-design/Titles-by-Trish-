@@ -9859,6 +9859,8 @@ function openShelfForm(id){
   document.getElementById('shelf-f-dateFinished').value=book?(book.dateFinished||''):'';
   var lbl=document.getElementById('shelf-form-label');if(lbl)lbl.textContent=id?'EDIT BOOK':'ADD A BOOK';
   var prev=document.getElementById('shelf-cover-preview');if(prev)prev.innerHTML='';
+  var sr=document.getElementById('shelf-s-results');if(sr)sr.innerHTML='';
+  var si=document.getElementById('shelf-s-input');if(si)si.value='';
   document.getElementById('shelf-form').style.display='block';
   document.getElementById('shelf-form').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
@@ -9911,6 +9913,48 @@ function openShelfDetail(id){
   m.style.display='flex';
 }
 function closeShelfDetail(){var m=document.getElementById('shelf-detail-modal');if(m)m.style.display='none';}
+var shelfSearchResults=[];
+function shelfSearchBook(){
+  var q=(document.getElementById('shelf-s-input').value||'').trim();
+  if(!q){toast('Type a title or author to search!');return;}
+  var res=document.getElementById('shelf-s-results');
+  if(res)res.innerHTML='<div style="font-size:12px;color:var(--text-dim);padding:10px 8px;">Searching…</div>';
+  fetch('https://www.googleapis.com/books/v1/volumes?q='+encodeURIComponent(q)+'&maxResults=8&fields=items(volumeInfo(title,authors,imageLinks))')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      shelfSearchResults=(data.items||[]).map(function(item){
+        var vi=item.volumeInfo||{};
+        return {title:vi.title||'',author:(vi.authors||[]).join(', '),cover:((vi.imageLinks&&(vi.imageLinks.thumbnail||vi.imageLinks.smallThumbnail))||'').replace('http:','https:').replace('&edge=curl','')};
+      });
+      if(!shelfSearchResults.length){if(res)res.innerHTML='<div style="font-size:12px;color:var(--text-dim);padding:10px 8px;">No results — try different spelling.</div>';return;}
+      if(res)res.innerHTML='<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">'+shelfSearchResults.map(function(b,i){
+        return '<div onclick="shelfPickBook('+i+')" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;background:#fffdf4;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
+          +(b.cover?'<img src="'+b.cover+'" style="width:36px;height:54px;object-fit:cover;border-radius:3px;flex-shrink:0;box-shadow:0 1px 6px rgba(0,0,0,.15);" onerror="this.style.visibility=\'hidden\'">':'<div style="width:36px;height:54px;background:var(--gold-faint);border-radius:3px;flex-shrink:0;border:1px solid var(--border);"></div>')
+          +'<div style="flex:1;min-width:0;">'
+          +'<div style="font-family:Cinzel,serif;font-size:13px;font-weight:700;color:var(--text);line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">'+escHtml(b.title)+'</div>'
+          +(b.author?'<div style="font-size:12px;color:var(--text-dim);margin-top:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">'+escHtml(b.author)+'</div>':'')
+          +'</div><span style="font-size:20px;color:var(--border);flex-shrink:0;">›</span></div>';
+      }).join('')+'</div>';
+    })
+    .catch(function(){if(res)res.innerHTML='<div style="font-size:12px;color:var(--text-dim);padding:10px 8px;">Search failed — check your connection.</div>';});
+}
+function shelfPickBook(idx){
+  var b=shelfSearchResults[idx];if(!b)return;
+  document.getElementById('shelf-f-title').value=b.title;
+  document.getElementById('shelf-f-author').value=b.author;
+  document.getElementById('shelf-f-cover').value=b.cover;
+  var res=document.getElementById('shelf-s-results');
+  if(res)res.innerHTML='<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--gold-faint);border:1px solid var(--border);border-radius:8px;">'
+    +(b.cover?'<img src="'+b.cover+'" style="width:36px;height:54px;object-fit:cover;border-radius:3px;flex-shrink:0;">':'')
+    +'<div><div style="font-family:Cinzel,serif;font-size:13px;font-weight:700;color:var(--gold);">'+escHtml(b.title)+'</div>'
+    +(b.author?'<div style="font-size:11px;color:var(--text-dim);margin-top:2px;">'+escHtml(b.author)+'</div>':'')
+    +'<div style="font-size:10px;color:var(--text-dim);margin-top:4px;letter-spacing:.06em;">Search again to pick a different book</div>'
+    +'</div></div>';
+  var prev=document.getElementById('shelf-cover-preview');
+  if(prev)prev.innerHTML=b.cover?'<img src="'+b.cover+'" style="height:80px;border-radius:5px;border:2px solid var(--gold);box-shadow:0 0 0 3px rgba(26,72,20,.2);">':'';
+  var qi=document.getElementById('shelf-s-input');if(qi)qi.value='';
+  toast('❖ Book selected!');
+}
 function shelfFetchCover(){
   var title=document.getElementById('shelf-f-title').value.trim();
   var author=document.getElementById('shelf-f-author').value.trim();
@@ -11609,6 +11653,18 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
       <div id="shelf-form-label" style="font-family:Cinzel,serif;font-size:13px;font-weight:900;letter-spacing:.12em;color:var(--gold);">ADD A BOOK</div>
       <button onclick="closeShelfForm()" style="background:none;border:none;font-size:18px;color:var(--text-dim);cursor:pointer;line-height:1;">✕</button>
+    </div>
+    <!-- Book search -->
+    <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">🔍 Search for a Book</label>
+    <div style="display:flex;gap:8px;margin:5px 0 8px;">
+      <input id="shelf-s-input" type="text" placeholder="Title or author…" onkeydown="if(event.key==='Enter')shelfSearchBook();" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
+      <button type="button" onclick="shelfSearchBook()" style="padding:9px 16px;border:1px solid var(--gold);border-radius:6px;background:var(--gold);color:#fffdf4;font-family:Cinzel,serif;font-size:13px;font-weight:900;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Search</button>
+    </div>
+    <div id="shelf-s-results" style="max-height:280px;overflow-y:auto;border-radius:8px;margin-bottom:8px;"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <span style="flex:1;height:1px;background:var(--border);display:block;"></span>
+      <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);">or fill in manually</span>
+      <span style="flex:1;height:1px;background:var(--border);display:block;"></span>
     </div>
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Title *</label>
     <input id="shelf-f-title" type="text" placeholder="Book title" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 12px;font-size:14px;font-family:Cinzel,serif;background:#fffdf4;color:var(--text);">
