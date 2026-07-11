@@ -2993,7 +2993,7 @@ var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',shelf:'reading',
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
   document.querySelectorAll('.sub-nav').forEach(function(n){n.classList.remove('active');});
-  btn.classList.add('active');
+  if(btn)btn.classList.add('active');
   var subnav=document.getElementById('subnav-'+group);
   if(subnav)subnav.classList.add('active');
   var first=subnav&&subnav.querySelector('.nav-btn[data-panel]');
