@@ -2773,7 +2773,7 @@ window.onerror=function(msg,src,line){
 // ═══════════════════════════════════════════════
 // VIDEOS DATA
 // ═══════════════════════════════════════════════
-const videos=[
+var videos=[
 {id:1,date:"Tue Jul 1",week:"July — Week 1: Reintroduction",month:"july",title:"Who Is TitlesByTrish",type:"Reintroduction",thumbnail:"Let me reintroduce myself 🖤",hook:"Let me reintroduce myself because I've been holding back and that stops right now",body:"My name is Trish and this is TitlesByTrish — your home for psychological thrillers, dark fiction, true crime, dark fantasy and historical fiction that messes with your mind.\n\nIf a book makes me uncomfortable, keeps me up at night, makes me question everything or destroys me emotionally — I'm reading it and I'm telling you about it.\n\nI rate every book on my Mind Scale — ranging from Mildly Suspicious all the way up to Need Therapy — and I will always be honest with you even when the popular opinion disagrees with me.\n\nI'm not here to be everyone's cup of tea. I'm here for the readers who want books that actually do something to them.\n\nSo if that's you — follow along because we're just getting started and July is going to be unhinged in the best possible way.",cta:"Drop a comment and tell me — what's the darkest book you've ever read?",hashtags:["#BookTok","#PsychologicalThriller","#DarkFiction","#ThrillerBookTok","#TitlesByTrish"]},
 {id:2,date:"Thu Jul 3",week:"July — Week 1: Reintroduction",month:"july",title:"July TBR Reveal",type:"TBR",thumbnail:"July TBR 📚🖤",hook:"My July reading list is completely unhinged and I am not even a little bit sorry",body:"Show every book on your July TBR. For each book share the title, one sentence on why you chose it, and your excitement level out of 5 on the Mind Scale.\n\nBuild to your most anticipated read and tease that it might destroy you.",cta:"Have you read any of these? Tell me in the comments if I should be scared",hashtags:["#TBR","#BookTok","#PsychologicalThriller","#DarkFiction","#ReadingList"]},
 {id:3,date:"Sat Jul 5",week:"July — Week 1: Reintroduction",month:"july",title:"Authors BookTok Sleeps On — Chevy Stevens",type:"Author Spotlight",thumbnail:"BookTok sleeps on her 😤📚",hook:"BookTok has been sleeping on this author for YEARS and I am genuinely mad about it",body:"Her name is Chevy Stevens and if you love psychological thrillers that get completely under your skin and stay there — she needs to be on your shelf immediately.\n\nI started with Hitchhiker and I genuinely could not put it down. The psychological manipulation, the tension, the way she writes trauma — it felt so real it was uncomfortable.\n\nI'm giving Hitchhiker a 4 out of 5 on my Mind Scale — full Completely Unhinged rating — and I'm starting Still Missing this week so follow along.",cta:"Drop a comment if you've read her and tell me your favorite",hashtags:["#ChevyStevens","#BookTok","#PsychologicalThriller","#DarkFiction","#ThrillerBooks"]},
@@ -2861,7 +2861,7 @@ const videos=[
 // ═══════════════════════════════════════════════
 // BOOK BANK DATA
 // ═══════════════════════════════════════════════
-const books=[
+var books=[
 // PSYCH THRILLERS
 {id:1,title:"Still Missing",author:"Chevy Stevens",genre:"psych",mindscale:"💀 5 — Need Therapy",desc:"A woman kidnapped and held captive for over a year. Told in therapy sessions. Devastating and psychologically brilliant.",tags:["Unreliable Narrator","Trauma","Survival","Domestic"]},
 {id:2,title:"Hitchhiker",author:"Chevy Stevens",genre:"psych",mindscale:"🖤 4 — Completely Unhinged",desc:"Psychological manipulation at its finest. The way Stevens writes trauma feels devastatingly real.",tags:["Manipulation","Psych Thriller","Chevy Stevens"]},
@@ -2904,7 +2904,7 @@ const books=[
 // ═══════════════════════════════════════════════
 // IDEA BANK DATA
 // ═══════════════════════════════════════════════
-const ideas=[
+var ideas=[
 {genre:"psych",label:"Psych Thriller",title:"Books that made me paranoid for a week after reading",hook:"I finished these books and for days I could not stop looking over my shoulder"},
 {genre:"psych",label:"Psych Thriller",title:"Ranking psych thrillers by how fast my anxiety spiked",hook:"My anxiety had no business doing what these books did to it — let me explain"},
 {genre:"psych",label:"Psych Thriller",title:"The most psychologically complex villain I have ever read",hook:"This villain understood themselves better than any hero I have ever read and that is terrifying"},
@@ -2939,30 +2939,35 @@ const ideas=[
 ];
 
 // ═══════════════════════════════════════════════
+// SAFE JSON HELPER — guards against corrupted localStorage
+// ═══════════════════════════════════════════════
+function safeJSON(key,def){try{var v=localStorage.getItem(key);return v!==null?JSON.parse(v):def;}catch(e){return def;}}
+
+// ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
-let calTab='all';
-let ideaFilter='all';
-let bookFilter='all';
-let currentIdea=null;
-const doneSet=new Set(JSON.parse(localStorage.getItem('tbtrish_done')||'[]'));
-var calArchiveSet=new Set(JSON.parse(localStorage.getItem('tbtrish_calarchive')||'[]'));
-const folLogs=JSON.parse(localStorage.getItem('tbtrish_fol')||'[]');
-const engLogs=JSON.parse(localStorage.getItem('tbtrish_eng')||'[]');
-const arcList=JSON.parse(localStorage.getItem('tbtrish_arc')||'[]');
-const savedIdeas=JSON.parse(localStorage.getItem('tbtrish_ideas')||'[]');
-var videoIdeas=JSON.parse(localStorage.getItem('tbtrish_videoideas')||'[]');
-var crossPostData=JSON.parse(localStorage.getItem('tbtrish_crosspost')||'{}');
-var qnaBank=JSON.parse(localStorage.getItem('tbtrish_qna')||'[]');
-var brandDeals=JSON.parse(localStorage.getItem('tbtrish_branddeals')||'[]');
-var folGoals=JSON.parse(localStorage.getItem('tbtrish_folgoals')||'[]');
-var inspoList=JSON.parse(localStorage.getItem('tbtrish_inspo')||'[]');
-var paceData=JSON.parse(localStorage.getItem('tbtrish_pace')||'{"book":"","total":0,"deadline":"","log":[]}');
-var calCustomOrder=JSON.parse(localStorage.getItem('tbtrish_calorder')||'null');
-var auditState=JSON.parse(localStorage.getItem('tbtrish_audit')||'{}');
-var moodboard=JSON.parse(localStorage.getItem('tbtrish_moodboard')||'{}');
-const savedBooks=new Set(JSON.parse(localStorage.getItem('tbtrish_savedbooks')||'[]'));
-const alarms=JSON.parse(localStorage.getItem('tbtrish_alarms')||JSON.stringify([
+var calTab='all';
+var ideaFilter='all';
+var bookFilter='all';
+var currentIdea=null;
+var doneSet=new Set(safeJSON('tbtrish_done',[]));
+var calArchiveSet=new Set(safeJSON('tbtrish_calarchive',[]));
+var folLogs=safeJSON('tbtrish_fol',[]);
+var engLogs=safeJSON('tbtrish_eng',[]);
+var arcList=safeJSON('tbtrish_arc',[]);
+var savedIdeas=safeJSON('tbtrish_ideas',[]);
+var videoIdeas=safeJSON('tbtrish_videoideas',[]);
+var crossPostData=safeJSON('tbtrish_crosspost',{});
+var qnaBank=safeJSON('tbtrish_qna',[]);
+var brandDeals=safeJSON('tbtrish_branddeals',[]);
+var folGoals=safeJSON('tbtrish_folgoals',[]);
+var inspoList=safeJSON('tbtrish_inspo',[]);
+var paceData=safeJSON('tbtrish_pace',{"book":"","total":0,"deadline":"","log":[]});
+var calCustomOrder=safeJSON('tbtrish_calorder',null);
+var auditState=safeJSON('tbtrish_audit',{});
+var moodboard=safeJSON('tbtrish_moodboard',{});
+var savedBooks=new Set(safeJSON('tbtrish_savedbooks',[]));
+var alarms=safeJSON('tbtrish_alarms',null)||JSON.parse(JSON.stringify([
   {id:'a1',label:'🎬 Film Day — Record this week\'s videos',day:'Saturday',time:'10:00',active:false},
   {id:'a2',label:'✂️ Edit & Schedule — Get the week ready',day:'Sunday',time:'12:00',active:false},
   {id:'a3',label:'📤 Post Reminder — Monday video goes live',day:'Monday',time:'18:45',active:false},
@@ -3490,7 +3495,7 @@ function setIdeaFilter(f,btn){
   btn.classList.add('active');
 }
 
-const SERIES_IDEAS=[
+var SERIES_IDEAS=[
   {id:'si1',title:'📊 The Mind Scale Files',desc:'A recurring deep-dive where you assign a book an official Mind Scale rating with evidence — like a "case file." Post one every 2 weeks.',hook:'"Opening the case file on [Book]. Evidence of psychological damage follows."',why:'Builds brand identity around your rating system. Viewers tune in to see how you rate the next one.'},
   {id:'si2',title:'📚 Dark Book Club',desc:'Pick one book per month for you and your audience to read together. Do check-in videos at 25%, 50%, 75%, then a finale reaction. Ask viewers to comment their chapter reactions.',hook:'"This month\'s Dark Book Club pick is [Book]. You have 30 days. No excuses."',why:'Drives consistent engagement for a full month. People follow to see your reactions.'},
   {id:'si3',title:'🔬 Author Autopsy',desc:'Go deep on one author\'s full catalog — rank all their books, find patterns in their writing style, talk about what makes them genius or messy.',hook:'"I read every single book [Author] has ever written. Here\'s my verdict."',why:'Long-form content that positions you as the expert. Fans of that author flood your comments.'},
@@ -4380,11 +4385,11 @@ document.getElementById('modal').addEventListener('click',function(e){if(e.targe
 // ═══════════════════════════════════════════════
 // PLANNER
 // ═══════════════════════════════════════════════
-let planView='month';
-let planDate=new Date();
-let planEntries=JSON.parse(localStorage.getItem('tbtrish_planner')||'{}');
-let planModalDate=null;
-let planEditId=null;
+var planView='month';
+var planDate=new Date();
+var planEntries=safeJSON('tbtrish_planner',{});
+var planModalDate=null;
+var planEditId=null;
 
 function savePlanEntries(){localStorage.setItem('tbtrish_planner',JSON.stringify(planEntries));}
 
@@ -4436,8 +4441,8 @@ function renderPlanner(){
   else renderDayView(el,now);
 }
 
-const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 function renderMonthView(el,now){
   const y=planDate.getFullYear(),m=planDate.getMonth();
@@ -4696,19 +4701,19 @@ document.getElementById('plan-modal').addEventListener('click',function(e){
 // ═══════════════════════════════════════════════
 // BOOKISH SCORECARD
 // ═══════════════════════════════════════════════
-let scBooks = JSON.parse(localStorage.getItem('sc3_books') || '[]');
-let scTBR = JSON.parse(localStorage.getItem('sc3_tbr') || '[]');
-let scGoal = parseInt(localStorage.getItem('sc3_goal') || '60');
-let scNotes = localStorage.getItem('sc3_notes') || '';
-let scStreak = parseInt(localStorage.getItem('sc3_streak') || '0');
-let scLastRead = localStorage.getItem('sc3_lastread') || '';
-var scReleases = JSON.parse(localStorage.getItem('sc3_releases')||'[]');
-let scSelectedStars = 0, scSelectedInterest = 0, scSelectedMind = 0, scSelectedTiktok = '';
-let scPicks = { fmt: '', pace: '', src: '', rec: '' };
-const SC_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const SC_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const MIND_NAMES = ['','🕯️ Mildly Suspicious','👁️ Trust Issues','😰 Paranoid','🖤 Completely Unhinged','💀 Need Therapy'];
-const MIND_COLORS = ['','#c8a060','#d47050','#e06060','#d050a0','#a060e8'];
+var scBooks = safeJSON('sc3_books',[]);
+var scTBR = safeJSON('sc3_tbr',[]);
+var scGoal = parseInt(localStorage.getItem('sc3_goal') || '60');
+var scNotes = localStorage.getItem('sc3_notes') || '';
+var scStreak = parseInt(localStorage.getItem('sc3_streak') || '0');
+var scLastRead = localStorage.getItem('sc3_lastread') || '';
+var scReleases = safeJSON('sc3_releases',[]);
+var scSelectedStars = 0, scSelectedInterest = 0, scSelectedMind = 0, scSelectedTiktok = '';
+var scPicks = { fmt: '', pace: '', src: '', rec: '' };
+var SC_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var SC_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var MIND_NAMES = ['','🕯️ Mildly Suspicious','👁️ Trust Issues','😰 Paranoid','🖤 Completely Unhinged','💀 Need Therapy'];
+var MIND_COLORS = ['','#c8a060','#d47050','#e06060','#d050a0','#a060e8'];
 
 function scSave() {
   localStorage.setItem('sc3_books', JSON.stringify(scBooks));
@@ -4811,7 +4816,7 @@ function scTiktokBadge(t) {
 }
 
 /* ── PLATFORM / WHERE TO READ ── */
-let _scPlatforms = [];
+var _scPlatforms = [];
 function scTogglePlat(el, group) {
   const p = el.dataset.p;
   if (_scPlatforms.includes(p)) {
@@ -4866,7 +4871,7 @@ function scRenderBooks() {
     </div>`).join('');
 }
 
-let tbrGenreFilter='all';
+var tbrGenreFilter='all';
 function scRenderTBR() {
   const l = document.getElementById('sc-tbr-list');
   document.getElementById('sc-tbr-badge').textContent = scTBR.length;
@@ -5013,7 +5018,7 @@ function toggleBlueprint(){
 // ══════════════════════════════════════════
 // RATING CARD
 // ══════════════════════════════════════════
-const MIND_SUBS=['','It made me think twice','Something feels off and I can\'t shake it','I\'m questioning everything I know','It rewired my entire brain','I need to talk to someone immediately'];
+var MIND_SUBS=['','It made me think twice','Something feels off and I can\'t shake it','I\'m questioning everything I know','It rewired my entire brain','I need to talk to someone immediately'];
 function openRatingCard(id){
   const b=scBooks.find(x=>x.id===id);if(!b)return;
   const mindColor=b.mind?MIND_COLORS[b.mind]:'var(--gold)';
@@ -5058,7 +5063,7 @@ async function shareRatingCard(){
 // ══════════════════════════════════════════
 // TBR VIDEO SCRIPT GENERATOR
 // ══════════════════════════════════════════
-let _tbrScriptText='';
+var _tbrScriptText='';
 function openTBRScript(id){
   const book=scTBR.find(t=>t.id===id);
   if(!book)return;
@@ -5485,7 +5490,7 @@ document.getElementById('win-date').value=new Date().toISOString().split('T')[0]
   }
 })();
 // ── BACKUP / RESTORE ──
-const ALL_BACKUP_KEYS=[
+var ALL_BACKUP_KEYS=[
   'tbtrish_done','tbtrish_fol','tbtrish_eng','tbtrish_arc',
   'tbtrish_ideas','tbtrish_savedbooks','tbtrish_alarms','tbtrish_planner',
   'sc3_books','sc3_tbr','sc3_goal','sc3_notes','sc3_streak','sc3_lastread',
@@ -5543,7 +5548,7 @@ function importData(e){
 // ══════════════════════════════════════════
 // SYNC CODE (JSONBlob)
 // ══════════════════════════════════════════
-let _syncCode='';
+var _syncCode='';
 function openSyncModal(){
   document.getElementById('sync-modal').style.display='flex';
   document.body.style.overflow='hidden';
@@ -5638,7 +5643,7 @@ async function loadSyncCode(){
 // ══════════════════════════════════════════
 // FAVORITE QUOTES
 // ══════════════════════════════════════════
-let scQuotes=JSON.parse(localStorage.getItem('tbtrish_quotes')||'[]');
+var scQuotes=safeJSON('tbtrish_quotes',[]);
 function saveQuotes(){localStorage.setItem('tbtrish_quotes',JSON.stringify(scQuotes));}
 function openAddQuote(){
   document.getElementById('q-text').value='';
@@ -5707,14 +5712,14 @@ async function shareStatsCard(){
 // ══════════════════════════════════════════
 // CONTENT CALENDAR
 // ══════════════════════════════════════════
-let ccalData=JSON.parse(localStorage.getItem('tbtrish_contentcal')||'{}');
-let ccalYear=new Date().getFullYear(), ccalMonth=new Date().getMonth();
-let ccalSelectedDay=null;
-const CCAL_MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const CCAL_DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var ccalData=safeJSON('tbtrish_contentcal',{});
+var ccalYear=new Date().getFullYear(), ccalMonth=new Date().getMonth();
+var ccalSelectedDay=null;
+var CCAL_MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var CCAL_DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function saveCCalData(){localStorage.setItem('tbtrish_contentcal',JSON.stringify(ccalData));}
 function ccalKey(){return ccalYear+'-'+String(ccalMonth+1).padStart(2,'0');}
-const CCAL_STATUS_COLOR={Planning:'rgba(42,92,34,.7)',Filming:'rgba(80,140,220,.7)',Editing:'rgba(160,80,220,.7)',Posted:'rgba(80,200,80,.8)'};
+var CCAL_STATUS_COLOR={Planning:'rgba(42,92,34,.7)',Filming:'rgba(80,140,220,.7)',Editing:'rgba(160,80,220,.7)',Posted:'rgba(80,200,80,.8)'};
 function renderCCal(){
   const monthData=ccalData[ccalKey()]||{};
   document.getElementById('ccal-month-label').textContent=CCAL_MONTHS[ccalMonth]+' '+ccalYear;
@@ -5736,7 +5741,7 @@ function renderCCal(){
 }
 function ccalPrev(){if(ccalMonth===0){ccalMonth=11;ccalYear--;}else ccalMonth--;renderCCal();}
 function ccalNext(){if(ccalMonth===11){ccalMonth=0;ccalYear++;}else ccalMonth++;renderCCal();}
-let _ccalSelectedStatus='Planning';
+var _ccalSelectedStatus='Planning';
 function setCCalStatus(btn){
   _ccalSelectedStatus=btn.dataset.s;
   document.querySelectorAll('.ccal-status-btn').forEach(b=>b.classList.remove('active'));
@@ -5779,7 +5784,7 @@ function clearCCalDay(){
 // ══════════════════════════════════════════
 // SWIPE GESTURES (between panels)
 // ══════════════════════════════════════════
-const PANEL_ORDER=['calendar','followers','engagement','arc','ideas','books','schedule','planner','scorecard','captions','hashtags','wins','bookquotes','monthlypicks','analytics','timer','spending','pipeline','mood','spin','thumbnails','replies','collabwish','ratecard','quiz'];
+var PANEL_ORDER=['calendar','followers','engagement','arc','ideas','books','schedule','planner','scorecard','captions','hashtags','wins','bookquotes','monthlypicks','analytics','timer','spending','pipeline','mood','spin','thumbnails','replies','collabwish','ratecard','quiz'];
 var _currentPanel='calendar', _touchX=0, _touchY=0;
 document.addEventListener('touchstart',e=>{_touchX=e.touches[0].clientX;_touchY=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchend',e=>{
@@ -5794,7 +5799,7 @@ document.addEventListener('touchend',e=>{
 // ══════════════════════════════════════════
 // CAPTION TEMPLATES
 // ══════════════════════════════════════════
-const capTemplates=[
+var capTemplates=[
   {type:'Book Review',genre:'psych',
    hook:'This book broke something in my brain and I\'m not sure it\'s been fixed since',
    body:'[Book title] by [Author]. The premise sounds simple — [one sentence]. But what actually happens is [twist/escalation]. The [best thing about the book] had me completely unraveling. This is not a comfortable read. It is a necessary one.',
@@ -5837,7 +5842,7 @@ const capTemplates=[
    hashtags:'#BookTok #BookQuestion #TitlesByTrish #BookCommunity #ThrillerBookTok #BookDebate'},
 ];
 
-let capFilter='all';
+var capFilter='all';
 function initCaptions(){
   const types=['all','Book Review','TBR Reveal','Author Spotlight','Book Haul','Monthly Wrap Up','Ranking','Recommendations','Engagement'];
   const fb=document.getElementById('cap-filter');
@@ -5902,7 +5907,7 @@ function copyFullCap(i){
 // ══════════════════════════════════════════
 // BOOK HAUL CAPTION GENERATOR
 // ══════════════════════════════════════════
-let _haulSource='';
+var _haulSource='';
 function setHaulSource(btn){
   _haulSource=btn.dataset.src;
   document.querySelectorAll('.haul-src-btn').forEach(b=>b.classList.remove('active'));
@@ -6020,7 +6025,7 @@ function copyHaulHashtags(){
 // ══════════════════════════════════════════
 // HASHTAG TRACKER
 // ══════════════════════════════════════════
-let htSets=JSON.parse(localStorage.getItem('tbtrish_ht')||JSON.stringify([
+var htSets=safeJSON('tbtrish_ht',null)||JSON.parse(JSON.stringify([
   {id:1,name:'Psych Thriller Review',tags:['#BookTok','#PsychologicalThriller','#ThrillerBookTok','#DarkFiction','#BookReview','#TitlesByTrish','#BookRecommendations','#ReadingCommunity']},
   {id:2,name:'TBR & Haul',tags:['#BookTok','#TBR','#BookHaul','#BookShopping','#TitlesByTrish','#ThrillerBooks','#BookCollection','#ReadingList']},
   {id:3,name:'True Crime',tags:['#TrueCrime','#BookTok','#TrueCrimeBookTok','#TitlesByTrish','#DarkReads','#TrueCrimeBooks','#BookRecommendations']},
@@ -6068,9 +6073,9 @@ function renderHashtags(){
 // ══════════════════════════════════════════
 // WINS JOURNAL
 // ══════════════════════════════════════════
-const WIN_EMOJI={milestone:'🎯',viral:'🔥',collab:'🤝',reading:'📚',brand:'💰',personal:'✨'};
-const WIN_LABEL={milestone:'Milestone',viral:'Viral Video',collab:'Collab / ARC',reading:'Reading',brand:'Brand Deal',personal:'Personal'};
-let wins=JSON.parse(localStorage.getItem('tbtrish_wins')||'[]');
+var WIN_EMOJI={milestone:'🎯',viral:'🔥',collab:'🤝',reading:'📚',brand:'💰',personal:'✨'};
+var WIN_LABEL={milestone:'Milestone',viral:'Viral Video',collab:'Collab / ARC',reading:'Reading',brand:'Brand Deal',personal:'Personal'};
+var wins=safeJSON('tbtrish_wins',[]);
 function saveWins(){localStorage.setItem('tbtrish_wins',JSON.stringify(wins));}
 function addWin(){
   const title=document.getElementById('win-title-input').value.trim();
@@ -6327,7 +6332,7 @@ function resetMoodPicker(){
 // ══════════════════════════════════════════
 // MONTHLY PICKS
 // ══════════════════════════════════════════
-const monthlyPicks={
+var monthlyPicks={
   july:[
     {genre:'psych',title:'The Silent Patient',author:'Alex Michaelides',desc:'A famous painter shoots her husband five times and then never speaks another word. Her therapist becomes obsessed with uncovering her motive.',vibe:'🔪 Unreliable narrator · Jaw-dropping twist · Addictive'},
     {genre:'psych',title:'The Woman in the Window',author:'A.J. Finn',desc:'An agoraphobic woman watches her neighbors through her window — and witnesses something she was never meant to see.',vibe:'👁️ Hitchcock-style · Claustrophobic · Twisty'},
@@ -6398,11 +6403,11 @@ const monthlyPicks={
 // Fill June and July from above for early access
 monthlyPicks.june=monthlyPicks.july;
 
-let mpMonth=String(new Date().getMonth()+1).padStart(2,'0');
-const MP_MONTHS=[['06','June 🌸'],['07','July ☀️'],['08','August 🌊'],['09','September 🍂'],['10','October 🎃'],['11','November 🍁'],['12','December 🎄']];
-const MP_MONTH_KEYS={june:'06',july:'07',august:'08',september:'09',october:'10',november:'11',december:'12'};
-const MP_KEY_NAMES={'06':'june','07':'july','08':'august','09':'september','10':'october','11':'november','12':'december'};
-let mpGenre='all';
+var mpMonth=String(new Date().getMonth()+1).padStart(2,'0');
+var MP_MONTHS=[['06','June 🌸'],['07','July ☀️'],['08','August 🌊'],['09','September 🍂'],['10','October 🎃'],['11','November 🍁'],['12','December 🎄']];
+var MP_MONTH_KEYS={june:'06',july:'07',august:'08',september:'09',october:'10',november:'11',december:'12'};
+var MP_KEY_NAMES={'06':'june','07':'july','08':'august','09':'september','10':'october','11':'november','12':'december'};
+var mpGenre='all';
 
 function initMonthlyPicks(){
   const mRow=document.getElementById('mp-months');
@@ -6445,8 +6450,8 @@ function mpAddTBR(title,author,btn){
 // ══════════════════════════════════════════
 // AUTHOR SERIES VIEW
 // ══════════════════════════════════════════
-let mpView='monthly';
-let msGenre='all';
+var mpView='monthly';
+var msGenre='all';
 
 function switchMpView(view,btn){
   mpView=view;
@@ -6457,7 +6462,7 @@ function switchMpView(view,btn){
   if(view==='series')renderSeriesView();
 }
 
-const authorSeries=[
+var authorSeries=[
   // ── DARK FANTASY ──
   {id:'empyrean',genre:'fantasy',name:'The Empyrean',author:'Rebecca Yarros',
    desc:'The series TikTok exploded over — war riders, dragons, forbidden romance and a plot that never stops. Fourth Wing alone will destroy you. Perfect for a multi-video series as you read each book.',
@@ -6517,8 +6522,8 @@ const authorSeries=[
    books:['The Troop — Nick Cutter','Tender is the Flesh — Agustina Bazterrica','The Only Good Indians — Stephen Graham Jones','Mexican Gothic — Silvia Moreno-Garcia','The Silent Companions — Laura Purcell','Little Heaven — Nick Cutter','The Haunting of Hill House — Shirley Jackson','Ring — Koji Suzuki','Plain Bad Heroines — Emily M. Danforth','The Fisherman — John Langan']},
 ];
 
-const msGenreLabels={all:'All',fantasy:'Dark Fantasy',psych:'Psych Thriller',horror:'🖤 Horror / Dark',hf:'Historical Fiction'};
-const msGenreBadgeClass={fantasy:'ms-badge-fantasy',psych:'ms-badge-psych',horror:'ms-badge-horror',hf:'ms-badge-hf'};
+var msGenreLabels={all:'All',fantasy:'Dark Fantasy',psych:'Psych Thriller',horror:'🖤 Horror / Dark',hf:'Historical Fiction'};
+var msGenreBadgeClass={fantasy:'ms-badge-fantasy',psych:'ms-badge-psych',horror:'ms-badge-horror',hf:'ms-badge-hf'};
 
 function renderSeriesView(){
   const gRow=document.getElementById('ms-genre-row');
@@ -6656,7 +6661,7 @@ async function doPhotoSearch(){
     document.getElementById('photo-hint').textContent='Search failed — check your connection and try again.';
   }
 }
-let _photoResults=[];
+var _photoResults=[];
 var _pendingCoverUrl='';
 
 // ── AUTO COVER FETCH ──
@@ -6719,7 +6724,7 @@ function selectPhotoResult(idx){
 // ══════════════════════════════════════════
 // CURRENTLY READING
 // ══════════════════════════════════════════
-let crBooks = JSON.parse(localStorage.getItem('sc3_currently') || '[]');
+var crBooks = safeJSON('sc3_currently',[]);
 function saveCR(){ localStorage.setItem('sc3_currently', JSON.stringify(crBooks)); }
 
 function scOpenCurrently(){
@@ -6818,7 +6823,7 @@ function scRenderCurrently(){
 // ══════════════════════════════════════════
 // WISHLIST
 // ══════════════════════════════════════════
-let scWishlist=JSON.parse(localStorage.getItem('sc3_wishlist')||'[]');
+var scWishlist=safeJSON('sc3_wishlist',[]);
 function saveWishlist(){localStorage.setItem('sc3_wishlist',JSON.stringify(scWishlist));}
 function openWishlistAdd(){
   document.getElementById('wl-add-form').style.display='';
@@ -6877,7 +6882,7 @@ function renderWishlist(){
 
 // DNF SHELF
 // ══════════════════════════════════════════
-let dnfBooks = JSON.parse(localStorage.getItem('sc3_dnf') || '[]');
+var dnfBooks = safeJSON('sc3_dnf',[]);
 function saveDNF(){ localStorage.setItem('sc3_dnf', JSON.stringify(dnfBooks)); }
 
 function scOpenDNF(){
@@ -6910,7 +6915,7 @@ function scRenderDNF(){
 // ══════════════════════════════════════════
 // SERIES TRACKER
 // ══════════════════════════════════════════
-let seriesList = JSON.parse(localStorage.getItem('sc3_series') || '[]');
+var seriesList = safeJSON('sc3_series',[]);
 function saveSeries(){ localStorage.setItem('sc3_series', JSON.stringify(seriesList)); }
 
 function scOpenSeries(){
@@ -6962,8 +6967,8 @@ function scRenderSeries(){
 // ══════════════════════════════════════════
 // ANALYTICS
 // ══════════════════════════════════════════
-let anGrowth=JSON.parse(localStorage.getItem('tbtrish_growth')||'[]');
-let anVids=JSON.parse(localStorage.getItem('tbtrish_vidperf')||'[]');
+var anGrowth=safeJSON('tbtrish_growth',[]);
+var anVids=safeJSON('tbtrish_vidperf',[]);
 function saveAnGrowth(){localStorage.setItem('tbtrish_growth',JSON.stringify(anGrowth));}
 function saveAnVids(){localStorage.setItem('tbtrish_vidperf',JSON.stringify(anVids));}
 
@@ -7200,7 +7205,7 @@ function renderVidList(){
 }
 
 // ── Growth Tips ──
-const GROWTH_TIPS=[
+var GROWTH_TIPS=[
   {id:'start',title:'🌱 Starting Out — 0 to 500 Followers',tips:[
     'Post 3–5x per week for your first 90 days. Consistency matters more than perfection at this stage.',
     'Your hook is everything — you have 2 seconds. Lead with the most shocking or interesting thing first.',
@@ -7279,7 +7284,7 @@ function toggleTipSection(bodyId,hdr){
 }
 
 // ── Shoot Guide ──
-const SHOOT_GUIDE=[
+var SHOOT_GUIDE=[
   {id:'sg-checklist',title:'✅ Pre-Shoot Checklist — Run This Every Time',tips:[
     'Phone charged or plugged in — nothing worse than dying mid-haul.',
     'Tripod or phone propped stable — shaky footage kills watch time faster than anything.',
@@ -7368,7 +7373,7 @@ function renderShootGuide(){
 }
 
 // ── CapCut Guide ──
-const CAPCUT_GUIDE=[
+var CAPCUT_GUIDE=[
   {id:'cc-hook',title:'⚡ Hook Edit — Your First 3 Seconds',tips:[
     'Cut straight into action — no intro music build-up. The first frame should already be interesting.',
     'Use a text overlay on the very first clip: bold, centered, 4–6 words max. This is your scroll-stopper.',
@@ -7459,7 +7464,7 @@ function renderCapCutGuide(){
 }
 
 // ── PR & Deals ──
-let prEntries=JSON.parse(localStorage.getItem('tbtrish_pr')||'[]');
+var prEntries=safeJSON('tbtrish_pr',[]);
 function savePR(){localStorage.setItem('tbtrish_pr',JSON.stringify(prEntries));}
 function openPRForm(){
   document.getElementById('pr-add-form').style.display='block';
@@ -7492,8 +7497,8 @@ function savePREntry(){
 }
 function deletePREntry(id){prEntries=prEntries.filter(e=>e.id!==id);savePR();renderPRList();}
 function updatePRStatus(id,val){const e=prEntries.find(e=>e.id===id);if(e){e.status=val;savePR();renderPRList();}}
-const PR_STATUS_COLOR={Pending:'rgba(42,92,34,.25)','Accepted':'rgba(42,122,42,.25)','Declined':'rgba(139,26,26,.25)','Posted':'rgba(42,80,160,.25)'};
-const PR_STATUS_LABEL={Pending:'🟡 Pending','Accepted':'🟢 Accepted','Declined':'🔴 Declined','Posted':'✅ Posted'};
+var PR_STATUS_COLOR={Pending:'rgba(42,92,34,.25)','Accepted':'rgba(42,122,42,.25)','Declined':'rgba(139,26,26,.25)','Posted':'rgba(42,80,160,.25)'};
+var PR_STATUS_LABEL={Pending:'🟡 Pending','Accepted':'🟢 Accepted','Declined':'🔴 Declined','Posted':'✅ Posted'};
 function renderPRList(){
   const el=document.getElementById('pr-list'); if(!el)return;
   if(!prEntries.length){el.innerHTML='<div style="color:var(--text-dim);font-style:italic;padding:14px 0;">No PR contacts logged yet — tap the button above to add one.</div>';return;}
@@ -7521,7 +7526,7 @@ function renderPRList(){
 }
 
 // ── Collabs ──
-let collabEntries=JSON.parse(localStorage.getItem('tbtrish_collabs')||'[]');
+var collabEntries=safeJSON('tbtrish_collabs',[]);
 function saveCollabs(){localStorage.setItem('tbtrish_collabs',JSON.stringify(collabEntries));}
 function openCollabForm(){
   document.getElementById('collab-add-form').style.display='block';
@@ -7605,8 +7610,8 @@ function renderCollabList(){
 // ══════════════════════════════════════════
 // COUNTDOWN WIDGET
 // ══════════════════════════════════════════
-const POST_DAYS=[1,2,3,4,5]; // Mon–Fri
-const POST_TIMES={1:'19:00',2:'19:00',3:'19:30',4:'19:00',5:'20:00'};
+var POST_DAYS=[1,2,3,4,5];
+var POST_TIMES={1:'19:00',2:'19:00',3:'19:30',4:'19:00',5:'20:00'};
 function getNextPostDate(){
   const now=new Date();
   for(let d=0;d<=7;d++){
@@ -7653,7 +7658,7 @@ setTimeout(updateCountdown,500);
 // ══════════════════════════════════════════
 // BOOKSHELF GOALS
 // ══════════════════════════════════════════
-const BINGO_GENRES=[
+var BINGO_GENRES=[
   {id:'bg-psych',label:'Psych\nThriller'},
   {id:'bg-horror',label:'Horror'},
   {id:'bg-truecrime',label:'True\nCrime'},
@@ -7667,8 +7672,8 @@ const BINGO_GENRES=[
   {id:'bg-darkfic',label:'Dark\nFiction'},
   {id:'bg-series',label:'Book in\na Series'},
 ];
-let bingoDone=JSON.parse(localStorage.getItem('tbtrish_bingo')||'[]');
-let customGoals=JSON.parse(localStorage.getItem('tbtrish_goals')||'[]');
+var bingoDone=safeJSON('tbtrish_bingo',[]);
+var customGoals=safeJSON('tbtrish_goals',[]);
 function saveBingo(){localStorage.setItem('tbtrish_bingo',JSON.stringify(bingoDone));}
 function saveGoals(){localStorage.setItem('tbtrish_goals',JSON.stringify(customGoals));}
 function renderGoals(){
@@ -7807,7 +7812,7 @@ function startVoice(targetId, smartParse){
 // ══════════════════════════════════════════
 // BIO LINK TRACKER
 // ══════════════════════════════════════════
-let bioLinkLog=JSON.parse(localStorage.getItem('tbtrish_biolinks')||'[]');
+var bioLinkLog=safeJSON('tbtrish_biolinks',[]);
 function saveBioLinkLog(){localStorage.setItem('tbtrish_biolinks',JSON.stringify(bioLinkLog));}
 function renderBioLink(){
   const el=document.getElementById('biolink-log');if(!el)return;
@@ -7849,7 +7854,7 @@ if('serviceWorker' in navigator){
 // ══════════════════════════════════════════
 // BARCODE SCANNER
 // ══════════════════════════════════════════
-let qrScanner=null;
+var qrScanner=null;
 
 function openScanner(){
   document.getElementById('scanner-overlay').classList.add('open');
