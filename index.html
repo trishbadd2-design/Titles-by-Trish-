@@ -851,7 +851,6 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
 .drawer-bottom{margin-top:auto;border-top:2px solid var(--border);}
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -9875,7 +9874,6 @@ function importGoodreadsCSV(event){
   };
   reader.readAsText(file);
 }
-var _qrInstance=null;
 function generateRecQR(){
   var inp=document.getElementById('rec-form-url');
   var url=(inp?inp.value.trim():'');
@@ -9884,9 +9882,8 @@ function generateRecQR(){
   localStorage.setItem('tbtrish_recform',recFormUrl);
   var container=document.getElementById('qr-container');
   if(!container)return;
-  container.innerHTML='';
-  if(typeof QRCode==='undefined'){toast('QR library loading — try again in a moment');return;}
-  new QRCode(container,{text:url,width:200,height:200,colorDark:'#1a4814',colorLight:'#fffdf4',correctLevel:QRCode.CorrectLevel.M});
+  var encoded=encodeURIComponent(url);
+  container.innerHTML='<img src="https://chart.googleapis.com/chart?chs=220x220&cht=qr&chl='+encoded+'&choe=UTF-8&chld=M|2" alt="QR Code" style="width:220px;height:220px;border-radius:8px;">';
   document.getElementById('qr-result').style.display='block';
   var disp=document.getElementById('qr-url-display');
   if(disp)disp.textContent=url;
@@ -9895,7 +9892,8 @@ function generateRecQR(){
 
 // MY SHELF — BOOK TRACKER
 // ══════════════════════════════════════════
-var shelfBooks=JSON.parse(localStorage.getItem('tbtrish_shelf')||'[]');
+var shelfBooks=safeJSON('tbtrish_shelf',[]);
+if(!Array.isArray(shelfBooks))shelfBooks=[];
 var shelfTab='tbr';
 var shelfView='covers';
 var shelfSearch='';
@@ -9913,6 +9911,7 @@ function getShelfFiltered(){
   return books;
 }
 function renderShelf(){
+  if(!Array.isArray(shelfBooks))shelfBooks=[];
   ['tbr','reading','finished'].forEach(function(t){
     var el=document.getElementById('shelf-count-'+t);
     if(el)el.textContent=shelfBooks.filter(function(b){return b.status===t;}).length;
