@@ -899,7 +899,8 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
 
 <!-- SUB-NAVS -->
 <div class="sub-nav active" id="subnav-home">
-  <button class="nav-btn active" data-panel="calendar" onclick="showPanel('calendar')">📅 Calendar</button>
+  <button class="nav-btn active" data-panel="dashboard" onclick="showPanel('dashboard')">🏠 Dashboard</button>
+  <button class="nav-btn" data-panel="calendar" onclick="showPanel('calendar')">📅 Calendar</button>
   <button class="nav-btn" data-panel="planner" onclick="showPanel('planner')">📆 Planner</button>
   <button class="nav-btn" data-panel="schedule" onclick="showPanel('schedule')">⏰ Schedule</button>
 </div>
@@ -962,9 +963,15 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
 </div>
 
 <!-- ═══════════════════════════ -->
+<!-- PANEL 0: DASHBOARD         -->
+<!-- ═══════════════════════════ -->
+<div class="panel active" id="panel-dashboard">
+  <div id="dashboard-content"></div>
+</div>
+
 <!-- PANEL 1: CALENDAR          -->
 <!-- ═══════════════════════════ -->
-<div class="panel active" id="panel-calendar">
+<div class="panel" id="panel-calendar">
 
   <div id="now-reading-widget" style="display:none;background:rgba(42,92,34,.06);border:1px solid rgba(42,92,34,.25);border-radius:6px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
     <div style="display:flex;align-items:center;gap:10px;">
@@ -2988,7 +2995,7 @@ function toggleDrawer(){if(drawerOpen)closeDrawer();else openDrawer();}
 
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={calendar:'home',planner:'home',schedule:'home',shelf:'reading',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',halloffame:'reading',tropes:'reading',pacecalc:'reading',reviewbuilder:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',milestones:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
+var PANEL_GROUP={dashboard:'home',calendar:'home',planner:'home',schedule:'home',shelf:'reading',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',halloffame:'reading',tropes:'reading',pacecalc:'reading',reviewbuilder:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',milestones:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -3017,6 +3024,7 @@ function showPanel(id){
     if(sn)sn.classList.add('active');
   }
   if(id==='settings'){document.querySelectorAll('.sub-nav').forEach(function(n){n.classList.remove('active');});document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});}
+  if(id==='dashboard'){renderDashboard();}
   if(id==='calendar'){renderCalendar();renderNowReading();}
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
@@ -10017,6 +10025,108 @@ function shelfSelectCover(url){
   document.querySelectorAll('#shelf-cover-preview img').forEach(function(img){if(img.src===url){img.style.border='2px solid var(--gold)';img.style.boxShadow='0 0 0 3px rgba(26,72,20,.25)';}});
   toast('✦ Cover selected!');
 }
+
+// DASHBOARD
+// ══════════════════════════════════════════
+var dashClockInterval=null;
+function updateDashClock(){
+  var te=document.getElementById('dash-time');
+  var de=document.getElementById('dash-date');
+  if(!te)return;
+  var now=new Date();
+  var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var h=now.getHours();var min=now.getMinutes();
+  var ampm=h>=12?'PM':'AM';h=h%12||12;
+  te.textContent=h+':'+(min<10?'0':'')+min+' '+ampm;
+  if(de)de.textContent=days[now.getDay()]+', '+months[now.getMonth()]+' '+now.getDate()+', '+now.getFullYear();
+}
+function renderDashboard(){
+  if(dashClockInterval)clearInterval(dashClockInterval);
+  dashClockInterval=setInterval(updateDashClock,1000);
+  var now=new Date();
+  var h=now.getHours();
+  var greeting=h>=5&&h<12?'Good Morning':h>=12&&h<17?'Good Afternoon':h>=17&&h<21?'Good Evening':'Good Night';
+  var year=now.getFullYear().toString();
+  var finished=(shelfBooks||[]).filter(function(b){return b.status==='finished';});
+  var finishedYear=finished.filter(function(b){return b.dateFinished&&b.dateFinished.startsWith(year);});
+  var rated=finished.filter(function(b){return b.rating;});
+  var avgRating=rated.length?(rated.reduce(function(a,b){return a+(parseInt(b.rating)||0);},0)/rated.length).toFixed(1):'—';
+  var tbrCount=(shelfBooks||[]).filter(function(b){return b.status==='tbr';}).length;
+  var readingNow=(shelfBooks||[]).filter(function(b){return b.status==='reading';});
+  var recent=(shelfBooks||[]).slice().sort(function(a,b){var da=a.dateFinished||a.dateAdded||'';var db=b.dateFinished||b.dateAdded||'';return db.localeCompare(da);}).slice(0,5);
+  var el=document.getElementById('dashboard-content');if(!el)return;
+  el.innerHTML=
+    // ── Greeting + clock ─────────────────────
+    '<div style="text-align:center;padding:26px 16px 22px;background:var(--bg2);border-radius:16px;margin-bottom:18px;border:1px solid var(--border);">'
+    +'<div style="font-family:Cinzel,serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:10px;">✦ '+greeting+', Trish ✦</div>'
+    +'<div id="dash-time" style="font-family:Cinzel,serif;font-size:42px;font-weight:900;color:var(--text);letter-spacing:.04em;line-height:1;"></div>'
+    +'<div id="dash-date" style="font-size:13px;color:var(--text-dim);margin-top:10px;letter-spacing:.05em;"></div>'
+    +'</div>'
+    // ── Stats row ────────────────────────────
+    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;">'
+    +[
+      {val:finishedYear.length,label:'Books\nThis Year'},
+      {val:avgRating,label:'Avg\nRating'},
+      {val:tbrCount,label:'On\nTBR'},
+      {val:finished.length,label:'Total\nFinished'}
+    ].map(function(s){
+      return '<div style="background:#fffdf4;border:1px solid var(--border);border-radius:12px;padding:14px 6px;text-align:center;cursor:pointer;" onclick="showPanel(\'shelf\')">'
+        +'<div style="font-family:Cinzel,serif;font-size:22px;font-weight:900;color:var(--gold);line-height:1;">'+s.val+'</div>'
+        +'<div style="font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--text-dim);margin-top:5px;line-height:1.4;white-space:pre-line;">'+s.label+'</div>'
+        +'</div>';
+    }).join('')
+    +'</div>'
+    // ── Currently reading ────────────────────
+    +(readingNow.length
+      ?'<div style="background:#fffdf4;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:18px;">'
+      +'<div style="font-family:Cinzel,serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px;">📖 Currently Reading</div>'
+      +readingNow.slice(0,3).map(function(b){
+        var cov=b.cover?'<img src="'+escHtml(b.cover)+'" style="width:46px;height:69px;object-fit:cover;border-radius:4px;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,.18);" onerror="this.style.display=\'none\'">':'<div style="width:46px;height:69px;background:'+shelfColor(b.title)+';border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:4px;"><span style="font-size:8px;color:#fff;font-weight:700;text-align:center;line-height:1.2;">'+escHtml(b.title)+'</span></div>';
+        return '<div onclick="showPanel(\'shelf\')" style="display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
+          +cov+'<div style="flex:1;min-width:0;">'
+          +'<div style="font-family:Cinzel,serif;font-size:14px;font-weight:700;color:var(--text);line-height:1.3;">'+escHtml(b.title)+'</div>'
+          +(b.author?'<div style="font-size:12px;color:var(--text-dim);margin-top:3px;">'+escHtml(b.author)+'</div>':'')
+          +'</div></div>';
+      }).join('')
+      +'</div>'
+      :'')
+    // ── Quick access shortcuts ───────────────
+    +'<div style="background:#fffdf4;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:18px;">'
+    +'<div style="font-family:Cinzel,serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px;">⚡ Quick Access</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">'
+    +[
+      {icon:'📚',label:'My Shelf',fn:"showPanel('shelf')"},
+      {icon:'📅',label:'Calendar',fn:"showPanel('calendar')"},
+      {icon:'✍️',label:'Content',fn:"showGroup('content')"},
+      {icon:'📖',label:'Scorecard',fn:"showPanel('scorecard')"},
+      {icon:'⚡',label:'Quick Script',fn:"showPanel('contentgen')"},
+      {icon:'💡',label:'Ideas',fn:"showPanel('ideas')"}
+    ].map(function(s){
+      return '<button onclick="'+s.fn+'" style="padding:13px 6px;border:1px solid var(--border);border-radius:10px;background:var(--gold-faint);color:var(--text);font-family:Cinzel,serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.04em;touch-action:manipulation;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;">'
+        +'<span style="font-size:24px;line-height:1;">'+s.icon+'</span><span>'+s.label+'</span></button>';
+    }).join('')
+    +'</div></div>'
+    // ── Recent activity ──────────────────────
+    +(recent.length
+      ?'<div style="background:#fffdf4;border:1px solid var(--border);border-radius:14px;padding:16px 18px;">'
+      +'<div style="font-family:Cinzel,serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px;">📰 Recent on Your Shelf</div>'
+      +recent.map(function(b){
+        var emoji=b.status==='tbr'?'📚':b.status==='reading'?'📖':'✓';
+        var lbl=b.status==='tbr'?'Added to TBR':b.status==='reading'?'Reading Now':'Finished'+(b.rating?' · '+'★'.repeat(parseInt(b.rating)||0):'');
+        return '<div onclick="showPanel(\'shelf\')" style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
+          +'<span style="font-size:20px;flex-shrink:0;width:26px;text-align:center;">'+emoji+'</span>'
+          +'<div style="flex:1;min-width:0;">'
+          +'<div style="font-family:Cinzel,serif;font-size:13px;font-weight:700;color:var(--text);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">'+escHtml(b.title)+'</div>'
+          +(b.author?'<div style="font-size:11px;color:var(--text-dim);margin-top:1px;">'+escHtml(b.author)+' · '+lbl+'</div>':'<div style="font-size:11px;color:var(--text-dim);margin-top:1px;">'+lbl+'</div>')
+          +'</div></div>';
+      }).join('')
+      +'</div>'
+      :'')
+  ;
+  updateDashClock();
+}
+document.addEventListener('DOMContentLoaded',function(){renderDashboard();});
 
 // QUICK VIDEO SCRIPT GENERATOR
 // ══════════════════════════════════════════
