@@ -5482,13 +5482,8 @@ scheduleAlarmCheck();
 // Set today's date as default for follower log
 document.getElementById('fol-date').value=new Date().toISOString().split('T')[0];
 document.getElementById('win-date').value=new Date().toISOString().split('T')[0];
-// Restore last visited panel
-(function(){
-  var lp=localStorage.getItem('tbtrish_lastpanel');
-  if(lp&&document.getElementById('panel-'+lp)){
-    try{showPanel(lp);}catch(e){console.warn('Panel restore failed:',lp,e);}
-  }
-})();
+// Always open to Dashboard (home)
+try{showPanel('dashboard');}catch(e){}
 // ── BACKUP / RESTORE ──
 var ALL_BACKUP_KEYS=[
   'tbtrish_done','tbtrish_fol','tbtrish_eng','tbtrish_arc',
