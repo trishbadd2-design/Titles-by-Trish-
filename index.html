@@ -851,6 +851,7 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
 .drawer-bottom{margin-top:auto;border-top:2px solid var(--border);}
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -3028,7 +3029,13 @@ function showPanel(id){
     var sn=document.getElementById('subnav-'+group);
     if(sn)sn.classList.add('active');
   }
-  if(id==='settings'){document.querySelectorAll('.sub-nav').forEach(function(n){n.classList.remove('active');});document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});}
+  if(id==='settings'){
+    document.querySelectorAll('.sub-nav').forEach(function(n){n.classList.remove('active');});
+    document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
+    var gi=document.getElementById('goodreads-url-input');if(gi)gi.value=goodreadsUrl;
+    var ri=document.getElementById('rec-form-url');if(ri)ri.value=recFormUrl;
+    if(recFormUrl){var qr=document.getElementById('qr-result');if(qr)qr.style.display='none';}
+  }
   if(id==='dashboard'){renderDashboard();}
   if(id==='calendar'){renderCalendar();renderNowReading();}
   if(id==='followers')renderFollowers();
@@ -3037,7 +3044,7 @@ function showPanel(id){
   if(id==='books')renderBooks();
   if(id==='schedule')renderAlarms();
   if(id==='planner'){initPlanner();renderPlanner();}
-  if(id==='shelf'){renderShelf();}
+  if(id==='shelf'){renderShelf();renderShelfGoodreadsBtn();}
   if(id==='scorecard'){initScorecard();}
   if(id==='captions'){initCaptions();}
   if(id==='hashtags'){renderHashtags();}
@@ -9797,6 +9804,95 @@ function clearReviewForm(){
 // SHARED UTILITIES
 function escHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
+// GOODREADS + QR CODE
+// ══════════════════════════════════════════
+var goodreadsUrl=localStorage.getItem('tbtrish_goodreads')||'';
+var recFormUrl=localStorage.getItem('tbtrish_recform')||'';
+
+function saveGoodreadsUrl(){
+  var inp=document.getElementById('goodreads-url-input');
+  goodreadsUrl=(inp?inp.value.trim():'');
+  localStorage.setItem('tbtrish_goodreads',goodreadsUrl);
+  toast(goodreadsUrl?'Goodreads profile saved!':'Goodreads link cleared');
+  renderShelfGoodreadsBtn();
+}
+function openGoodreads(){
+  if(!goodreadsUrl){toast('Enter your Goodreads profile URL in Settings first');return;}
+  window.open(goodreadsUrl,'_blank');
+}
+function renderShelfGoodreadsBtn(){
+  var btn=document.getElementById('shelf-goodreads-btn');
+  if(btn)btn.style.display=goodreadsUrl?'flex':'none';
+}
+function parseCSVLine(line){
+  var result=[],curr='',inQuote=false;
+  for(var i=0;i<line.length;i++){
+    var ch=line[i];
+    if(ch==='"'){inQuote=!inQuote;}
+    else if(ch===','&&!inQuote){result.push(curr);curr='';}
+    else{curr+=ch;}
+  }
+  result.push(curr);
+  return result;
+}
+function importGoodreadsCSV(event){
+  var file=event.target.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var csv=e.target.result;
+      var lines=csv.split('\n');
+      var headers=parseCSVLine(lines[0]).map(function(h){return h.trim().replace(/"/g,'');});
+      var imported=0,skipped=0;
+      for(var i=1;i<lines.length;i++){
+        if(!lines[i].trim())continue;
+        var cols=parseCSVLine(lines[i]);
+        var row={};
+        headers.forEach(function(h,idx){row[h]=(cols[idx]||'').replace(/"/g,'').trim();});
+        var title=row['Title'];
+        if(!title)continue;
+        var exists=shelfBooks.find(function(b){return b.title===title;});
+        if(exists){skipped++;continue;}
+        var grShelf=row['Exclusive Shelf']||'to-read';
+        var status=grShelf==='read'?'finished':grShelf==='currently-reading'?'reading':'tbr';
+        var rating=parseInt(row['My Rating'])||0;
+        shelfBooks.push({
+          id:'gr_'+Date.now()+'_'+i,
+          title:title,
+          author:row['Author']||'',
+          cover:'',
+          status:status,
+          rating:rating,
+          review:row['My Review']||'',
+          added:new Date().toISOString(),
+          dateRead:row['Date Read']||''
+        });
+        imported++;
+      }
+      saveShelf();renderShelf();
+      toast('Imported '+imported+' books'+(skipped?' ('+skipped+' already on shelf)':'')+'!');
+    }catch(err){toast('Could not read file — use a Goodreads CSV export');}
+  };
+  reader.readAsText(file);
+}
+var _qrInstance=null;
+function generateRecQR(){
+  var inp=document.getElementById('rec-form-url');
+  var url=(inp?inp.value.trim():'');
+  if(!url){toast('Enter a URL first');return;}
+  recFormUrl=url;
+  localStorage.setItem('tbtrish_recform',recFormUrl);
+  var container=document.getElementById('qr-container');
+  if(!container)return;
+  container.innerHTML='';
+  if(typeof QRCode==='undefined'){toast('QR library loading — try again in a moment');return;}
+  new QRCode(container,{text:url,width:200,height:200,colorDark:'#1a4814',colorLight:'#fffdf4',correctLevel:QRCode.CorrectLevel.M});
+  document.getElementById('qr-result').style.display='block';
+  var disp=document.getElementById('qr-url-display');
+  if(disp)disp.textContent=url;
+  toast('QR code ready — screenshot it!');
+}
+
 // MY SHELF — BOOK TRACKER
 // ══════════════════════════════════════════
 var shelfBooks=JSON.parse(localStorage.getItem('tbtrish_shelf')||'[]');
@@ -11744,12 +11840,55 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <button id="notif-btn" onclick="toggleNotifications()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(92,32,8,.10);border:1px solid rgba(92,32,8,.40);border-radius:10px;color:var(--brown);font-family:Cinzel,serif;font-weight:900;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔔 Enable Reminders</button>
     </div>
   </div>
+
+  <!-- Goodreads -->
+  <div style="background:#fffdf4;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;">
+    <div style="font-family:Cinzel,serif;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">📗 Goodreads</div>
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:14px;">Save your Goodreads profile link for quick access, or import your shelf from a Goodreads CSV export.</p>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <input id="goodreads-url-input" type="url" placeholder="https://www.goodreads.com/user/show/…" style="flex:1;padding:11px 13px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;background:var(--bg);color:var(--text);">
+      <button onclick="saveGoodreadsUrl()" style="padding:11px 16px;background:var(--gold);color:#fffdf4;border:none;border-radius:10px;font-family:Cinzel,serif;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Save</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:9px;">
+      <button onclick="openGoodreads()" style="padding:11px 16px;width:100%;background:rgba(26,72,20,.10);border:1px solid rgba(26,72,20,.40);border-radius:10px;color:var(--gold);font-family:Cinzel,serif;font-size:14px;font-weight:900;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📗 Open Goodreads Profile</button>
+      <label style="display:block;padding:11px 16px;width:100%;box-sizing:border-box;background:rgba(92,32,8,.10);border:1px solid rgba(92,32,8,.40);border-radius:10px;color:var(--brown);font-family:Cinzel,serif;font-size:14px;font-weight:900;cursor:pointer;text-align:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">
+        ⬆ Import from Goodreads CSV
+        <input type="file" accept=".csv" onchange="importGoodreadsCSV(event)" style="display:none;">
+      </label>
+      <p style="font-size:11px;color:var(--text-dim);line-height:1.5;margin:0;">To export from Goodreads: My Books → Import/Export → Export Library. Then select that CSV file above.</p>
+    </div>
+  </div>
+
+  <!-- Book Rec QR Code -->
+  <div style="background:#fffdf4;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;">
+    <div style="font-family:Cinzel,serif;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">📱 Book Rec QR Code</div>
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:14px;">Generate a QR code your followers scan to send you book recommendations. Paste any link — a Google Form, TikTok DM, or Instagram — and screenshot the code for your videos.</p>
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <input id="rec-form-url" type="url" placeholder="https://forms.gle/… or your TikTok link" style="flex:1;padding:11px 13px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;background:var(--bg);color:var(--text);">
+      <button onclick="generateRecQR()" style="padding:11px 16px;background:var(--gold);color:#fffdf4;border:none;border-radius:10px;font-family:Cinzel,serif;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Generate</button>
+    </div>
+    <div id="qr-result" style="display:none;text-align:center;">
+      <div id="qr-container" style="display:inline-block;background:#fffdf4;padding:16px;border-radius:14px;border:2px solid var(--border);margin-bottom:10px;"></div>
+      <p style="font-size:12px;color:var(--text-dim);line-height:1.5;">📸 Screenshot this and show it in your TikToks so followers can scan it!</p>
+      <p id="qr-url-display" style="font-size:11px;color:var(--text-dim);word-break:break-all;margin-top:4px;"></p>
+    </div>
+  </div>
 </div>
 
 <!-- MY SHELF -->
 <div class="panel" id="panel-shelf">
   <div class="section-title">📚 My Shelf</div>
   <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:16px;line-height:1.7;">Track your TBR, current reads, and finished books — with cover art.</p>
+
+  <!-- Goodreads quick link (only visible if URL saved) -->
+  <div id="shelf-goodreads-btn" style="display:none;align-items:center;gap:10px;background:#fffdf4;border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:14px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;" onclick="openGoodreads()">
+    <span style="font-size:22px;line-height:1;">📗</span>
+    <div>
+      <div style="font-family:Cinzel,serif;font-size:13px;font-weight:900;color:var(--gold);">Open Goodreads</div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:1px;">View your profile &amp; reading stats</div>
+    </div>
+    <span style="margin-left:auto;color:var(--text-dim);font-size:18px;">↗</span>
+  </div>
 
   <!-- Stats row -->
   <div style="display:flex;gap:10px;margin-bottom:16px;">
