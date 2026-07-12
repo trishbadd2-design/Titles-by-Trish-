@@ -10125,29 +10125,49 @@ function shelfRateBook(id,rating){
   toast(book.rating?'✦ Rated '+book.rating+' star'+(book.rating===1?'':'s')+'!':'Rating cleared');
 }
 var shelfSearchResults=[];
+function _renderShelfSearchResults(res){
+  if(!shelfSearchResults.length){
+    if(res)res.innerHTML='<div style="font-size:13px;color:var(--text-dim);padding:12px 10px;">No results — try just the title, or check spelling.</div>';
+    return;
+  }
+  if(res)res.innerHTML='<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">'+shelfSearchResults.map(function(b,i){
+    return '<div onclick="shelfPickBook('+i+')" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;background:#fffdf4;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
+      +(b.cover?'<img src="'+b.cover+'" style="width:36px;height:54px;object-fit:cover;border-radius:3px;flex-shrink:0;box-shadow:0 1px 6px rgba(0,0,0,.15);" onerror="this.style.visibility=\'hidden\'">':'<div style="width:36px;height:54px;background:var(--gold-faint);border-radius:3px;flex-shrink:0;border:1px solid var(--border);"></div>')
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-family:Cinzel,serif;font-size:13px;font-weight:700;color:var(--text);line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">'+escHtml(b.title)+'</div>'
+      +(b.author?'<div style="font-size:12px;color:var(--text-dim);margin-top:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">'+escHtml(b.author)+'</div>':'')
+      +'</div><span style="font-size:20px;color:var(--border);flex-shrink:0;">›</span></div>';
+  }).join('')+'</div>';
+}
+function _searchOpenLibrary(q,res){
+  fetch('https://openlibrary.org/search.json?q='+encodeURIComponent(q)+'&limit=8&fields=title,author_name,cover_i')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      shelfSearchResults=(d.docs||[]).filter(function(doc){return doc.title;}).slice(0,8).map(function(doc){
+        var cid=doc.cover_i;
+        return {title:doc.title||'',author:(doc.author_name||[]).join(', '),cover:cid?'https://covers.openlibrary.org/b/id/'+cid+'-M.jpg':''};
+      });
+      _renderShelfSearchResults(res);
+    })
+    .catch(function(){if(res)res.innerHTML='<div style="font-size:13px;color:var(--text-dim);padding:12px 10px;">Search unavailable — fill in manually below.</div>';});
+}
 function shelfSearchBook(){
   var q=(document.getElementById('shelf-s-input').value||'').trim();
   if(!q){toast('Type a title or author to search!');return;}
   var res=document.getElementById('shelf-s-results');
   if(res)res.innerHTML='<div style="font-size:12px;color:var(--text-dim);padding:10px 8px;">Searching…</div>';
-  fetch('https://www.googleapis.com/books/v1/volumes?q='+encodeURIComponent(q)+'&maxResults=8&fields=items(volumeInfo(title,authors,imageLinks))')
+  fetch('https://www.googleapis.com/books/v1/volumes?q='+encodeURIComponent(q)+'&maxResults=8&langRestrict=en')
     .then(function(r){return r.json();})
     .then(function(data){
-      shelfSearchResults=(data.items||[]).map(function(item){
+      var items=data.items||[];
+      if(!items.length){_searchOpenLibrary(q,res);return;}
+      shelfSearchResults=items.map(function(item){
         var vi=item.volumeInfo||{};
         return {title:vi.title||'',author:(vi.authors||[]).join(', '),cover:((vi.imageLinks&&(vi.imageLinks.thumbnail||vi.imageLinks.smallThumbnail))||'').replace('http:','https:').replace('&edge=curl','')};
       });
-      if(!shelfSearchResults.length){if(res)res.innerHTML='<div style="font-size:12px;color:var(--text-dim);padding:10px 8px;">No results — try different spelling.</div>';return;}
-      if(res)res.innerHTML='<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">'+shelfSearchResults.map(function(b,i){
-        return '<div onclick="shelfPickBook('+i+')" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;background:#fffdf4;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
-          +(b.cover?'<img src="'+b.cover+'" style="width:36px;height:54px;object-fit:cover;border-radius:3px;flex-shrink:0;box-shadow:0 1px 6px rgba(0,0,0,.15);" onerror="this.style.visibility=\'hidden\'">':'<div style="width:36px;height:54px;background:var(--gold-faint);border-radius:3px;flex-shrink:0;border:1px solid var(--border);"></div>')
-          +'<div style="flex:1;min-width:0;">'
-          +'<div style="font-family:Cinzel,serif;font-size:13px;font-weight:700;color:var(--text);line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">'+escHtml(b.title)+'</div>'
-          +(b.author?'<div style="font-size:12px;color:var(--text-dim);margin-top:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">'+escHtml(b.author)+'</div>':'')
-          +'</div><span style="font-size:20px;color:var(--border);flex-shrink:0;">›</span></div>';
-      }).join('')+'</div>';
+      _renderShelfSearchResults(res);
     })
-    .catch(function(){if(res)res.innerHTML='<div style="font-size:12px;color:var(--text-dim);padding:10px 8px;">Search failed — check your connection.</div>';});
+    .catch(function(){_searchOpenLibrary(q,res);});
 }
 function shelfPickBook(idx){
   var b=shelfSearchResults[idx];if(!b)return;
