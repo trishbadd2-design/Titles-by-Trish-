@@ -877,6 +877,11 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <div class="drawer-head">
     <h2>✦ TitlesByTrish</h2>
     <p>BookTok Command Center</p>
+    <div style="position:relative;margin-top:12px;">
+      <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:15px;opacity:.5;pointer-events:none;line-height:1;">🔍</span>
+      <input id="drawer-search-input" type="text" placeholder="Search features…" oninput="drawerSearch(this.value)" autocomplete="off" autocorrect="off" spellcheck="false" style="width:100%;box-sizing:border-box;padding:9px 10px 9px 34px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
+    </div>
+    <div id="drawer-search-results" style="display:none;background:#fffdf4;border:1.5px solid var(--border);border-radius:10px;margin-top:8px;max-height:260px;overflow-y:auto;"></div>
   </div>
   <div class="drawer-item" onclick="showGroup('home');closeDrawer();"><span class="drawer-icon">📅</span>Home</div>
   <div class="drawer-item" onclick="showGroup('reading');closeDrawer();"><span class="drawer-icon">📖</span>Reading</div>
@@ -2995,8 +3000,91 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 // ═══════════════════════════════════════════════
 var drawerOpen=false;
 function openDrawer(){drawerOpen=true;document.getElementById('nav-drawer').classList.add('open');document.getElementById('nav-overlay').classList.add('open');document.getElementById('hamburger-btn').classList.add('open');}
-function closeDrawer(){drawerOpen=false;document.getElementById('nav-drawer').classList.remove('open');document.getElementById('nav-overlay').classList.remove('open');document.getElementById('hamburger-btn').classList.remove('open');}
+function closeDrawer(){
+  drawerOpen=false;
+  document.getElementById('nav-drawer').classList.remove('open');
+  document.getElementById('nav-overlay').classList.remove('open');
+  document.getElementById('hamburger-btn').classList.remove('open');
+  var si=document.getElementById('drawer-search-input');if(si)si.value='';
+  drawerSearch('');
+}
 function toggleDrawer(){if(drawerOpen)closeDrawer();else openDrawer();}
+
+var DRAWER_PANELS=[
+  {icon:'🏠',name:'Dashboard',panel:'dashboard',group:'Home'},
+  {icon:'📅',name:'Calendar',panel:'calendar',group:'Home'},
+  {icon:'📆',name:'Planner',panel:'planner',group:'Home'},
+  {icon:'⏰',name:'Schedule',panel:'schedule',group:'Home'},
+  {icon:'📚',name:'My Shelf',panel:'shelf',group:'Reading'},
+  {icon:'📖',name:'Scorecard',panel:'scorecard',group:'Reading'},
+  {icon:'🖤',name:'Book Bank',panel:'books',group:'Reading'},
+  {icon:'📚',name:'Monthly Picks',panel:'monthlypicks',group:'Reading'},
+  {icon:'📝',name:'Quotes',panel:'bookquotes',group:'Reading'},
+  {icon:'🎡',name:'Spin the Wheel',panel:'spin',group:'Reading'},
+  {icon:'🧠',name:'Reader Quiz',panel:'quiz',group:'Reading'},
+  {icon:'📔',name:'Reading Journal',panel:'readjournal',group:'Reading'},
+  {icon:'🎁',name:'Reading Wrapped',panel:'wrapped',group:'Reading'},
+  {icon:'🗓️',name:'Upcoming Releases',panel:'upcoming',group:'Reading'},
+  {icon:'🏆',name:'Challenges',panel:'challenges',group:'Reading'},
+  {icon:'⭐',name:'Hall of Fame',panel:'halloffame',group:'Reading'},
+  {icon:'🌀',name:'Tropes',panel:'tropes',group:'Reading'},
+  {icon:'📖',name:'Pace Calculator',panel:'pacecalc',group:'Reading'},
+  {icon:'📝',name:'Review Builder',panel:'reviewbuilder',group:'Reading'},
+  {icon:'💡',name:'Ideas',panel:'ideas',group:'Content'},
+  {icon:'✍️',name:'Captions',panel:'captions',group:'Content'},
+  {icon:'🏷️',name:'Hashtags',panel:'hashtags',group:'Content'},
+  {icon:'🎨',name:'Thumbnails',panel:'thumbnails',group:'Content'},
+  {icon:'💬',name:'Replies',panel:'replies',group:'Content'},
+  {icon:'🪝',name:'Hook Bank',panel:'hookbank',group:'Content'},
+  {icon:'📣',name:'CTA Bank',panel:'ctabank',group:'Content'},
+  {icon:'🎵',name:'Sounds',panel:'sounds',group:'Content'},
+  {icon:'🎬',name:'Series Tracker',panel:'seriestracker',group:'Content'},
+  {icon:'⏱️',name:'Timer',panel:'timer',group:'Content'},
+  {icon:'🎭',name:'Mood Picker',panel:'mood',group:'Content'},
+  {icon:'✨',name:'Inspo List',panel:'inspo',group:'Content'},
+  {icon:'🎥',name:'Film Sessions',panel:'filmsession',group:'Content'},
+  {icon:'💎',name:'Comment Mining',panel:'commentmine',group:'Content'},
+  {icon:'📋',name:'Checklist',panel:'checklist',group:'Content'},
+  {icon:'💌',name:'DM Templates',panel:'dmtemplates',group:'Content'},
+  {icon:'⚡',name:'Quick Script',panel:'contentgen',group:'Content'},
+  {icon:'📈',name:'Followers',panel:'followers',group:'Growth'},
+  {icon:'🎯',name:'Engagement',panel:'engagement',group:'Growth'},
+  {icon:'📊',name:'Analytics',panel:'analytics',group:'Growth'},
+  {icon:'💰',name:'Spending',panel:'spending',group:'Growth'},
+  {icon:'📊',name:'Video Performance',panel:'videoperf',group:'Growth'},
+  {icon:'🎯',name:'Milestones',panel:'milestones',group:'Growth'},
+  {icon:'⏰',name:'Post Times',panel:'posttimes',group:'Growth'},
+  {icon:'🤝',name:'Pipeline',panel:'pipeline',group:'Business'},
+  {icon:'📬',name:'ARCs & Collabs',panel:'arc',group:'Business'},
+  {icon:'💰',name:'Rate Card',panel:'ratecard',group:'Business'},
+  {icon:'🏆',name:'Wins',panel:'wins',group:'Business'},
+  {icon:'🌟',name:'Collab Wishlist',panel:'collabwish',group:'Business'},
+  {icon:'🔗',name:'Affiliate Links',panel:'affiliates',group:'Business'},
+  {icon:'⚙️',name:'Settings',panel:'settings',group:'Settings'},
+];
+function drawerSearch(q){
+  var res=document.getElementById('drawer-search-results');
+  if(!res)return;
+  q=(q||'').trim().toLowerCase();
+  if(!q){res.style.display='none';res.innerHTML='';return;}
+  var matches=DRAWER_PANELS.filter(function(p){return p.name.toLowerCase().indexOf(q)!==-1||p.group.toLowerCase().indexOf(q)!==-1;}).slice(0,8);
+  if(!matches.length){
+    res.style.display='block';
+    res.innerHTML='<div style="padding:12px 14px;font-size:13px;color:var(--text-dim);">No results for "'+q+'"</div>';
+    return;
+  }
+  res.style.display='block';
+  res.innerHTML=matches.map(function(p){
+    return '<div onclick="showPanel(\''+p.panel+'\');closeDrawer();" style="display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;active-background:var(--gold-faint);">'
+      +'<span style="font-size:18px;width:24px;text-align:center;flex-shrink:0;">'+p.icon+'</span>'
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-family:Cinzel,serif;font-size:13px;font-weight:700;color:var(--text);">'+p.name+'</div>'
+      +'<div style="font-size:10px;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;margin-top:1px;">'+p.group+'</div>'
+      +'</div>'
+      +'<span style="color:var(--text-dim);font-size:18px;">›</span>'
+      +'</div>';
+  }).join('');
+}
 
 // NAVIGATION
 // ═══════════════════════════════════════════════
@@ -6664,6 +6752,7 @@ async function doPhotoSearch(){
 }
 var _photoResults=[];
 var _pendingCoverUrl='';
+var _scanContext='sc';
 
 // ── AUTO COVER FETCH ──
 async function fetchBookCover(title,author){
@@ -6709,6 +6798,15 @@ function renderPhotoResults(results){
 }
 function selectPhotoResult(idx){
   const r=_photoResults[idx];if(!r)return;
+  if(_scanContext==='shelf'){
+    if(r.title){var tf=document.getElementById('shelf-f-title');if(tf)tf.value=r.title;}
+    if(r.author){var af=document.getElementById('shelf-f-author');if(af)af.value=r.author;}
+    if(r.coverUrl){var cf=document.getElementById('shelf-f-cover');if(cf)cf.value=r.coverUrl;}
+    _scanContext='sc';
+    closePhotoScan();
+    toast('✦ Book filled in — complete the details and save!');
+    return;
+  }
   _pendingCoverUrl=r.coverUrl||'';
   const mode=document.getElementById('sc-modal-mode').value;
   if(mode==='tbr'){
@@ -7866,6 +7964,14 @@ function closeScanner(){
   stopScanner();
   document.getElementById('scanner-overlay').classList.remove('open');
 }
+function openShelfScanner(){
+  _scanContext='shelf';
+  openScanner();
+}
+function openShelfPhoto(){
+  _scanContext='shelf';
+  openPhotoScan();
+}
 function startScanner(){
   if(qrScanner){qrScanner.clear();}
   qrScanner=new Html5Qrcode('scanner-box');
@@ -7929,6 +8035,15 @@ function showScannerResult(title,author,isbn,coverUrl){
 }
 function acceptScan(){
   const {title,author,coverUrl}=window._scanResult||{};
+  if(_scanContext==='shelf'){
+    if(title){var tf=document.getElementById('shelf-f-title');if(tf)tf.value=title;}
+    if(author){var af=document.getElementById('shelf-f-author');if(af)af.value=author;}
+    if(coverUrl){var cf=document.getElementById('shelf-f-cover');if(cf)cf.value=coverUrl;}
+    _scanContext='sc';
+    closeScanner();
+    toast('✦ Book scanned & filled in!');
+    return;
+  }
   _pendingCoverUrl=coverUrl||'';
   const mode=document.getElementById('sc-modal-mode').value;
   if(mode==='tbr'){
@@ -12035,10 +12150,18 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <div id="shelf-form-label" style="font-family:Cinzel,serif;font-size:13px;font-weight:900;letter-spacing:.12em;color:var(--gold);">ADD A BOOK</div>
       <button onclick="closeShelfForm()" style="background:none;border:none;font-size:18px;color:var(--text-dim);cursor:pointer;line-height:1;">✕</button>
     </div>
+    <!-- Input shortcuts: barcode / photo / mic -->
+    <div style="display:flex;gap:6px;margin:0 0 12px;">
+      <button type="button" onclick="openShelfScanner()" style="flex:1;padding:9px 4px;border:1.5px solid rgba(180,60,60,.4);border-radius:10px;background:rgba(180,60,60,.07);color:#b43c3c;font-family:Cinzel,serif;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;letter-spacing:.04em;">📷 Scan Barcode</button>
+      <button type="button" onclick="openShelfPhoto()" style="flex:1;padding:9px 4px;border:1.5px solid rgba(80,60,180,.35);border-radius:10px;background:rgba(80,60,180,.07);color:#503cb4;font-family:Cinzel,serif;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;letter-spacing:.04em;">🖼️ Photo / Screenshot</button>
+    </div>
     <!-- Book search -->
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">🔍 Search for a Book</label>
-    <div style="display:flex;gap:8px;margin:5px 0 8px;">
-      <input id="shelf-s-input" type="text" placeholder="Title or author…" onkeydown="if(event.key==='Enter')shelfSearchBook();" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
+    <div style="display:flex;gap:8px;margin:5px 0 4px;">
+      <div class="mic-row" style="flex:1;">
+        <input id="shelf-s-input" type="text" placeholder="Title or author…" onkeydown="if(event.key==='Enter')shelfSearchBook();" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
+        <button class="mic-btn" onclick="startVoice('shelf-s-input',false)" title="Speak to search" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎤</button>
+      </div>
       <button type="button" onclick="shelfSearchBook()" style="padding:9px 16px;border:1px solid var(--gold);border-radius:6px;background:var(--gold);color:#fffdf4;font-family:Cinzel,serif;font-size:13px;font-weight:900;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Search</button>
     </div>
     <div id="shelf-s-results" style="max-height:280px;overflow-y:auto;border-radius:8px;margin-bottom:8px;"></div>
@@ -12048,9 +12171,15 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <span style="flex:1;height:1px;background:var(--border);display:block;"></span>
     </div>
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Title *</label>
-    <input id="shelf-f-title" type="text" placeholder="Book title" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 12px;font-size:14px;font-family:Cinzel,serif;background:#fffdf4;color:var(--text);">
+    <div class="mic-row" style="margin:4px 0 12px;">
+      <input id="shelf-f-title" type="text" placeholder='Book title (or say "Title by Author")' style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:Cinzel,serif;background:#fffdf4;color:var(--text);">
+      <button class="mic-btn" onclick="startVoice('shelf-f-title',true)" title="Speak title" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎤</button>
+    </div>
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Author</label>
-    <input id="shelf-f-author" type="text" placeholder="Author name" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 12px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
+    <div class="mic-row" style="margin:4px 0 12px;">
+      <input id="shelf-f-author" type="text" placeholder="Author name" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
+      <button class="mic-btn" onclick="startVoice('shelf-f-author',false)" title="Speak author" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎤</button>
+    </div>
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Book Cover</label>
     <button type="button" onclick="shelfFetchCover()" style="width:100%;margin:4px 0 8px;padding:10px;border:1px solid var(--gold);border-radius:8px;background:var(--gold-faint);color:var(--gold);font-family:Cinzel,serif;font-size:13px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🔍 Find Cover Art</button>
     <div id="shelf-cover-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;min-height:0;"></div>
@@ -12065,7 +12194,10 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <div id="shelf-form-stars" style="display:flex;align-items:center;gap:2px;margin:5px 0 14px;"></div>
     <input type="hidden" id="shelf-f-rating" value="">
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">My Review</label>
-    <textarea id="shelf-f-notes" rows="3" placeholder="Your thoughts on this book…" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 12px;font-size:14px;font-family:inherit;line-height:1.6;background:#fffdf4;color:var(--text);"></textarea>
+    <div class="mic-row" style="align-items:flex-start;margin:4px 0 12px;">
+      <textarea id="shelf-f-notes" rows="3" placeholder="Your thoughts on this book…" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;line-height:1.6;background:#fffdf4;color:var(--text);resize:vertical;"></textarea>
+      <button class="mic-btn" onclick="startVoice('shelf-f-notes',false)" title="Speak review" style="margin-top:4px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎤</button>
+    </div>
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Date Finished</label>
     <input id="shelf-f-dateFinished" type="date" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 16px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
     <button onclick="saveShelfBook()" style="width:100%;padding:12px;border:none;border-radius:8px;background:var(--gold);color:#fffdf4;font-family:Cinzel,serif;font-size:15px;font-weight:900;letter-spacing:.08em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Save to Shelf</button>
