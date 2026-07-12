@@ -6712,10 +6712,13 @@ async function tryOCRPrefill(file){
     const worker=await Tesseract.createWorker('eng');
     const {data:{text}}=await worker.recognize(file);
     await worker.terminate();
-    // Extract the cleanest lines (likely the title/author)
-    const lines=text.split('\n').map(l=>l.replace(/[^a-zA-Z0-9\s',.-]/g,' ').replace(/\s+/g,' ').trim()).filter(l=>l.length>3);
-    const query=lines.slice(0,4).join(' ').substring(0,120);
-    if(query.length>3){
+    // Filter out common cover noise — keep only title + author lines
+    const NOISE=/^\s*(a novel|new york times|#1|bestsell|author of|desperation|praise for|hardcover|paperback|isbn|978-|\d{3,}|coming soon)/i;
+    const lines=text.split('\n')
+      .map(function(l){return l.replace(/[^a-zA-Z0-9\s',.-]/g,' ').replace(/\s+/g,' ').trim();})
+      .filter(function(l){return l.length>2&&!NOISE.test(l);});
+    const query=lines.slice(0,2).join(' ').substring(0,80);
+    if(query.length>2){
       document.getElementById('photo-search-input').value=query;
       document.getElementById('photo-loading-text').textContent='Text found — edit if needed, then Search ✓';
     }else{
@@ -6731,24 +6734,45 @@ async function doPhotoSearch(){
   document.getElementById('photo-loading').style.display='';
   document.getElementById('photo-loading-text').textContent='Searching...';
   document.getElementById('photo-results').innerHTML='';
+  document.getElementById('photo-hint').textContent='';
   try{
-    const res=await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=6`);
+    const res=await fetch('https://www.googleapis.com/books/v1/volumes?q='+encodeURIComponent(query)+'&maxResults=6');
     const data=await res.json();
-    document.getElementById('photo-loading').style.display='none';
-    if(!data.items||!data.items.length){
-      document.getElementById('photo-hint').textContent='No matches — try editing the title above and searching again.';
+    if(data.items&&data.items.length){
+      document.getElementById('photo-loading').style.display='none';
+      const results=data.items.slice(0,5).map(function(item){
+        const info=item.volumeInfo||{};
+        const thumb=(info.imageLinks||{}).thumbnail||'';
+        return{title:info.title||'Unknown',author:(info.authors||[]).join(', '),year:info.publishedDate?info.publishedDate.substring(0,4):'',coverUrl:thumb.replace('http://','https://')};
+      });
+      renderPhotoResults(results);
       return;
     }
-    const results=data.items.slice(0,5).map(item=>{
-      const info=item.volumeInfo||{};
-      const thumb=(info.imageLinks||{}).thumbnail||'';
-      return{title:info.title||'Unknown',author:(info.authors||[]).join(', '),year:info.publishedDate?info.publishedDate.substring(0,4):'',coverUrl:thumb.replace('http://','https://')};
-    });
-    renderPhotoResults(results);
+    _photoSearchOpenLibrary(query);
   }catch(e){
-    document.getElementById('photo-loading').style.display='none';
-    document.getElementById('photo-hint').textContent='Search failed — check your connection and try again.';
+    _photoSearchOpenLibrary(query);
   }
+}
+function _photoSearchOpenLibrary(query){
+  fetch('https://openlibrary.org/search.json?q='+encodeURIComponent(query)+'&limit=6&fields=title,author_name,cover_i,first_publish_year')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      document.getElementById('photo-loading').style.display='none';
+      var docs=(d.docs||[]).filter(function(doc){return doc.title;}).slice(0,5);
+      if(!docs.length){
+        document.getElementById('photo-hint').textContent='No matches — try editing the title above and searching again.';
+        return;
+      }
+      var results=docs.map(function(doc){
+        var cid=doc.cover_i;
+        return{title:doc.title||'',author:(doc.author_name||[]).join(', '),year:doc.first_publish_year?String(doc.first_publish_year):'',coverUrl:cid?'https://covers.openlibrary.org/b/id/'+cid+'-M.jpg':''};
+      });
+      renderPhotoResults(results);
+    })
+    .catch(function(){
+      document.getElementById('photo-loading').style.display='none';
+      document.getElementById('photo-hint').textContent='Search unavailable — type the title manually and try again.';
+    });
 }
 var _photoResults=[];
 var _pendingCoverUrl='';
