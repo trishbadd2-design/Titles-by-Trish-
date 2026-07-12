@@ -10084,16 +10084,30 @@ var shelfTab='tbr';
 var shelfView='covers';
 var shelfSearch='';
 var shelfYear='all';
+var shelfSort='date-desc';
+var shelfRatingMin=0;
 var shelfFormId=null;
 function saveShelf(){localStorage.setItem('tbtrish_shelf',JSON.stringify(shelfBooks));}
 function shelfColor(t){var c=['#1a4814','#5c2008','#1a3060','#602050','#2a4060','#504010'];var h=0;for(var i=0;i<(t||'').length;i++)h=(h*31+t.charCodeAt(i))%c.length;return c[Math.abs(h)%c.length];}
-function setShelfTab(tab){shelfTab=tab;var si=document.getElementById('shelf-search-input');if(si){shelfSearch='';si.value='';}var cl=document.getElementById('shelf-search-clear');if(cl)cl.style.display='none';renderShelf();}
+function setShelfTab(tab){shelfTab=tab;shelfRatingMin=0;var si=document.getElementById('shelf-search-input');if(si){shelfSearch='';si.value='';}var cl=document.getElementById('shelf-search-clear');if(cl)cl.style.display='none';renderShelf();}
 function setShelfYear(yr){shelfYear=yr;renderShelf();}
+function setShelfSort(s){shelfSort=s;renderShelf();}
+function setShelfRating(r){shelfRatingMin=r;renderShelf();}
 function toggleShelfView(){shelfView=shelfView==='covers'?'list':'covers';renderShelf();}
 function getShelfFiltered(){
   var books=shelfBooks.filter(function(b){return b.status===shelfTab;});
   if(shelfSearch){var q=shelfSearch.toLowerCase();books=books.filter(function(b){return (b.title||'').toLowerCase().indexOf(q)>=0||(b.author||'').toLowerCase().indexOf(q)>=0;});}
   if(shelfTab==='finished'&&shelfYear!=='all'){books=books.filter(function(b){return b.dateFinished&&b.dateFinished.startsWith(shelfYear);});}
+  if(shelfRatingMin>0){books=books.filter(function(b){return (parseInt(b.rating)||0)>=shelfRatingMin;});}
+  books=books.slice();
+  if(shelfSort==='title-asc'){books.sort(function(a,b){return (a.title||'').localeCompare(b.title||'');});}
+  else if(shelfSort==='title-desc'){books.sort(function(a,b){return (b.title||'').localeCompare(a.title||'');});}
+  else if(shelfSort==='author-asc'){books.sort(function(a,b){return (a.author||'').localeCompare(b.author||'');});}
+  else if(shelfSort==='rating-desc'){books.sort(function(a,b){return (parseInt(b.rating)||0)-(parseInt(a.rating)||0);});}
+  else if(shelfSort==='rating-asc'){books.sort(function(a,b){return (parseInt(a.rating)||0)-(parseInt(b.rating)||0);});}
+  else if(shelfSort==='finished-desc'){books.sort(function(a,b){return (b.dateFinished||'').localeCompare(a.dateFinished||'');});}
+  else if(shelfSort==='date-asc'){books.sort(function(a,b){return (a.dateAdded||String(a.id||0)).localeCompare(b.dateAdded||String(b.id||0));});}
+  else{books.sort(function(a,b){return (b.id||0)-(a.id||0);});}
   return books;
 }
 function renderShelf(){
@@ -10105,6 +10119,9 @@ function renderShelf(){
     if(btn){btn.style.background=shelfTab===t?'var(--gold)':'transparent';btn.style.color=shelfTab===t?'#fffdf4':'var(--text-dim)';btn.style.borderColor=shelfTab===t?'var(--gold)':'var(--border)';}
   });
   var yf=document.getElementById('shelf-year-filter');if(yf)yf.style.display=shelfTab==='finished'?'flex':'none';
+  var ss=document.getElementById('shelf-sort-select');if(ss)ss.value=shelfSort;
+  var finOpt=document.getElementById('shelf-sort-finished');if(finOpt)finOpt.style.display=shelfTab==='finished'?'':'none';
+  [0,3,4,5].forEach(function(r){var b=document.getElementById('shelf-rfil-'+r);if(b){var on=shelfRatingMin===r;b.style.background=on?'var(--gold)':'#fffdf4';b.style.color=on?'#fffdf4':'var(--text-dim)';b.style.borderColor=on?'var(--gold)':'var(--border)';}});
   var vb=document.getElementById('shelf-view-btn');if(vb)vb.textContent=shelfView==='covers'?'📋 List':'🖼 Covers';
   var books=getShelfFiltered();
   var grid=document.getElementById('shelf-grid');if(!grid)return;
@@ -12126,7 +12143,7 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   </div>
 
   <!-- Year filter (finished tab only) -->
-  <div id="shelf-year-filter" style="display:none;align-items:center;gap:8px;margin-bottom:12px;">
+  <div id="shelf-year-filter" style="display:none;align-items:center;gap:8px;margin-bottom:10px;">
     <label style="font-size:12px;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;">Year:</label>
     <select id="shelf-year-select" onchange="setShelfYear(this.value)" style="background:#fffdf4;border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:13px;font-family:inherit;">
       <option value="all">All</option>
@@ -12135,6 +12152,29 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <option value="2024">2024</option>
       <option value="2023">2023</option>
     </select>
+  </div>
+
+  <!-- Sort + filter row -->
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">
+    <span style="font-size:17px;opacity:.5;flex-shrink:0;line-height:1;">⇅</span>
+    <select id="shelf-sort-select" onchange="setShelfSort(this.value)" style="flex:1;min-width:0;padding:8px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;background:#fffdf4;color:var(--text);">
+      <option value="date-desc">Recently Added</option>
+      <option value="date-asc">Oldest First</option>
+      <option value="title-asc">Title A–Z</option>
+      <option value="title-desc">Title Z–A</option>
+      <option value="author-asc">Author A–Z</option>
+      <option value="rating-desc">Rating: Best First</option>
+      <option value="rating-asc">Rating: Lowest First</option>
+      <option id="shelf-sort-finished" value="finished-desc" style="display:none;">Date Finished ↓</option>
+    </select>
+  </div>
+  <!-- Rating filter chips -->
+  <div style="display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;">
+    <span style="font-size:11px;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;align-self:center;flex-shrink:0;">Filter:</span>
+    <button id="shelf-rfil-0" onclick="setShelfRating(0)" style="padding:5px 11px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:700;background:#fffdf4;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">All</button>
+    <button id="shelf-rfil-3" onclick="setShelfRating(3)" style="padding:5px 11px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:700;background:#fffdf4;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">★★★+</button>
+    <button id="shelf-rfil-4" onclick="setShelfRating(4)" style="padding:5px 11px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:700;background:#fffdf4;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">★★★★+</button>
+    <button id="shelf-rfil-5" onclick="setShelfRating(5)" style="padding:5px 11px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:700;background:#fffdf4;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">★★★★★</button>
   </div>
 
   <!-- Add book + view toggle row -->
