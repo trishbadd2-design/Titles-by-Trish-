@@ -10027,7 +10027,7 @@ function openShelfForm(id){
   document.getElementById('shelf-f-title').value=book?book.title:'';
   document.getElementById('shelf-f-author').value=book?(book.author||''):'';
   document.getElementById('shelf-f-cover').value=book?(book.cover||''):'';
-  document.getElementById('shelf-f-status').value=book?book.status:shelfTab;
+  document.getElementById('shelf-f-status').value=book?(book.status||'tbr'):(shelfTab||'tbr');
   document.getElementById('shelf-f-rating').value=book?(book.rating||''):'';
   renderShelfFormStars(book?book.rating:'');
   document.getElementById('shelf-f-notes').value=book?(book.notes||''):'';
@@ -10043,11 +10043,11 @@ function closeShelfForm(){document.getElementById('shelf-form').style.display='n
 function saveShelfBook(){
   var title=document.getElementById('shelf-f-title').value.trim();
   if(!title){toast('Title is required!');return;}
-  var status=document.getElementById('shelf-f-status').value;
+  var status=document.getElementById('shelf-f-status').value||'tbr';
   var book={id:shelfFormId||(Date.now()),title:title,author:document.getElementById('shelf-f-author').value.trim(),cover:document.getElementById('shelf-f-cover').value.trim(),status:status,rating:document.getElementById('shelf-f-rating').value,notes:document.getElementById('shelf-f-notes').value.trim(),dateFinished:document.getElementById('shelf-f-dateFinished').value};
   if(shelfFormId){var idx=shelfBooks.findIndex(function(b){return b.id===shelfFormId;});if(idx>=0){book.dateAdded=shelfBooks[idx].dateAdded;shelfBooks[idx]=book;}}
   else{book.dateAdded=new Date().toISOString().slice(0,10);shelfBooks.push(book);}
-  saveShelf();closeShelfForm();shelfTab=status;renderShelf();toast('✦ Saved to shelf!');
+  saveShelf();closeShelfForm();shelfTab=status||'tbr';renderShelf();toast('✦ Saved to shelf!');
 }
 function deleteShelfBook(id){
   if(!confirm('Remove this book from your shelf?'))return;
@@ -12037,9 +12037,9 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <input id="shelf-f-cover" type="url" placeholder="Cover URL (auto-filled by Find, or paste your own)" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:0 0 12px;font-size:12px;font-family:inherit;background:#fffdf4;color:var(--text-dim);">
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Shelf</label>
     <select id="shelf-f-status" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 12px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
-      <option value="tbr">TBR</option>
-      <option value="reading">Currently Reading</option>
-      <option value="finished">Finished</option>
+      <option value="tbr" selected>📚 TBR</option>
+      <option value="reading">📖 Currently Reading</option>
+      <option value="finished">✓ Finished</option>
     </select>
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Rating</label>
     <div id="shelf-form-stars" style="display:flex;align-items:center;gap:2px;margin:5px 0 14px;"></div>
