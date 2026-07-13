@@ -10096,11 +10096,16 @@ async function addBatchBooks(){
   }
   saveShelf();renderShelf();closeBatchAdd();
   toast('Added '+added+' book'+(added===1?'':'s')+(skipped?' · '+skipped+' already on shelf':'')+'!');
+  _shelfBackupNudge();
 }
 
 // MY SHELF — BOOK TRACKER
 // ══════════════════════════════════════════
 var shelfBooks=safeJSON('tbtrish_shelf',[]);
+if(!Array.isArray(shelfBooks)||shelfBooks.length===0){
+  // try sessionStorage fallback if localStorage was cleared this session
+  try{var _ss=sessionStorage.getItem('tbtrish_shelf_ss');if(_ss){var _ssv=JSON.parse(_ss);if(Array.isArray(_ssv)&&_ssv.length>0){shelfBooks=_ssv;localStorage.setItem('tbtrish_shelf',_ss);}}}catch(e){}
+}
 if(!Array.isArray(shelfBooks))shelfBooks=[];
 var shelfTab='tbr';
 var shelfView='covers';
@@ -10109,7 +10114,16 @@ var shelfYear='all';
 var shelfSort='title-asc';
 var shelfRatingMin=0;
 var shelfFormId=null;
-function saveShelf(){localStorage.setItem('tbtrish_shelf',JSON.stringify(shelfBooks));}
+function saveShelf(){
+  var data=JSON.stringify(shelfBooks);
+  localStorage.setItem('tbtrish_shelf',data);
+  // redundant copy in sessionStorage so a page reload within the same session can recover
+  try{sessionStorage.setItem('tbtrish_shelf_ss',data);}catch(e){}
+}
+function _shelfBackupNudge(){
+  var el=document.getElementById('shelf-backup-nudge');
+  if(el){el.style.display='flex';clearTimeout(el._nt);el._nt=setTimeout(function(){el.style.display='none';},12000);}
+}
 function shelfColor(t){var c=['#1a4814','#5c2008','#1a3060','#602050','#2a4060','#504010'];var h=0;for(var i=0;i<(t||'').length;i++)h=(h*31+t.charCodeAt(i))%c.length;return c[Math.abs(h)%c.length];}
 function setShelfTab(tab){shelfTab=tab;shelfRatingMin=0;var si=document.getElementById('shelf-search-input');if(si){shelfSearch='';si.value='';}var cl=document.getElementById('shelf-search-clear');if(cl)cl.style.display='none';renderShelf();}
 function setShelfYear(yr){shelfYear=yr;renderShelf();}
@@ -10202,7 +10216,7 @@ function saveShelfBook(){
   var book={id:shelfFormId||(Date.now()),title:title,author:document.getElementById('shelf-f-author').value.trim(),cover:document.getElementById('shelf-f-cover').value.trim(),status:status,rating:document.getElementById('shelf-f-rating').value,notes:document.getElementById('shelf-f-notes').value.trim(),dateFinished:document.getElementById('shelf-f-dateFinished').value};
   if(shelfFormId){var idx=shelfBooks.findIndex(function(b){return b.id===shelfFormId;});if(idx>=0){book.dateAdded=shelfBooks[idx].dateAdded;shelfBooks[idx]=book;}}
   else{book.dateAdded=new Date().toISOString().slice(0,10);shelfBooks.push(book);}
-  saveShelf();closeShelfForm();shelfTab=status||'tbr';renderShelf();toast('✦ Saved to shelf!');
+  saveShelf();closeShelfForm();shelfTab=status||'tbr';renderShelf();toast('✦ Saved to shelf!');_shelfBackupNudge();
 }
 function deleteShelfBook(id){
   if(!confirm('Remove this book from your shelf?'))return;
@@ -12156,6 +12170,16 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <button id="shelf-tab-tbr" onclick="setShelfTab('tbr')" style="flex:1;padding:9px 6px;border:1px solid var(--border);border-radius:20px;background:var(--gold);color:#fffdf4;font-family:Cinzel,serif;font-size:12px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📚 TBR</button>
     <button id="shelf-tab-reading" onclick="setShelfTab('reading')" style="flex:1;padding:9px 6px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--text-dim);font-family:Cinzel,serif;font-size:12px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📖 Reading</button>
     <button id="shelf-tab-finished" onclick="setShelfTab('finished')" style="flex:1;padding:9px 6px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--text-dim);font-family:Cinzel,serif;font-size:12px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✓ Finished</button>
+  </div>
+
+  <!-- Backup nudge banner (shown after saving a book) -->
+  <div id="shelf-backup-nudge" style="display:none;align-items:center;gap:10px;background:#fffdf4;border:1.5px solid var(--gold);border-radius:12px;padding:11px 14px;margin-bottom:12px;cursor:pointer;touch-action:manipulation;" onclick="exportData();this.style.display='none';">
+    <span style="font-size:20px;flex-shrink:0;">💾</span>
+    <div style="flex:1;min-width:0;">
+      <div style="font-family:Cinzel,serif;font-size:12px;font-weight:900;color:var(--gold);">Save a backup now!</div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:1px;">iOS can erase books anytime. Tap to download backup.</div>
+    </div>
+    <button onclick="event.stopPropagation();document.getElementById('shelf-backup-nudge').style.display='none';" style="background:none;border:none;font-size:16px;color:var(--text-dim);cursor:pointer;flex-shrink:0;padding:4px;line-height:1;">✕</button>
   </div>
 
   <!-- Search bar -->
