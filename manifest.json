@@ -1,13 +1,13 @@
 {
   "name": "TitlesByTrish — Command Center",
   "short_name": "TitlesByTrish",
-  "description": "Your complete BookTok home base — 60 Day Launch Dashboard",
+  "description": "Your complete BookTok home base",
   "start_url": "/Titles-by-Trish-/",
   "scope": "/Titles-by-Trish-/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#07050a",
-  "theme_color": "#c8a050",
+  "background_color": "#d6c99a",
+  "theme_color": "#1a4814",
   "icons": [
     {
       "src": "icons/icon-192.png",

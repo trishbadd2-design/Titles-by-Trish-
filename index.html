@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TitlesByTrish — Command Center</title>
-<meta name="theme-color" content="#2a5c22">
+<meta name="theme-color" content="#1a4814">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="TitlesByTrish">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-512.png">
+<link rel="apple-touch-startup-image" href="icons/icon-512.png">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=IM+Fell+English+SC&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -7969,7 +7970,15 @@ function deleteBioEntry(id){bioLinkLog=bioLinkLog.filter(e=>e.id!==id);saveBioLi
 
 // Register service worker for PWA / offline support
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js');
+    // Request persistent storage so iOS does not auto-evict localStorage
+    if(navigator.storage&&navigator.storage.persist){
+      navigator.storage.persist().then(function(granted){
+        if(!granted)console.log('Storage persistence not granted — advise user to back up regularly.');
+      });
+    }
+  });
 }
 
 // ══════════════════════════════════════════
