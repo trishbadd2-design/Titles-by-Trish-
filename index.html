@@ -10106,7 +10106,7 @@ var shelfTab='tbr';
 var shelfView='covers';
 var shelfSearch='';
 var shelfYear='all';
-var shelfSort='date-desc';
+var shelfSort='title-asc';
 var shelfRatingMin=0;
 var shelfFormId=null;
 function saveShelf(){localStorage.setItem('tbtrish_shelf',JSON.stringify(shelfBooks));}
@@ -10151,14 +10151,15 @@ function renderShelf(){
     grid.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--text-dim);font-style:italic;font-size:14px;">'+(shelfTab==='tbr'?'No books on your TBR yet — add some!':shelfTab==='reading'?'Nothing currently reading. Time to start one!':'No finished books yet. Keep reading! 🖤')+'</div>';return;
   }
   if(shelfView==='covers'){
-    grid.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">'+books.map(function(b){
+    grid.innerHTML='<div style="display:flex;gap:12px;overflow-x:auto;padding:4px 2px 18px;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;">'+books.map(function(b){
       var cs=b.cover?'background:url(\''+b.cover+'\') center/cover no-repeat;':'background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;padding:8px;';
-      return '<div onclick="openShelfDetail('+b.id+')" style="cursor:pointer;">'
-        +'<div style="'+cs+'border-radius:6px;aspect-ratio:2/3;width:100%;position:relative;box-shadow:0 3px 14px rgba(0,0,0,.18);">'
-        +(b.cover?'':'<div style="font-family:Cinzel,serif;font-size:10px;font-weight:700;color:#fff;text-align:center;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.9);">'+escHtml(b.title)+'</div>')
-        +(b.rating?'<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.72));border-radius:0 0 6px 6px;padding:14px 6px 5px;text-align:center;"><span style="color:#f0c040;font-size:12px;letter-spacing:1px;">'+'★'.repeat(parseInt(b.rating)||0)+'<span style="opacity:.35;">'+'★'.repeat(5-(parseInt(b.rating)||0))+'</span></span></div>':'')
+      return '<div onclick="openShelfDetail('+b.id+')" style="flex:0 0 100px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
+        +'<div style="'+cs+'width:100px;height:150px;border-radius:8px;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.22);flex-shrink:0;">'
+        +(b.cover?'':'<div style="font-family:Cinzel,serif;font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.9);">'+escHtml(b.title)+'</div>')
+        +(b.rating?'<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.72));border-radius:0 0 8px 8px;padding:16px 4px 5px;text-align:center;"><span style="color:#f0c040;font-size:11px;">'+'★'.repeat(parseInt(b.rating)||0)+'</span></div>':'')
         +'</div>'
-        +'<div style="font-size:11px;font-weight:700;color:var(--text);margin-top:5px;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">'+escHtml(b.title)+'</div>'
+        +'<div style="font-size:10px;font-weight:700;font-family:Cinzel,serif;color:var(--text);margin-top:6px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;width:100px;">'+escHtml(b.title)+'</div>'
+        +(b.author?'<div style="font-size:9px;color:var(--text-dim);margin-top:1px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;width:100px;">'+escHtml(b.author)+'</div>':'')
         +'</div>';
     }).join('')+'</div>';
   } else {
@@ -12180,6 +12181,7 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">
     <span style="font-size:17px;opacity:.5;flex-shrink:0;line-height:1;">⇅</span>
     <select id="shelf-sort-select" onchange="setShelfSort(this.value)" style="flex:1;min-width:0;padding:8px 10px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;background:#fffdf4;color:var(--text);">
+      <option value="title-asc" selected>Title A–Z</option>
       <option value="date-desc">Recently Added</option>
       <option value="date-asc">Oldest First</option>
       <option value="title-asc">Title A–Z</option>
