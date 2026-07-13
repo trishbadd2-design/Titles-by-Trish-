@@ -553,43 +553,42 @@ canvas{width:100%!important;}
 .ms-add-all.added{border-color:rgba(60,160,60,.4);color:#4a9a4a;background:rgba(60,160,60,.08);}
 .ms-content-idea{font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;padding:5px 12px;border:1px solid rgba(42,92,34,.3);border-radius:2px;background:transparent;color:var(--gold-dim);cursor:default;}
 /* ── PHOTO SCAN ── */
-.photo-overlay{position:fixed;inset:0;z-index:500;background:rgba(5,3,8,.97);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;overflow-y:auto;}
+.photo-overlay{position:fixed;inset:0;z-index:500;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;overflow-y:auto;}
 .photo-overlay.open{display:flex;}
 .photo-header{width:100%;max-width:480px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.photo-title{font-family:'Cinzel',serif;font-size:14px;color:#fff;letter-spacing:2px;}
-.photo-close{background:transparent;border:1px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:3px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.photo-hint{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:var(--gold-dim);margin-top:12px;text-align:center;width:100%;max-width:480px;}
-.photo-preview{width:100%;max-width:480px;border-radius:6px;overflow:hidden;border:2px solid var(--border-hi);display:none;}
-.photo-preview img{width:100%;display:block;max-height:300px;object-fit:contain;background:#000;}
-.photo-results{width:100%;max-width:480px;margin-top:16px;}
-.photo-result-card{border:1px solid var(--border);border-radius:4px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.025);}
-.photo-result-card:hover{border-color:var(--border-hi);background:rgba(42,92,34,.08);}
-.photo-result-title{font-family:'Cinzel',serif;font-size:16px;color:#fff;margin-bottom:2px;}
-.photo-result-author{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--gold-dim);}
-.photo-result-year{font-size:14px;color:var(--text-dim);margin-top:3px;}
+.photo-title{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);letter-spacing:2px;font-weight:900;}
+.photo-close{background:#fffdf4;border:1.5px solid var(--border);color:var(--text-dim);width:36px;height:36px;border-radius:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
+.photo-hint{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.06em;color:var(--text-dim);margin-top:12px;text-align:center;width:100%;max-width:480px;}
+.photo-preview{width:100%;max-width:480px;border-radius:10px;overflow:hidden;border:2px solid var(--border);display:none;box-shadow:0 4px 20px rgba(0,0,0,.15);}
+.photo-preview img{width:100%;display:block;max-height:280px;object-fit:contain;background:#fffdf4;}
+.photo-results{width:100%;max-width:480px;margin-top:14px;}
+.photo-result-card{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .15s;background:#fffdf4;box-shadow:0 1px 6px rgba(0,0,0,.07);}
+.photo-result-card:active{background:var(--gold-faint);border-color:var(--gold);}
+.photo-result-title{font-family:'Cinzel',serif;font-size:15px;color:var(--text);margin-bottom:2px;font-weight:700;}
+.photo-result-author{font-size:13px;color:var(--text-dim);margin-top:2px;}
+.photo-result-year{font-size:12px;color:var(--text-dim);margin-top:2px;}
 .photo-loading{text-align:center;padding:16px 0;width:100%;max-width:480px;}
-.photo-loading-text{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:var(--gold-dim);margin-top:8px;}
+.photo-loading-text{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.06em;color:var(--text-dim);margin-top:8px;}
 .photo-search-row{width:100%;max-width:480px;margin-top:14px;display:none;}
-.photo-search-input{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border-hi);border-radius:4px;padding:10px 14px;color:#fff;font-size:16px;font-family:'IM Fell English SC',serif;letter-spacing:1px;box-sizing:border-box;margin-bottom:8px;}
+.photo-search-input{width:100%;background:#fffdf4;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:15px;font-family:inherit;box-sizing:border-box;margin-bottom:8px;}
 .photo-search-input::placeholder{color:var(--text-dim);}
-.photo-search-btn{width:100%;padding:11px;font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;background:var(--gold-faint);border:1px solid var(--border-hi);color:var(--gold);border-radius:3px;cursor:pointer;transition:all .2s;}
-.photo-search-btn:hover{background:rgba(42,92,34,.2);}
+.photo-search-btn{width:100%;padding:12px;font-family:'Cinzel',serif;font-size:14px;font-weight:900;letter-spacing:.06em;background:var(--gold);border:none;color:#fffdf4;border-radius:10px;cursor:pointer;touch-action:manipulation;}
 
 /* ── BARCODE SCANNER ── */
-.scanner-overlay{position:fixed;inset:0;z-index:500;background:rgba(5,3,8,.97);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;}
+.scanner-overlay{position:fixed;inset:0;z-index:500;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;overflow-y:auto;}
 .scanner-overlay.open{display:flex;}
 .scanner-header{width:100%;max-width:480px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-.scanner-title{font-family:'Cinzel',serif;font-size:14px;color:#fff;letter-spacing:2px;}
-.scanner-close{background:transparent;border:1px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:3px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-#scanner-box{width:100%;max-width:480px;border-radius:6px;overflow:hidden;border:2px solid var(--border-hi);}
-#scanner-box video{border-radius:4px;}
-.scanner-hint{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:3px;color:var(--gold-dim);margin-top:12px;text-align:center;}
-.scanner-found{background:rgba(60,160,60,.12);border:1px solid rgba(60,160,60,.4);border-radius:6px;padding:16px;width:100%;max-width:480px;margin-top:16px;display:none;}
+.scanner-title{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);letter-spacing:2px;font-weight:900;}
+.scanner-close{background:#fffdf4;border:1.5px solid var(--border);color:var(--text-dim);width:36px;height:36px;border-radius:8px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
+#scanner-box{width:100%;max-width:480px;border-radius:10px;overflow:hidden;border:2px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,.15);}
+#scanner-box video{border-radius:8px;}
+.scanner-hint{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.06em;color:var(--text-dim);margin-top:14px;text-align:center;width:100%;max-width:480px;}
+.scanner-found{background:#fffdf4;border:1.5px solid var(--gold);border-radius:12px;padding:16px;width:100%;max-width:480px;margin-top:16px;display:none;box-shadow:0 2px 12px rgba(26,72,20,.12);}
 .scanner-found.show{display:block;}
-.scanner-found-title{font-family:'Cinzel',serif;font-size:14px;color:#fff;margin-bottom:4px;}
-.scanner-found-author{font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--gold-dim);margin-bottom:12px;}
+.scanner-found-title{font-family:'Cinzel',serif;font-size:15px;color:var(--text);margin-bottom:4px;font-weight:700;}
+.scanner-found-author{font-size:13px;color:var(--text-dim);margin-bottom:12px;}
 .scanner-found-actions{display:flex;gap:8px;}
-.scanner-isbn{font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);margin-top:8px;}
+.scanner-isbn{font-size:12px;color:var(--text-dim);margin-top:8px;}
 
 /* ── CURRENTLY READING ── */
 .cr-card{border:1px solid var(--border-hi);border-radius:4px;background:rgba(42,92,34,.06);padding:14px 16px;margin-bottom:12px;position:relative;}
@@ -814,8 +813,7 @@ canvas{width:100%!important;}
 .stat-label{color:var(--text-dim);}
 .month-header,.growth-entry-followers,.vp-title,.idea-text,.book-title,
 .modal-title,.ht-set-name,.win-title,.spin-result,.mp-title,
-.ms-series-name,.photo-title,.photo-result-title,.scanner-title,
-.scanner-found-title,.cr-title{color:var(--text);}
+.ms-series-name,.cr-title{color:var(--text);}
 .sc-modal h2,.sc-progress-label{color:var(--text);}
 /* Cards: white surface so they pop off the golden background */
 .card-box{background:#fffdf4;box-shadow:0 2px 14px rgba(0,0,0,.12);border-color:var(--border);}
@@ -825,7 +823,7 @@ canvas{width:100%!important;}
 .stat-box{background:#fffdf4;box-shadow:0 2px 10px rgba(0,0,0,.10);}
 .progress-wrap,.an-add-form,.an-stat,.idea-display,.script-block,
 .sc-goal-card,.sc-stat,.sc-book-card,.sc-tbr-card,.sc-notes-area,
-.sc-search,.cap-text,.photo-search-input{background:#fffdf4;}
+.sc-search,.cap-text{background:#fffdf4;}
 .progress-track,.sc-progress-track{background:rgba(0,0,0,.15);}
 .sc-tabs{background:rgba(0,0,0,.08);}
 .sc-chart-bg{background:rgba(0,0,0,.12);}
