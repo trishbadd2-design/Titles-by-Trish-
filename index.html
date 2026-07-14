@@ -8740,6 +8740,23 @@ function exportBooksCSV(){
   toast('✦ Books exported as CSV!');
 }
 
+function exportShelfData(){
+  if(!shelfBooks||!shelfBooks.length){toast('No books on your shelf yet!');return;}
+  var headers=['Title','Author','Status','Rating','Current Page','Total Pages','Date Finished','Date Added','Notes','Cover URL'];
+  function csvEsc(v){var s=String(v==null?'':v);return '"'+s.replace(/"/g,'""')+'"';}
+  var rows=shelfBooks.map(function(b){
+    var status=b.status==='tbr'?'TBR':b.status==='reading'?'Reading':'Finished';
+    return [b.title,b.author||'',status,b.rating||'',b.currentPage||'',b.totalPages||'',b.dateFinished||'',b.dateAdded||'',b.notes||'',b.cover||''].map(csvEsc).join(',');
+  });
+  var csv=headers.map(csvEsc).join(',')+'\n'+rows.join('\n');
+  var blob=new Blob([csv],{type:'text/csv'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='my-shelf-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  toast('✦ Shelf exported! Saved as CSV.');
+}
+
 // ══════════════════════════════════════════
 // BOOK QUOTE JOURNAL
 // ══════════════════════════════════════════
@@ -12220,7 +12237,10 @@ function resetQuiz(){quizAnswers={};initQuiz();}
 
 <!-- MY SHELF -->
 <div class="panel" id="panel-shelf">
-  <div class="section-title">📚 My Shelf</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+    <div class="section-title" style="margin-bottom:0;">📚 My Shelf</div>
+    <button onclick="exportShelfData()" style="padding:7px 13px;border:1px solid var(--border);border-radius:20px;background:#fffdf4;color:var(--gold);font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;">💾 Export</button>
+  </div>
   <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:16px;line-height:1.7;">Track your TBR, current reads, and finished books — with cover art.</p>
 
   <!-- Goodreads quick link (only visible if URL saved) -->
