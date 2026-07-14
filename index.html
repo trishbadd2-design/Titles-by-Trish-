@@ -8742,11 +8742,11 @@ function exportBooksCSV(){
 
 function exportShelfData(){
   if(!shelfBooks||!shelfBooks.length){toast('No books on your shelf yet!');return;}
-  var headers=['Title','Author','Status','Rating','Current Page','Total Pages','Date Finished','Date Added','Notes','Cover URL'];
+  var headers=['Title','Author','Status','Rating','Current Page','Total Pages','Genre','Series','Priority','Date Finished','Date Added','Notes','Cover URL'];
   function csvEsc(v){var s=String(v==null?'':v);return '"'+s.replace(/"/g,'""')+'"';}
   var rows=shelfBooks.map(function(b){
     var status=b.status==='tbr'?'TBR':b.status==='reading'?'Reading':'Finished';
-    return [b.title,b.author||'',status,b.rating||'',b.currentPage||'',b.totalPages||'',b.dateFinished||'',b.dateAdded||'',b.notes||'',b.cover||''].map(csvEsc).join(',');
+    return [b.title,b.author||'',status,b.rating||'',b.currentPage||'',b.totalPages||'',b.genre||'',b.series||'',b.priority?'Yes':'',b.dateFinished||'',b.dateAdded||'',b.notes||'',b.cover||''].map(csvEsc).join(',');
   });
   var csv=headers.map(csvEsc).join(',')+'\n'+rows.join('\n');
   var blob=new Blob([csv],{type:'text/csv'});
@@ -10140,6 +10140,8 @@ var shelfYear='all';
 var shelfSort='title-asc';
 var shelfRatingMin=0;
 var shelfFormId=null;
+var shelfGoal=parseInt(localStorage.getItem('tbtrish_shelf_goal')||'0')||0;
+var shelfGenreFilter='';
 function saveShelf(){
   var data=JSON.stringify(shelfBooks);
   localStorage.setItem('tbtrish_shelf',data);
@@ -10156,11 +10158,63 @@ function setShelfYear(yr){shelfYear=yr;renderShelf();}
 function setShelfSort(s){shelfSort=s;renderShelf();}
 function setShelfRating(r){shelfRatingMin=r;renderShelf();}
 function toggleShelfView(){shelfView=shelfView==='covers'?'list':'covers';renderShelf();}
+function setShelfGenreFilter(g){shelfGenreFilter=g;renderShelf();}
+function setShelfGoal(n){shelfGoal=parseInt(n)||0;localStorage.setItem('tbtrish_shelf_goal',shelfGoal);renderShelf();}
+function toggleShelfPriority(id){
+  var book=shelfBooks.find(function(b){return b.id===id;});if(!book)return;
+  book.priority=!book.priority;
+  saveShelf();renderShelf();openShelfDetail(id);
+  toast(book.priority?'🔴 Marked as priority!':'Priority removed');
+}
+function shareShelf(){
+  var finished=shelfBooks.filter(function(b){return b.status==='finished';});
+  var reading=shelfBooks.filter(function(b){return b.status==='reading';});
+  var tbr=shelfBooks.filter(function(b){return b.status==='tbr';});
+  var lines=['📚 My Reading Shelf — Titles by Trish',''];
+  if(reading.length){lines.push('📖 Currently Reading:');reading.forEach(function(b){lines.push('  • '+b.title+(b.author?' by '+b.author:''));});lines.push('');}
+  if(finished.length){lines.push('✓ Finished:');finished.forEach(function(b){lines.push('  • '+b.title+(b.rating?' ('+b.rating+'★)':'')+(b.author?' by '+b.author:''));});lines.push('');}
+  if(tbr.length){lines.push('📚 Want to Read:');tbr.slice(0,15).forEach(function(b){lines.push('  • '+b.title+(b.author?' by '+b.author:''));});if(tbr.length>15)lines.push('  …and '+(tbr.length-15)+' more');}
+  var text=lines.join('\n');
+  if(navigator.share){navigator.share({title:'My Reading Shelf',text:text}).catch(function(){});}
+  else{var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('✦ Shelf copied to clipboard!');}
+}
+function importShelfCSV(){
+  var input=document.getElementById('shelf-import-csv-input');
+  if(!input||!input.files||!input.files[0]){return;}
+  var file=input.files[0];
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var lines=e.target.result.split('\n');
+    var headers=lines[0].split(',').map(function(h){return h.replace(/^"|"$/g,'').trim().toLowerCase();});
+    var added=0;
+    for(var i=1;i<lines.length;i++){
+      var row=lines[i].match(/("(?:[^"]|"")*"|[^,]*)/g);
+      if(!row||!row[0])continue;
+      function csvVal(s){return (s||'').replace(/^"|"$/g,'').replace(/""/g,'"').trim();}
+      var obj={};
+      headers.forEach(function(h,idx){obj[h]=csvVal(row[idx]||'');});
+      var title=obj['title']||obj['book title']||obj['name']||'';
+      if(!title)continue;
+      var exists=shelfBooks.some(function(b){return (b.title||'').toLowerCase()===title.toLowerCase();});
+      if(exists)continue;
+      var status=(obj['status']||'tbr').toLowerCase();
+      if(status==='reading'||status==='currently reading')status='reading';
+      else if(status==='finished'||status==='done'||status==='read')status='finished';
+      else status='tbr';
+      shelfBooks.push({id:Date.now()+added,title:title,author:obj['author']||'',cover:obj['cover url']||obj['cover']||'',status:status,rating:obj['rating']||'',notes:obj['notes']||obj['review']||'',dateFinished:obj['date finished']||'',dateAdded:obj['date added']||new Date().toISOString().slice(0,10),totalPages:parseInt(obj['total pages'])||0,currentPage:parseInt(obj['current page'])||0,genre:obj['genre']||'',series:obj['series']||''});
+      added++;
+    }
+    saveShelf();renderShelf();input.value='';
+    toast(added>0?'✦ Imported '+added+' book'+(added===1?'':'s')+'!':'No new books found in file');
+  };
+  reader.readAsText(file);
+}
 function getShelfFiltered(){
   var books=shelfBooks.filter(function(b){return b.status===shelfTab;});
   if(shelfSearch){var q=shelfSearch.toLowerCase();books=books.filter(function(b){return (b.title||'').toLowerCase().indexOf(q)>=0||(b.author||'').toLowerCase().indexOf(q)>=0;});}
   if(shelfTab==='finished'&&shelfYear!=='all'){books=books.filter(function(b){return b.dateFinished&&b.dateFinished.startsWith(shelfYear);});}
   if(shelfRatingMin>0){books=books.filter(function(b){return (parseInt(b.rating)||0)>=shelfRatingMin;});}
+  if(shelfGenreFilter){books=books.filter(function(b){return (b.genre||'').toLowerCase()===(shelfGenreFilter||'').toLowerCase();});}
   books=books.slice();
   if(shelfSort==='title-asc'){books.sort(function(a,b){return (a.title||'').localeCompare(b.title||'');});}
   else if(shelfSort==='title-desc'){books.sort(function(a,b){return (b.title||'').localeCompare(a.title||'');});}
@@ -10172,6 +10226,23 @@ function getShelfFiltered(){
   else{books.sort(function(a,b){return (b.id||0)-(a.id||0);});}
   return books;
 }
+function _shelfStatusColor(b){
+  if(b.status==='reading')return '#c8a030';
+  if(b.status==='finished')return '#2a7a2a';
+  if(b.priority)return '#b43c3c';
+  return null;
+}
+function _shelfGenreChips(){
+  var genres={};
+  shelfBooks.forEach(function(b){if(b.genre)genres[b.genre]=(genres[b.genre]||0)+1;});
+  var keys=Object.keys(genres);
+  if(!keys.length)return '';
+  var html='<div style="display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;align-items:center;">'
+    +'<span style="font-size:11px;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;flex-shrink:0;">Genre:</span>'
+    +'<button onclick="setShelfGenreFilter(\'\')" style="padding:4px 10px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:700;background:'+(shelfGenreFilter?'#fffdf4':'var(--gold)')+';color:'+(shelfGenreFilter?'var(--text-dim)':'#fffdf4')+';cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">All</button>';
+  keys.sort().forEach(function(g){var on=shelfGenreFilter===g;html+='<button onclick="setShelfGenreFilter(\''+escHtml(g)+'\')" style="padding:4px 10px;border:1px solid '+(on?'var(--gold)':'var(--border)')+';border-radius:20px;font-size:12px;font-weight:700;background:'+(on?'var(--gold)':'#fffdf4')+';color:'+(on?'#fffdf4':'var(--text-dim)')+';cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+escHtml(g)+'</button>';});
+  return html+'</div>';
+}
 function renderShelf(){
   if(!Array.isArray(shelfBooks))shelfBooks=[];
   ['tbr','reading','finished'].forEach(function(t){
@@ -10180,35 +10251,83 @@ function renderShelf(){
     var btn=document.getElementById('shelf-tab-'+t);
     if(btn){btn.style.background=shelfTab===t?'var(--gold)':'transparent';btn.style.color=shelfTab===t?'#fffdf4':'var(--text-dim)';btn.style.borderColor=shelfTab===t?'var(--gold)':'var(--border)';}
   });
+  // Reading goal bar
+  var gb=document.getElementById('shelf-goal-bar');
+  if(gb){
+    var finCount=shelfBooks.filter(function(b){return b.status==='finished';}).length;
+    if(shelfGoal>0){
+      var gPct=Math.min(100,Math.round(finCount/shelfGoal*100));
+      gb.style.display='block';
+      gb.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">'
+        +'<span style="font-family:Cinzel,serif;font-size:12px;font-weight:700;color:var(--gold);">📖 '+new Date().getFullYear()+' Goal: '+finCount+' / '+shelfGoal+' books</span>'
+        +'<button onclick="var g=prompt(\'Reading goal (number of books):\',\''+shelfGoal+'\');if(g!==null)setShelfGoal(g);" style="font-size:11px;padding:3px 8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-dim);cursor:pointer;font-family:inherit;">Edit</button>'
+        +'</div>'
+        +'<div style="background:var(--border);border-radius:100px;height:8px;overflow:hidden;">'
+        +'<div style="height:100%;width:'+gPct+'%;background:'+(gPct>=100?'#2a7a2a':'var(--gold)')+';border-radius:100px;transition:width .4s;"></div></div>'
+        +(gPct>=100?'<div style="font-size:12px;color:#2a7a2a;font-weight:700;margin-top:5px;">🎉 Goal reached!</div>':'<div style="font-size:11px;color:var(--text-dim);margin-top:4px;">'+gPct+'% · '+(shelfGoal-finCount)+' to go</div>');
+    } else {
+      gb.style.display='block';
+      gb.innerHTML='<button onclick="var g=prompt(\'Set a reading goal for '+new Date().getFullYear()+' (number of books):\',\'24\');if(g!==null&&parseInt(g))setShelfGoal(g);" style="width:100%;padding:9px;border:1px dashed var(--gold);border-radius:10px;background:var(--gold-faint);color:var(--gold);font-family:Cinzel,serif;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;letter-spacing:.04em;">🎯 Set a Reading Goal for '+new Date().getFullYear()+'</button>';
+    }
+  }
+  // Now Reading banner
+  var nr=document.getElementById('shelf-now-reading');
+  if(nr){
+    var readingBooks=shelfBooks.filter(function(b){return b.status==='reading';});
+    if(readingBooks.length&&shelfTab!=='reading'){
+      nr.style.display='block';
+      nr.innerHTML='<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#c8a030;font-weight:700;margin-bottom:8px;font-family:Cinzel,serif;">📖 Now Reading</div>'
+        +'<div style="display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;">'+readingBooks.map(function(b){
+          var pct=b.totalPages?Math.min(100,Math.round((parseInt(b.currentPage)||0)/b.totalPages*100)):0;
+          var cs=b.cover?'background:url(\''+b.cover+'\') center/cover no-repeat;':'background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;padding:6px;';
+          return '<div onclick="openShelfDetail('+b.id+')" style="flex:0 0 72px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
+            +'<div style="'+cs+'width:72px;height:108px;border-radius:6px;position:relative;box-shadow:0 3px 12px rgba(0,0,0,.22);border:2px solid #c8a030;">'
+            +(b.cover?'':'<span style="font-family:Cinzel,serif;font-size:8px;font-weight:700;color:#fff;text-align:center;line-height:1.2;text-shadow:0 1px 4px rgba(0,0,0,.9);">'+escHtml(b.title)+'</span>')
+            +(b.totalPages?'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.65);border-radius:0 0 4px 4px;padding:10px 5px 4px;"><div style="background:rgba(255,255,255,.25);border-radius:100px;height:3px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:#f0c040;border-radius:100px;"></div></div></div>':'')
+            +'</div>'
+            +'<div style="font-size:9px;font-weight:700;font-family:Cinzel,serif;color:var(--text);margin-top:4px;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;width:72px;">'+escHtml(b.title)+'</div>'
+            +'</div>';
+        }).join('')+'</div>';
+    } else {
+      nr.style.display='none';
+    }
+  }
   var yf=document.getElementById('shelf-year-filter');if(yf)yf.style.display=shelfTab==='finished'?'flex':'none';
   var ss=document.getElementById('shelf-sort-select');if(ss)ss.value=shelfSort;
   var finOpt=document.getElementById('shelf-sort-finished');if(finOpt)finOpt.style.display=shelfTab==='finished'?'':'none';
   [0,3,4,5].forEach(function(r){var b=document.getElementById('shelf-rfil-'+r);if(b){var on=shelfRatingMin===r;b.style.background=on?'var(--gold)':'#fffdf4';b.style.color=on?'#fffdf4':'var(--text-dim)';b.style.borderColor=on?'var(--gold)':'var(--border)';}});
   var vb=document.getElementById('shelf-view-btn');if(vb)vb.textContent=shelfView==='covers'?'📋 List':'🖼 Covers';
+  // Genre chips
+  var gc=document.getElementById('shelf-genre-chips');if(gc)gc.innerHTML=_shelfGenreChips();
   var books=getShelfFiltered();
   var grid=document.getElementById('shelf-grid');if(!grid)return;
   if(!books.length){
-    grid.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--text-dim);font-style:italic;font-size:14px;">'+(shelfTab==='tbr'?'No books on your TBR yet — add some!':shelfTab==='reading'?'Nothing currently reading. Time to start one!':'No finished books yet. Keep reading! 🖤')+'</div>';return;
+    grid.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--text-dim);font-style:italic;font-size:14px;">'+(shelfGenreFilter?'No books in that genre on this shelf.':shelfTab==='tbr'?'No books on your TBR yet — add some!':shelfTab==='reading'?'Nothing currently reading. Time to start one!':'No finished books yet. Keep reading! 🖤')+'</div>';return;
   }
   if(shelfView==='covers'){
     grid.innerHTML='<div style="display:flex;gap:12px;overflow-x:auto;padding:4px 2px 18px;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;">'+books.map(function(b){
       var cs=b.cover?'background:url(\''+b.cover+'\') center/cover no-repeat;':'background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;padding:8px;';
       var pct=b.totalPages?Math.min(100,Math.round((parseInt(b.currentPage)||0)/b.totalPages*100)):0;
+      var sc=_shelfStatusColor(b);
       var overlay='';
       if(b.status==='reading'){
         overlay='<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.78));border-radius:0 0 8px 8px;padding:18px 7px 7px;">'
           +(b.totalPages?'<div style="background:rgba(255,255,255,.25);border-radius:100px;height:4px;overflow:hidden;margin-bottom:3px;"><div style="height:100%;width:'+pct+'%;background:#f0c040;border-radius:100px;"></div></div>':'')
           +'<div style="font-size:9px;color:rgba(255,255,255,.9);text-align:center;font-weight:700;">'+(b.totalPages?pct+'%':'Reading…')+'</div>'
           +'</div>';
-      } else if(b.rating){
-        overlay='<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.72));border-radius:0 0 8px 8px;padding:16px 4px 5px;text-align:center;"><span style="color:#f0c040;font-size:11px;">'+'★'.repeat(parseInt(b.rating)||0)+'</span></div>';
+      } else if(b.status==='finished'){
+        overlay='<div style="position:absolute;top:6px;right:6px;background:#2a7a2a;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 1px 4px rgba(0,0,0,.4);">✓</div>'
+          +(b.rating?'<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.72));border-radius:0 0 8px 8px;padding:16px 4px 5px;text-align:center;"><span style="color:#f0c040;font-size:11px;">'+'★'.repeat(parseInt(b.rating)||0)+'</span></div>':'');
+      } else if(b.priority){
+        overlay='<div style="position:absolute;top:6px;right:6px;background:#b43c3c;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 1px 4px rgba(0,0,0,.4);">!</div>';
       }
       return '<div onclick="openShelfDetail('+b.id+')" style="flex:0 0 100px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
-        +'<div style="'+cs+'width:100px;height:150px;border-radius:8px;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.22);flex-shrink:0;">'
+        +'<div style="'+cs+'width:100px;height:150px;border-radius:8px;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.22);flex-shrink:0;'+(sc?'outline:2.5px solid '+sc+';':'')+'">'
         +(b.cover?'':'<div style="font-family:Cinzel,serif;font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.9);">'+escHtml(b.title)+'</div>')
         +overlay
         +'</div>'
         +'<div style="font-size:10px;font-weight:700;font-family:Cinzel,serif;color:var(--text);margin-top:6px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;width:100px;">'+escHtml(b.title)+'</div>'
+        +(b.series?'<div style="font-size:9px;color:var(--gold);margin-top:1px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;width:100px;font-style:italic;">'+escHtml(b.series)+'</div>':'')
         +(b.author?'<div style="font-size:9px;color:var(--text-dim);margin-top:1px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;width:100px;">'+escHtml(b.author)+'</div>':'')
         +'</div>';
     }).join('')+'</div>';
@@ -10216,21 +10335,28 @@ function renderShelf(){
     grid.innerHTML=books.map(function(b){
       var cs=b.cover?'background:url(\''+b.cover+'\') center/cover no-repeat;':'background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;';
       var pct=b.totalPages?Math.min(100,Math.round((parseInt(b.currentPage)||0)/b.totalPages*100)):0;
+      var sc=_shelfStatusColor(b);
+      var leftBorder=sc?'border-left:4px solid '+sc+';padding-left:10px;':'padding-left:0;';
       return '<div onclick="openShelfDetail('+b.id+')" style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;">'
-        +'<div style="width:52px;flex-shrink:0;aspect-ratio:2/3;'+cs+'border-radius:5px;box-shadow:0 2px 10px rgba(0,0,0,.15);"></div>'
-        +'<div style="flex:1;min-width:0;">'
-        +'<div style="font-family:Cinzel,serif;font-weight:700;font-size:15px;color:var(--text);line-height:1.3;">'+escHtml(b.title)+'</div>'
-        +(b.author?'<div style="font-size:13px;color:var(--brown-dim);margin-top:3px;">'+escHtml(b.author)+'</div>':'')
+        +'<div style="width:52px;flex-shrink:0;aspect-ratio:2/3;'+cs+'border-radius:5px;box-shadow:0 2px 10px rgba(0,0,0,.15);position:relative;">'
+        +(b.status==='finished'?'<div style="position:absolute;top:4px;right:4px;background:#2a7a2a;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;">✓</div>':'')
+        +(b.priority&&b.status==='tbr'?'<div style="position:absolute;top:4px;right:4px;background:#b43c3c;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;">!</div>':'')
+        +'</div>'
+        +'<div style="flex:1;min-width:0;'+leftBorder+'">'
+        +'<div style="font-family:Cinzel,serif;font-weight:700;font-size:15px;color:'+(sc||'var(--text)')+';line-height:1.3;">'+escHtml(b.title)+'</div>'
+        +(b.series?'<div style="font-size:11px;color:var(--gold);font-style:italic;margin-top:1px;">'+escHtml(b.series)+'</div>':'')
+        +(b.author?'<div style="font-size:13px;color:var(--brown-dim);margin-top:2px;">'+escHtml(b.author)+'</div>':'')
+        +(b.genre?'<div style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;background:var(--gold-faint);color:var(--gold);border:1px solid var(--border);margin-top:4px;font-weight:700;letter-spacing:.04em;">'+escHtml(b.genre)+'</div>':'')
         +(b.status==='reading'
           ?'<div style="margin-top:8px;">'
           +(b.totalPages
-            ?'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="flex:1;background:rgba(0,0,0,.1);border-radius:100px;height:6px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--gold);border-radius:100px;transition:width .3s;"></div></div><span style="font-size:11px;font-weight:700;color:var(--gold);min-width:32px;">'+pct+'%</span></div>'
+            ?'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="flex:1;background:rgba(0,0,0,.1);border-radius:100px;height:6px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:#c8a030;border-radius:100px;transition:width .3s;"></div></div><span style="font-size:11px;font-weight:700;color:#c8a030;min-width:32px;">'+pct+'%</span></div>'
             +'<div style="font-size:11px;color:var(--text-dim);">p. '+(parseInt(b.currentPage)||0)+' of '+b.totalPages+'</div>'
             :'<div style="font-size:11px;color:var(--text-dim);font-style:italic;">Tap to update progress</div>')
           +'</div>'
           :'')
-        +(b.rating&&b.status!=='reading'?'<div style="font-size:14px;color:var(--gold);margin-top:5px;">'+'★'.repeat(parseInt(b.rating)||0)+'</div>':'')
-        +(b.dateFinished?'<div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Finished '+b.dateFinished+'</div>':'')
+        +(b.rating&&b.status==='finished'?'<div style="font-size:14px;color:#c8a030;margin-top:5px;">'+'★'.repeat(parseInt(b.rating)||0)+'</div>':'')
+        +(b.dateFinished?'<div style="font-size:11px;color:#2a7a2a;margin-top:4px;font-weight:600;">✓ Finished '+b.dateFinished+'</div>':'')
         +'</div></div>';
     }).join('');
   }
@@ -10248,6 +10374,8 @@ function openShelfForm(id){
   document.getElementById('shelf-f-dateFinished').value=book?(book.dateFinished||''):'';
   document.getElementById('shelf-f-totalPages').value=book?(book.totalPages||''):'';
   document.getElementById('shelf-f-currentPage').value=book?(book.currentPage||''):'';
+  document.getElementById('shelf-f-genre').value=book?(book.genre||''):'';
+  document.getElementById('shelf-f-series').value=book?(book.series||''):'';
   var lbl=document.getElementById('shelf-form-label');if(lbl)lbl.textContent=id?'EDIT BOOK':'ADD A BOOK';
   var prev=document.getElementById('shelf-cover-preview');if(prev)prev.innerHTML='';
   var sr=document.getElementById('shelf-s-results');if(sr)sr.innerHTML='';
@@ -10260,8 +10388,8 @@ function saveShelfBook(){
   var title=document.getElementById('shelf-f-title').value.trim();
   if(!title){toast('Title is required!');return;}
   var status=document.getElementById('shelf-f-status').value||'tbr';
-  var book={id:shelfFormId||(Date.now()),title:title,author:document.getElementById('shelf-f-author').value.trim(),cover:document.getElementById('shelf-f-cover').value.trim(),status:status,rating:document.getElementById('shelf-f-rating').value,notes:document.getElementById('shelf-f-notes').value.trim(),dateFinished:document.getElementById('shelf-f-dateFinished').value,totalPages:parseInt(document.getElementById('shelf-f-totalPages').value)||0,currentPage:parseInt(document.getElementById('shelf-f-currentPage').value)||0};
-  if(shelfFormId){var idx=shelfBooks.findIndex(function(b){return b.id===shelfFormId;});if(idx>=0){book.dateAdded=shelfBooks[idx].dateAdded;shelfBooks[idx]=book;}}
+  var book={id:shelfFormId||(Date.now()),title:title,author:document.getElementById('shelf-f-author').value.trim(),cover:document.getElementById('shelf-f-cover').value.trim(),status:status,rating:document.getElementById('shelf-f-rating').value,notes:document.getElementById('shelf-f-notes').value.trim(),dateFinished:document.getElementById('shelf-f-dateFinished').value,totalPages:parseInt(document.getElementById('shelf-f-totalPages').value)||0,currentPage:parseInt(document.getElementById('shelf-f-currentPage').value)||0,genre:document.getElementById('shelf-f-genre').value.trim(),series:document.getElementById('shelf-f-series').value.trim()};
+  if(shelfFormId){var idx=shelfBooks.findIndex(function(b){return b.id===shelfFormId;});if(idx>=0){book.dateAdded=shelfBooks[idx].dateAdded;book.priority=shelfBooks[idx].priority;shelfBooks[idx]=book;}}
   else{book.dateAdded=new Date().toISOString().slice(0,10);shelfBooks.push(book);}
   saveShelf();closeShelfForm();shelfTab=status||'tbr';renderShelf();toast('✦ Saved to shelf!');_shelfBackupNudge();
 }
@@ -10291,9 +10419,13 @@ function openShelfDetail(id){
     +'<div style="font-family:Cinzel,serif;font-weight:900;font-size:17px;color:var(--text);line-height:1.3;margin-bottom:4px;">'+escHtml(book.title)+'</div>'
     +(book.author?'<div style="font-size:13px;color:var(--brown-dim);margin-bottom:8px;">'+escHtml(book.author)+'</div>':'')
     +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
-    +'<span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;background:var(--gold-faint);border:1px solid var(--border);border-radius:12px;padding:3px 10px;color:var(--gold);">'+(book.status==='tbr'?'TBR':book.status==='reading'?'Reading':'✓ Finished')+'</span>'
-    +(book.dateFinished?'<span style="font-size:11px;color:var(--text-dim);">'+book.dateFinished+'</span>':'')
-    +'</div></div></div>'
+    +'<span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;border-radius:12px;padding:3px 10px;'+(book.status==='reading'?'background:rgba(200,160,48,.12);border:1px solid #c8a030;color:#c8a030;':book.status==='finished'?'background:rgba(42,122,42,.12);border:1px solid #2a7a2a;color:#2a7a2a;':book.priority?'background:rgba(180,60,60,.12);border:1px solid #b43c3c;color:#b43c3c;':'background:var(--gold-faint);border:1px solid var(--border);color:var(--gold);')+'">'+(book.status==='tbr'?(book.priority?'🔴 Priority TBR':'📚 TBR'):book.status==='reading'?'📖 Reading':'✓ Finished')+'</span>'
+    +(book.genre?'<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--gold-faint);border:1px solid var(--border);color:var(--gold);font-weight:700;">'+escHtml(book.genre)+'</span>':'')
+    +(book.series?'<span style="font-size:10px;color:var(--gold);font-style:italic;">'+escHtml(book.series)+'</span>':'')
+    +(book.dateFinished?'<span style="font-size:11px;color:#2a7a2a;font-weight:600;">✓ '+book.dateFinished+'</span>':'')
+    +'</div>'
+    +(book.status==='tbr'?'<button onclick="toggleShelfPriority('+book.id+')" style="margin-top:8px;padding:5px 12px;border:1px solid '+(book.priority?'#b43c3c':'var(--border)')+';border-radius:8px;background:'+(book.priority?'rgba(180,60,60,.1)':'transparent')+';color:'+(book.priority?'#b43c3c':'var(--text-dim)')+';font-size:12px;cursor:pointer;font-family:inherit;font-weight:700;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+(book.priority?'🔴 Priority (tap to remove)':'Mark as Priority 🔴')+'</button>':'')
+    +'</div></div>'
     // ── Rating ───────────────────────────────────
     +'<div style="background:#fffdf4;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:14px;">'
     +'<div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);font-weight:700;margin-bottom:10px;">⭐ My Rating</div>'
@@ -12253,6 +12385,12 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <span style="margin-left:auto;color:var(--text-dim);font-size:18px;">↗</span>
   </div>
 
+  <!-- Now Reading banner -->
+  <div id="shelf-now-reading" style="display:none;background:#fffdf4;border:1.5px solid #c8a030;border-radius:12px;padding:12px 14px;margin-bottom:14px;"></div>
+
+  <!-- Reading goal bar -->
+  <div id="shelf-goal-bar" style="margin-bottom:14px;"></div>
+
   <!-- Stats row -->
   <div style="display:flex;gap:10px;margin-bottom:16px;">
     <div onclick="setShelfTab('tbr')" style="flex:1;text-align:center;background:#fffdf4;border:1px solid var(--border);border-radius:10px;padding:12px 6px;cursor:pointer;">
@@ -12329,10 +12467,17 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <button id="shelf-rfil-5" onclick="setShelfRating(5)" style="padding:5px 11px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:700;background:#fffdf4;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">★★★★★</button>
   </div>
 
+  <!-- Genre filter chips (populated by JS) -->
+  <div id="shelf-genre-chips"></div>
+
   <!-- Add book + view toggle row -->
   <div style="display:flex;gap:8px;margin-bottom:10px;">
     <button onclick="openShelfForm()" style="flex:1;padding:11px;border:1px dashed var(--gold);border-radius:10px;background:var(--gold-faint);color:var(--gold);font-family:Cinzel,serif;font-size:14px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add a Book</button>
     <button id="shelf-view-btn" onclick="toggleShelfView()" style="padding:11px 14px;border:1px solid var(--border);border-radius:10px;background:#fffdf4;color:var(--text-dim);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;touch-action:manipulation;-webkit-tap-highlight-color:transparent;flex-shrink:0;">📋 List</button>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:18px;">
+    <button onclick="shareShelf()" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:10px;background:#fffdf4;color:var(--text-dim);font-family:Cinzel,serif;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📤 Share Shelf</button>
+    <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:1px solid var(--border);border-radius:10px;background:#fffdf4;color:var(--text-dim);font-family:Cinzel,serif;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📥 Import CSV<input id="shelf-import-csv-input" type="file" accept=".csv,text/csv" onchange="importShelfCSV()" style="display:none;"></label>
   </div>
   <button onclick="openBatchAdd()" style="width:100%;margin-bottom:18px;padding:11px;border:1px dashed var(--brown);border-radius:10px;background:rgba(92,32,8,.07);color:var(--brown);font-family:Cinzel,serif;font-size:13px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Paste a List of Books (Batch Add)</button>
 
@@ -12390,6 +12535,11 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <textarea id="shelf-f-notes" rows="3" placeholder="Your thoughts on this book…" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;line-height:1.6;background:#fffdf4;color:var(--text);resize:vertical;"></textarea>
       <button class="mic-btn" onclick="startVoice('shelf-f-notes',false)" title="Speak review" style="margin-top:4px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎤</button>
     </div>
+    <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Genre</label>
+    <input id="shelf-f-genre" type="text" placeholder="e.g. Thriller, Romance, Fantasy…" list="shelf-genre-list" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 12px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
+    <datalist id="shelf-genre-list"><option value="Thriller"><option value="Mystery"><option value="Romance"><option value="Fantasy"><option value="Sci-Fi"><option value="Horror"><option value="Historical Fiction"><option value="Literary Fiction"><option value="Non-Fiction"><option value="Self-Help"><option value="True Crime"><option value="Memoir"><option value="Graphic Novel"><option value="Young Adult"></datalist>
+    <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Series Name <span style="font-weight:400;font-style:italic;">(optional)</span></label>
+    <input id="shelf-f-series" type="text" placeholder="e.g. Outlander #1" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 12px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Total Pages</label>
     <input id="shelf-f-totalPages" type="number" min="0" placeholder="e.g. 320" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 12px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Current Page</label>
