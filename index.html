@@ -10176,10 +10176,20 @@ function renderShelf(){
   if(shelfView==='covers'){
     grid.innerHTML='<div style="display:flex;gap:12px;overflow-x:auto;padding:4px 2px 18px;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;">'+books.map(function(b){
       var cs=b.cover?'background:url(\''+b.cover+'\') center/cover no-repeat;':'background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;padding:8px;';
+      var pct=b.totalPages?Math.min(100,Math.round((parseInt(b.currentPage)||0)/b.totalPages*100)):0;
+      var overlay='';
+      if(b.status==='reading'){
+        overlay='<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.78));border-radius:0 0 8px 8px;padding:18px 7px 7px;">'
+          +(b.totalPages?'<div style="background:rgba(255,255,255,.25);border-radius:100px;height:4px;overflow:hidden;margin-bottom:3px;"><div style="height:100%;width:'+pct+'%;background:#f0c040;border-radius:100px;"></div></div>':'')
+          +'<div style="font-size:9px;color:rgba(255,255,255,.9);text-align:center;font-weight:700;">'+(b.totalPages?pct+'%':'Reading…')+'</div>'
+          +'</div>';
+      } else if(b.rating){
+        overlay='<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.72));border-radius:0 0 8px 8px;padding:16px 4px 5px;text-align:center;"><span style="color:#f0c040;font-size:11px;">'+'★'.repeat(parseInt(b.rating)||0)+'</span></div>';
+      }
       return '<div onclick="openShelfDetail('+b.id+')" style="flex:0 0 100px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
         +'<div style="'+cs+'width:100px;height:150px;border-radius:8px;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.22);flex-shrink:0;">'
         +(b.cover?'':'<div style="font-family:Cinzel,serif;font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.9);">'+escHtml(b.title)+'</div>')
-        +(b.rating?'<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.72));border-radius:0 0 8px 8px;padding:16px 4px 5px;text-align:center;"><span style="color:#f0c040;font-size:11px;">'+'★'.repeat(parseInt(b.rating)||0)+'</span></div>':'')
+        +overlay
         +'</div>'
         +'<div style="font-size:10px;font-weight:700;font-family:Cinzel,serif;color:var(--text);margin-top:6px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;width:100px;">'+escHtml(b.title)+'</div>'
         +(b.author?'<div style="font-size:9px;color:var(--text-dim);margin-top:1px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;width:100px;">'+escHtml(b.author)+'</div>':'')
@@ -10188,12 +10198,21 @@ function renderShelf(){
   } else {
     grid.innerHTML=books.map(function(b){
       var cs=b.cover?'background:url(\''+b.cover+'\') center/cover no-repeat;':'background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;';
+      var pct=b.totalPages?Math.min(100,Math.round((parseInt(b.currentPage)||0)/b.totalPages*100)):0;
       return '<div onclick="openShelfDetail('+b.id+')" style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;">'
         +'<div style="width:52px;flex-shrink:0;aspect-ratio:2/3;'+cs+'border-radius:5px;box-shadow:0 2px 10px rgba(0,0,0,.15);"></div>'
         +'<div style="flex:1;min-width:0;">'
         +'<div style="font-family:Cinzel,serif;font-weight:700;font-size:15px;color:var(--text);line-height:1.3;">'+escHtml(b.title)+'</div>'
         +(b.author?'<div style="font-size:13px;color:var(--brown-dim);margin-top:3px;">'+escHtml(b.author)+'</div>':'')
-        +(b.rating?'<div style="font-size:14px;color:var(--gold);margin-top:5px;">'+'★'.repeat(parseInt(b.rating)||0)+'</div>':'')
+        +(b.status==='reading'
+          ?'<div style="margin-top:8px;">'
+          +(b.totalPages
+            ?'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div style="flex:1;background:rgba(0,0,0,.1);border-radius:100px;height:6px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:var(--gold);border-radius:100px;transition:width .3s;"></div></div><span style="font-size:11px;font-weight:700;color:var(--gold);min-width:32px;">'+pct+'%</span></div>'
+            +'<div style="font-size:11px;color:var(--text-dim);">p. '+(parseInt(b.currentPage)||0)+' of '+b.totalPages+'</div>'
+            :'<div style="font-size:11px;color:var(--text-dim);font-style:italic;">Tap to update progress</div>')
+          +'</div>'
+          :'')
+        +(b.rating&&b.status!=='reading'?'<div style="font-size:14px;color:var(--gold);margin-top:5px;">'+'★'.repeat(parseInt(b.rating)||0)+'</div>':'')
         +(b.dateFinished?'<div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Finished '+b.dateFinished+'</div>':'')
         +'</div></div>';
     }).join('');
@@ -10210,6 +10229,8 @@ function openShelfForm(id){
   renderShelfFormStars(book?book.rating:'');
   document.getElementById('shelf-f-notes').value=book?(book.notes||''):'';
   document.getElementById('shelf-f-dateFinished').value=book?(book.dateFinished||''):'';
+  document.getElementById('shelf-f-totalPages').value=book?(book.totalPages||''):'';
+  document.getElementById('shelf-f-currentPage').value=book?(book.currentPage||''):'';
   var lbl=document.getElementById('shelf-form-label');if(lbl)lbl.textContent=id?'EDIT BOOK':'ADD A BOOK';
   var prev=document.getElementById('shelf-cover-preview');if(prev)prev.innerHTML='';
   var sr=document.getElementById('shelf-s-results');if(sr)sr.innerHTML='';
@@ -10222,7 +10243,7 @@ function saveShelfBook(){
   var title=document.getElementById('shelf-f-title').value.trim();
   if(!title){toast('Title is required!');return;}
   var status=document.getElementById('shelf-f-status').value||'tbr';
-  var book={id:shelfFormId||(Date.now()),title:title,author:document.getElementById('shelf-f-author').value.trim(),cover:document.getElementById('shelf-f-cover').value.trim(),status:status,rating:document.getElementById('shelf-f-rating').value,notes:document.getElementById('shelf-f-notes').value.trim(),dateFinished:document.getElementById('shelf-f-dateFinished').value};
+  var book={id:shelfFormId||(Date.now()),title:title,author:document.getElementById('shelf-f-author').value.trim(),cover:document.getElementById('shelf-f-cover').value.trim(),status:status,rating:document.getElementById('shelf-f-rating').value,notes:document.getElementById('shelf-f-notes').value.trim(),dateFinished:document.getElementById('shelf-f-dateFinished').value,totalPages:parseInt(document.getElementById('shelf-f-totalPages').value)||0,currentPage:parseInt(document.getElementById('shelf-f-currentPage').value)||0};
   if(shelfFormId){var idx=shelfBooks.findIndex(function(b){return b.id===shelfFormId;});if(idx>=0){book.dateAdded=shelfBooks[idx].dateAdded;shelfBooks[idx]=book;}}
   else{book.dateAdded=new Date().toISOString().slice(0,10);shelfBooks.push(book);}
   saveShelf();closeShelfForm();shelfTab=status||'tbr';renderShelf();toast('✦ Saved to shelf!');_shelfBackupNudge();
@@ -10264,6 +10285,32 @@ function openShelfDetail(id){
     +'</div>'
     +(stars?'<div style="font-size:13px;color:var(--text-dim);margin-top:8px;font-weight:600;">'+stars+' out of 5</div>':'<div style="font-size:12px;color:var(--text-dim);margin-top:8px;font-style:italic;">Tap a star to rate this book</div>')
     +'</div>'
+    // ── Progress (Reading only) ───────────────────
+    +(book.status==='reading'?(function(){
+      var cp=parseInt(book.currentPage)||0;
+      var tp=parseInt(book.totalPages)||0;
+      var pct=tp?Math.min(100,Math.round(cp/tp*100)):0;
+      return '<div style="background:#fffdf4;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:14px;">'
+        +'<div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);font-weight:700;margin-bottom:10px;">📖 Reading Progress</div>'
+        +(tp?'<div style="background:var(--border);border-radius:100px;height:8px;overflow:hidden;margin-bottom:8px;"><div style="height:100%;width:'+pct+'%;background:var(--gold);border-radius:100px;transition:width .3s;"></div></div>':'')
+        +'<div style="font-size:13px;color:var(--text-dim);margin-bottom:12px;font-weight:600;">'+(tp?'Page '+cp+' of '+tp+' ('+pct+'%)':'Set your page count to track progress')+'</div>'
+        +'<div style="display:flex;gap:8px;margin-bottom:10px;">'
+        +'<div style="flex:1;">'
+        +'<label style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;display:block;margin-bottom:4px;">Current Page</label>'
+        +'<input id="sd-cur-page" type="number" min="0" value="'+(cp||'')+'" placeholder="0" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:14px;background:#fffdf4;color:var(--text);" oninput="document.getElementById(\'sd-save-prog\').style.opacity=1">'
+        +'</div>'
+        +'<div style="flex:1;">'
+        +'<label style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;display:block;margin-bottom:4px;">Total Pages</label>'
+        +'<input id="sd-tot-pages" type="number" min="0" value="'+(tp||'')+'" placeholder="e.g. 320" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:14px;background:#fffdf4;color:var(--text);" oninput="document.getElementById(\'sd-save-prog\').style.opacity=1">'
+        +'</div>'
+        +'</div>'
+        +'<button id="sd-save-prog" onclick="updateShelfProgress('+book.id+',document.getElementById(\'sd-cur-page\').value,document.getElementById(\'sd-tot-pages\').value)" style="width:100%;padding:9px;border:none;border-radius:8px;background:var(--gold);color:#fffdf4;font-family:Cinzel,serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;opacity:1;transition:opacity .2s;">✦ Update Progress</button>'
+        +'<div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);font-weight:700;margin-bottom:8px;">Quick Add</div>'
+        +'<div style="display:flex;gap:6px;">'
+        +[10,25,50,100].map(function(n){return '<button onclick="shelfAddPages('+book.id+','+n+')" style="flex:1;padding:8px 2px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;font-weight:700;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+'+n+'</button>';}).join('')
+        +'</div>'
+        +'</div>';
+    }()):'')
     // ── Review ───────────────────────────────────
     +'<div style="background:#fffdf4;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:18px;">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
@@ -10315,6 +10362,20 @@ function shelfRateBook(id,rating){
   book.rating=(String(book.rating)===String(rating))?0:rating;
   saveShelf();renderShelf();openShelfDetail(id);
   toast(book.rating?'✦ Rated '+book.rating+' star'+(book.rating===1?'':'s')+'!':'Rating cleared');
+}
+function updateShelfProgress(id,page,total){
+  var book=shelfBooks.find(function(b){return b.id===id;});if(!book)return;
+  if(page!==undefined&&page!=='')book.currentPage=Math.max(0,parseInt(page)||0);
+  if(total!==undefined&&total!=='')book.totalPages=Math.max(0,parseInt(total)||0);
+  if(book.totalPages&&book.currentPage>=book.totalPages)book.currentPage=book.totalPages;
+  saveShelf();renderShelf();openShelfDetail(id);
+}
+function shelfAddPages(id,n){
+  var book=shelfBooks.find(function(b){return b.id===id;});if(!book)return;
+  var max=parseInt(book.totalPages)||999999;
+  book.currentPage=Math.min(max,Math.max(0,(parseInt(book.currentPage)||0)+n));
+  saveShelf();renderShelf();openShelfDetail(id);
+  toast('+'+n+' pages — p.'+(book.currentPage)+(book.totalPages?' of '+book.totalPages:''));
 }
 var shelfSearchResults=[];
 function _renderShelfSearchResults(res){
@@ -12309,6 +12370,10 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <textarea id="shelf-f-notes" rows="3" placeholder="Your thoughts on this book…" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;line-height:1.6;background:#fffdf4;color:var(--text);resize:vertical;"></textarea>
       <button class="mic-btn" onclick="startVoice('shelf-f-notes',false)" title="Speak review" style="margin-top:4px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎤</button>
     </div>
+    <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Total Pages</label>
+    <input id="shelf-f-totalPages" type="number" min="0" placeholder="e.g. 320" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 12px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
+    <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Current Page</label>
+    <input id="shelf-f-currentPage" type="number" min="0" placeholder="Where you left off" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 12px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
     <label style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);font-weight:700;">Date Finished</label>
     <input id="shelf-f-dateFinished" type="date" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:6px;margin:4px 0 16px;font-size:14px;font-family:inherit;background:#fffdf4;color:var(--text);">
     <button onclick="saveShelfBook()" style="width:100%;padding:12px;border:none;border-radius:8px;background:var(--gold);color:#fffdf4;font-family:Cinzel,serif;font-size:15px;font-weight:900;letter-spacing:.08em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Save to Shelf</button>
