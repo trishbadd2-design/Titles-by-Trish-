@@ -3155,7 +3155,7 @@ function showPanel(id){
   if(id==='halloffame'){renderHallOfFame();}
   if(id==='tropes'){renderTropes();}
   if(id==='pacecalc'){renderPaceCalc();}
-  if(id==='reviewbuilder'){populateReviewBookList();}
+  if(id==='reviewbuilder'){populateReviewBookList();renderReviewDrafts();}
   if(id==='bookquotes'){renderBookQuotes();populateBQBookList();}
   if(id==='checklist'){renderChecklist();}
   if(id==='dmtemplates'){renderDMTemplates();}
@@ -9892,6 +9892,78 @@ function populateBQBookList(){
   dl.innerHTML=books.map(function(b){return'<option value="'+b.title.replace(/"/g,'&quot;')+'">';}).join('');
 }
 
+// REVIEW BUILDER DRAFTS
+var reviewDrafts=safeJSON('tbtrish_review_drafts',[]);
+// Pre-seed Trish's 3 books if not already present
+(function(){
+  var seeds=[
+    {id:'seed-caretaker',title:'The Caretaker',author:'Marcus Kliewer',genre:'Psychological Horror / Thriller',pages:'',rating:'',chars:'',plot:'',loved:'',surprised:'',didnt:'',tw:'',perfectfor:'',hook:'',cta:''},
+    {id:'seed-ringshout',title:'Ring Shout',author:'P. Djèlí Clark',genre:'Horror / Dark Fantasy / Historical Fiction',pages:'180',rating:'',chars:'',plot:'Set in 1920s Georgia where KKK members are literally turning into demons — and a group of Black women warriors are the only ones who can stop them.',loved:'',surprised:'',didnt:'',tw:'',perfectfor:'fans of dark fantasy, historical horror, and stories that mix real history with the supernatural',hook:'',cta:''},
+    {id:'seed-judgestone',title:'Judge Stone',author:'James Patterson',genre:'Legal Thriller / Courtroom Drama',pages:'',rating:'',chars:'',plot:'',loved:'',surprised:'',didnt:'',tw:'',perfectfor:'',hook:'',cta:''}
+  ];
+  seeds.forEach(function(seed){
+    var exists=reviewDrafts.some(function(d){return d.id===seed.id;});
+    if(!exists)reviewDrafts.push(seed);
+  });
+  localStorage.setItem('tbtrish_review_drafts',JSON.stringify(reviewDrafts));
+}());
+function saveReviewDraft(){
+  var title=document.getElementById('rb-f-title').value.trim();
+  if(!title){toast('Add a title first!');return;}
+  var id='draft-'+Date.now();
+  var existing=reviewDrafts.findIndex(function(d){return d.title.toLowerCase()===title.toLowerCase();});
+  var draft={id:existing>=0?reviewDrafts[existing].id:id,title:title,author:document.getElementById('rb-f-author').value.trim(),genre:document.getElementById('rb-f-genre').value.trim(),pages:document.getElementById('rb-f-pages').value.trim(),rating:document.getElementById('rb-f-rating').value,chars:document.getElementById('rb-f-chars').value.trim(),plot:document.getElementById('rb-f-plot').value.trim(),loved:document.getElementById('rb-f-loved').value.trim(),surprised:document.getElementById('rb-f-surprised').value.trim(),didnt:document.getElementById('rb-f-didnt').value.trim(),tw:document.getElementById('rb-f-tw').value.trim(),perfectfor:document.getElementById('rb-f-for').value.trim(),hook:document.getElementById('rb-f-hook').value.trim(),cta:document.getElementById('rb-f-cta').value.trim()};
+  if(existing>=0)reviewDrafts[existing]=draft;
+  else reviewDrafts.unshift(draft);
+  localStorage.setItem('tbtrish_review_drafts',JSON.stringify(reviewDrafts));
+  renderReviewDrafts();
+  toast('✦ Draft saved!');
+}
+function loadReviewDraft(id){
+  var d=reviewDrafts.find(function(x){return x.id===id;});if(!d)return;
+  document.getElementById('rb-f-title').value=d.title||'';
+  document.getElementById('rb-f-author').value=d.author||'';
+  document.getElementById('rb-f-genre').value=d.genre||'';
+  document.getElementById('rb-f-pages').value=d.pages||'';
+  document.getElementById('rb-f-rating').value=d.rating||'5';
+  document.getElementById('rb-f-chars').value=d.chars||'';
+  document.getElementById('rb-f-plot').value=d.plot||'';
+  document.getElementById('rb-f-loved').value=d.loved||'';
+  document.getElementById('rb-f-surprised').value=d.surprised||'';
+  document.getElementById('rb-f-didnt').value=d.didnt||'';
+  document.getElementById('rb-f-tw').value=d.tw||'';
+  document.getElementById('rb-f-for').value=d.perfectfor||'';
+  document.getElementById('rb-f-hook').value=d.hook||'';
+  document.getElementById('rb-f-cta').value=d.cta||'';
+  document.getElementById('rb-script-output').style.display='none';
+  document.getElementById('rb-f-title').scrollIntoView({behavior:'smooth',block:'nearest'});
+  toast('✦ '+d.title+' loaded — fill in your thoughts!');
+}
+function deleteReviewDraft(id){
+  reviewDrafts=reviewDrafts.filter(function(d){return d.id!==id;});
+  localStorage.setItem('tbtrish_review_drafts',JSON.stringify(reviewDrafts));
+  renderReviewDrafts();
+  toast('Draft removed');
+}
+function renderReviewDrafts(){
+  var el=document.getElementById('rb-drafts-list');if(!el)return;
+  if(!reviewDrafts.length){el.innerHTML='<div style="font-size:13px;color:var(--text-dim);font-style:italic;text-align:center;padding:12px 0;">No drafts yet — fill in the form and tap Save Draft.</div>';return;}
+  el.innerHTML=reviewDrafts.map(function(d){
+    var isSeed=d.id.startsWith('seed-');
+    var filled=[d.chars,d.plot,d.loved,d.surprised,d.hook].filter(Boolean).length;
+    var pct=Math.round(filled/5*100);
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:8px;margin-bottom:6px;">'
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-family:Cinzel,serif;font-size:13px;color:#fff;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+escHtml(d.title)+'</div>'
+      +'<div style="font-size:11px;color:var(--text-dim);margin-top:1px;">'+escHtml(d.author||'')+(d.genre?' · '+escHtml(d.genre):'')+'</div>'
+      +(pct>0?'<div style="font-size:10px;color:var(--gold);margin-top:3px;">'+pct+'% filled in</div>':'<div style="font-size:10px;color:var(--text-dim);font-style:italic;margin-top:3px;">Tap to start</div>')
+      +'</div>'
+      +'<button onclick="loadReviewDraft(\''+d.id+'\')" style="padding:7px 13px;background:var(--gold);border:none;color:#000;font-family:Cinzel,serif;font-size:11px;font-weight:700;border-radius:6px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Open</button>'
+      +'<button onclick="deleteReviewDraft(\''+d.id+'\')" style="padding:7px 10px;background:transparent;border:1px solid rgba(255,100,100,.3);color:rgba(255,100,100,.7);font-size:12px;border-radius:6px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+      +'</div>';
+  }).join('');
+}
+
 // REVIEW BUILDER BOOK LIST
 function populateReviewBookList(){
   var sel=document.getElementById('rb-book-select');if(!sel)return;
@@ -12751,6 +12823,12 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:4px;line-height:1.7;">Your filming script, every time. Fill in the details below and tap Generate — you'll get a ready-to-film review script that's informative, fun, and keeps viewers hooked.</p>
   <p style="color:var(--text-dim);font-size:12px;font-style:italic;margin-bottom:18px;">💡 Tip: Select a book from your Scorecard to auto-fill details.</p>
 
+  <!-- Saved Drafts -->
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
+    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">📂 MY REVIEW DRAFTS</div>
+    <div id="rb-drafts-list"><div style="font-size:13px;color:var(--text-dim);font-style:italic;text-align:center;padding:12px 0;">Loading…</div></div>
+  </div>
+
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
     <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">AUTO-FILL FROM SCORECARD</div>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
@@ -12806,7 +12884,8 @@ function resetQuiz(){quizAnswers={};initQuiz();}
 
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
     <button onclick="generateReviewScript()" style="flex:1;padding:14px;background:var(--gold);border:none;color:#000;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:1px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ GENERATE MY SCRIPT</button>
-    <button onclick="clearReviewForm()" style="padding:14px 18px;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Cinzel',serif;font-size:12px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Clear</button>
+    <button onclick="saveReviewDraft()" style="padding:14px 16px;background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:'Cinzel',serif;font-size:12px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">💾 Save Draft</button>
+    <button onclick="clearReviewForm()" style="padding:14px 14px;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Cinzel',serif;font-size:12px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Clear</button>
   </div>
 
   <div id="rb-script-output" style="display:none;">
