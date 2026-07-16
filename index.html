@@ -9894,20 +9894,30 @@ function populateBQBookList(){
 
 // REVIEW BUILDER BOOK LIST
 function populateReviewBookList(){
-  var dl=document.getElementById('rb-books-list');if(!dl)return;
-  var books=JSON.parse(localStorage.getItem('sc3_books')||'[]');
-  dl.innerHTML=books.map(function(b){return'<option value="'+b.title.replace(/"/g,'&quot;')+'">';}).join('');
+  var sel=document.getElementById('rb-book-select');if(!sel)return;
+  // Merge shelf books + scorecard books
+  var scBooks=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var shelfBks=safeJSON('tbtrish_shelf',[]);
+  var all=[];
+  scBooks.forEach(function(b){if(b.title)all.push({title:b.title,author:b.author||'',genre:b.genre||'',pages:b.pages||'',rating:b.rating||'',src:'scorecard'});});
+  shelfBks.forEach(function(b){
+    if(!b.title)return;
+    var exists=all.some(function(x){return x.title.toLowerCase()===b.title.toLowerCase();});
+    if(!exists)all.push({title:b.title,author:b.author||'',genre:b.genre||'',pages:b.totalPages||'',rating:b.rating||'',src:'shelf'});
+  });
+  all.sort(function(a,b){return a.title.localeCompare(b.title);});
+  sel.innerHTML='<option value="">— Pick a book to auto-fill —</option>'
+    +all.map(function(b){return '<option value="'+b.title.replace(/"/g,'&quot;')+'|'+b.author.replace(/"/g,'&quot;')+'|'+b.genre.replace(/"/g,'&quot;')+'|'+b.pages+'|'+b.rating+'">'+b.title+(b.author?' — '+b.author:'')+(b.src==='shelf'?' (Shelf)':' (Scorecard)')+'</option>';}).join('');
 }
 function autoFillReview(){
-  var title=document.getElementById('rb-f-title').value.trim();if(!title)return;
-  var books=JSON.parse(localStorage.getItem('sc3_books')||'[]');
-  var found=books.find(function(b){return b.title&&b.title.toLowerCase()===title.toLowerCase();});
-  if(!found)return;
-  if(found.author)document.getElementById('rb-f-author').value=found.author;
-  if(found.genre)document.getElementById('rb-f-genre').value=found.genre;
-  if(found.pages)document.getElementById('rb-f-pages').value=found.pages;
-  if(found.rating)document.getElementById('rb-f-rating').value=found.rating;
-  toast('✦ Auto-filled from your Scorecard!');
+  var sel=document.getElementById('rb-book-select');if(!sel||!sel.value)return;
+  var parts=sel.value.split('|');
+  document.getElementById('rb-f-title').value=parts[0]||'';
+  document.getElementById('rb-f-author').value=parts[1]||'';
+  document.getElementById('rb-f-genre').value=parts[2]||'';
+  if(parts[3])document.getElementById('rb-f-pages').value=parts[3];
+  if(parts[4])document.getElementById('rb-f-rating').value=parts[4];
+  toast('✦ Auto-filled! Fill in the rest and tap Generate.');
 }
 function generateReviewScript(){
   var title=document.getElementById('rb-f-title').value.trim();
@@ -9918,37 +9928,49 @@ function generateReviewScript(){
   var rating=document.getElementById('rb-f-rating').value;
   var chars=document.getElementById('rb-f-chars').value.trim();
   var plot=document.getElementById('rb-f-plot').value.trim();
-  var style=document.getElementById('rb-f-style').value.trim();
-  var pacing=document.getElementById('rb-f-pacing').value;
   var loved=document.getElementById('rb-f-loved').value.trim();
+  var surprised=document.getElementById('rb-f-surprised').value.trim();
   var didnt=document.getElementById('rb-f-didnt').value.trim();
   var tw=document.getElementById('rb-f-tw').value.trim();
   var perfectfor=document.getElementById('rb-f-for').value.trim();
   var hook=document.getElementById('rb-f-hook').value.trim();
-  var verdict=document.getElementById('rb-f-verdict').value.trim();
+  var cta=document.getElementById('rb-f-cta').value.trim();
   var stars='⭐'.repeat(parseInt(rating)||0);
-  var script='📚 BOOK REVIEW: '+title.toUpperCase()+'\n';
-  script+=(author?'by '+author+'\n':'');
-  script+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
-  script+='🎬 OPENING HOOK:\n'+(hook?'"'+hook+'"':'[Your catchy opening line here]')+'\n\n';
-  script+='📖 THE BOOK:\n';
-  script+=title+(author?' by '+author:'')+'\n';
-  if(genre||pages)script+=(genre?genre:'')+(genre&&pages?' · ':'')+( pages?pages+' pages':'')+'\n';
-  script+=(stars?'My Rating: '+stars+'\n':'')+'\n';
-  if(chars)script+='👥 MAIN CHARACTERS:\n'+chars+'\n\n';
-  if(plot)script+='📖 WHAT IT\'S ABOUT:\n'+plot+'\n(Spoiler-free — don\'t give it away!)\n\n';
-  script+='✍️ THE WRITING:\n';
-  if(style)script+='Style: '+style+'\n';
-  script+='Pacing: '+pacing+'\n\n';
-  if(loved)script+='❤️ WHAT I LOVED:\n'+loved+'\n\n';
-  if(didnt)script+='💔 WHAT DIDN\'T WORK:\n'+didnt+'\n\n';
-  if(tw)script+='⚠️ TRIGGER WARNINGS:\n'+tw+'\n\n';
-  if(perfectfor)script+='🎯 PERFECT FOR:\n'+perfectfor+'\n\n';
-  script+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-  script+='💬 FINAL VERDICT:\n'+(verdict?'"'+verdict+'"':'[Your one powerful sentence — make it land]')+'\n\n';
-  script+='#BookTok #BookReview #'+title.replace(/\s+/g,'')+(genre?' #'+genre.replace(/\s+/g,''):'')+' #TitlesByTrish';
+  var sep='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
+  var s='📚 BOOK REVIEW: '+title.toUpperCase()+(author?' by '+author.toUpperCase():'')+'\n'+sep+'\n';
+  // HOOK
+  s+='🎬 HOOK — say this first (first 3 seconds)\n';
+  s+='"'+(hook||'[Your one-line hook — make them stop scrolling]')+'"\n\n';
+  // BASICS
+  s+='📖 THE BASICS\n';
+  s+='Title: '+title+'\n';
+  if(author)s+='Author: '+author+'\n';
+  if(genre)s+='Genre: '+genre+'\n';
+  if(pages)s+='Pages: '+pages+' pages\n';
+  s+='\n';
+  // CHARACTERS
+  if(chars){s+='👥 MAIN CHARACTERS\n"The main character is '+chars+'"\n\n';}
+  // PLOT
+  if(plot){s+='📖 WHAT IT\'S ABOUT (no spoilers)\n"'+plot+'"\n\n';}
+  // THOUGHTS
+  s+='💬 MY THOUGHTS\n';
+  if(loved)s+='What I loved: "'+loved+'"\n';
+  if(surprised)s+='What surprised me: "'+surprised+'"\n';
+  if(didnt)s+='The only thing I\'ll say: "'+didnt+'"\n';
+  s+='\n';
+  // TRIGGER WARNINGS
+  if(tw)s+='⚠️ TRIGGER WARNINGS\n'+tw+'\n\n';
+  // RATING
+  s+='⭐ MY RATING\n"I\'m giving '+title+' '+(stars||rating+' stars')+' because '+(loved||'[your main reason]')+'."\n\n';
+  // WHO SHOULD READ IT
+  if(perfectfor)s+='🎯 WHO SHOULD READ IT\n"Read this if you love '+perfectfor+'"\n\n';
+  // CTA
+  s+=sep;
+  s+='📣 CALL TO ACTION\n"'+(cta||'Have you read '+title+'? Let me know your rating below. And follow for more reviews every week.')+'"\n\n';
+  // HASHTAGS
+  s+='#BookTok #BookReview'+(genre?' #'+genre.replace(/\s+/g,''):'')+(author?' #'+author.split(' ').pop().replace(/\s+/g,''):'')+' #'+title.replace(/[^a-zA-Z0-9]/g,'')+' #TitlesByTrish #BookTokReview';
   document.getElementById('rb-script-output').style.display='block';
-  document.getElementById('rb-script-text').value=script;
+  document.getElementById('rb-script-text').value=s;
   document.getElementById('rb-script-text').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function copyReviewScript(){
@@ -9957,9 +9979,9 @@ function copyReviewScript(){
   navigator.clipboard.writeText(text).then(function(){toast('📋 Script copied! You\'re ready to film.');}).catch(function(){toast('Copy failed.');});
 }
 function clearReviewForm(){
-  ['rb-f-title','rb-f-author','rb-f-genre','rb-f-pages','rb-f-chars','rb-f-plot','rb-f-style','rb-f-loved','rb-f-didnt','rb-f-tw','rb-f-for','rb-f-hook','rb-f-verdict'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  ['rb-f-title','rb-f-author','rb-f-genre','rb-f-pages','rb-f-chars','rb-f-plot','rb-f-loved','rb-f-surprised','rb-f-didnt','rb-f-tw','rb-f-for','rb-f-hook','rb-f-cta'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('rb-f-rating').value='5';
-  document.getElementById('rb-f-pacing').value='Balanced';
+  var sel=document.getElementById('rb-book-select');if(sel)sel.value='';
   document.getElementById('rb-script-output').style.display='none';
 }
 
@@ -12768,34 +12790,18 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   </div>
 
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
-    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">✍️ THE WRITING</div>
-    <div class="sc-two-col">
-      <div class="sc-field"><label>Writing Style</label><input id="rb-f-style" placeholder="e.g. lyrical, punchy, atmospheric, cinematic..."/></div>
-      <div class="sc-field">
-        <label>Pacing</label>
-        <select id="rb-f-pacing" style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;font-family:inherit;width:100%;">
-          <option>Slow Burn — worth every second</option>
-          <option>Balanced — never a dull moment</option>
-          <option>Fast &amp; Furious — couldn't put it down</option>
-          <option>Uneven — starts slow, ends strong</option>
-          <option>Uneven — starts strong, drags at end</option>
-        </select>
-      </div>
-    </div>
-  </div>
-
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
-    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">❤️ THE VERDICT</div>
-    <div class="sc-field"><label>What I Loved</label><textarea id="rb-f-loved" rows="2" placeholder="The specific things that made this book unforgettable..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
-    <div class="sc-field"><label>What Didn't Work (be honest!)</label><textarea id="rb-f-didnt" rows="2" placeholder="Even 5-star books have something — your audience trusts honest reviews..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">💬 MY THOUGHTS</div>
+    <div class="sc-field"><label>What I Loved</label><textarea id="rb-f-loved" rows="2" placeholder="The specific things that made this unforgettable..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+    <div class="sc-field"><label>What Surprised Me</label><textarea id="rb-f-surprised" rows="2" placeholder="Something unexpected — a twist, a character moment, the ending..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+    <div class="sc-field"><label>The Only Thing I'll Say (mild critique)</label><textarea id="rb-f-didnt" rows="2" placeholder="Even 5-star books have something — your audience trusts honest reviews..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
     <div class="sc-field"><label>Trigger Warnings</label><input id="rb-f-tw" placeholder="e.g. violence, addiction, loss — be thorough and kind..."/></div>
-    <div class="sc-field"><label>Perfect For...</label><input id="rb-f-for" placeholder="e.g. fans of dark romance who survived Haunting of Hill House..."/></div>
+    <div class="sc-field"><label>Who Should Read It</label><input id="rb-f-for" placeholder="e.g. fans of dark thrillers, readers who loved Gone Girl..."/></div>
   </div>
 
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
-    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">🎬 YOUR SCRIPT HOOKS</div>
-    <div class="sc-field"><label>Opening Hook</label><textarea id="rb-f-hook" rows="2" placeholder="Your first line on camera — make them stop scrolling. Strong opinion, dramatic statement, or question..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
-    <div class="sc-field"><label>Final Verdict (one powerful sentence)</label><textarea id="rb-f-verdict" rows="2" placeholder="The line they'll screenshot. Your definitive take — bold, memorable, unmistakably you..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+    <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">🎬 HOOK &amp; CALL TO ACTION</div>
+    <div class="sc-field"><label>Opening Hook — first 3 seconds</label><textarea id="rb-f-hook" rows="2" placeholder="e.g. 'If you like dark thrillers, you need to hear about this book.'" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+    <div class="sc-field"><label>Call to Action — end of video</label><textarea id="rb-f-cta" rows="2" placeholder="e.g. 'Have you read it? Let me know your rating below. Follow for more reviews every week.'" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
   </div>
 
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
