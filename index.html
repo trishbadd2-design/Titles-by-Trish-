@@ -3155,7 +3155,7 @@ function showPanel(id){
   if(id==='halloffame'){renderHallOfFame();}
   if(id==='tropes'){renderTropes();}
   if(id==='pacecalc'){renderPaceCalc();}
-  if(id==='reviewbuilder'){populateReviewBookList();renderReviewDrafts();}
+  if(id==='reviewbuilder'){populateReviewBookList();setTimeout(function(){renderReviewDrafts();},50);}
   if(id==='bookquotes'){renderBookQuotes();populateBQBookList();}
   if(id==='checklist'){renderChecklist();}
   if(id==='dmtemplates'){renderDMTemplates();}
@@ -9946,22 +9946,34 @@ function deleteReviewDraft(id){
   toast('Draft removed');
 }
 function renderReviewDrafts(){
-  var el=document.getElementById('rb-drafts-list');if(!el)return;
-  if(!reviewDrafts.length){el.innerHTML='<div style="font-size:13px;color:var(--text-dim);font-style:italic;text-align:center;padding:12px 0;">No drafts yet — fill in the form and tap Save Draft.</div>';return;}
-  el.innerHTML=reviewDrafts.map(function(d){
-    var isSeed=d.id.startsWith('seed-');
-    var filled=[d.chars,d.plot,d.loved,d.surprised,d.hook].filter(Boolean).length;
-    var pct=Math.round(filled/5*100);
-    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:8px;margin-bottom:6px;">'
-      +'<div style="flex:1;min-width:0;">'
-      +'<div style="font-family:Cinzel,serif;font-size:13px;color:#fff;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+escHtml(d.title)+'</div>'
-      +'<div style="font-size:11px;color:var(--text-dim);margin-top:1px;">'+escHtml(d.author||'')+(d.genre?' · '+escHtml(d.genre):'')+'</div>'
-      +(pct>0?'<div style="font-size:10px;color:var(--gold);margin-top:3px;">'+pct+'% filled in</div>':'<div style="font-size:10px;color:var(--text-dim);font-style:italic;margin-top:3px;">Tap to start</div>')
-      +'</div>'
-      +'<button onclick="loadReviewDraft(\''+d.id+'\')" style="padding:7px 13px;background:var(--gold);border:none;color:#000;font-family:Cinzel,serif;font-size:11px;font-weight:700;border-radius:6px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Open</button>'
-      +'<button onclick="deleteReviewDraft(\''+d.id+'\')" style="padding:7px 10px;background:transparent;border:1px solid rgba(255,100,100,.3);color:rgba(255,100,100,.7);font-size:12px;border-radius:6px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
-      +'</div>';
-  }).join('');
+  try{
+    var el=document.getElementById('rb-drafts-list');if(!el)return;
+    var drafts=safeJSON('tbtrish_review_drafts',[]);
+    if(!drafts.length){el.innerHTML='<div style="font-size:13px;color:var(--text-dim);font-style:italic;text-align:center;padding:12px 0;">No drafts yet.</div>';return;}
+    var html='';
+    for(var i=0;i<drafts.length;i++){
+      var d=drafts[i];
+      var title=String(d.title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      var author=String(d.author||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      var genre=String(d.genre||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      var filled=[d.chars,d.plot,d.loved,d.surprised,d.hook].filter(Boolean).length;
+      var pct=Math.round(filled/5*100);
+      var did=String(d.id||i);
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:12px;background:#fffdf4;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;">'
+        +'<div style="flex:1;min-width:0;overflow:hidden;">'
+        +'<div style="font-family:Cinzel,serif;font-size:14px;color:var(--text);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+title+'</div>'
+        +'<div style="font-size:11px;color:var(--text-dim);margin-top:2px;">'+author+(genre?' · '+genre:'')+'</div>'
+        +(pct>0?'<div style="font-size:11px;color:var(--gold);margin-top:3px;font-weight:700;">'+pct+'% filled in</div>':'<div style="font-size:11px;color:var(--text-dim);font-style:italic;margin-top:3px;">Tap Open to start</div>')
+        +'</div>'
+        +'<button onclick="loadReviewDraft(\''+did+'\')" style="padding:8px 14px;background:var(--gold);border:none;color:#fffdf4;font-family:Cinzel,serif;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Open</button>'
+        +'<button onclick="deleteReviewDraft(\''+did+'\')" style="padding:8px 10px;background:transparent;border:1px solid rgba(180,60,60,.3);color:#b43c3c;font-size:13px;border-radius:8px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>'
+        +'</div>';
+    }
+    el.innerHTML=html;
+  }catch(err){
+    var el2=document.getElementById('rb-drafts-list');
+    if(el2)el2.innerHTML='<div style="font-size:12px;color:var(--text-dim);padding:10px;">Could not load drafts. Try closing and reopening the app.</div>';
+  }
 }
 
 // REVIEW BUILDER BOOK LIST
