@@ -1,4 +1,4 @@
-const CACHE = 'titlesbytrish-v4';
+const CACHE = 'titlesbytrish-v5';
 const STATIC = [
   '/Titles-by-Trish-/manifest.json',
   '/Titles-by-Trish-/icons/icon-192.png',
@@ -21,14 +21,18 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-  // Always fetch HTML fresh from network so updates show immediately
-  if (url.pathname.endsWith('.html') || url.pathname.endsWith('/')) {
+  // Always fetch HTML fresh — covers .html, trailing /, and bare paths like /Titles-by-Trish-
+  const isHtml = url.pathname.endsWith('.html')
+    || url.pathname.endsWith('/')
+    || url.pathname === '/Titles-by-Trish-'
+    || (e.request.headers.get('accept') || '').includes('text/html');
+  if (isHtml) {
     e.respondWith(
       fetch(e.request).catch(() => caches.match(e.request))
     );
     return;
   }
-  // Cache-first for icons and manifest
+  // Cache-first for icons and manifest only
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
       const clone = res.clone();
