@@ -860,7 +860,7 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <div class="eyebrow">✦ &nbsp; Command Center &nbsp; ✦</div>
   <h1>TitlesByTrish</h1>
   <div class="tagline">Your complete BookTok home base</div>
-  <div id="sync-indicator" style="font-size:11px;letter-spacing:.04em;min-height:16px;margin-top:4px;transition:opacity 1s;opacity:0;"></div>
+  <div id="sync-indicator" style="font-size:13px;font-weight:600;letter-spacing:.05em;min-height:18px;margin-top:6px;transition:opacity .5s;">&#9729; Connecting…</div>
   <div class="header-rule"></div>
 </div>
 
@@ -2957,8 +2957,8 @@ var _fbTimer=null;
 function _fbStatus(state){
   var el=document.getElementById('sync-indicator');if(!el)return;
   if(state==='syncing'){el.innerHTML='&#8635; Syncing…';el.style.color='#c8a030';el.style.opacity='1';}
-  else if(state==='ok'){el.innerHTML='&#10003; Synced';el.style.color='#2a7a2a';el.style.opacity='1';setTimeout(function(){el.style.opacity='0';},3000);}
-  else{el.innerHTML='&#8659; Offline';el.style.color='#b43c3c';el.style.opacity='1';}
+  else if(state==='ok'){el.innerHTML='&#9989; Synced across all your devices!';el.style.color='#2a7a2a';el.style.opacity='1';setTimeout(function(){el.innerHTML='&#9729; Sync on';el.style.color='#2a7a2a';el.style.opacity='0.6';},6000);}
+  else{el.innerHTML='&#9888; Offline — changes saved locally';el.style.color='#b43c3c';el.style.opacity='1';}
 }
 
 function syncToFirebase(){
