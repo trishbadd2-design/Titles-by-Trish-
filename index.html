@@ -2955,10 +2955,14 @@ var FIREBASE_URL='https://titles-by-trish-default-rtdb.firebaseio.com';
 var _fbTimer=null;
 
 function _fbStatus(state){
-  var el=document.getElementById('sync-indicator');if(!el)return;
-  if(state==='syncing'){el.innerHTML='&#8635; Syncing…';el.style.color='#c8a030';el.style.opacity='1';}
-  else if(state==='ok'){el.innerHTML='&#9989; Synced across all your devices!';el.style.color='#2a7a2a';el.style.opacity='1';setTimeout(function(){el.innerHTML='&#9729; Sync on';el.style.color='#2a7a2a';el.style.opacity='0.6';},6000);}
-  else{el.innerHTML='&#9888; Offline — changes saved locally';el.style.color='#b43c3c';el.style.opacity='1';}
+  var el=document.getElementById('sync-indicator');
+  if(el){
+    if(state==='syncing'){el.innerHTML='&#8635; Syncing…';el.style.color='#c8a030';el.style.opacity='1';}
+    else if(state==='ok'){el.innerHTML='&#9989; Synced!';el.style.color='#2a7a2a';el.style.opacity='1';setTimeout(function(){el.innerHTML='&#9729; Sync on';el.style.color='#2a7a2a';el.style.opacity='0.6';},8000);}
+    else{el.innerHTML='&#9888; Offline';el.style.color='#b43c3c';el.style.opacity='1';}
+  }
+  if(state==='ok'){try{toast('☁ Synced across all devices!');}catch(e){}}
+  if(state==='offline'){try{toast('No connection — data saved locally');}catch(e){}}
 }
 
 function syncToFirebase(){
@@ -3015,6 +3019,15 @@ window.addEventListener('focus',function(){
     }
   });
 });
+
+// 1-second heartbeat: confirms JS ran; also kicks off sync if DOMContentLoaded missed it
+setTimeout(function(){
+  var el=document.getElementById('sync-indicator');
+  if(el&&el.innerHTML.indexOf('Connecting')!==-1){
+    el.innerHTML='&#8635; Checking…';el.style.color='#c8a030';el.style.opacity='1';
+    syncFromFirebase(function(){});
+  }
+},1000);
 
 // ═══════════════════════════════════════════════
 // STATE
