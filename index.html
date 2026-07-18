@@ -860,6 +860,7 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <div class="eyebrow">✦ &nbsp; Command Center &nbsp; ✦</div>
   <h1>TitlesByTrish</h1>
   <div class="tagline">Your complete BookTok home base</div>
+  <div id="sync-indicator" style="font-size:11px;letter-spacing:.04em;min-height:16px;margin-top:4px;transition:opacity 1s;opacity:0;"></div>
   <div class="header-rule"></div>
 </div>
 
@@ -2948,6 +2949,71 @@ var ideas=[
 function safeJSON(key,def){try{var v=localStorage.getItem(key);return v!==null?JSON.parse(v):def;}catch(e){return def;}}
 
 // ═══════════════════════════════════════════════
+// FIREBASE SYNC
+// ═══════════════════════════════════════════════
+var FIREBASE_URL='https://titles-by-trish-default-rtdb.firebaseio.com';
+var _fbTimer=null;
+
+function _fbStatus(state){
+  var el=document.getElementById('sync-indicator');if(!el)return;
+  if(state==='syncing'){el.innerHTML='&#8635; Syncing…';el.style.color='#c8a030';el.style.opacity='1';}
+  else if(state==='ok'){el.innerHTML='&#10003; Synced';el.style.color='#2a7a2a';el.style.opacity='1';setTimeout(function(){el.style.opacity='0';},3000);}
+  else{el.innerHTML='&#8659; Offline';el.style.color='#b43c3c';el.style.opacity='1';}
+}
+
+function syncToFirebase(){
+  if(_fbTimer)clearTimeout(_fbTimer);
+  _fbTimer=setTimeout(function(){
+    _fbStatus('syncing');
+    var payload={
+      shelf:safeJSON('tbtrish_shelf',[]),
+      reviewDrafts:safeJSON('tbtrish_review_drafts',[]),
+      scorecardBooks:safeJSON('sc3_books',[]),
+      shelfGoal:parseInt(localStorage.getItem('tbtrish_shelf_goal')||'0')||0
+    };
+    fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+      .then(function(r){if(r.ok)_fbStatus('ok');else _fbStatus('error');})
+      .catch(function(){_fbStatus('offline');});
+  },2000);
+}
+
+function syncFromFirebase(cb){
+  _fbStatus('syncing');
+  fetch(FIREBASE_URL+'/tbt.json')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data){_fbStatus('ok');if(cb)cb(false);return;}
+      if(data.shelf&&Array.isArray(data.shelf)){
+        shelfBooks=data.shelf;
+        localStorage.setItem('tbtrish_shelf',JSON.stringify(data.shelf));
+        try{sessionStorage.setItem('tbtrish_shelf_ss',JSON.stringify(data.shelf));}catch(e){}
+      }
+      if(data.reviewDrafts&&Array.isArray(data.reviewDrafts)){
+        reviewDrafts=data.reviewDrafts;
+        localStorage.setItem('tbtrish_review_drafts',JSON.stringify(data.reviewDrafts));
+      }
+      if(data.scorecardBooks&&Array.isArray(data.scorecardBooks)){
+        scBooks=data.scorecardBooks;
+        localStorage.setItem('sc3_books',JSON.stringify(data.scorecardBooks));
+      }
+      if(data.shelfGoal){shelfGoal=data.shelfGoal;localStorage.setItem('tbtrish_shelf_goal',String(data.shelfGoal));}
+      _fbStatus('ok');
+      if(cb)cb(true);
+    })
+    .catch(function(){_fbStatus('offline');if(cb)cb(false);});
+}
+
+// Pull fresh data whenever the user switches back to this tab/app
+window.addEventListener('focus',function(){
+  syncFromFirebase(function(hadData){
+    if(hadData){
+      try{renderShelf();}catch(e){}
+      try{renderDashboard();}catch(e){}
+    }
+  });
+});
+
+// ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
 var calTab='all';
@@ -4818,6 +4884,7 @@ function scSave() {
   localStorage.setItem('sc3_releases', JSON.stringify(scReleases));
   localStorage.setItem('sc3_rereads', JSON.stringify(scRereads));
   localStorage.setItem('sc3_predictions', JSON.stringify(scPredictions));
+  syncToFirebase();
 }
 
 function initScorecard() {
@@ -9916,6 +9983,7 @@ function saveReviewDraft(){
   if(existing>=0)reviewDrafts[existing]=draft;
   else reviewDrafts.unshift(draft);
   localStorage.setItem('tbtrish_review_drafts',JSON.stringify(reviewDrafts));
+  syncToFirebase();
   renderReviewDrafts();
   toast('✦ Draft saved!');
 }
@@ -9942,6 +10010,7 @@ function loadReviewDraft(id){
 function deleteReviewDraft(id){
   reviewDrafts=reviewDrafts.filter(function(d){return d.id!==id;});
   localStorage.setItem('tbtrish_review_drafts',JSON.stringify(reviewDrafts));
+  syncToFirebase();
   renderReviewDrafts();
   toast('Draft removed');
 }
@@ -10263,8 +10332,8 @@ var shelfGenreFilter='';
 function saveShelf(){
   var data=JSON.stringify(shelfBooks);
   localStorage.setItem('tbtrish_shelf',data);
-  // redundant copy in sessionStorage so a page reload within the same session can recover
   try{sessionStorage.setItem('tbtrish_shelf_ss',data);}catch(e){}
+  syncToFirebase();
 }
 function _shelfBackupNudge(){
   var el=document.getElementById('shelf-backup-nudge');
@@ -10832,7 +10901,12 @@ function renderDashboard(){
   ;
   updateDashClock();
 }
-document.addEventListener('DOMContentLoaded',function(){renderDashboard();});
+document.addEventListener('DOMContentLoaded',function(){
+  renderDashboard();
+  syncFromFirebase(function(hadData){
+    if(hadData){try{renderDashboard();}catch(e){}try{renderShelf();}catch(e){}}
+  });
+});
 
 // QUICK VIDEO SCRIPT GENERATOR
 // ══════════════════════════════════════════
