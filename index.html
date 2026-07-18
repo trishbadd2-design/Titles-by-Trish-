@@ -23,6 +23,20 @@
   --text:#1a0e04;--text-dim:rgba(26,14,4,.72);
   --border:rgba(92,32,8,.40);--border-hi:rgba(92,32,8,.70);
 }
+/* ── DARK MODE ── */
+body.dark-mode{
+  --bg:#0e0a05;--bg2:#181008;--bg3:#221510;
+  --gold:#c8a030;--gold-dim:rgba(200,160,48,.85);--gold-faint:rgba(200,160,48,.13);
+  --brown:#e07848;--brown-dim:rgba(224,120,72,.7);
+  --red:#c85050;--red-dim:rgba(200,80,80,.28);
+  --text:#e8d4b8;--text-dim:rgba(232,212,184,.58);
+  --border:rgba(200,160,48,.26);--border-hi:rgba(200,160,48,.52);
+}
+body.dark-mode input,body.dark-mode select,body.dark-mode textarea{background:var(--bg3)!important;color:var(--text)!important;border-color:var(--border)!important;}
+body.dark-mode #shelf-form,body.dark-mode .sc-entry-form{background:var(--bg2)!important;color:var(--text)!important;}
+body.dark-mode .nav-drawer,body.dark-mode .drawer-head{background:var(--bg2)!important;}
+body.dark-mode .site-header h1{color:var(--gold)!important;}
+body.dark-mode .card-box{background:rgba(255,240,200,.04)!important;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Playfair Display',serif;font-weight:500;min-height:100vh;}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04;
@@ -889,6 +903,7 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <div class="drawer-item" onclick="showGroup('growth');closeDrawer();"><span class="drawer-icon">📈</span>Growth</div>
   <div class="drawer-item" onclick="showGroup('business');closeDrawer();"><span class="drawer-icon">🤝</span>Business</div>
   <div class="drawer-bottom">
+    <div class="drawer-item" id="dark-mode-btn" onclick="toggleDarkMode();"><span class="drawer-icon">🌙</span>Dark Mode</div>
     <div class="drawer-item" onclick="showPanel('settings');closeDrawer();"><span class="drawer-icon">⚙️</span>Settings</div>
   </div>
 </div>
@@ -3030,6 +3045,127 @@ setTimeout(function(){
 },1000);
 
 // ═══════════════════════════════════════════════
+// DARK MODE
+// ═══════════════════════════════════════════════
+var darkMode=localStorage.getItem('tbtrish_dark')==='1';
+if(darkMode)document.body.classList.add('dark-mode');
+function toggleDarkMode(){
+  darkMode=!darkMode;
+  document.body.classList.toggle('dark-mode',darkMode);
+  localStorage.setItem('tbtrish_dark',darkMode?'1':'0');
+  var btn=document.getElementById('dark-mode-btn');
+  if(btn)btn.innerHTML='<span class="drawer-icon">'+(darkMode?'☀️':'🌙')+'</span>'+(darkMode?'Light Mode':'Dark Mode');
+}
+
+// ═══════════════════════════════════════════════
+// MONTHLY WRAP-UP SCRIPT GENERATOR
+// ═══════════════════════════════════════════════
+var WU_MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function initWrapupSelects(){
+  var ms=document.getElementById('wrapup-month-sel');
+  var ys=document.getElementById('wrapup-year-sel');
+  if(!ms||!ys)return;
+  var now=new Date();
+  var curM=now.getMonth();
+  var curY=now.getFullYear();
+  if(!ms.options.length){
+    WU_MONTHS.forEach(function(mn,i){var o=document.createElement('option');o.value=i;o.textContent=mn;ms.appendChild(o);});
+    ms.value=curM;
+  }
+  if(!ys.options.length){
+    for(var y=2023;y<=curY+1;y++){var o=document.createElement('option');o.value=y;o.textContent=y;ys.appendChild(o);}
+    ys.value=curY;
+  }
+}
+
+function generateWrapupScript(){
+  var ms=document.getElementById('wrapup-month-sel');
+  var ys=document.getElementById('wrapup-year-sel');
+  if(!ms||!ys)return;
+  var m=parseInt(ms.value);
+  var yr=parseInt(ys.value);
+  var mn=WU_MONTHS[m];
+  var monthBooks=shelfBooks.filter(function(b){
+    if(b.status!=='finished'||!b.dateFinished)return false;
+    var d=new Date(b.dateFinished+'T12:00');
+    return d.getFullYear()===yr&&d.getMonth()===m;
+  });
+  if(!monthBooks.length){toast('No finished books found for '+mn+' '+yr+' on your shelf. Make sure you set status to Finished and add a Finished Date.');return;}
+  var topBook=monthBooks.concat().sort(function(a,b){return(parseInt(b.rating)||0)-(parseInt(a.rating)||0);})[0];
+  var ratedBooks=monthBooks.filter(function(b){return parseInt(b.rating)>0;});
+  var avgRat=ratedBooks.length?(Math.round(ratedBooks.reduce(function(s,b){return s+(parseInt(b.rating)||0);},0)/ratedBooks.length*10)/10):'—';
+  var hooks=['Here\'s every book I finished in '+mn+' — some of these wrecked me 🖤','My '+mn+' reading wrap-up is here and I have a lot of thoughts','I read '+monthBooks.length+' books in '+mn+' and we need to talk about all of them'];
+  var hook=hooks[monthBooks.length%3];
+  var bookLines=monthBooks.map(function(b,i){
+    return (i+1)+'. '+b.title+(b.author?' by '+b.author:'')+(b.rating?' — '+'★'.repeat(parseInt(b.rating)||0):'');
+  }).join('\n');
+  var script='🎬 HOOK\n'+hook+'\n\n'
+    +'📚 BOOKS I READ ('+monthBooks.length+' total)\n'+bookLines+'\n\n'
+    +(topBook?'⭐ FAVORITE OF THE MONTH\n'+topBook.title+(topBook.author?' by '+topBook.author:'')
+      +'\n[Tell them what made this one stand out — 2–3 sentences max]\n\n':'')
+    +(monthBooks.length>1?'📊 QUICK STATS\nBooks finished: '+monthBooks.length+(avgRat!=='—'?'\nAverage rating: '+avgRat+' / 5':'')
+      +(ratedBooks.some(function(b){return parseInt(b.rating)<=2;})?'\nDid Not Finish vibes: '
+        +monthBooks.filter(function(b){return parseInt(b.rating)<=2;}).map(function(b){return b.title;}).join(', '):'')
+      +'\n\n':'')
+    +'📣 CALL TO ACTION\nDrop your '+mn+' reads in the comments — I want to see what you finished 👇 And if you want more wrap-ups like this, follow so you don\'t miss next month.\n\n'
+    +'#BookTok #'+mn+'Reads #ReadingWrapUp #BookReview #TitlesByTrish #DarkFiction #BookRecommendations';
+  var textEl=document.getElementById('wrapup-script-text');
+  var outEl=document.getElementById('wrapup-script-out');
+  if(textEl)textEl.value=script;
+  if(outEl)outEl.style.display='block';
+  toast('✦ Wrap-up script ready!');
+  document.getElementById('wrapup-script-out').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function copyWrapupScript(){
+  var t=document.getElementById('wrapup-script-text');
+  if(!t)return;
+  navigator.clipboard.writeText(t.value).then(function(){toast('📋 Wrap-up script copied!');}).catch(function(){t.select();document.execCommand('copy');toast('📋 Copied!');});
+}
+
+// ═══════════════════════════════════════════════
+// PRE-POST CHECKLIST
+// ═══════════════════════════════════════════════
+var POST_CHECKLIST_ITEMS=['Content filmed / recorded','Thumbnail image ready','Review script written & reviewed','Caption written','Hashtags copied','Bio link updated','Posted to TikTok / Instagram'];
+var postCheckState=safeJSON('tbtrish_post_check',{});
+
+function togglePostCheck(item){
+  postCheckState[item]=!postCheckState[item];
+  localStorage.setItem('tbtrish_post_check',JSON.stringify(postCheckState));
+  renderPostChecklist();
+}
+
+function resetPostChecklist(){
+  postCheckState={};
+  localStorage.setItem('tbtrish_post_check',JSON.stringify(postCheckState));
+  renderPostChecklist();
+  toast('Checklist reset');
+}
+
+function renderPostChecklist(){
+  var el=document.getElementById('post-checklist-items');if(!el)return;
+  var done=POST_CHECKLIST_ITEMS.filter(function(it){return postCheckState[it];}).length;
+  var html='';
+  POST_CHECKLIST_ITEMS.forEach(function(item){
+    var checked=postCheckState[item];
+    html+='<div onclick="togglePostCheck(\''+item.replace(/'/g,'')+'\''+')" style="display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:8px;cursor:pointer;margin-bottom:7px;'
+      +'background:'+(checked?'rgba(42,122,42,.12)':'var(--gold-faint)')
+      +';border:1px solid '+(checked?'rgba(42,122,42,.5)':'var(--border)')+';touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
+      +'<div style="width:22px;height:22px;border-radius:6px;border:2px solid '+(checked?'#2a7a2a':'var(--border)')
+      +';background:'+(checked?'#2a7a2a':'transparent')+';flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;">'+(checked?'✓':'')+'</div>'
+      +'<span style="font-size:14px;font-family:inherit;'+(checked?'text-decoration:line-through;color:var(--text-dim);':'color:var(--text);')+'">'+item+'</span>'
+      +'</div>';
+  });
+  html+='<div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;">'
+    +'<span style="font-size:14px;font-weight:700;font-family:Cinzel,serif;color:'+(done===POST_CHECKLIST_ITEMS.length?'#2a7a2a':'var(--text-dim)')+';">'
+    +done+' / '+POST_CHECKLIST_ITEMS.length+(done===POST_CHECKLIST_ITEMS.length?' — Ready to post! 🎉':' complete')+'</span>'
+    +'<button onclick="resetPostChecklist()" style="font-size:12px;padding:6px 14px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-dim);cursor:pointer;font-family:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Reset</button>'
+    +'</div>';
+  el.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
 var calTab='all';
@@ -3237,7 +3373,7 @@ function showPanel(id){
   if(id==='halloffame'){renderHallOfFame();}
   if(id==='tropes'){renderTropes();}
   if(id==='pacecalc'){renderPaceCalc();}
-  if(id==='reviewbuilder'){populateReviewBookList();setTimeout(function(){renderReviewDrafts();},50);}
+  if(id==='reviewbuilder'){populateReviewBookList();setTimeout(function(){renderReviewDrafts();renderPostChecklist();initWrapupSelects();},50);}
   if(id==='bookquotes'){renderBookQuotes();populateBQBookList();}
   if(id==='checklist'){renderChecklist();}
   if(id==='dmtemplates'){renderDMTemplates();}
@@ -13013,6 +13149,28 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <div style="font-size:12px;color:var(--text-dim);font-style:italic;margin-bottom:10px;">Read this on camera. Edit as you film — it's your guide, not a teleprompter.</div>
     <textarea id="rb-script-text" rows="28" readonly style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid rgba(42,92,34,.3);border-radius:6px;padding:14px;color:var(--text);font-size:13px;line-height:1.8;font-family:inherit;resize:vertical;"></textarea>
     <button onclick="copyReviewScript()" style="margin-top:10px;width:100%;padding:14px;background:var(--gold);border:none;color:#000;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:1px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 COPY SCRIPT — READY TO FILM</button>
+  </div>
+
+  <!-- MONTHLY WRAP-UP SCRIPT -->
+  <div style="margin-top:36px;border-top:2px solid var(--border);padding-top:28px;">
+    <div class="section-title">📅 Monthly Wrap-Up Script</div>
+    <div style="font-size:13px;color:var(--text-dim);margin-bottom:16px;line-height:1.6;">Generate a TikTok script for your monthly reading wrap-up using your finished shelf books.</div>
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+      <select id="wrapup-month-sel" style="flex:1;min-width:130px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;color:var(--text);font-size:14px;font-family:inherit;"></select>
+      <select id="wrapup-year-sel" style="min-width:90px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;color:var(--text);font-size:14px;font-family:inherit;"></select>
+      <button onclick="generateWrapupScript()" style="padding:10px 20px;background:var(--gold);border:none;color:#000;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:1px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ GENERATE</button>
+    </div>
+    <div id="wrapup-script-out" style="display:none;">
+      <textarea id="wrapup-script-text" rows="22" readonly style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid rgba(42,92,34,.3);border-radius:6px;padding:14px;color:var(--text);font-size:13px;line-height:1.8;font-family:inherit;resize:vertical;"></textarea>
+      <button onclick="copyWrapupScript()" style="margin-top:10px;width:100%;padding:14px;background:var(--gold);border:none;color:#000;font-family:'Cinzel',serif;font-size:13px;font-weight:700;letter-spacing:1px;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 COPY WRAP-UP SCRIPT</button>
+    </div>
+  </div>
+
+  <!-- PRE-POST CHECKLIST -->
+  <div style="margin-top:36px;border-top:2px solid var(--border);padding-top:28px;margin-bottom:20px;">
+    <div class="section-title">✅ Pre-Post Checklist</div>
+    <div style="font-size:13px;color:var(--text-dim);margin-bottom:16px;line-height:1.6;">Check these off before you hit post — don't let anything slip through.</div>
+    <div id="post-checklist-items"></div>
   </div>
 </div>
 
