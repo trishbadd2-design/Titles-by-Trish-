@@ -10644,30 +10644,27 @@ function renderShelf(){
     grid.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--text-dim);font-style:italic;font-size:14px;">'+(shelfGenreFilter?'No books in that genre on this shelf.':shelfTab==='tbr'?'No books on your TBR yet — add some!':shelfTab==='reading'?'Nothing currently reading. Time to start one!':'No finished books yet. Keep reading! 🖤')+'</div>';return;
   }
   if(shelfView==='covers'){
-    grid.innerHTML='<div style="display:flex;gap:12px;overflow-x:auto;padding:4px 2px 18px;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;">'+books.map(function(b){
-      var cs=b.cover?'background:url(\''+b.cover+'\') center/cover no-repeat;':'background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;padding:8px;';
+    grid.innerHTML='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding-bottom:12px;">'+books.map(function(b){
+      var cs=b.cover?'background:url(\''+b.cover+'\') center/cover no-repeat;':'background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;padding:6px;';
       var pct=b.totalPages?Math.min(100,Math.round((parseInt(b.currentPage)||0)/b.totalPages*100)):0;
       var sc=_shelfStatusColor(b);
       var overlay='';
       if(b.status==='reading'){
-        overlay='<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.78));border-radius:0 0 8px 8px;padding:18px 7px 7px;">'
-          +(b.totalPages?'<div style="background:rgba(255,255,255,.25);border-radius:100px;height:4px;overflow:hidden;margin-bottom:3px;"><div style="height:100%;width:'+pct+'%;background:#f0c040;border-radius:100px;"></div></div>':'')
-          +'<div style="font-size:9px;color:rgba(255,255,255,.9);text-align:center;font-weight:700;">'+(b.totalPages?pct+'%':'Reading…')+'</div>'
+        overlay='<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.82));border-radius:0 0 4px 4px;padding:12px 4px 4px;">'
+          +(b.totalPages?'<div style="background:rgba(255,255,255,.25);border-radius:100px;height:3px;overflow:hidden;margin-bottom:2px;"><div style="height:100%;width:'+pct+'%;background:#f0c040;border-radius:100px;"></div></div>':'')
+          +'<div style="font-size:8px;color:rgba(255,255,255,.92);text-align:center;font-weight:700;">'+(b.totalPages?pct+'%':'Reading')+'</div>'
           +'</div>';
       } else if(b.status==='finished'){
-        overlay='<div style="position:absolute;top:6px;right:6px;background:#2a7a2a;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 1px 4px rgba(0,0,0,.4);">✓</div>'
-          +(b.rating?'<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.72));border-radius:0 0 8px 8px;padding:16px 4px 5px;text-align:center;"><span style="color:#f0c040;font-size:11px;">'+'★'.repeat(parseInt(b.rating)||0)+'</span></div>':'');
+        overlay='<div style="position:absolute;top:4px;right:4px;background:#2a7a2a;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.5);">✓</div>'
+          +(b.rating?'<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.75));border-radius:0 0 4px 4px;padding:10px 2px 3px;text-align:center;"><span style="color:#f0c040;font-size:9px;">'+'★'.repeat(parseInt(b.rating)||0)+'</span></div>':'');
       } else if(b.priority){
-        overlay='<div style="position:absolute;top:6px;right:6px;background:#b43c3c;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 1px 4px rgba(0,0,0,.4);">!</div>';
+        overlay='<div style="position:absolute;top:4px;right:4px;background:#b43c3c;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.5);">!</div>';
       }
-      return '<div onclick="openShelfDetail('+b.id+')" style="flex:0 0 100px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
-        +'<div style="'+cs+'width:100px;height:150px;border-radius:8px;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.22);flex-shrink:0;'+(sc?'outline:2.5px solid '+sc+';':'')+'">'
-        +(b.cover?'':'<div style="font-family:Cinzel,serif;font-size:9px;font-weight:700;color:#fff;text-align:center;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.9);">'+escHtml(b.title)+'</div>')
+      return '<div onclick="openShelfDetail('+b.id+')" style="cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
+        +'<div style="'+cs+'aspect-ratio:2/3;border-radius:4px;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.22);'+(sc?'outline:2.5px solid '+sc+';':'')+'">'
+        +(b.cover?'':'<div style="font-family:Cinzel,serif;font-size:7px;font-weight:700;color:#fff;text-align:center;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.9);">'+escHtml(b.title)+'</div>')
         +overlay
         +'</div>'
-        +'<div style="font-size:10px;font-weight:700;font-family:Cinzel,serif;color:var(--text);margin-top:6px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;width:100px;">'+escHtml(b.title)+'</div>'
-        +(b.series?'<div style="font-size:9px;color:var(--gold);margin-top:1px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;width:100px;font-style:italic;">'+escHtml(b.series)+'</div>':'')
-        +(b.author?'<div style="font-size:9px;color:var(--text-dim);margin-top:1px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;width:100px;">'+escHtml(b.author)+'</div>':'')
         +'</div>';
     }).join('')+'</div>';
   } else {
