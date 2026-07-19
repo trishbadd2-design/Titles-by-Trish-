@@ -3091,7 +3091,19 @@ function syncFromFirebase(cb){
     .catch(function(err){console.warn('Firebase sync error:',err);_fbStatus('offline');if(cb)cb(false);});
 }
 
-// Auto-pull on focus disabled — use Pull button to avoid wiping local books
+// Auto-pull when user switches back to the app (safe — never overwrites with fewer books)
+window.addEventListener('focus',function(){
+  syncFromFirebase(function(hadData){
+    if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
+  });
+});
+
+// Poll every 30 seconds so both devices stay in sync automatically
+setInterval(function(){
+  syncFromFirebase(function(hadData){
+    if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
+  });
+},30000);
 
 // 1-second heartbeat: confirms JS ran; also kicks off sync if DOMContentLoaded missed it
 setTimeout(function(){
