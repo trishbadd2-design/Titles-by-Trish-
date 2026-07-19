@@ -3034,21 +3034,46 @@ function forcePushToCloud(){
     .catch(function(e){_fbStatus('offline');toast('Network error: '+e.message);});
 }
 
+function _buildPayload(){
+  return {
+    shelf:safeJSON('tbtrish_shelf',[]),
+    reviewDrafts:safeJSON('tbtrish_review_drafts',[]),
+    scorecardBooks:safeJSON('sc3_books',[]),
+    shelfGoal:parseInt(localStorage.getItem('tbtrish_shelf_goal')||'0')||0
+  };
+}
+
 function syncToFirebase(){
   if(_fbTimer)clearTimeout(_fbTimer);
   _fbTimer=setTimeout(function(){
     _fbStatus('syncing');
-    var payload={
-      shelf:safeJSON('tbtrish_shelf',[]),
-      reviewDrafts:safeJSON('tbtrish_review_drafts',[]),
-      scorecardBooks:safeJSON('sc3_books',[]),
-      shelfGoal:parseInt(localStorage.getItem('tbtrish_shelf_goal')||'0')||0
-    };
-    fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    var payload=_buildPayload();
+    // keepalive:true lets the request finish even if the page is force-closed
+    fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true})
       .then(function(r){if(r.ok)_fbStatus('ok');else _fbStatus('error');})
       .catch(function(){_fbStatus('offline');});
-  },2000);
+  },300);
 }
+
+// Fire an immediate push the instant iOS starts closing the app
+window.addEventListener('pagehide',function(){
+  var payload=_buildPayload();
+  try{fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true});}catch(e){}
+});
+
+// Also push when app goes to background (switching apps on phone)
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='hidden'){
+    var payload=_buildPayload();
+    try{fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true});}catch(e){}
+  }
+  // Pull when coming back to the app
+  if(document.visibilityState==='visible'){
+    syncFromFirebase(function(hadData){
+      if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
+    });
+  }
+});
 
 function syncFromFirebase(cb){
   _fbStatus('syncing');
@@ -3063,7 +3088,7 @@ function syncFromFirebase(cb){
       if(data.shelf&&Array.isArray(data.shelf)&&data.shelf.length>0){
         // Only overwrite local shelf if cloud has MORE books — never wipe local data
         var localShelf=safeJSON('tbtrish_shelf',[]);
-        if(data.shelf.length>=localShelf.length){
+        if(data.shelf.length>localShelf.length){
           shelfBooks=data.shelf;
           localStorage.setItem('tbtrish_shelf',JSON.stringify(data.shelf));
           try{sessionStorage.setItem('tbtrish_shelf_ss',JSON.stringify(data.shelf));}catch(e){}
@@ -3091,12 +3116,7 @@ function syncFromFirebase(cb){
     .catch(function(err){console.warn('Firebase sync error:',err);_fbStatus('offline');if(cb)cb(false);});
 }
 
-// Auto-pull when user switches back to the app (safe — never overwrites with fewer books)
-window.addEventListener('focus',function(){
-  syncFromFirebase(function(hadData){
-    if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
-  });
-});
+// visibilitychange handles focus/blur more reliably on iOS (see above)
 
 // Poll every 30 seconds so both devices stay in sync automatically
 setInterval(function(){
