@@ -874,6 +874,10 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <div class="eyebrow">✦ &nbsp; Command Center &nbsp; ✦</div>
   <h1>TitlesByTrish</h1>
   <div class="tagline">Your complete BookTok home base</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;">
+    <div id="sync-dot" style="width:8px;height:8px;border-radius:50%;background:#888;flex-shrink:0;" title="Sync status"></div>
+    <span style="font-size:11px;color:var(--text-dim);letter-spacing:.04em;">Syncing across devices</span>
+  </div>
   <div class="header-rule"></div>
 </div>
 
@@ -2963,11 +2967,90 @@ var ideas=[
 // ═══════════════════════════════════════════════
 function safeJSON(key,def){try{var v=localStorage.getItem(key);return v!==null?JSON.parse(v):def;}catch(e){return def;}}
 
-// Cloud sync removed — data lives safely in local storage on your device
-function syncToFirebase(){}
-function syncFromFirebase(cb){if(cb)cb(false);}
-function forcePushToCloud(){toast('Cloud sync has been removed. Use Export to back up your data.');}
-function forcePullFromCloud(){toast('Cloud sync has been removed. Use Export to back up your data.');}
+// ═══════════════════════════════════════════════
+// SYNC — merge strategy: union of local + remote,
+// books are NEVER deleted by a sync pull
+// ═══════════════════════════════════════════════
+var FIREBASE_URL='https://titles-by-trish-default-rtdb.firebaseio.com';
+var _pushTimer=null;
+
+function _syncDot(state){
+  var el=document.getElementById('sync-dot');
+  if(!el)return;
+  if(state==='ok'){el.style.background='#2a7a2a';el.title='Synced';}
+  else if(state==='syncing'){el.style.background='#c8a030';el.title='Syncing…';}
+  else{el.style.background='#888';el.title='Offline — saved locally';}
+}
+
+function _pushNow(){
+  var payload={
+    shelf:safeJSON('tbtrish_shelf',[]),
+    reviewDrafts:safeJSON('tbtrish_review_drafts',[]),
+    scorecardBooks:safeJSON('sc3_books',[]),
+    shelfGoal:parseInt(localStorage.getItem('tbtrish_shelf_goal')||'0')||0
+  };
+  _syncDot('syncing');
+  fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true})
+    .then(function(r){_syncDot(r.ok?'ok':'offline');})
+    .catch(function(){_syncDot('offline');});
+}
+
+function syncToFirebase(){
+  if(_pushTimer)clearTimeout(_pushTimer);
+  _pushTimer=setTimeout(_pushNow,500);
+}
+
+function syncFromFirebase(cb){
+  fetch(FIREBASE_URL+'/tbt.json',{cache:'no-store'})
+    .then(function(r){if(!r.ok){if(cb)cb(false);return null;}return r.json();})
+    .then(function(data){
+      if(!data||!data.shelf||!Array.isArray(data.shelf)||data.shelf.length===0){
+        _syncDot('ok');if(cb)cb(false);return;
+      }
+      var localShelf=safeJSON('tbtrish_shelf',[]);
+      // UNION MERGE: start with remote, then add any local-only books
+      // Books are NEVER removed from local by this merge
+      var remoteIds={};
+      for(var i=0;i<data.shelf.length;i++)remoteIds[data.shelf[i].id]=true;
+      var localOnly=localShelf.filter(function(b){return !remoteIds[b.id];});
+      var merged=data.shelf.concat(localOnly);
+      // Check if anything actually changed
+      var localIds={};
+      for(var j=0;j<localShelf.length;j++)localIds[localShelf[j].id]=true;
+      var hasNew=false;
+      for(var k=0;k<data.shelf.length;k++){if(!localIds[data.shelf[k].id]){hasNew=true;break;}}
+      if(hasNew||merged.length!==localShelf.length){
+        shelfBooks=merged;
+        localStorage.setItem('tbtrish_shelf',JSON.stringify(merged));
+        try{sessionStorage.setItem('tbtrish_shelf_ss',JSON.stringify(merged));}catch(e){}
+        // Push merged back so Firebase gets the local-only books too
+        if(localOnly.length>0){setTimeout(_pushNow,1000);}
+        _syncDot('ok');if(cb)cb(true);
+      } else {
+        _syncDot('ok');if(cb)cb(false);
+      }
+    })
+    .catch(function(){_syncDot('offline');if(cb)cb(false);});
+}
+
+// Push immediately when app goes to background or closes
+window.addEventListener('pagehide',_pushNow);
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='hidden'){
+    _pushNow();
+  } else {
+    syncFromFirebase(function(hadData){
+      if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
+    });
+  }
+});
+
+// Poll every 60 seconds to stay in sync
+setInterval(function(){
+  syncFromFirebase(function(hadData){
+    if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
+  });
+},60000);
 
 // ═══════════════════════════════════════════════
 // READ THIS NEXT
@@ -11053,6 +11136,9 @@ function renderDashboard(){
 }
 document.addEventListener('DOMContentLoaded',function(){
   try{renderDashboard();}catch(e){}
+  syncFromFirebase(function(hadData){
+    if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
+  });
 });
 
 // QUICK VIDEO SCRIPT GENERATOR
