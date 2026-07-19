@@ -3059,35 +3059,39 @@ function syncFromFirebase(cb){
     })
     .then(function(data){
       if(!data){_fbStatus('ok');if(cb)cb(false);return;}
-      if(data.shelf&&Array.isArray(data.shelf)){
-        shelfBooks=data.shelf;
-        localStorage.setItem('tbtrish_shelf',JSON.stringify(data.shelf));
-        try{sessionStorage.setItem('tbtrish_shelf_ss',JSON.stringify(data.shelf));}catch(e){}
+      var hadData=false;
+      if(data.shelf&&Array.isArray(data.shelf)&&data.shelf.length>0){
+        // Only overwrite local shelf if cloud has MORE books — never wipe local data
+        var localShelf=safeJSON('tbtrish_shelf',[]);
+        if(data.shelf.length>=localShelf.length){
+          shelfBooks=data.shelf;
+          localStorage.setItem('tbtrish_shelf',JSON.stringify(data.shelf));
+          try{sessionStorage.setItem('tbtrish_shelf_ss',JSON.stringify(data.shelf));}catch(e){}
+          hadData=true;
+        }
       }
-      if(data.reviewDrafts&&Array.isArray(data.reviewDrafts)){
-        reviewDrafts=data.reviewDrafts;
-        localStorage.setItem('tbtrish_review_drafts',JSON.stringify(data.reviewDrafts));
+      if(data.reviewDrafts&&Array.isArray(data.reviewDrafts)&&data.reviewDrafts.length>0){
+        var localRD=safeJSON('tbtrish_review_drafts',[]);
+        if(data.reviewDrafts.length>=localRD.length){
+          reviewDrafts=data.reviewDrafts;
+          localStorage.setItem('tbtrish_review_drafts',JSON.stringify(data.reviewDrafts));
+        }
       }
-      if(data.scorecardBooks&&Array.isArray(data.scorecardBooks)){
-        scBooks=data.scorecardBooks;
-        localStorage.setItem('sc3_books',JSON.stringify(data.scorecardBooks));
+      if(data.scorecardBooks&&Array.isArray(data.scorecardBooks)&&data.scorecardBooks.length>0){
+        var localSC=safeJSON('sc3_books',[]);
+        if(data.scorecardBooks.length>=localSC.length){
+          scBooks=data.scorecardBooks;
+          localStorage.setItem('sc3_books',JSON.stringify(data.scorecardBooks));
+        }
       }
-      if(data.shelfGoal){shelfGoal=data.shelfGoal;localStorage.setItem('tbtrish_shelf_goal',String(data.shelfGoal));}
+      if(data.shelfGoal&&data.shelfGoal>0){shelfGoal=data.shelfGoal;localStorage.setItem('tbtrish_shelf_goal',String(data.shelfGoal));}
       _fbStatus('ok');
-      if(cb)cb(true);
+      if(cb)cb(hadData);
     })
     .catch(function(err){console.warn('Firebase sync error:',err);_fbStatus('offline');if(cb)cb(false);});
 }
 
-// Pull fresh data whenever the user switches back to this tab/app
-window.addEventListener('focus',function(){
-  syncFromFirebase(function(hadData){
-    if(hadData){
-      try{renderShelf();}catch(e){}
-      try{renderDashboard();}catch(e){}
-    }
-  });
-});
+// Auto-pull on focus disabled — use Pull button to avoid wiping local books
 
 // 1-second heartbeat: confirms JS ran; also kicks off sync if DOMContentLoaded missed it
 setTimeout(function(){
