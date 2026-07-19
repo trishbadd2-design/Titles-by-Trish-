@@ -2968,6 +2968,42 @@ var ideas=[
 function safeJSON(key,def){try{var v=localStorage.getItem(key);return v!==null?JSON.parse(v):def;}catch(e){return def;}}
 
 // ═══════════════════════════════════════════════
+// INDEXEDDB — secondary persistent storage
+// iOS can occasionally clear localStorage under memory pressure;
+// IndexedDB survives that. We write to both every save.
+// ═══════════════════════════════════════════════
+(function(){
+  var _db=null;
+  function _open(cb){
+    if(_db){cb(_db);return;}
+    try{
+      var req=indexedDB.open('tbt_store',1);
+      req.onupgradeneeded=function(e){
+        try{e.target.result.createObjectStore('kv');}catch(ex){}
+      };
+      req.onsuccess=function(e){_db=e.target.result;cb(_db);};
+      req.onerror=function(){cb(null);};
+    }catch(e){cb(null);}
+  }
+  window.idbSave=function(key,val){
+    _open(function(db){
+      if(!db)return;
+      try{var tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(val,key);}catch(e){}
+    });
+  };
+  window.idbLoad=function(key,cb){
+    _open(function(db){
+      if(!db){cb(null);return;}
+      try{
+        var req=db.transaction('kv','readonly').objectStore('kv').get(key);
+        req.onsuccess=function(e){cb(e.target.result||null);};
+        req.onerror=function(){cb(null);};
+      }catch(e){cb(null);}
+    });
+  };
+})();
+
+// ═══════════════════════════════════════════════
 // SYNC — merge strategy: union of local + remote,
 // books are NEVER deleted by a sync pull
 // ═══════════════════════════════════════════════
@@ -10552,10 +10588,11 @@ async function addBatchBooks(){
 // ══════════════════════════════════════════
 var shelfBooks=safeJSON('tbtrish_shelf',[]);
 if(!Array.isArray(shelfBooks)||shelfBooks.length===0){
-  // try sessionStorage fallback if localStorage was cleared this session
+  // sessionStorage fallback (same session, pre-force-close)
   try{var _ss=sessionStorage.getItem('tbtrish_shelf_ss');if(_ss){var _ssv=JSON.parse(_ss);if(Array.isArray(_ssv)&&_ssv.length>0){shelfBooks=_ssv;localStorage.setItem('tbtrish_shelf',_ss);}}}catch(e){}
 }
 if(!Array.isArray(shelfBooks))shelfBooks=[];
+// IndexedDB restore runs async — see DOMContentLoaded handler below
 var shelfTab='tbr';
 var shelfView='covers';
 var shelfSearch='';
@@ -10569,6 +10606,7 @@ function saveShelf(){
   var data=JSON.stringify(shelfBooks);
   localStorage.setItem('tbtrish_shelf',data);
   try{sessionStorage.setItem('tbtrish_shelf_ss',data);}catch(e){}
+  try{idbSave('tbtrish_shelf',data);}catch(e){}
   syncToFirebase();
 }
 function _shelfBackupNudge(){
@@ -11136,9 +11174,35 @@ function renderDashboard(){
 }
 document.addEventListener('DOMContentLoaded',function(){
   try{renderDashboard();}catch(e){}
-  syncFromFirebase(function(hadData){
-    if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
-  });
+
+  function _doFirebaseSync(){
+    syncFromFirebase(function(hadData){
+      if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
+    });
+  }
+
+  // If localStorage is empty, try IndexedDB before hitting Firebase
+  if(!shelfBooks||shelfBooks.length===0){
+    try{
+      idbLoad('tbtrish_shelf',function(raw){
+        if(raw){
+          try{
+            var books=JSON.parse(raw);
+            if(Array.isArray(books)&&books.length>0){
+              shelfBooks=books;
+              localStorage.setItem('tbtrish_shelf',raw);
+              toast('✦ Restored '+books.length+' books from backup storage');
+              try{renderShelf();}catch(e){}
+              try{renderDashboard();}catch(e){}
+            }
+          }catch(ex){}
+        }
+        _doFirebaseSync();
+      });
+    }catch(e){_doFirebaseSync();}
+  } else {
+    _doFirebaseSync();
+  }
 });
 
 // QUICK VIDEO SCRIPT GENERATOR
