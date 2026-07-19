@@ -2980,6 +2980,22 @@ function _fbStatus(state){
   if(state==='offline'){try{toast('No connection — data saved locally');}catch(e){}}
 }
 
+function forcePushToCloud(){
+  _fbStatus('syncing');
+  var payload={
+    shelf:safeJSON('tbtrish_shelf',[]),
+    reviewDrafts:safeJSON('tbtrish_review_drafts',[]),
+    scorecardBooks:safeJSON('sc3_books',[]),
+    shelfGoal:parseInt(localStorage.getItem('tbtrish_shelf_goal')||'0')||0
+  };
+  fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(function(r){
+      if(r.ok){_fbStatus('ok');toast('☁ All data pushed to cloud!');}
+      else{_fbStatus('offline');toast('Could not reach cloud — check your connection');}
+    })
+    .catch(function(){_fbStatus('offline');toast('Could not reach cloud — check your connection');});
+}
+
 function syncToFirebase(){
   if(_fbTimer)clearTimeout(_fbTimer);
   _fbTimer=setTimeout(function(){
@@ -12718,7 +12734,10 @@ function resetQuiz(){quizAnswers={};initQuiz();}
 <div class="panel" id="panel-shelf">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
     <div class="section-title" style="margin-bottom:0;">📚 My Shelf</div>
-    <button onclick="exportShelfData()" style="padding:7px 13px;border:1px solid var(--border);border-radius:20px;background:#fffdf4;color:var(--gold);font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;">💾 Export</button>
+    <div style="display:flex;gap:6px;">
+      <button onclick="forcePushToCloud()" style="padding:7px 13px;border:1px solid rgba(42,122,42,.5);border-radius:20px;background:rgba(42,122,42,.1);color:#2a7a2a;font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;">☁ Push to Cloud</button>
+      <button onclick="exportShelfData()" style="padding:7px 13px;border:1px solid var(--border);border-radius:20px;background:#fffdf4;color:var(--gold);font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;">💾 Export</button>
+    </div>
   </div>
   <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:16px;line-height:1.7;">Track your TBR, current reads, and finished books — with cover art.</p>
 
