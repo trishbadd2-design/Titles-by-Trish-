@@ -3012,18 +3012,26 @@ function forcePullFromCloud(){
 
 function forcePushToCloud(){
   _fbStatus('syncing');
+  var shelf=safeJSON('tbtrish_shelf',[]);
   var payload={
-    shelf:safeJSON('tbtrish_shelf',[]),
+    shelf:shelf,
     reviewDrafts:safeJSON('tbtrish_review_drafts',[]),
     scorecardBooks:safeJSON('sc3_books',[]),
     shelfGoal:parseInt(localStorage.getItem('tbtrish_shelf_goal')||'0')||0
   };
   fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
     .then(function(r){
-      if(r.ok){_fbStatus('ok');toast('☁ All data pushed to cloud!');}
-      else{_fbStatus('offline');toast('Could not reach cloud — check your connection');}
+      return r.text().then(function(body){
+        if(r.ok&&body&&body!=='null'){
+          _fbStatus('ok');
+          toast('☁ Pushed '+shelf.length+' books to cloud!');
+        } else {
+          _fbStatus('offline');
+          toast('Firebase error '+r.status+': '+(body||'no response').substring(0,60));
+        }
+      });
     })
-    .catch(function(){_fbStatus('offline');toast('Could not reach cloud — check your connection');});
+    .catch(function(e){_fbStatus('offline');toast('Network error: '+e.message);});
 }
 
 function syncToFirebase(){
