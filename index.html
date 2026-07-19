@@ -2980,6 +2980,35 @@ function _fbStatus(state){
   if(state==='offline'){try{toast('No connection — data saved locally');}catch(e){}}
 }
 
+function forcePullFromCloud(){
+  toast('Pulling from cloud…');
+  fetch(FIREBASE_URL+'/tbt.json',{cache:'no-store'})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data){toast('Cloud is empty — nothing to pull. Push from your iPad first.');return;}
+      var count=0;
+      if(data.shelf&&Array.isArray(data.shelf)&&data.shelf.length){
+        shelfBooks=data.shelf;count=data.shelf.length;
+        localStorage.setItem('tbtrish_shelf',JSON.stringify(data.shelf));
+        try{sessionStorage.setItem('tbtrish_shelf_ss',JSON.stringify(data.shelf));}catch(e){}
+      }
+      if(data.reviewDrafts&&Array.isArray(data.reviewDrafts)){
+        reviewDrafts=data.reviewDrafts;
+        localStorage.setItem('tbtrish_review_drafts',JSON.stringify(data.reviewDrafts));
+      }
+      if(data.scorecardBooks&&Array.isArray(data.scorecardBooks)){
+        scBooks=data.scorecardBooks;
+        localStorage.setItem('sc3_books',JSON.stringify(data.scorecardBooks));
+      }
+      if(data.shelfGoal){shelfGoal=data.shelfGoal;localStorage.setItem('tbtrish_shelf_goal',String(data.shelfGoal));}
+      try{renderShelf();}catch(e){}
+      try{renderDashboard();}catch(e){}
+      if(count>0){toast('✦ Pulled '+count+' books from cloud!');}
+      else{toast('Cloud has no shelf books yet. Go to iPad and tap Push first.');}
+    })
+    .catch(function(err){toast('Could not reach cloud. Check your connection.');console.warn(err);});
+}
+
 function forcePushToCloud(){
   _fbStatus('syncing');
   var payload={
@@ -12735,7 +12764,8 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
     <div class="section-title" style="margin-bottom:0;">📚 My Shelf</div>
     <div style="display:flex;gap:6px;">
-      <button onclick="forcePushToCloud()" style="padding:7px 13px;border:1px solid rgba(42,122,42,.5);border-radius:20px;background:rgba(42,122,42,.1);color:#2a7a2a;font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;">☁ Push to Cloud</button>
+      <button onclick="forcePushToCloud()" style="padding:7px 13px;border:1px solid rgba(42,122,42,.5);border-radius:20px;background:rgba(42,122,42,.1);color:#2a7a2a;font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;">☁ Push</button>
+      <button onclick="forcePullFromCloud()" style="padding:7px 13px;border:1px solid rgba(42,100,200,.5);border-radius:20px;background:rgba(42,100,200,.1);color:#2a64c8;font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;">⬇ Pull</button>
       <button onclick="exportShelfData()" style="padding:7px 13px;border:1px solid var(--border);border-radius:20px;background:#fffdf4;color:var(--gold);font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;">💾 Export</button>
     </div>
   </div>
