@@ -3032,8 +3032,8 @@ function _pushNow(){
 }
 
 function syncToFirebase(){
-  if(_pushTimer)clearTimeout(_pushTimer);
-  _pushTimer=setTimeout(_pushNow,500);
+  // Push immediately — no debounce — so data reaches cloud before a force-close
+  _pushNow();
 }
 
 function syncFromFirebase(cb){
@@ -11173,6 +11173,11 @@ function renderDashboard(){
   updateDashClock();
 }
 document.addEventListener('DOMContentLoaded',function(){
+  // Diagnostic: show exactly what each storage layer has so we know what's happening
+  var _ls=safeJSON('tbtrish_shelf',[]).length;
+  var _ss=0;try{var _ssd=sessionStorage.getItem('tbtrish_shelf_ss');if(_ssd)_ss=JSON.parse(_ssd).length;}catch(e){}
+  toast('Storage check — localStorage:'+_ls+' sessionStorage:'+_ss+' books');
+
   try{renderDashboard();}catch(e){}
 
   function _doFirebaseSync(){
