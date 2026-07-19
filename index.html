@@ -874,7 +874,6 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <div class="eyebrow">✦ &nbsp; Command Center &nbsp; ✦</div>
   <h1>TitlesByTrish</h1>
   <div class="tagline">Your complete BookTok home base</div>
-  <div id="sync-indicator" style="font-size:13px;font-weight:600;letter-spacing:.05em;min-height:18px;margin-top:6px;transition:opacity .5s;">&#9729; Connecting…</div>
   <div class="header-rule"></div>
 </div>
 
@@ -2964,175 +2963,11 @@ var ideas=[
 // ═══════════════════════════════════════════════
 function safeJSON(key,def){try{var v=localStorage.getItem(key);return v!==null?JSON.parse(v):def;}catch(e){return def;}}
 
-// ═══════════════════════════════════════════════
-// FIREBASE SYNC
-// ═══════════════════════════════════════════════
-var FIREBASE_URL='https://titles-by-trish-default-rtdb.firebaseio.com';
-var _fbTimer=null;
-
-function _fbStatus(state){
-  var el=document.getElementById('sync-indicator');
-  if(el){
-    if(state==='syncing'){el.innerHTML='&#8635; Syncing…';el.style.color='#c8a030';el.style.opacity='1';}
-    else if(state==='ok'){el.innerHTML='&#9989; Synced!';el.style.color='#2a7a2a';el.style.opacity='1';setTimeout(function(){el.innerHTML='&#9729; Sync on';el.style.color='#2a7a2a';el.style.opacity='0.6';},8000);}
-    else{el.innerHTML='&#9888; Offline';el.style.color='#b43c3c';el.style.opacity='1';}
-  }
-  if(state==='ok'){try{toast('☁ Synced across all devices!');}catch(e){}}
-  if(state==='offline'){try{toast('No connection — data saved locally');}catch(e){}}
-}
-
-function forcePullFromCloud(){
-  toast('Pulling from cloud…');
-  fetch(FIREBASE_URL+'/tbt.json',{cache:'no-store'})
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(!data){toast('Cloud is empty — nothing to pull. Push from your iPad first.');return;}
-      var count=0;
-      if(data.shelf&&Array.isArray(data.shelf)&&data.shelf.length){
-        shelfBooks=data.shelf;count=data.shelf.length;
-        localStorage.setItem('tbtrish_shelf',JSON.stringify(data.shelf));
-        try{sessionStorage.setItem('tbtrish_shelf_ss',JSON.stringify(data.shelf));}catch(e){}
-      }
-      if(data.reviewDrafts&&Array.isArray(data.reviewDrafts)){
-        reviewDrafts=data.reviewDrafts;
-        localStorage.setItem('tbtrish_review_drafts',JSON.stringify(data.reviewDrafts));
-      }
-      if(data.scorecardBooks&&Array.isArray(data.scorecardBooks)){
-        scBooks=data.scorecardBooks;
-        localStorage.setItem('sc3_books',JSON.stringify(data.scorecardBooks));
-      }
-      if(data.shelfGoal){shelfGoal=data.shelfGoal;localStorage.setItem('tbtrish_shelf_goal',String(data.shelfGoal));}
-      try{renderShelf();}catch(e){}
-      try{renderDashboard();}catch(e){}
-      if(count>0){toast('✦ Pulled '+count+' books from cloud!');}
-      else{toast('Cloud has no shelf books yet. Go to iPad and tap Push first.');}
-    })
-    .catch(function(err){toast('Could not reach cloud. Check your connection.');console.warn(err);});
-}
-
-function forcePushToCloud(){
-  _fbStatus('syncing');
-  var shelf=safeJSON('tbtrish_shelf',[]);
-  var payload={
-    shelf:shelf,
-    reviewDrafts:safeJSON('tbtrish_review_drafts',[]),
-    scorecardBooks:safeJSON('sc3_books',[]),
-    shelfGoal:parseInt(localStorage.getItem('tbtrish_shelf_goal')||'0')||0
-  };
-  fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    .then(function(r){
-      return r.text().then(function(body){
-        if(r.ok&&body&&body!=='null'){
-          _fbStatus('ok');
-          toast('☁ Pushed '+shelf.length+' books to cloud!');
-        } else {
-          _fbStatus('offline');
-          toast('Firebase error '+r.status+': '+(body||'no response').substring(0,60));
-        }
-      });
-    })
-    .catch(function(e){_fbStatus('offline');toast('Network error: '+e.message);});
-}
-
-function _buildPayload(){
-  return {
-    shelf:safeJSON('tbtrish_shelf',[]),
-    reviewDrafts:safeJSON('tbtrish_review_drafts',[]),
-    scorecardBooks:safeJSON('sc3_books',[]),
-    shelfGoal:parseInt(localStorage.getItem('tbtrish_shelf_goal')||'0')||0
-  };
-}
-
-function syncToFirebase(){
-  if(_fbTimer)clearTimeout(_fbTimer);
-  _fbTimer=setTimeout(function(){
-    _fbStatus('syncing');
-    var payload=_buildPayload();
-    // keepalive:true lets the request finish even if the page is force-closed
-    fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true})
-      .then(function(r){if(r.ok)_fbStatus('ok');else _fbStatus('error');})
-      .catch(function(){_fbStatus('offline');});
-  },300);
-}
-
-// Fire an immediate push the instant iOS starts closing the app
-window.addEventListener('pagehide',function(){
-  var payload=_buildPayload();
-  try{fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true});}catch(e){}
-});
-
-// Also push when app goes to background (switching apps on phone)
-document.addEventListener('visibilitychange',function(){
-  if(document.visibilityState==='hidden'){
-    var payload=_buildPayload();
-    try{fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true});}catch(e){}
-  }
-  // Pull when coming back to the app
-  if(document.visibilityState==='visible'){
-    syncFromFirebase(function(hadData){
-      if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
-    });
-  }
-});
-
-function syncFromFirebase(cb){
-  _fbStatus('syncing');
-  fetch(FIREBASE_URL+'/tbt.json',{cache:'no-store'})
-    .then(function(r){
-      if(!r.ok){_fbStatus('offline');if(cb)cb(false);return null;}
-      return r.json();
-    })
-    .then(function(data){
-      if(!data){_fbStatus('ok');if(cb)cb(false);return;}
-      var hadData=false;
-      if(data.shelf&&Array.isArray(data.shelf)&&data.shelf.length>0){
-        // Only overwrite local shelf if cloud has MORE books — never wipe local data
-        var localShelf=safeJSON('tbtrish_shelf',[]);
-        if(data.shelf.length>localShelf.length){
-          shelfBooks=data.shelf;
-          localStorage.setItem('tbtrish_shelf',JSON.stringify(data.shelf));
-          try{sessionStorage.setItem('tbtrish_shelf_ss',JSON.stringify(data.shelf));}catch(e){}
-          hadData=true;
-        }
-      }
-      if(data.reviewDrafts&&Array.isArray(data.reviewDrafts)&&data.reviewDrafts.length>0){
-        var localRD=safeJSON('tbtrish_review_drafts',[]);
-        if(data.reviewDrafts.length>=localRD.length){
-          reviewDrafts=data.reviewDrafts;
-          localStorage.setItem('tbtrish_review_drafts',JSON.stringify(data.reviewDrafts));
-        }
-      }
-      if(data.scorecardBooks&&Array.isArray(data.scorecardBooks)&&data.scorecardBooks.length>0){
-        var localSC=safeJSON('sc3_books',[]);
-        if(data.scorecardBooks.length>=localSC.length){
-          scBooks=data.scorecardBooks;
-          localStorage.setItem('sc3_books',JSON.stringify(data.scorecardBooks));
-        }
-      }
-      if(data.shelfGoal&&data.shelfGoal>0){shelfGoal=data.shelfGoal;localStorage.setItem('tbtrish_shelf_goal',String(data.shelfGoal));}
-      _fbStatus('ok');
-      if(cb)cb(hadData);
-    })
-    .catch(function(err){console.warn('Firebase sync error:',err);_fbStatus('offline');if(cb)cb(false);});
-}
-
-// visibilitychange handles focus/blur more reliably on iOS (see above)
-
-// Poll every 30 seconds so both devices stay in sync automatically
-setInterval(function(){
-  syncFromFirebase(function(hadData){
-    if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
-  });
-},30000);
-
-// 1-second heartbeat: confirms JS ran; also kicks off sync if DOMContentLoaded missed it
-setTimeout(function(){
-  var el=document.getElementById('sync-indicator');
-  if(el&&el.innerHTML.indexOf('Connecting')!==-1){
-    el.innerHTML='&#8635; Checking…';el.style.color='#c8a030';el.style.opacity='1';
-    syncFromFirebase(function(){});
-  }
-},1000);
+// Cloud sync removed — data lives safely in local storage on your device
+function syncToFirebase(){}
+function syncFromFirebase(cb){if(cb)cb(false);}
+function forcePushToCloud(){toast('Cloud sync has been removed. Use Export to back up your data.');}
+function forcePullFromCloud(){toast('Cloud sync has been removed. Use Export to back up your data.');}
 
 // ═══════════════════════════════════════════════
 // READ THIS NEXT
@@ -11217,15 +11052,6 @@ function renderDashboard(){
   updateDashClock();
 }
 document.addEventListener('DOMContentLoaded',function(){
-  // Start sync first, then render — so a renderDashboard error can't block the sync indicator
-  try{syncFromFirebase(function(hadData){
-    if(hadData){try{renderDashboard();}catch(e){}try{renderShelf();}catch(e){}}
-  });}catch(e){_fbStatus('offline');}
-  // 10-second watchdog: if still stuck on "Connecting…" something silently failed
-  setTimeout(function(){
-    var el=document.getElementById('sync-indicator');
-    if(el&&el.innerHTML.indexOf('Connecting')!==-1){_fbStatus('offline');}
-  },10000);
   try{renderDashboard();}catch(e){}
 });
 
@@ -12885,9 +12711,7 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
     <div class="section-title" style="margin-bottom:0;">📚 My Shelf</div>
     <div style="display:flex;gap:6px;">
-      <button onclick="forcePushToCloud()" style="padding:7px 13px;border:1px solid rgba(42,122,42,.5);border-radius:20px;background:rgba(42,122,42,.1);color:#2a7a2a;font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;">☁ Push</button>
-      <button onclick="forcePullFromCloud()" style="padding:7px 13px;border:1px solid rgba(42,100,200,.5);border-radius:20px;background:rgba(42,100,200,.1);color:#2a64c8;font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;">⬇ Pull</button>
-      <button onclick="exportShelfData()" style="padding:7px 13px;border:1px solid var(--border);border-radius:20px;background:#fffdf4;color:var(--gold);font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;">💾 Export</button>
+<button onclick="exportShelfData()" style="padding:7px 13px;border:1px solid var(--border);border-radius:20px;background:#fffdf4;color:var(--gold);font-family:Cinzel,serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;white-space:nowrap;">💾 Export</button>
     </div>
   </div>
   <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:16px;line-height:1.7;">Track your TBR, current reads, and finished books — with cover art.</p>
