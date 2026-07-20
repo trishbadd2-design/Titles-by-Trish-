@@ -3225,7 +3225,11 @@ function _startShelfStream(){
       }catch(ex){}
     });
     _shelfStream.onopen=function(){_syncDot('ok');};
-    _shelfStream.onerror=function(){_syncDot('offline');};
+    _shelfStream.onerror=function(){
+      // readyState 0 (CONNECTING) = the browser is auto-retrying, which is
+      // normal SSE behavior — only show offline once it's actually CLOSED (2)
+      if(_shelfStream&&_shelfStream.readyState===2){_syncDot('offline');}
+    };
   }catch(e){}
 }
 
