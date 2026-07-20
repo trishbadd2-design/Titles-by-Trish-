@@ -1606,15 +1606,12 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
 
   <!-- TBR -->
   <div id="sc-section-tbr" class="sc-section">
-    <button class="sc-add-btn" onclick="scOpenAdd('tbr')">✦ Add to My TBR Pile</button>
-    <input class="sc-search" id="sc-tbr-search" placeholder="Search TBR..." oninput="scRenderTBR()" style="margin-top:8px;margin-bottom:4px;"/>
-    <div class="tbr-sort-row" id="tbr-sort-row">
-      <button class="tbr-sort-btn active" id="tbr-sort-date" onclick="setTBRSort('date')">🗓️ Date Added</button>
-      <button class="tbr-sort-btn" id="tbr-sort-priority" onclick="setTBRSort('priority')">⚡ Priority</button>
-      <button class="tbr-sort-btn" id="tbr-sort-alpha" onclick="setTBRSort('alpha')">🔤 A–Z</button>
+    <div style="text-align:center;padding:28px 16px;">
+      <div style="font-size:40px;margin-bottom:12px;">📚</div>
+      <div style="font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;">Your TBR is in My Shelf</div>
+      <div style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:20px;">All your TBR books live in one place now — My Shelf. Add books, see covers, track priority, and move them to Reading when you're ready.</div>
+      <button onclick="showPanel('shelf');setShelfTab('tbr');" style="padding:12px 28px;background:var(--gold);border:none;border-radius:8px;color:#fffdf4;font-family:'Cinzel',serif;font-size:14px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Go to My Shelf TBR →</button>
     </div>
-    <div id="tbr-genre-filters" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;margin-top:4px;"></div>
-    <div id="sc-tbr-list"></div>
   </div>
 
   <!-- WISHLIST -->
@@ -2960,9 +2957,9 @@ var ideas=[
 {genre:"haul",label:"Haul / Wrap Up",title:"Thrift store book haul — dark fiction edition",hook:"I spent twelve dollars at Goodwill and came home with some of the darkest books I own"},
 {genre:"haul",label:"Haul / Wrap Up",title:"Books I bought twice because I loved them that much",hook:"I already own these but something made me buy them again and I am not ashamed"},
 {genre:"haul",label:"Haul / Wrap Up",title:"My villain era reading haul — nothing comforting allowed",hook:"This month I read nothing that didn't make me question humanity and I thrived"},
-{genre:"hf",label:"Historical Fiction",title:"I visited the African American museum and came home with these 4 books",hook:"Homegoing. The Trees. Kin. Kindred. The museum sent me straight to the bookstore and I have not recovered.",books:["Homegoing by Yaa Gyasi","The Trees by Percival Everett","Kin by Tayari Jones","Kindred by Octavia Butler"]},
-{genre:"hf",label:"Historical Fiction",title:"4 books that hit completely different after visiting the African American museum",hook:"I walked out of that museum and every single one of these books made a different kind of sense — Homegoing, The Trees, Kin, Kindred"},
-{genre:"haul",label:"Haul / Wrap Up",title:"Museum haul — books I picked up after the African American museum",hook:"The museum gave me context. These 4 books gave me everything else. Homegoing, The Trees, Kin by Tayari Jones, Kindred by Octavia Butler."},
+{genre:"hf",label:"Historical Fiction",title:"I visited the African American museum and ordered these 4 books the same day",hook:"Homegoing. The Trees. Kin. Kindred. I walked out of that museum and went straight to Amazon and I have no regrets."},
+{genre:"hf",label:"Historical Fiction",title:"4 books that hit completely different after visiting the African American museum",hook:"The museum gave me context I did not have before and now every single one of these books — Homegoing, The Trees, Kin, Kindred — means something different"},
+{genre:"haul",label:"Haul / Wrap Up",title:"Amazon haul inspired by the African American museum",hook:"I went to the museum. I came home. I ordered Homegoing, The Trees, Kin by Tayari Jones, and Kindred by Octavia Butler. The museum did that to me."},
 ];
 
 // ═══════════════════════════════════════════════
@@ -5137,6 +5134,27 @@ document.getElementById('plan-modal').addEventListener('click',function(e){
 // ═══════════════════════════════════════════════
 var scBooks = safeJSON('sc3_books',[]);
 var scTBR = safeJSON('sc3_tbr',[]);
+// One-time migration: move Scorecard TBR books into My Shelf
+(function(){
+  if(!scTBR.length)return;
+  if(localStorage.getItem('tbtrish_sc_tbr_migrated'))return;
+  var shelfIds={};
+  for(var i=0;i<shelfBooks.length;i++)shelfIds[shelfBooks[i].title+shelfBooks[i].author]=true;
+  var added=0;
+  for(var j=0;j<scTBR.length;j++){
+    var t=scTBR[j];
+    var key=(t.title||'')+(t.author||'');
+    if(!shelfIds[key]){
+      shelfBooks.push({id:Date.now()+j,title:t.title||'',author:t.author||'',status:'tbr',cover:t.coverUrl||'',genre:t.genre||'',series:'',notes:t.why||'',rating:'',dateFinished:'',dateAdded:new Date().toISOString().slice(0,10),totalPages:0,currentPage:0});
+      added++;
+    }
+  }
+  if(added>0){
+    localStorage.setItem('tbtrish_shelf',JSON.stringify(shelfBooks));
+    try{idbSave('tbtrish_shelf',JSON.stringify(shelfBooks));}catch(e){}
+  }
+  localStorage.setItem('tbtrish_sc_tbr_migrated','1');
+})();
 var scGoal = parseInt(localStorage.getItem('sc3_goal') || '60');
 var scNotes = localStorage.getItem('sc3_notes') || '';
 var scStreak = parseInt(localStorage.getItem('sc3_streak') || '0');
