@@ -3156,6 +3156,8 @@ function forceRestoreFromCloud(){
       localStorage.setItem('tbtrish_shelf',json);
       try{sessionStorage.setItem('tbtrish_shelf_ss',json);}catch(e){}
       idbSave('tbtrish_shelf',json);
+      // Push merged back so Firebase is up to date for all devices
+      setTimeout(_pushNow,500);
       try{renderShelf();}catch(e){}
       try{renderDashboard();}catch(e){}
       toast('✦ Restored '+merged.length+' books from cloud backup!');
