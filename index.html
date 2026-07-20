@@ -3292,6 +3292,42 @@ setInterval(function(){
 },60000);
 
 // ═══════════════════════════════════════════════
+// AUTO-UPDATE — keep the installed Home Screen app in
+// step with the live webpage. iOS often just resumes a
+// backgrounded PWA instead of reloading it, so without
+// this, "the app" can silently run stale code forever
+// while a fresh Safari tab always gets the newest code.
+// This detects a new deploy and reloads automatically.
+// ═══════════════════════════════════════════════
+var _appLoadedHtmlHash=null;
+function _simpleHash(str){
+  var hash=0;
+  for(var i=0;i<str.length;i++){hash=((hash<<5)-hash+str.charCodeAt(i))|0;}
+  return hash;
+}
+function _checkForAppUpdate(){
+  var ae=document.activeElement;
+  var busy=ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA'||ae.tagName==='SELECT');
+  fetch(location.href,{cache:'no-store'})
+    .then(function(r){return r.ok?r.text():null;})
+    .then(function(html){
+      if(!html)return;
+      var h=_simpleHash(html);
+      if(_appLoadedHtmlHash===null){_appLoadedHtmlHash=h;return;}
+      if(h!==_appLoadedHtmlHash&&!busy){
+        toast('✦ Update found — reloading…');
+        setTimeout(function(){location.reload();},800);
+      }
+    })
+    .catch(function(){});
+}
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='visible')_checkForAppUpdate();
+});
+setInterval(_checkForAppUpdate,120000);
+setTimeout(_checkForAppUpdate,4000);
+
+// ═══════════════════════════════════════════════
 // READ THIS NEXT
 // ═══════════════════════════════════════════════
 var READ_NEXT_SEEDS=[
