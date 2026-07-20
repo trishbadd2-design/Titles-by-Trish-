@@ -6712,8 +6712,7 @@ var spinList=safeJSON('tbtrish_spinlist',[]);
 var _spinTab='tbr';
 
 function initSpin(){
-  var tbr;
-  try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e){tbr=[];}
+  var tbr=Array.isArray(shelfBooks)?shelfBooks.filter(function(b){return b.status==='tbr';}):[];
   spinBooks=tbr.length?tbr:[
     {title:'Still Missing',author:'Chevy Stevens'},
     {title:'Gone Girl',author:'Gillian Flynn'},
@@ -6722,13 +6721,12 @@ function initSpin(){
     {title:'Mexican Gothic',author:'Silvia Moreno-Garcia'},
     {title:'The Push',author:'Ashley Audrain'},
   ];
-  if(spinBooks.length>20)spinBooks=spinBooks.slice(0,20);
   var reelTitle=document.getElementById('spin-reel-title');
   var reelAuthor=document.getElementById('spin-reel-author');
   if(reelTitle)reelTitle.textContent='Tap Spin to pick your next read 🖤';
   if(reelAuthor)reelAuthor.textContent=spinBooks.length+' books ready';
   var note=document.getElementById('spin-tbr-note');
-  if(note)note.textContent='Spinning from your full TBR pile — '+spinBooks.length+' books in the mix. Add more in Reading → Scorecard → TBR. 🖤';
+  if(note)note.textContent='Spinning from your full TBR — '+spinBooks.length+' books in the mix. Add books in My Shelf → TBR to grow it. 🖤';
   document.getElementById('spin-result').textContent='';
   document.getElementById('spin-result-author').textContent='';
 }
@@ -6753,19 +6751,22 @@ function spinUpdateDisplay(){
 }
 
 function addSpinBook(){
-  var titleEl=document.getElementById('spin-custom-title');
-  var authorEl=document.getElementById('spin-custom-author');
-  var title=(titleEl?titleEl.value:'').trim();
-  if(!title){toast('Enter a book title!');return;}
-  var book={id:Date.now().toString(),title:title,author:authorEl?authorEl.value.trim():''};
-  spinList.push(book);
-  localStorage.setItem('tbtrish_spinlist',JSON.stringify(spinList));
-  if(titleEl)titleEl.value='';
-  if(authorEl)authorEl.value='';
-  spinBooks=spinList.slice();
-  renderSpinList();
-  spinUpdateDisplay();
-  toast('❖ Added to shortlist!');
+  try{
+    var titleEl=document.getElementById('spin-custom-title');
+    var authorEl=document.getElementById('spin-custom-author');
+    var title=(titleEl?titleEl.value:'').trim();
+    if(!title){toast('Enter a book title!');return;}
+    var book={id:String(Date.now()),title:title,author:authorEl?authorEl.value.trim():''};
+    if(!Array.isArray(spinList))spinList=[];
+    spinList.push(book);
+    try{localStorage.setItem('tbtrish_spinlist',JSON.stringify(spinList));}catch(se){}
+    if(titleEl)titleEl.value='';
+    if(authorEl)authorEl.value='';
+    spinBooks=spinList.slice();
+    renderSpinList();
+    spinUpdateDisplay();
+    toast('❖ Added to shortlist!');
+  }catch(e){toast('Could not add book: '+e.message);}
 }
 
 function removeSpinBook(id){
