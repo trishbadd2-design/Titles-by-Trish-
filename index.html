@@ -5409,20 +5409,22 @@ var scTBR = safeJSON('sc3_tbr',[]);
 (function(){
   if(!scTBR.length)return;
   if(localStorage.getItem('tbtrish_sc_tbr_migrated'))return;
+  var _shelfSoFar=safeJSON('tbtrish_shelf',[]);
+  if(!Array.isArray(_shelfSoFar))_shelfSoFar=[];
   var shelfIds={};
-  for(var i=0;i<shelfBooks.length;i++)shelfIds[shelfBooks[i].title+shelfBooks[i].author]=true;
+  for(var i=0;i<_shelfSoFar.length;i++)shelfIds[_shelfSoFar[i].title+_shelfSoFar[i].author]=true;
   var added=0;
   for(var j=0;j<scTBR.length;j++){
     var t=scTBR[j];
     var key=(t.title||'')+(t.author||'');
     if(!shelfIds[key]){
-      shelfBooks.push({id:Date.now()+j,title:t.title||'',author:t.author||'',status:'tbr',cover:t.coverUrl||'',genre:t.genre||'',series:'',notes:t.why||'',rating:'',dateFinished:'',dateAdded:new Date().toISOString().slice(0,10),totalPages:0,currentPage:0});
+      _shelfSoFar.push({id:Date.now()+j,title:t.title||'',author:t.author||'',status:'tbr',cover:t.coverUrl||'',genre:t.genre||'',series:'',notes:t.why||'',rating:'',dateFinished:'',dateAdded:new Date().toISOString().slice(0,10),totalPages:0,currentPage:0});
       added++;
     }
   }
   if(added>0){
-    localStorage.setItem('tbtrish_shelf',JSON.stringify(shelfBooks));
-    try{idbSave('tbtrish_shelf',JSON.stringify(shelfBooks));}catch(e){}
+    localStorage.setItem('tbtrish_shelf',JSON.stringify(_shelfSoFar));
+    try{idbSave('tbtrish_shelf',JSON.stringify(_shelfSoFar));}catch(e){}
   }
   localStorage.setItem('tbtrish_sc_tbr_migrated','1');
 })();
