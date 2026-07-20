@@ -1295,6 +1295,50 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
       <button class="btn" style="flex:1;padding:12px;" onclick="saveIdea()">Save This Idea</button>
     </div>
 
+    <!-- INLINE CONTENT BUILDER — appears after idea is generated -->
+    <div id="idea-content-builder" style="display:none;margin-top:20px;border-top:1px solid var(--border);padding-top:18px;">
+      <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:var(--gold);margin-bottom:12px;">✦ BUILD CONTENT FOR THIS IDEA</div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="font-size:13px;color:var(--text-dim);">Books in this video</div>
+        <button onclick="ideaCgenAddBook()" style="padding:6px 14px;background:var(--gold-faint);border:1px solid var(--border);border-radius:12px;color:var(--gold);font-size:12px;font-family:'Cinzel',serif;font-weight:700;cursor:pointer;letter-spacing:.06em;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add Book</button>
+      </div>
+      <div id="idea-cgen-book-list" style="margin-bottom:12px;"></div>
+
+      <button onclick="generateIdeaContent()" style="width:100%;padding:13px;background:var(--gold);border:none;border-radius:8px;color:#fffdf4;font-family:'Cinzel',serif;font-size:14px;font-weight:700;letter-spacing:.08em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">⚡ Generate Script + Caption + Hashtags + CTAs</button>
+
+      <div id="idea-cgen-output" style="display:none;margin-top:18px;">
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);">🎬 Script</div>
+            <button onclick="copyIdeaSection('idea-cgen-out-script')" style="padding:4px 12px;background:var(--gold-faint);border:1px solid var(--border);border-radius:10px;color:var(--gold);font-size:11px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Copy</button>
+          </div>
+          <textarea id="idea-cgen-out-script" rows="8" readonly style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;color:var(--text);font-size:14px;line-height:1.7;font-family:inherit;resize:none;"></textarea>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);">📝 Caption</div>
+            <button onclick="copyIdeaSection('idea-cgen-out-caption')" style="padding:4px 12px;background:var(--gold-faint);border:1px solid var(--border);border-radius:10px;color:var(--gold);font-size:11px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Copy</button>
+          </div>
+          <textarea id="idea-cgen-out-caption" rows="6" readonly style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;color:var(--text);font-size:14px;line-height:1.7;font-family:inherit;resize:none;"></textarea>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);">🏷️ Hashtags</div>
+            <button onclick="copyIdeaSection('idea-cgen-out-hashtags')" style="padding:4px 12px;background:var(--gold-faint);border:1px solid var(--border);border-radius:10px;color:var(--gold);font-size:11px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Copy</button>
+          </div>
+          <textarea id="idea-cgen-out-hashtags" rows="2" readonly style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;color:var(--text-dim);font-size:14px;line-height:1.7;font-family:inherit;resize:none;"></textarea>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);">📣 Call to Action</div>
+            <button onclick="copyIdeaSection('idea-cgen-out-cta')" style="padding:4px 12px;background:var(--gold-faint);border:1px solid var(--border);border-radius:10px;color:var(--gold);font-size:11px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Copy</button>
+          </div>
+          <textarea id="idea-cgen-out-cta" rows="2" readonly style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px;color:var(--text);font-size:14px;line-height:1.7;font-family:inherit;resize:none;"></textarea>
+        </div>
+      </div>
+    </div>
+
     <div class="card-box" style="margin-top:16px;">
       <div class="label-sm">Saved Ideas</div>
       <div id="saved-ideas" style="margin-top:8px;"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:8px 0;">No saved ideas yet</div></div>
@@ -3960,6 +4004,78 @@ function generateIdea(){
     <div class="idea-genre">✦ ${currentIdea.label} ✦</div>
     <div class="idea-text">${currentIdea.title}</div>
     <div class="idea-hook">"${currentIdea.hook}"</div>`;
+  var cb=document.getElementById('idea-content-builder');
+  if(cb){cb.style.display='block';document.getElementById('idea-cgen-output').style.display='none';}
+}
+
+var _ideaCgenBooks=[];
+var _ideaCgenId=0;
+
+function ideaCgenAddBook(){
+  var id=++_ideaCgenId;
+  _ideaCgenBooks.push(id);
+  var el=document.getElementById('idea-cgen-book-list');
+  if(!el)return;
+  var row=document.createElement('div');
+  row.id='idea-cgen-row-'+id;
+  row.style.cssText='display:flex;gap:6px;margin-bottom:8px;align-items:center;';
+  row.innerHTML='<input id="idea-cgen-title-'+id+'" placeholder="Book title..." style="flex:2;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--text);font-size:14px;font-family:inherit;">'
+    +'<input id="idea-cgen-author-'+id+'" placeholder="Author..." style="flex:1.5;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg3);color:var(--text);font-size:14px;font-family:inherit;">'
+    +'<button onclick="ideaCgenRemoveBook('+id+')" style="padding:8px;background:var(--red-dim);border:1px solid var(--border);border-radius:6px;color:var(--text);cursor:pointer;font-size:13px;flex-shrink:0;touch-action:manipulation;">✕</button>';
+  el.appendChild(row);
+}
+
+function ideaCgenRemoveBook(id){
+  _ideaCgenBooks=_ideaCgenBooks.filter(function(b){return b!==id;});
+  var row=document.getElementById('idea-cgen-row-'+id);
+  if(row)row.remove();
+}
+
+function generateIdeaContent(){
+  if(!currentIdea){toast('Generate an idea first!');return;}
+  var books=_ideaCgenBooks.map(function(id){
+    return {
+      title:(document.getElementById('idea-cgen-title-'+id)||{value:''}).value.trim(),
+      author:(document.getElementById('idea-cgen-author-'+id)||{value:''}).value.trim()
+    };
+  }).filter(function(b){return b.title;});
+  if(!books.length){toast('Add at least one book first!');return;}
+
+  var genre=currentIdea.genre||'haul';
+  var typeMap={'haul':'Book Haul','hf':'Book Haul','psych':'Book Review','truecrime':'Book Review','fantasy':'Book Review','engagement':'Recommendations'};
+  var type=typeMap[genre]||'Book Haul';
+
+  var hooks=CGEN_HOOKS[type]||CGEN_HOOKS['Book Haul'];
+  // Use the idea's own hook first, then a random one as fallback
+  var hook=currentIdea.hook||hooks[Math.floor(Math.random()*hooks.length)];
+  var ctas=CGEN_CTAS[type]||CGEN_CTAS['Book Haul'];
+  var cta=ctas[Math.floor(Math.random()*ctas.length)];
+  var bookList=books.map(function(b){return b.title+(b.author?' by '+b.author:'');}).join(' + ');
+  var bookLines=books.map(function(b){return '📖 '+b.title+(b.author?' by '+b.author:'');}).join('\n\n');
+
+  var hashtags='#BookTok #DarkFiction #TitlesByTrish #BookRecommendations #BookHaul';
+  if(genre==='hf')hashtags='#BookTok #HistoricalFiction #TitlesByTrish #BlackLiterature #BookRecommendations #BookHaul';
+  else if(genre==='psych')hashtags='#BookTok #PsychologicalThriller #DarkFiction #TitlesByTrish #ThrillerBookTok';
+  else if(genre==='truecrime')hashtags='#BookTok #TrueCrime #TitlesByTrish #TrueCrimeBookTok #DarkReads';
+  else if(genre==='fantasy')hashtags='#BookTok #DarkFantasy #TitlesByTrish #FantasyBooks #DarkFiction';
+  else if(genre==='engagement')hashtags='#BookTok #BookRecommendations #TitlesByTrish #DarkFiction #ReadingCommunity';
+
+  var script='🎬 HOOK:\n"'+hook+'"\n\n📚 THE BOOKS:\n\n'+bookLines+'\n\n📣 CALL TO ACTION:\n"'+cta+'"';
+  var caption=currentIdea.title+' 🖤\n\n'+hook+'\n\n'+bookList+'\n\n'+cta+'\n\n'+hashtags;
+
+  document.getElementById('idea-cgen-out-script').value=script;
+  document.getElementById('idea-cgen-out-caption').value=caption;
+  document.getElementById('idea-cgen-out-hashtags').value=hashtags;
+  document.getElementById('idea-cgen-out-cta').value=cta;
+  var out=document.getElementById('idea-cgen-output');
+  if(out){out.style.display='block';out.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  toast('✦ Script + caption generated!');
+}
+
+function copyIdeaSection(id){
+  var el=document.getElementById(id);
+  if(!el)return;
+  navigator.clipboard.writeText(el.value).then(function(){toast('📋 Copied!');}).catch(function(){toast('Copy failed.');});
 }
 
 function saveIdea(){
