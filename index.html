@@ -3048,11 +3048,18 @@ function safeJSON(key,def){try{var v=localStorage.getItem(key);return v!==null?J
 })();
 
 // ═══════════════════════════════════════════════
-// SYNC — merge strategy: union of local + remote,
-// books are NEVER deleted by a sync pull
+// SYNC — real-time, per-book records in Firebase.
+// Each book lives at /shelf/{id} instead of one big
+// array blob, so edits to different books on
+// different devices can never clobber each other,
+// and deletions are explicit (never "everything's
+// gone" just because one device's payload was empty).
+// A real-time stream (EventSource) pushes changes
+// instantly instead of waiting on a polling timer.
 // ═══════════════════════════════════════════════
 var FIREBASE_URL='https://titles-by-trish-default-rtdb.firebaseio.com';
-var _pushTimer=null;
+var _shelfPushed={};   // last-known-pushed JSON per book id, for diffing
+var _shelfStream=null;
 
 function _syncDot(state){
   var el=document.getElementById('sync-dot');
@@ -3062,108 +3069,223 @@ function _syncDot(state){
   else{el.style.background='#888';el.title='Offline — saved locally';}
 }
 
-function _pushNow(){
-  var shelf=safeJSON('tbtrish_shelf',[]);
-  // NEVER push an empty shelf — if iOS cleared storage, don't wipe the cloud backup
-  if(!shelf||shelf.length===0){_syncDot('offline');return;}
+// Push only the books that changed since the last push — cheap, and each
+// write only touches its own book's path so it can't clobber another book.
+function _shelfDiffPush(){
+  if(!Array.isArray(shelfBooks))return;
+  var currentIds={};
+  var dirty=false;
+  shelfBooks.forEach(function(b){
+    if(!b||b.id===undefined||b.id===null)return;
+    var key=String(b.id);
+    currentIds[key]=true;
+    var json=JSON.stringify(b);
+    if(_shelfPushed[key]!==json){
+      dirty=true;
+      _syncDot('syncing');
+      fetch(FIREBASE_URL+'/shelf/'+encodeURIComponent(key)+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:json,keepalive:true})
+        .then(function(r){_syncDot(r.ok?'ok':'offline');})
+        .catch(function(){_syncDot('offline');});
+      _shelfPushed[key]=json;
+    }
+  });
+  Object.keys(_shelfPushed).forEach(function(key){
+    if(!currentIds[key]){
+      dirty=true;
+      fetch(FIREBASE_URL+'/shelf/'+encodeURIComponent(key)+'.json',{method:'DELETE',keepalive:true}).catch(function(){});
+      delete _shelfPushed[key];
+    }
+  });
+  if(!dirty)_syncDot('ok');
+}
+
+function syncShelfToFirebase(){_shelfDiffPush();}
+
+// Upsert or remove a single book in the local array (used by the real-time stream)
+function _applyRemoteBook(id,data){
+  if(!Array.isArray(shelfBooks))shelfBooks=[];
+  var idx=shelfBooks.findIndex(function(b){return String(b.id)===String(id);});
+  if(data===null||data===undefined){
+    if(idx>=0)shelfBooks.splice(idx,1);
+  } else {
+    if(idx>=0)shelfBooks[idx]=data;else shelfBooks.push(data);
+  }
+  var json=JSON.stringify(shelfBooks);
+  localStorage.setItem('tbtrish_shelf',json);
+  try{sessionStorage.setItem('tbtrish_shelf_ss',json);}catch(e){}
+  try{idbSave('tbtrish_shelf',json);}catch(e){}
+}
+
+// Merge a full /shelf.json snapshot (object keyed by book id) into local —
+// never wipes local books, only adds/updates from remote and keeps local-only ones.
+function _mergeShelfSnapshot(remoteObj){
+  if(!remoteObj||typeof remoteObj!=='object'){
+    // Nothing in the cloud yet — don't wipe local, just push what we have
+    _shelfDiffPush();
+    return;
+  }
+  var localShelf=safeJSON('tbtrish_shelf',[]);
+  var merged=[];
+  var seen={};
+  Object.keys(remoteObj).forEach(function(id){
+    var b=remoteObj[id];
+    if(!b)return;
+    merged.push(b);
+    seen[String(b.id!==undefined?b.id:id)]=true;
+    _shelfPushed[id]=JSON.stringify(b);
+  });
+  localShelf.forEach(function(b){
+    if(b&&!seen[String(b.id)])merged.push(b);
+  });
+  shelfBooks=merged;
+  var json=JSON.stringify(merged);
+  localStorage.setItem('tbtrish_shelf',json);
+  try{sessionStorage.setItem('tbtrish_shelf_ss',json);}catch(e){}
+  try{idbSave('tbtrish_shelf',json);}catch(e){}
+  try{renderShelf();}catch(e){}
+  try{renderDashboard();}catch(e){}
+  _shelfDiffPush(); // catch any local-only books not yet reflected in the cloud
+}
+
+// One-time migration from the old single-blob /tbt.json{shelf:[...]} to
+// per-book /shelf/{id} records. Gated by a cloud flag so it only runs once.
+function _migrateShelfIfNeeded(cb){
+  fetch(FIREBASE_URL+'/shelfMigratedV2.json',{cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(flag){
+      if(flag){cb();return;}
+      fetch(FIREBASE_URL+'/tbt.json',{cache:'no-store'})
+        .then(function(r){return r.ok?r.json():null;})
+        .then(function(oldData){
+          var byId={};
+          var oldShelf=(oldData&&Array.isArray(oldData.shelf))?oldData.shelf:[];
+          oldShelf.forEach(function(b){if(b&&b.id!==undefined)byId[String(b.id)]=b;});
+          safeJSON('tbtrish_shelf',[]).forEach(function(b){if(b&&b.id!==undefined)byId[String(b.id)]=b;});
+          var ids=Object.keys(byId);
+          if(!ids.length){
+            fetch(FIREBASE_URL+'/shelfMigratedV2.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:'true'}).catch(function(){});
+            cb();return;
+          }
+          var remaining=ids.length;
+          ids.forEach(function(id){
+            fetch(FIREBASE_URL+'/shelf/'+encodeURIComponent(id)+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(byId[id])})
+              .catch(function(){})
+              .then(function(){
+                remaining--;
+                if(remaining<=0){
+                  fetch(FIREBASE_URL+'/shelfMigratedV2.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:'true'}).catch(function(){});
+                  cb();
+                }
+              });
+          });
+        })
+        .catch(function(){cb();});
+    })
+    .catch(function(){cb();});
+}
+
+// Real-time listener — Firebase pushes changes to us the instant another
+// device writes, instead of us polling on a timer.
+function _startShelfStream(){
+  if(typeof EventSource==='undefined')return;
+  try{
+    if(_shelfStream){try{_shelfStream.close();}catch(e){}}
+    _shelfStream=new EventSource(FIREBASE_URL+'/shelf.json');
+    _shelfStream.addEventListener('put',function(e){
+      try{
+        var msg=JSON.parse(e.data);
+        if(msg.path==='/'){
+          _mergeShelfSnapshot(msg.data);
+        } else {
+          var id=msg.path.replace(/^\//,'').split('/')[0];
+          if(!id)return;
+          _applyRemoteBook(id,msg.data);
+          if(msg.data===null){delete _shelfPushed[id];}else{_shelfPushed[id]=JSON.stringify(msg.data);}
+          try{renderShelf();}catch(ex){}
+          try{renderDashboard();}catch(ex){}
+        }
+      }catch(ex){}
+    });
+    _shelfStream.addEventListener('patch',function(e){
+      try{
+        var msg=JSON.parse(e.data);
+        var path=msg.path||'/';
+        var data=msg.data||{};
+        if(path==='/'){
+          Object.keys(data).forEach(function(id){
+            _applyRemoteBook(id,data[id]);
+            _shelfPushed[id]=data[id]===null?undefined:JSON.stringify(data[id]);
+          });
+        } else {
+          var id2=path.replace(/^\//,'').split('/')[0];
+          if(id2)_applyRemoteBook(id2,data);
+        }
+        try{renderShelf();}catch(ex){}
+        try{renderDashboard();}catch(ex){}
+      }catch(ex){}
+    });
+    _shelfStream.onopen=function(){_syncDot('ok');};
+    _shelfStream.onerror=function(){_syncDot('offline');};
+  }catch(e){}
+}
+
+function initShelfSync(){
+  _migrateShelfIfNeeded(function(){
+    _startShelfStream();
+  });
+}
+
+function forceRestoreFromCloud(){
+  toast('Checking cloud backup…');
+  fetch(FIREBASE_URL+'/shelf.json',{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error('offline');return r.json();})
+    .then(function(data){
+      if(!data||typeof data!=='object'||!Object.keys(data).length){
+        toast('No books found in cloud backup.');
+        return;
+      }
+      _mergeShelfSnapshot(data);
+      toast('✦ Restored '+shelfBooks.length+' books from cloud backup!');
+    })
+    .catch(function(){toast('Could not reach cloud — check your internet and try again.');});
+}
+
+// Meta sync — review drafts, scorecard books, shelf goal. Lower-frequency,
+// still single-blob (these aren't per-book records so clobbering isn't a
+// real risk the way it was for the shelf array).
+function _pushMetaNow(){
   var payload={
-    shelf:shelf,
     reviewDrafts:safeJSON('tbtrish_review_drafts',[]),
     scorecardBooks:safeJSON('sc3_books',[]),
     shelfGoal:parseInt(localStorage.getItem('tbtrish_shelf_goal')||'0')||0
   };
-  _syncDot('syncing');
-  fetch(FIREBASE_URL+'/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true})
-    .then(function(r){_syncDot(r.ok?'ok':'offline');})
-    .catch(function(){_syncDot('offline');});
+  fetch(FIREBASE_URL+'/tbt_meta.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true}).catch(function(){});
 }
+function syncToFirebase(){_pushMetaNow();}
 
-function syncToFirebase(){
-  // Push immediately — no debounce — so data reaches cloud before a force-close
-  _pushNow();
-}
-
-function syncFromFirebase(cb){
-  fetch(FIREBASE_URL+'/tbt.json',{cache:'no-store'})
-    .then(function(r){if(!r.ok){if(cb)cb(false);return null;}return r.json();})
-    .then(function(data){
-      if(!data||!data.shelf||!Array.isArray(data.shelf)||data.shelf.length===0){
-        _syncDot('ok');if(cb)cb(false);return;
-      }
-      var localShelf=safeJSON('tbtrish_shelf',[]);
-      // UNION MERGE: start with remote, then add any local-only books
-      // Books are NEVER removed from local by this merge
-      var remoteIds={};
-      for(var i=0;i<data.shelf.length;i++)remoteIds[data.shelf[i].id]=true;
-      var localOnly=localShelf.filter(function(b){return !remoteIds[b.id];});
-      var merged=data.shelf.concat(localOnly);
-      // Check if anything actually changed (always restore if local is empty)
-      var localIds={};
-      for(var j=0;j<localShelf.length;j++)localIds[localShelf[j].id]=true;
-      var hasNew=localShelf.length===0;
-      for(var k=0;k<data.shelf.length;k++){if(!localIds[data.shelf[k].id]){hasNew=true;break;}}
-      if(hasNew||merged.length!==localShelf.length){
-        shelfBooks=merged;
-        localStorage.setItem('tbtrish_shelf',JSON.stringify(merged));
-        try{sessionStorage.setItem('tbtrish_shelf_ss',JSON.stringify(merged));}catch(e){}
-        idbSave('tbtrish_shelf',JSON.stringify(merged));
-        // Push merged back so Firebase gets the local-only books too
-        if(localOnly.length>0){setTimeout(_pushNow,1000);}
-        _syncDot('ok');if(cb)cb(true);
-      } else {
-        _syncDot('ok');if(cb)cb(false);
-      }
-    })
-    .catch(function(){_syncDot('offline');if(cb)cb(false);});
-}
-
-// Push immediately when app goes to background or closes
-window.addEventListener('pagehide',_pushNow);
+// Push shelf changes immediately when the app backgrounds or closes; restart
+// the real-time stream and re-sync when it returns to the foreground (iOS
+// can silently kill the EventSource connection while a PWA is backgrounded).
+window.addEventListener('pagehide',function(){_shelfDiffPush();_pushMetaNow();});
 document.addEventListener('visibilitychange',function(){
   if(document.visibilityState==='hidden'){
-    _pushNow();
+    _shelfDiffPush();_pushMetaNow();
   } else {
-    syncFromFirebase(function(hadData){
-      if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
-    });
+    _startShelfStream();
+    fetch(FIREBASE_URL+'/shelf.json',{cache:'no-store'})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(data){if(data)_mergeShelfSnapshot(data);})
+      .catch(function(){});
   }
 });
 
-// Poll every 60 seconds to stay in sync
+// Safety-net reconciliation in case the real-time stream drops silently
 setInterval(function(){
-  syncFromFirebase(function(hadData){
-    if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
-  });
+  fetch(FIREBASE_URL+'/shelf.json',{cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(data){if(data)_mergeShelfSnapshot(data);})
+    .catch(function(){});
 },60000);
-
-function forceRestoreFromCloud(){
-  toast('Checking cloud backup…');
-  fetch(FIREBASE_URL+'/tbt.json',{cache:'no-store'})
-    .then(function(r){if(!r.ok)throw new Error('offline');return r.json();})
-    .then(function(data){
-      if(!data||!data.shelf||!Array.isArray(data.shelf)||data.shelf.length===0){
-        toast('No books found in cloud backup.');
-        return;
-      }
-      // Union merge: keep all local + all cloud books
-      var localShelf=safeJSON('tbtrish_shelf',[]);
-      var remoteIds={};
-      for(var i=0;i<data.shelf.length;i++)remoteIds[data.shelf[i].id]=true;
-      var localOnly=localShelf.filter(function(b){return !remoteIds[b.id];});
-      var merged=data.shelf.concat(localOnly);
-      shelfBooks=merged;
-      var json=JSON.stringify(merged);
-      localStorage.setItem('tbtrish_shelf',json);
-      try{sessionStorage.setItem('tbtrish_shelf_ss',json);}catch(e){}
-      idbSave('tbtrish_shelf',json);
-      // Push merged back so Firebase is up to date for all devices
-      setTimeout(_pushNow,500);
-      try{renderShelf();}catch(e){}
-      try{renderDashboard();}catch(e){}
-      toast('✦ Restored '+merged.length+' books from cloud backup!');
-    })
-    .catch(function(){toast('Could not reach cloud — check your internet and try again.');});
-}
 
 // ═══════════════════════════════════════════════
 // READ THIS NEXT
@@ -10778,7 +10900,7 @@ function saveShelf(){
   localStorage.setItem('tbtrish_shelf',data);
   try{sessionStorage.setItem('tbtrish_shelf_ss',data);}catch(e){}
   try{idbSave('tbtrish_shelf',data);}catch(e){}
-  syncToFirebase();
+  _shelfDiffPush();
 }
 function _shelfBackupNudge(){
   var el=document.getElementById('shelf-backup-nudge');
@@ -11344,20 +11466,9 @@ function renderDashboard(){
   updateDashClock();
 }
 document.addEventListener('DOMContentLoaded',function(){
-  // Diagnostic: show exactly what each storage layer has so we know what's happening
-  var _ls=safeJSON('tbtrish_shelf',[]).length;
-  var _ss=0;try{var _ssd=sessionStorage.getItem('tbtrish_shelf_ss');if(_ssd)_ss=JSON.parse(_ssd).length;}catch(e){}
-  toast('Storage check — localStorage:'+_ls+' sessionStorage:'+_ss+' books');
-
   try{renderDashboard();}catch(e){}
 
-  function _doFirebaseSync(){
-    syncFromFirebase(function(hadData){
-      if(hadData){try{renderShelf();}catch(e){}try{renderDashboard();}catch(e){}}
-    });
-  }
-
-  // If localStorage is empty, try IndexedDB before hitting Firebase
+  // If localStorage is empty, try IndexedDB before starting shelf sync
   if(!shelfBooks||shelfBooks.length===0){
     try{
       idbLoad('tbtrish_shelf',function(raw){
@@ -11373,11 +11484,11 @@ document.addEventListener('DOMContentLoaded',function(){
             }
           }catch(ex){}
         }
-        _doFirebaseSync();
+        initShelfSync();
       });
-    }catch(e){_doFirebaseSync();}
+    }catch(e){initShelfSync();}
   } else {
-    _doFirebaseSync();
+    initShelfSync();
   }
 });
 
