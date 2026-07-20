@@ -6708,7 +6708,7 @@ function renderWins(){
 // SPIN THE WHEEL
 // ══════════════════════════════════════════
 var spinBooks=[], _spinRunning=false, _spinTimer=null;
-var spinList=JSON.parse(localStorage.getItem('tbtrish_spinlist')||'[]');
+var spinList=safeJSON('tbtrish_spinlist',[]);
 var _spinTab='tbr';
 
 function initSpin(){
