@@ -2964,14 +2964,18 @@ function _syncDot(state){
 
 // Push only the books that changed since the last push — cheap, and each
 // write only touches its own book's path so it can't clobber another book.
+// NOTE: this only ever ADDS/UPDATES books in Firebase — it never infers a
+// deletion from a book being "missing" locally. Local data can vanish for
+// innocent reasons (iOS storage eviction, a race on startup before a merge
+// finishes) that have nothing to do with the user actually deleting a book,
+// and treating that as a delete signal is exactly what caused real data loss
+// earlier. Deletions are handled explicitly — see _deleteShelfBookFromCloud.
 function _shelfDiffPush(){
   if(!Array.isArray(shelfBooks))return;
-  var currentIds={};
   var dirty=false;
   shelfBooks.forEach(function(b){
     if(!b||b.id===undefined||b.id===null)return;
     var key=String(b.id);
-    currentIds[key]=true;
     var json=JSON.stringify(b);
     if(_shelfPushed[key]!==json){
       dirty=true;
@@ -2982,14 +2986,16 @@ function _shelfDiffPush(){
       _shelfPushed[key]=json;
     }
   });
-  Object.keys(_shelfPushed).forEach(function(key){
-    if(!currentIds[key]){
-      dirty=true;
-      fetch(FIREBASE_URL+'/shelf/'+encodeURIComponent(key)+'.json',{method:'DELETE',keepalive:true}).catch(function(){});
-      delete _shelfPushed[key];
-    }
-  });
   if(!dirty)_syncDot('ok');
+}
+
+// Explicit deletion — only called when the user actually deletes a book,
+// never inferred from a diff.
+function _deleteShelfBookFromCloud(id){
+  if(id===undefined||id===null)return;
+  var key=String(id);
+  delete _shelfPushed[key];
+  fetch(FIREBASE_URL+'/shelf/'+encodeURIComponent(key)+'.json',{method:'DELETE',keepalive:true}).catch(function(){});
 }
 
 function syncShelfToFirebase(){_shelfDiffPush();}
@@ -11127,7 +11133,9 @@ function saveShelfBook(){
 function deleteShelfBook(id){
   if(!confirm('Remove this book from your shelf?'))return;
   shelfBooks=shelfBooks.filter(function(b){return b.id!==id;});
-  saveShelf();closeShelfDetail();renderShelf();toast('Book removed.');
+  saveShelf();
+  _deleteShelfBookFromCloud(id);
+  closeShelfDetail();renderShelf();toast('Book removed.');
 }
 function moveShelfBook(id,status){
   var book=shelfBooks.find(function(b){return b.id===id;});if(!book)return;
