@@ -924,7 +924,6 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
 <div class="sub-nav active" id="subnav-home">
   <button class="nav-btn active" data-panel="dashboard" onclick="showPanel('dashboard')">🏠 Dashboard</button>
   <button class="nav-btn" data-panel="calendar" onclick="showPanel('calendar')">📅 Calendar</button>
-  <button class="nav-btn" data-panel="planner" onclick="showPanel('planner')">📆 Planner</button>
 </div>
 
 <div class="sub-nav" id="subnav-reading">
@@ -979,6 +978,13 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
 <!-- PANEL 1: CALENDAR          -->
 <!-- ═══════════════════════════ -->
 <div class="panel" id="panel-calendar">
+
+  <div class="an-tabs">
+    <button class="an-tab active" id="cal-tab-pipeline" onclick="switchCalView('pipeline',this)">🎬 Video Pipeline</button>
+    <button class="an-tab" id="cal-tab-planner" onclick="switchCalView('planner',this)">📆 Planner</button>
+  </div>
+
+  <div id="cal-section-pipeline" class="an-section active">
 
   <div id="now-reading-widget" style="display:none;background:rgba(42,92,34,.06);border:1px solid rgba(42,92,34,.25);border-radius:6px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
     <div style="display:flex;align-items:center;gap:10px;">
@@ -1153,6 +1159,70 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
       📤 <strong style="color:var(--text);">Post weekdays</strong> — TikTok scheduler does the work while you're at work
     </div>
   </div>
+
+  </div>
+
+  <div id="cal-section-planner" class="an-section">
+    <!-- View switcher -->
+    <div class="nav-tabs" style="border-bottom:none;padding-bottom:0;margin-bottom:20px;">
+      <button class="nav-btn active" id="pv-month" onclick="setPlanView('month',this)">Month</button>
+      <button class="nav-btn" id="pv-week" onclick="setPlanView('week',this)">Week</button>
+      <button class="nav-btn" id="pv-day" onclick="setPlanView('day',this)">Day</button>
+    </div>
+
+    <!-- Month nav -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <button class="btn" onclick="planNav(-1)">◂ Prev</button>
+      <div id="plan-heading" style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:#fff;text-align:center;"></div>
+      <button class="btn" onclick="planNav(1)">Next ▸</button>
+    </div>
+
+    <!-- Calendar grid -->
+    <div id="plan-view"></div>
+
+    <!-- Entry modal -->
+    <div class="modal-overlay" id="plan-modal">
+      <div class="modal" style="max-width:480px;">
+        <div class="modal-header">
+          <div><div class="modal-title" id="plan-modal-title"></div></div>
+          <button class="modal-close" onclick="closePlanModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div>
+              <div class="label-sm">Entry Type</div>
+              <select id="plan-entry-type">
+                <option value="video">🎬 Video / Content</option>
+                <option value="personal">📌 Personal</option>
+                <option value="appointment">📅 Appointment</option>
+                <option value="reminder">⏰ Reminder</option>
+                <option value="reading">📚 Reading Goal</option>
+                <option value="idea">💡 Content Idea</option>
+              </select>
+            </div>
+            <div>
+              <div class="label-sm">Title</div>
+              <input type="text" id="plan-entry-title" placeholder="What's happening?">
+            </div>
+            <div>
+              <div class="label-sm">Time (optional)</div>
+              <input type="time" id="plan-entry-time">
+            </div>
+            <div>
+              <div class="label-sm">Notes</div>
+              <textarea id="plan-entry-notes" placeholder="Any details, ideas, links..." style="min-height:80px;"></textarea>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-primary" style="flex:1;" onclick="savePlanEntry()">✦ Save Entry</button>
+              <button class="btn btn-danger" style="flex:1;" id="plan-delete-btn" onclick="deletePlanEntry()" style="display:none;">Delete</button>
+            </div>
+          </div>
+          <div id="plan-existing-entries" style="margin-top:16px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -1323,72 +1393,6 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
       <button class="btn btn-primary" onclick="addQnA()" style="width:100%;padding:11px;font-size:15px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Save Question</button>
     </div>
     <div id="qna-list"></div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════ -->
-<!-- PANEL 8: MY PLANNER                         -->
-<!-- ═══════════════════════════════════════════ -->
-<div class="panel" id="panel-planner">
-  <div class="section-title">📆 My Planner</div>
-
-  <!-- View switcher -->
-  <div class="nav-tabs" style="border-bottom:none;padding-bottom:0;margin-bottom:20px;">
-    <button class="nav-btn active" id="pv-month" onclick="setPlanView('month',this)">Month</button>
-    <button class="nav-btn" id="pv-week" onclick="setPlanView('week',this)">Week</button>
-    <button class="nav-btn" id="pv-day" onclick="setPlanView('day',this)">Day</button>
-  </div>
-
-  <!-- Month nav -->
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-    <button class="btn" onclick="planNav(-1)">◂ Prev</button>
-    <div id="plan-heading" style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:#fff;text-align:center;"></div>
-    <button class="btn" onclick="planNav(1)">Next ▸</button>
-  </div>
-
-  <!-- Calendar grid -->
-  <div id="plan-view"></div>
-
-  <!-- Entry modal -->
-  <div class="modal-overlay" id="plan-modal">
-    <div class="modal" style="max-width:480px;">
-      <div class="modal-header">
-        <div><div class="modal-title" id="plan-modal-title"></div></div>
-        <button class="modal-close" onclick="closePlanModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div>
-            <div class="label-sm">Entry Type</div>
-            <select id="plan-entry-type">
-              <option value="video">🎬 Video / Content</option>
-              <option value="personal">📌 Personal</option>
-              <option value="appointment">📅 Appointment</option>
-              <option value="reminder">⏰ Reminder</option>
-              <option value="reading">📚 Reading Goal</option>
-              <option value="idea">💡 Content Idea</option>
-            </select>
-          </div>
-          <div>
-            <div class="label-sm">Title</div>
-            <input type="text" id="plan-entry-title" placeholder="What's happening?">
-          </div>
-          <div>
-            <div class="label-sm">Time (optional)</div>
-            <input type="time" id="plan-entry-time">
-          </div>
-          <div>
-            <div class="label-sm">Notes</div>
-            <textarea id="plan-entry-notes" placeholder="Any details, ideas, links..." style="min-height:80px;"></textarea>
-          </div>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-primary" style="flex:1;" onclick="savePlanEntry()">✦ Save Entry</button>
-            <button class="btn btn-danger" style="flex:1;" id="plan-delete-btn" onclick="deletePlanEntry()" style="display:none;">Delete</button>
-          </div>
-        </div>
-        <div id="plan-existing-entries" style="margin-top:16px;"></div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -3476,7 +3480,6 @@ function toggleDrawer(){if(drawerOpen)closeDrawer();else openDrawer();}
 var DRAWER_PANELS=[
   {icon:'🏠',name:'Dashboard',panel:'dashboard',group:'Home'},
   {icon:'📅',name:'Calendar',panel:'calendar',group:'Home'},
-  {icon:'📆',name:'Planner',panel:'planner',group:'Home'},
   {icon:'📚',name:'My Shelf',panel:'shelf',group:'Reading'},
   {icon:'📖',name:'Scorecard',panel:'scorecard',group:'Reading'},
   {icon:'📚',name:'Monthly Picks',panel:'monthlypicks',group:'Reading'},
@@ -3534,7 +3537,7 @@ function drawerSearch(q){
 
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={dashboard:'home',calendar:'home',planner:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',analytics:'growth',spending:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
+var PANEL_GROUP={dashboard:'home',calendar:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',analytics:'growth',spending:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -3572,7 +3575,6 @@ function showPanel(id){
   if(id==='dashboard'){renderDashboard();}
   if(id==='calendar'){renderCalendar();renderNowReading();renderAlarms();}
   if(id==='arc')renderARC();
-  if(id==='planner'){initPlanner();renderPlanner();}
   if(id==='shelf'){renderShelf();renderShelfGoodreadsBtn();}
   if(id==='scorecard'){initScorecard();}
   if(id==='wins'){renderWins();}
@@ -5016,7 +5018,7 @@ function initPlanner(){
 
 function setPlanView(v,btn){
   planView=v;
-  document.querySelectorAll('#panel-planner .nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#cal-section-planner .nav-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderPlanner();
 }
@@ -6398,7 +6400,7 @@ function clearCCalDay(){
 // ══════════════════════════════════════════
 // SWIPE GESTURES (between panels)
 // ══════════════════════════════════════════
-var PANEL_ORDER=['calendar','arc','ideas','planner','scorecard','wins','monthlypicks','analytics','timer','spending','pipeline','mood','spin','thumbnails','replies','collabwish','ratecard'];
+var PANEL_ORDER=['calendar','arc','ideas','scorecard','wins','monthlypicks','analytics','timer','spending','pipeline','mood','spin','thumbnails','replies','collabwish','ratecard'];
 var _currentPanel='calendar', _touchX=0, _touchY=0;
 document.addEventListener('touchstart',e=>{_touchX=e.touches[0].clientX;_touchY=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchend',e=>{
@@ -7623,6 +7625,13 @@ function saveAnVids(){localStorage.setItem('tbtrish_vidperf',JSON.stringify(anVi
 
 function initAnalytics(){
   switchAnTab('growth',document.getElementById('an-tab-growth'));
+}
+function switchCalView(view,btn){
+  document.querySelectorAll('#panel-calendar .an-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#panel-calendar .an-section').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cal-section-'+view).classList.add('active');
+  if(view==='planner'){initPlanner();renderPlanner();}
 }
 function switchAnTab(tab,btn){
   document.querySelectorAll('#panel-analytics .an-tab').forEach(b=>b.classList.remove('active'));
