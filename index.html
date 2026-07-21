@@ -3128,6 +3128,15 @@ function _startShelfStream(){
 
 function initShelfSync(){
   _migrateShelfIfNeeded(function(){
+    // Immediate plain-fetch pull first — don't rely solely on the
+    // real-time stream (EventSource) succeeding, since long-lived
+    // connections can be unreliable on mobile Safari. This guarantees
+    // a fast, reliable first sync using the same fetch() mechanism
+    // that already works everywhere else in this app.
+    fetch(FIREBASE_URL+'/shelf.json',{cache:'no-store'})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(data){if(data)_mergeShelfSnapshot(data);_syncDot('ok');})
+      .catch(function(){_syncDot('offline');});
     _startShelfStream();
   });
 }
@@ -10862,6 +10871,17 @@ function dedupeShelf(){
   try{renderDashboard();}catch(e){}
   toast('✦ Removed '+removedCount+' duplicate'+(removedCount===1?'':'s')+'!');
 }
+function checkCloudStatus(){
+  toast('Checking cloud…');
+  var localCount=Array.isArray(shelfBooks)?shelfBooks.length:0;
+  fetch(FIREBASE_URL+'/shelf.json',{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error('offline');return r.json();})
+    .then(function(data){
+      var cloudCount=data&&typeof data==='object'?Object.keys(data).length:0;
+      alert('☁️ Cloud has '+cloudCount+' books.\n📱 This device has '+localCount+' books locally.\n\nMode: '+(_isStandaloneApp()?'Installed App':'Browser Tab'));
+    })
+    .catch(function(){alert('Could not reach the cloud right now — check your internet connection.\n\n📱 This device has '+localCount+' books locally.');});
+}
 function _shelfBackupNudge(){
   var el=document.getElementById('shelf-backup-nudge');
   if(el){el.style.display='flex';clearTimeout(el._nt);el._nt=setTimeout(function(){el.style.display='none';},12000);}
@@ -12786,6 +12806,7 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <button class="btn" onclick="openSyncModal()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(26,72,20,.10);border-color:rgba(26,72,20,.45);color:var(--gold);font-weight:900;letter-spacing:.06em;">🔄 Sync Code</button>
       <button class="btn" onclick="forceRestoreFromCloud()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(26,72,20,.15);border-color:rgba(26,72,20,.6);color:var(--gold);font-weight:900;letter-spacing:.06em;">☁️ Restore Books from Cloud</button>
       <button class="btn" onclick="dedupeShelf()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(92,32,8,.10);border-color:rgba(92,32,8,.45);color:var(--brown);font-weight:900;letter-spacing:.06em;">🧹 Remove Duplicate Books</button>
+      <button class="btn" onclick="checkCloudStatus()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(0,0,0,.05);border-color:var(--border);color:var(--text-dim);font-weight:900;letter-spacing:.06em;">🔍 Check Cloud Status</button>
     </div>
   </div>
 
