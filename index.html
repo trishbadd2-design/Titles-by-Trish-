@@ -931,35 +931,23 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
 <div class="sub-nav" id="subnav-reading">
   <button class="nav-btn" data-panel="shelf" onclick="showPanel('shelf')">📚 My Shelf</button>
   <button class="nav-btn" data-panel="scorecard" onclick="showPanel('scorecard')">📖 Scorecard</button>
-  <button class="nav-btn" data-panel="books" onclick="showPanel('books')">🖤 Book Bank</button>
   <button class="nav-btn" data-panel="monthlypicks" onclick="showPanel('monthlypicks')">📚 Monthly Picks</button>
-  <button class="nav-btn" data-panel="bookquotes" onclick="showPanel('bookquotes')">📝 Quotes</button>
   <button class="nav-btn" data-panel="spin" onclick="showPanel('spin')">🎡 Spin the Wheel</button>
-  <button class="nav-btn" data-panel="quiz" onclick="showPanel('quiz')">🧠 Reader Quiz</button>
   <button class="nav-btn" data-panel="readjournal" onclick="showPanel('readjournal')">📔 Journal</button>
   <button class="nav-btn" data-panel="wrapped" onclick="showPanel('wrapped')">🎁 Wrapped</button>
   <button class="nav-btn" data-panel="upcoming" onclick="showPanel('upcoming')">🗓️ Upcoming</button>
   <button class="nav-btn" data-panel="challenges" onclick="showPanel('challenges')">🏆 Challenges</button>
-  <button class="nav-btn" data-panel="halloffame" onclick="showPanel('halloffame')">⭐ Hall of Fame</button>
-  <button class="nav-btn" data-panel="tropes" onclick="showPanel('tropes')">🌀 Tropes</button>
-  <button class="nav-btn" data-panel="pacecalc" onclick="showPanel('pacecalc')">📖 Pace Calc</button>
   <button class="nav-btn" data-panel="readnext" onclick="showPanel('readnext')">🔗 Read This Next</button>
   <button class="nav-btn" data-panel="reviewbuilder" onclick="showPanel('reviewbuilder')">📝 Review Builder</button>
 </div>
 
 <div class="sub-nav" id="subnav-content">
   <button class="nav-btn" data-panel="ideas" onclick="showPanel('ideas')">💡 Ideas</button>
-  <button class="nav-btn" data-panel="captions" onclick="showPanel('captions')">✍️ Captions</button>
-  <button class="nav-btn" data-panel="hashtags" onclick="showPanel('hashtags')">🏷️ Hashtags</button>
   <button class="nav-btn" data-panel="thumbnails" onclick="showPanel('thumbnails')">🎨 Thumbnails</button>
   <button class="nav-btn" data-panel="replies" onclick="showPanel('replies')">💬 Replies</button>
-  <button class="nav-btn" data-panel="hookbank" onclick="showPanel('hookbank')">🪝 Hook Bank</button>
-  <button class="nav-btn" data-panel="ctabank" onclick="showPanel('ctabank')">📣 CTA Bank</button>
-  <button class="nav-btn" data-panel="sounds" onclick="showPanel('sounds')">🎵 Sounds</button>
   <button class="nav-btn" data-panel="seriestracker" onclick="showPanel('seriestracker')">🎬 Series</button>
   <button class="nav-btn" data-panel="timer" onclick="showPanel('timer')">⏱️ Timer</button>
   <button class="nav-btn" data-panel="mood" onclick="showPanel('mood')">🎭 Mood Picker</button>
-  <button class="nav-btn" data-panel="inspo" onclick="showPanel('inspo')">✨ Inspo List</button>
   <button class="nav-btn" data-panel="filmsession" onclick="showPanel('filmsession')">🎥 Film Sessions</button>
   <button class="nav-btn" data-panel="commentmine" onclick="showPanel('commentmine')">💎 Comment Mining</button>
   <button class="nav-btn" data-panel="checklist" onclick="showPanel('checklist')">📋 Checklist</button>
@@ -1387,29 +1375,6 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
     </div>
     <div id="qna-list"></div>
   </div>
-</div>
-
-<!-- ═══════════════════════════ -->
-<!-- PANEL 6: BOOK BANK         -->
-<!-- ═══════════════════════════ -->
-<div class="panel" id="panel-books">
-  <div class="section-title">🖤 Psychological Thriller Book Bank</div>
-  <div class="card-box" style="margin-bottom:16px;padding:12px 16px;">
-    <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
-      Your curated library of recommended dark reads. Click any book for content ideas. Save books you want to review next. 🖤
-    </div>
-  </div>
-
-  <div class="book-filter">
-    <button class="book-filter-btn active" onclick="setBookFilter('all',this)">All Books</button>
-    <button class="book-filter-btn" onclick="setBookFilter('psych',this)">Psych Thriller</button>
-    <button class="book-filter-btn" onclick="setBookFilter('truecrime',this)">True Crime</button>
-    <button class="book-filter-btn" onclick="setBookFilter('fantasy',this)">Dark Fantasy</button>
-    <button class="book-filter-btn" onclick="setBookFilter('hf',this)">Historical Fiction</button>
-    <button class="book-filter-btn" onclick="setBookFilter('saved',this)">Saved 🖤</button>
-  </div>
-
-  <div class="book-grid" id="book-grid"></div>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -2125,72 +2090,6 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
 </div>
 </div>
 
-
-<!-- ═══════════════════════════════════════════ -->
-<!-- PANEL 10: CAPTION TEMPLATES                 -->
-<!-- ═══════════════════════════════════════════ -->
-<div class="panel" id="panel-captions">
-  <div class="section-title">✍️ Caption Templates</div>
-
-  <!-- BOOK HAUL GENERATOR -->
-  <div class="card-box" style="margin-bottom:16px;border-color:rgba(42,92,34,.35);background:rgba(42,92,34,.04);">
-    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:10px;">📚 BOOK HAUL CAPTION GENERATOR</div>
-    <div class="sc-field" style="margin-bottom:8px;">
-      <label>Where did you get the books?</label>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;" id="haul-source-btns">
-        <button class="haul-src-btn" data-src="Barnes &amp; Noble" onclick="setHaulSource(this)">🏪 Barnes &amp; Noble</button>
-        <button class="haul-src-btn" data-src="Book Outlet" onclick="setHaulSource(this)">📦 Book Outlet</button>
-        <button class="haul-src-btn" data-src="the library" onclick="setHaulSource(this)">🏛️ Library</button>
-        <button class="haul-src-btn" data-src="ThriftBooks" onclick="setHaulSource(this)">♻️ ThriftBooks</button>
-        <button class="haul-src-btn" data-src="Amazon" onclick="setHaulSource(this)">📬 Amazon</button>
-        <button class="haul-src-btn" data-src="a thrift store" onclick="setHaulSource(this)">🛍️ Thrift Store</button>
-        <button class="haul-src-btn" data-src="a used bookstore" onclick="setHaulSource(this)">📖 Used Bookstore</button>
-        <button class="haul-src-btn" data-src="Book of the Month" onclick="setHaulSource(this)">📬 Book of the Month</button>
-        <button class="haul-src-btn" data-src="an online order" onclick="setHaulSource(this)">🌐 Online Order</button>
-      </div>
-    </div>
-    <div class="sc-field" style="margin-bottom:10px;">
-      <label>How many books? (optional)</label>
-      <input id="haul-count" type="number" min="1" max="50" placeholder="e.g. 5" style="width:100px;"/>
-    </div>
-    <button class="btn btn-primary" onclick="generateHaulCaption()" style="width:100%;padding:12px;font-size:15px;">✦ Generate My Haul Caption</button>
-    <div id="haul-result" style="display:none;margin-top:14px;">
-      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;">CAPTION</div>
-      <div id="haul-caption-text" style="font-size:14px;color:var(--text);line-height:1.8;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px;white-space:pre-wrap;margin-bottom:8px;"></div>
-      <button class="btn" onclick="copyHaulCaption()" style="width:100%;margin-bottom:10px;padding:10px;font-size:15px;background:rgba(42,92,34,.1);border-color:rgba(42,92,34,.35);color:var(--gold);">📋 Copy Caption</button>
-      <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;">HASHTAGS</div>
-      <div id="haul-hashtag-text" style="font-size:14px;color:var(--text-dim);line-height:1.8;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px;white-space:pre-wrap;margin-bottom:8px;"></div>
-      <button class="btn" onclick="copyHaulHashtags()" style="width:100%;padding:10px;font-size:15px;background:rgba(42,92,34,.1);border-color:rgba(42,92,34,.35);color:var(--gold);">🏷️ Copy Hashtags</button>
-    </div>
-  </div>
-
-  <div class="card-box" style="padding:12px 16px;margin-bottom:16px;">
-    <div style="font-style:italic;font-size:15px;color:var(--text-dim);line-height:1.7;">
-      Pre-written hooks, scripts, and CTAs for every video type. Tap any section to copy it. Replace the <span style="color:var(--gold);">[brackets]</span> with your details. 🖤
-    </div>
-  </div>
-  <div class="cap-filter" id="cap-filter"></div>
-  <div id="cap-list"></div>
-</div>
-
-<!-- ═══════════════════════════════════════════ -->
-<!-- PANEL 11: HASHTAG TRACKER                   -->
-<!-- ═══════════════════════════════════════════ -->
-<div class="panel" id="panel-hashtags">
-  <div class="section-title">🏷️ Hashtag Sets</div>
-
-  <div class="card-box" style="margin-bottom:16px;">
-    <div class="label-sm">Create a Hashtag Set</div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
-      <input type="text" id="ht-name" placeholder="Set name (e.g. Book Review Mix)">
-      <textarea id="ht-tags-input" placeholder="Paste your hashtags here — separate with spaces or commas" style="min-height:70px;"></textarea>
-      <button class="btn btn-primary" onclick="saveHashtagSet()">✦ Save Set</button>
-    </div>
-  </div>
-
-  <div class="section-title" style="font-size:15px;margin-top:4px;">Saved Sets</div>
-  <div id="ht-list"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No hashtag sets saved yet</div></div>
-</div>
 
 <!-- ═══════════════════════════════════════════ -->
 <!-- PANEL 12: WINS JOURNAL                      -->
@@ -3592,31 +3491,19 @@ var DRAWER_PANELS=[
   {icon:'⏰',name:'Schedule',panel:'schedule',group:'Home'},
   {icon:'📚',name:'My Shelf',panel:'shelf',group:'Reading'},
   {icon:'📖',name:'Scorecard',panel:'scorecard',group:'Reading'},
-  {icon:'🖤',name:'Book Bank',panel:'books',group:'Reading'},
   {icon:'📚',name:'Monthly Picks',panel:'monthlypicks',group:'Reading'},
-  {icon:'📝',name:'Quotes',panel:'bookquotes',group:'Reading'},
   {icon:'🎡',name:'Spin the Wheel',panel:'spin',group:'Reading'},
-  {icon:'🧠',name:'Reader Quiz',panel:'quiz',group:'Reading'},
   {icon:'📔',name:'Reading Journal',panel:'readjournal',group:'Reading'},
   {icon:'🎁',name:'Reading Wrapped',panel:'wrapped',group:'Reading'},
   {icon:'🗓️',name:'Upcoming Releases',panel:'upcoming',group:'Reading'},
   {icon:'🏆',name:'Challenges',panel:'challenges',group:'Reading'},
-  {icon:'⭐',name:'Hall of Fame',panel:'halloffame',group:'Reading'},
-  {icon:'🌀',name:'Tropes',panel:'tropes',group:'Reading'},
-  {icon:'📖',name:'Pace Calculator',panel:'pacecalc',group:'Reading'},
   {icon:'📝',name:'Review Builder',panel:'reviewbuilder',group:'Reading'},
   {icon:'💡',name:'Ideas',panel:'ideas',group:'Content'},
-  {icon:'✍️',name:'Captions',panel:'captions',group:'Content'},
-  {icon:'🏷️',name:'Hashtags',panel:'hashtags',group:'Content'},
   {icon:'🎨',name:'Thumbnails',panel:'thumbnails',group:'Content'},
   {icon:'💬',name:'Replies',panel:'replies',group:'Content'},
-  {icon:'🪝',name:'Hook Bank',panel:'hookbank',group:'Content'},
-  {icon:'📣',name:'CTA Bank',panel:'ctabank',group:'Content'},
-  {icon:'🎵',name:'Sounds',panel:'sounds',group:'Content'},
   {icon:'🎬',name:'Series Tracker',panel:'seriestracker',group:'Content'},
   {icon:'⏱️',name:'Timer',panel:'timer',group:'Content'},
   {icon:'🎭',name:'Mood Picker',panel:'mood',group:'Content'},
-  {icon:'✨',name:'Inspo List',panel:'inspo',group:'Content'},
   {icon:'🎥',name:'Film Sessions',panel:'filmsession',group:'Content'},
   {icon:'💎',name:'Comment Mining',panel:'commentmine',group:'Content'},
   {icon:'📋',name:'Checklist',panel:'checklist',group:'Content'},
@@ -3663,7 +3550,7 @@ function drawerSearch(q){
 
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={dashboard:'home',calendar:'home',planner:'home',schedule:'home',shelf:'reading',scorecard:'reading',books:'reading',monthlypicks:'reading',bookquotes:'reading',spin:'reading',quiz:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',halloffame:'reading',tropes:'reading',pacecalc:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',captions:'content',hashtags:'content',thumbnails:'content',replies:'content',hookbank:'content',ctabank:'content',sounds:'content',seriestracker:'content',timer:'content',mood:'content',inspo:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',milestones:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
+var PANEL_GROUP={dashboard:'home',calendar:'home',planner:'home',schedule:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',milestones:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -3703,15 +3590,11 @@ function showPanel(id){
   if(id==='followers')renderFollowers();
   if(id==='engagement')renderEngagement();
   if(id==='arc')renderARC();
-  if(id==='books')renderBooks();
   if(id==='schedule')renderAlarms();
   if(id==='planner'){initPlanner();renderPlanner();}
   if(id==='shelf'){renderShelf();renderShelfGoodreadsBtn();}
   if(id==='scorecard'){initScorecard();}
-  if(id==='captions'){initCaptions();}
-  if(id==='hashtags'){renderHashtags();}
   if(id==='wins'){renderWins();}
-  if(id==='bookquotes'){renderBookQuotes();}
   if(id==='spin'){initSpin();renderSpinList();spinUpdateDisplay();}
   if(id==='monthlypicks'){initMonthlyPicks();}
   if(id==='analytics'){initAnalytics();}
@@ -3720,20 +3603,13 @@ function showPanel(id){
   if(id==='pipeline'){renderPipeline();}
   if(id==='thumbnails'){renderThumbIdeas();renderMoodboard();}
   if(id==='replies'){renderReplies();}
-  if(id==='hookbank'){renderHookBank();}
-  if(id==='ctabank'){renderCtas();}
-  if(id==='sounds'){renderSounds();}
   if(id==='seriestracker'){renderVideoSeries();}
   if(id==='readjournal'){renderJournal();}
   if(id==='wrapped'){renderWrapped();}
   if(id==='upcoming'){renderUpcoming();}
   if(id==='challenges'){renderChallenges();}
-  if(id==='halloffame'){renderHallOfFame();}
-  if(id==='tropes'){renderTropes();}
-  if(id==='pacecalc'){renderPaceCalc();}
   if(id==='reviewbuilder'){populateReviewBookList();setTimeout(function(){renderReviewDrafts();renderPostChecklist();initWrapupSelects();},50);}
   if(id==='readnext'){renderReadNext();}
-  if(id==='bookquotes'){renderBookQuotes();populateBQBookList();}
   if(id==='checklist'){renderChecklist();}
   if(id==='dmtemplates'){renderDMTemplates();}
   if(id==='contentgen'){renderCgenBooks();}
@@ -3745,8 +3621,6 @@ function showPanel(id){
   if(id==='milestones'){renderMilestones();}
   if(id==='posttimes'){renderPostTimes();}
   if(id==='ratecard'){renderRateCard();}
-  if(id==='quiz'){initQuiz();}
-  if(id==='inspo'){renderInspo();}
   _currentPanel=id;
   localStorage.setItem('tbtrish_lastpanel',id);
 }
@@ -6545,7 +6419,7 @@ function clearCCalDay(){
 // ══════════════════════════════════════════
 // SWIPE GESTURES (between panels)
 // ══════════════════════════════════════════
-var PANEL_ORDER=['calendar','followers','engagement','arc','ideas','books','schedule','planner','scorecard','captions','hashtags','wins','bookquotes','monthlypicks','analytics','timer','spending','pipeline','mood','spin','thumbnails','replies','collabwish','ratecard','quiz'];
+var PANEL_ORDER=['calendar','followers','engagement','arc','ideas','schedule','planner','scorecard','wins','monthlypicks','analytics','timer','spending','pipeline','mood','spin','thumbnails','replies','collabwish','ratecard'];
 var _currentPanel='calendar', _touchX=0, _touchY=0;
 document.addEventListener('touchstart',e=>{_touchX=e.touches[0].clientX;_touchY=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchend',e=>{
@@ -12503,28 +12377,6 @@ function resetQuiz(){quizAnswers={};initQuiz();}
 </div>
 
 <!-- BOOK QUOTE JOURNAL PANEL -->
-<div class="panel" id="panel-bookquotes">
-  <div style="font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:var(--gold);margin-bottom:16px;">📝 BOOK QUOTE JOURNAL</div>
-  <div style="font-size:15px;color:var(--text-dim);font-style:italic;margin-bottom:16px;line-height:1.7;">
-    Save your favourite lines — the quotes that stopped you mid-page. 🖤
-  </div>
-  <button class="sc-add-btn" onclick="openBQForm()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Add a Quote</button>
-  <div class="bq-add-form" id="bq-add-form">
-    <datalist id="bq-books-list"></datalist>
-    <div class="sc-field"><label>Book Title *</label><input id="bq-f-booktitle" list="bq-books-list" placeholder="title of the book..."/></div>
-    <div class="sc-two-col">
-      <div class="sc-field"><label>Author (optional)</label><input id="bq-f-author" placeholder="author name..."/></div>
-      <div class="sc-field"><label>Page # (optional)</label><input type="number" id="bq-f-page" placeholder="e.g. 142"/></div>
-    </div>
-    <div class="sc-field"><label>Quote *</label><textarea id="bq-f-quote" rows="4" placeholder="Type the quote here..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;font-style:italic;resize:vertical;line-height:1.6;font-family:inherit;"></textarea></div>
-    <div class="sc-modal-actions" style="margin-top:10px;">
-      <button class="sc-btn-cancel" onclick="closeBQForm()">Cancel</button>
-      <button class="sc-btn-save" onclick="addBookQuote()">✦ Save Quote</button>
-    </div>
-  </div>
-  <div id="bq-list"></div>
-</div>
-
 <!-- THUMBNAILS -->
 <div class="panel" id="panel-thumbnails">
   <div class="section-title">🎨 Thumbnail Ideas</div>
@@ -12563,49 +12415,6 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   </div>
 </div>
 
-<!-- INSPO LIST -->
-<div class="panel" id="panel-inspo">
-  <div class="section-title">✨ Creator Inspo List</div>
-  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:16px;line-height:1.7;">Save the TikTokers and creators you love so you never forget them — and see what's inspiring you.</p>
-
-  <div class="card-box" style="margin-bottom:16px;">
-    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:14px;">✦ ADD A CREATOR</div>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <div class="mic-row">
-        <input type="text" id="inspo-name" class="input-field" placeholder="Name or @handle *" style="font-size:15px;">
-        <button class="mic-btn" onclick="startVoice('inspo-name',false)" title="Speak their name" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🎙️</button>
-      </div>
-      <div class="grid-2">
-        <div><div class="label-sm">Where I Found Them</div>
-          <select id="inspo-platform" class="input-field">
-            <option>TikTok / BookTok</option>
-            <option>Instagram</option>
-            <option>Facebook</option>
-            <option>YouTube</option>
-            <option>Multiple Platforms</option>
-          </select>
-        </div>
-        <div><div class="label-sm">Niche / Vibe</div>
-          <input type="text" id="inspo-niche" class="input-field" placeholder="e.g. Dark reads, cozy vibes">
-        </div>
-      </div>
-      <input type="text" id="inspo-why" class="input-field" placeholder="Why do you love them? (optional)" style="font-size:14px;">
-      <button class="btn btn-primary" onclick="addInspo()" style="padding:11px;font-size:15px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Save Creator</button>
-    </div>
-  </div>
-
-  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
-    <button class="idea-filter-btn active" onclick="setInspoFilter('all',this)">All</button>
-    <button class="idea-filter-btn" onclick="setInspoFilter('TikTok / BookTok',this)">TikTok / BookTok</button>
-    <button class="idea-filter-btn" onclick="setInspoFilter('Instagram',this)">Instagram</button>
-    <button class="idea-filter-btn" onclick="setInspoFilter('Facebook',this)">Facebook</button>
-    <button class="idea-filter-btn" onclick="setInspoFilter('YouTube',this)">YouTube</button>
-    <button class="idea-filter-btn" onclick="setInspoFilter('Multiple Platforms',this)">Multiple</button>
-  </div>
-
-  <div id="inspo-list"></div>
-</div>
-
 <!-- SAVED REPLIES -->
 <div class="panel" id="panel-replies">
   <div class="section-title">💬 Saved Replies</div>
@@ -12629,133 +12438,6 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     </div>
   </div>
   <div id="reply-list"></div>
-</div>
-
-<!-- HOOK BANK -->
-<div class="panel" id="panel-hookbank">
-  <div class="section-title">🪝 Hook Bank</div>
-  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Save your best opening lines so you never start a video blank. Categorize by vibe and copy with one tap.</p>
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px;">
-    <div class="sc-field">
-      <label>Your Hook *</label>
-      <div class="mic-row">
-        <textarea id="hook-text" rows="3" placeholder="e.g. POV: you asked me to recommend a book and I said no because I KNEW you weren't ready..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea>
-        <button class="mic-btn" onclick="startVoice('hook-text',false)" title="Speak hook">🎤</button>
-      </div>
-    </div>
-    <div class="sc-field">
-      <label>Category</label>
-      <select id="hook-cat" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;">
-        <option value="Dark &amp; Dramatic">Dark &amp; Dramatic</option>
-        <option value="Chaotic Unhinged">Chaotic Unhinged</option>
-        <option value="Cozy Mood">Cozy Mood</option>
-        <option value="Book Review">Book Review</option>
-        <option value="Recommendation">Recommendation</option>
-        <option value="Book Haul">Book Haul</option>
-        <option value="Ranking">Ranking</option>
-        <option value="General">General</option>
-      </select>
-    </div>
-    <button class="sc-add-btn" style="margin-top:4px;" onclick="addHook()">✦ Save Hook</button>
-  </div>
-  <div class="idea-filter-row" style="margin-bottom:12px;">
-    <button class="idea-filter-btn active" onclick="setHookFilter('all',this)">All</button>
-    <button class="idea-filter-btn" onclick="setHookFilter('Dark &amp; Dramatic',this)">🖤 Dark</button>
-    <button class="idea-filter-btn" onclick="setHookFilter('Chaotic Unhinged',this)">🌀 Chaotic</button>
-    <button class="idea-filter-btn" onclick="setHookFilter('Cozy Mood',this)">🕯️ Cozy</button>
-    <button class="idea-filter-btn" onclick="setHookFilter('Book Review',this)">📖 Review</button>
-    <button class="idea-filter-btn" onclick="setHookFilter('Recommendation',this)">💌 Rec</button>
-    <button class="idea-filter-btn" onclick="setHookFilter('Book Haul',this)">🛍️ Haul</button>
-    <button class="idea-filter-btn" onclick="setHookFilter('Ranking',this)">🏆 Ranking</button>
-    <button class="idea-filter-btn" onclick="setHookFilter('General',this)">💬 General</button>
-  </div>
-  <div id="hook-list"></div>
-</div>
-
-<!-- CTA BANK -->
-<div class="panel" id="panel-ctabank">
-  <div class="section-title">📣 CTA Bank</div>
-  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Save your best calls-to-action. The hook gets them in — the CTA keeps them. One tap to copy.</p>
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px;">
-    <div class="sc-field">
-      <label>Your CTA *</label>
-      <div class="mic-row">
-        <textarea id="cta-text" rows="3" placeholder="e.g. Follow me if you want book recs that will ruin your life in the best way 🖤" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea>
-        <button class="mic-btn" onclick="startVoice('cta-text',false)" title="Speak CTA">🎤</button>
-      </div>
-    </div>
-    <div class="sc-field">
-      <label>Category</label>
-      <select id="cta-cat" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;">
-        <option value="Book Haul">🛍️ Book Haul</option>
-        <option value="Wrap-Up">📅 Wrap-Up</option>
-        <option value="TBR">📚 TBR</option>
-        <option value="Book Review">📖 Book Review</option>
-        <option value="Recommendation">💌 Recommendation</option>
-        <option value="Ranking">🏆 Ranking</option>
-        <option value="Reading Vlog">🎥 Reading Vlog</option>
-        <option value="General">💬 General</option>
-      </select>
-    </div>
-    <button class="sc-add-btn" style="margin-top:4px;" onclick="addCta()">✦ Save CTA</button>
-  </div>
-  <div class="idea-filter-row" style="margin-bottom:12px;">
-    <button class="idea-filter-btn active" onclick="setCtaFilter('all',this)">All</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('Book Haul',this)">🛍️ Haul</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('Wrap-Up',this)">📅 Wrap-Up</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('TBR',this)">📚 TBR</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('Book Review',this)">📖 Review</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('Recommendation',this)">💌 Rec</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('Ranking',this)">🏆 Ranking</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('Reading Vlog',this)">🎥 Vlog</button>
-    <button class="idea-filter-btn" onclick="setCtaFilter('General',this)">💬 General</button>
-  </div>
-  <div id="cta-list"></div>
-</div>
-
-<!-- TRENDING SOUNDS BANK -->
-<div class="panel" id="panel-sounds">
-  <div class="section-title">🎵 Trending Sounds Bank</div>
-  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Save trending audios before you forget them. Tag by vibe, mark as used once you've filmed with it.</p>
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px;">
-    <div class="sc-field">
-      <label>Sound Name / Description *</label>
-      <div class="mic-row">
-        <input type="text" id="sound-name" placeholder="e.g. that dramatic orchestral one from @booktok, 'Clair de Lune' remix..."/>
-        <button class="mic-btn" onclick="startVoice('sound-name',false)" title="Speak sound name">🎤</button>
-      </div>
-    </div>
-    <div class="sc-field">
-      <label>Vibe</label>
-      <select id="sound-vibe" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;">
-        <option value="Dramatic">Dramatic</option>
-        <option value="Cozy">Cozy</option>
-        <option value="Hype">Hype</option>
-        <option value="Funny">Funny</option>
-        <option value="Aesthetic">Aesthetic</option>
-        <option value="Sad">Sad</option>
-        <option value="Trending">Trending</option>
-        <option value="General">General</option>
-      </select>
-    </div>
-    <div class="sc-field">
-      <label>Notes (optional)</label>
-      <input type="text" id="sound-notes" placeholder="where you heard it, what content fits it..."/>
-    </div>
-    <button class="sc-add-btn" style="margin-top:4px;" onclick="addSound()">✦ Save Sound</button>
-  </div>
-  <div class="idea-filter-row" style="margin-bottom:12px;">
-    <button class="idea-filter-btn active" onclick="setSoundFilter('all',this)">All</button>
-    <button class="idea-filter-btn" onclick="setSoundFilter('unused',this)">🆕 Unused</button>
-    <button class="idea-filter-btn" onclick="setSoundFilter('Dramatic',this)">🎭 Dramatic</button>
-    <button class="idea-filter-btn" onclick="setSoundFilter('Cozy',this)">🕯️ Cozy</button>
-    <button class="idea-filter-btn" onclick="setSoundFilter('Hype',this)">⚡ Hype</button>
-    <button class="idea-filter-btn" onclick="setSoundFilter('Funny',this)">😂 Funny</button>
-    <button class="idea-filter-btn" onclick="setSoundFilter('Aesthetic',this)">✨ Aesthetic</button>
-    <button class="idea-filter-btn" onclick="setSoundFilter('Sad',this)">💧 Sad</button>
-    <button class="idea-filter-btn" onclick="setSoundFilter('Trending',this)">🔥 Trending</button>
-  </div>
-  <div id="sounds-list"></div>
 </div>
 
 <!-- VIDEO SERIES TRACKER -->
@@ -12901,24 +12583,6 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     </div>
   </div>
   <div id="rate-list"></div>
-</div>
-
-<!-- READER QUIZ -->
-<div class="panel" id="panel-quiz">
-  <div class="section-title">🧠 Reader Personality Quiz</div>
-  <div id="quiz-body">
-    <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:20px;line-height:1.7;">Answer 6 quick questions to discover your reader personality type!</p>
-    <div id="quiz-questions"></div>
-    <div id="quiz-submit-row" style="display:none;margin-top:16px;">
-      <button class="sc-add-btn" onclick="submitQuiz()">✦ See My Reader Type</button>
-    </div>
-    <div id="quiz-result" style="display:none;margin-top:20px;text-align:center;padding:20px;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--gold);border-radius:10px;">
-      <div id="quiz-result-type" style="font-family:'Cinzel',serif;font-size:22px;font-weight:900;color:var(--gold);margin-bottom:10px;"></div>
-      <div id="quiz-result-desc" style="font-size:15px;color:var(--text);line-height:1.7;margin-bottom:14px;font-style:italic;"></div>
-      <div id="quiz-result-tip" style="font-size:13px;color:var(--gold-dim);border-top:1px solid var(--border);padding-top:12px;"></div>
-      <button class="sc-add-btn" style="margin-top:16px;" onclick="resetQuiz()">↩ Retake Quiz</button>
-    </div>
-  </div>
 </div>
 
 <!-- READING JOURNAL -->
@@ -13480,20 +13144,6 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   <div id="affiliate-list"></div>
 </div>
 
-<!-- HALL OF FAME -->
-<div class="panel" id="panel-halloffame">
-  <div class="section-title">⭐ Hall of Fame</div>
-  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:20px;line-height:1.7;">Your 5-star reads — the books that absolutely destroyed you in the best possible way. Pulled automatically from your Scorecard.</p>
-  <div id="hof-list"></div>
-</div>
-
-<!-- TROPE TRACKER -->
-<div class="panel" id="panel-tropes">
-  <div class="section-title">🌀 Trope Tracker</div>
-  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:20px;line-height:1.7;">See which tropes appear most in your reading. Sizes grow with frequency — pulled from the Tropes field in your Scorecard. Add custom tropes below.</p>
-  <div id="tropes-body"></div>
-</div>
-
 <!-- READ THIS NEXT -->
 <div class="panel" id="panel-readnext">
   <div class="section-title">🔗 Read This Next</div>
@@ -13512,13 +13162,6 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <button onclick="addReadNextPairing()" style="width:100%;padding:14px;background:var(--gold);border:none;color:#000;font-family:Cinzel,serif;font-size:13px;font-weight:700;letter-spacing:1px;border-radius:8px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ ADD PAIRING</button>
     </div>
   </div>
-</div>
-
-<!-- READING PACE CALCULATOR -->
-<div class="panel" id="panel-pacecalc">
-  <div class="section-title">📖 Reading Pace Calculator</div>
-  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:20px;line-height:1.7;">Figure out when you'll finish your current book — and whether you'll make your ARC deadline. Enter your pages per day and watch the math happen.</p>
-  <div id="pacecalc-body"></div>
 </div>
 
 <!-- BOOK REVIEW BUILDER -->
