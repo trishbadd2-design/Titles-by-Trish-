@@ -878,6 +878,7 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
     <div id="sync-dot" style="width:8px;height:8px;border-radius:50%;background:#888;flex-shrink:0;" title="Sync status"></div>
     <span style="font-size:11px;color:var(--text-dim);letter-spacing:.04em;">Syncing across devices</span>
   </div>
+  <div id="app-mode-badge" style="font-size:10px;color:var(--text-dim);letter-spacing:.06em;margin-top:3px;opacity:.7;"></div>
   <div class="header-rule"></div>
 </div>
 
@@ -3130,6 +3131,18 @@ function initShelfSync(){
     _startShelfStream();
   });
 }
+
+function _isStandaloneApp(){
+  try{
+    return window.navigator.standalone===true || (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);
+  }catch(e){return false;}
+}
+function _renderAppModeBadge(){
+  var el=document.getElementById('app-mode-badge');
+  if(!el)return;
+  el.textContent=_isStandaloneApp()?'📱 Installed App':'🌐 Browser Tab';
+}
+document.addEventListener('DOMContentLoaded',_renderAppModeBadge);
 
 function forceRestoreFromCloud(){
   toast('Checking cloud backup…');
@@ -10809,6 +10822,46 @@ function saveShelf(){
   try{idbSave('tbtrish_shelf',data);}catch(e){}
   _shelfDiffPush();
 }
+function dedupeShelf(){
+  if(!Array.isArray(shelfBooks)||!shelfBooks.length){toast('No books to check.');return;}
+  var groups={};
+  shelfBooks.forEach(function(b){
+    var key=(b.title||'').trim().toLowerCase()+'|'+(b.author||'').trim().toLowerCase();
+    if(!groups[key])groups[key]=[];
+    groups[key].push(b);
+  });
+  function score(b){
+    var s=0;
+    if(parseInt(b.rating)>0)s+=3;
+    if(b.notes&&b.notes.trim())s+=3;
+    if(b.cover&&b.cover.trim())s+=2;
+    if(b.dateFinished)s+=2;
+    if(b.genre&&b.genre.trim())s+=1;
+    if(b.series&&b.series.trim())s+=1;
+    if(parseInt(b.currentPage)>0)s+=1;
+    if(b.status==='finished')s+=1;
+    return s;
+  }
+  var kept=[];
+  var removedCount=0;
+  Object.keys(groups).forEach(function(key){
+    var group=groups[key];
+    if(group.length===1){kept.push(group[0]);return;}
+    group.sort(function(a,b){
+      var sa=score(a),sb=score(b);
+      if(sb!==sa)return sb-sa;
+      return (a.dateAdded||'').localeCompare(b.dateAdded||'');
+    });
+    kept.push(group[0]);
+    removedCount+=group.length-1;
+  });
+  if(removedCount===0){toast('No duplicates found!');return;}
+  shelfBooks=kept;
+  saveShelf();
+  try{renderShelf();}catch(e){}
+  try{renderDashboard();}catch(e){}
+  toast('✦ Removed '+removedCount+' duplicate'+(removedCount===1?'':'s')+'!');
+}
 function _shelfBackupNudge(){
   var el=document.getElementById('shelf-backup-nudge');
   if(el){el.style.display='flex';clearTimeout(el._nt);el._nt=setTimeout(function(){el.style.display='none';},12000);}
@@ -12732,6 +12785,7 @@ function resetQuiz(){quizAnswers={};initQuiz();}
       <button class="btn" onclick="shareData()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(92,32,8,.10);border-color:rgba(92,32,8,.45);color:var(--brown);font-weight:900;letter-spacing:.06em;">📡 Share to Other Device</button>
       <button class="btn" onclick="openSyncModal()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(26,72,20,.10);border-color:rgba(26,72,20,.45);color:var(--gold);font-weight:900;letter-spacing:.06em;">🔄 Sync Code</button>
       <button class="btn" onclick="forceRestoreFromCloud()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(26,72,20,.15);border-color:rgba(26,72,20,.6);color:var(--gold);font-weight:900;letter-spacing:.06em;">☁️ Restore Books from Cloud</button>
+      <button class="btn" onclick="dedupeShelf()" style="font-size:15px;padding:12px 16px;width:100%;box-sizing:border-box;background:rgba(92,32,8,.10);border-color:rgba(92,32,8,.45);color:var(--brown);font-weight:900;letter-spacing:.06em;">🧹 Remove Duplicate Books</button>
     </div>
   </div>
 
