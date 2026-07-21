@@ -925,7 +925,6 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <button class="nav-btn active" data-panel="dashboard" onclick="showPanel('dashboard')">🏠 Dashboard</button>
   <button class="nav-btn" data-panel="calendar" onclick="showPanel('calendar')">📅 Calendar</button>
   <button class="nav-btn" data-panel="planner" onclick="showPanel('planner')">📆 Planner</button>
-  <button class="nav-btn" data-panel="schedule" onclick="showPanel('schedule')">⏰ Schedule</button>
 </div>
 
 <div class="sub-nav" id="subnav-reading">
@@ -1108,11 +1107,54 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
     </div>
     <div id="crosspost-list"><div style="font-style:italic;color:var(--text-dim);font-size:14px;padding:8px 0;">Mark a video as posted (✓ button in the calendar) to track it here.</div></div>
   </div>
+
+  <div class="card-box" style="margin-top:16px;">
+    <div class="label-sm">⏰ Your Weekly Rhythm — Built Around Your 5:30 Workday</div>
+    <div class="schedule-grid" style="margin-top:12px;">
+      <div class="sched-day post-day">
+        <div class="sched-day-name">MON</div>
+        <div class="sched-time">7:00 PM</div>
+        <div class="sched-type">📤 Post</div>
+      </div>
+      <div class="sched-day post-day">
+        <div class="sched-day-name">TUE</div>
+        <div class="sched-time">7:00 PM</div>
+        <div class="sched-type">📤 Post</div>
+      </div>
+      <div class="sched-day post-day">
+        <div class="sched-day-name">WED</div>
+        <div class="sched-time">7:30 PM</div>
+        <div class="sched-type">📤 Post</div>
+      </div>
+      <div class="sched-day post-day">
+        <div class="sched-day-name">THU</div>
+        <div class="sched-time">7:00 PM</div>
+        <div class="sched-type">📤 Post</div>
+      </div>
+      <div class="sched-day post-day">
+        <div class="sched-day-name">FRI</div>
+        <div class="sched-time">8:00 PM</div>
+        <div class="sched-type">📤 Post</div>
+      </div>
+      <div class="sched-day film-day">
+        <div class="sched-day-name">SAT</div>
+        <div class="sched-time">10 AM</div>
+        <div class="sched-type">🎬 Film</div>
+      </div>
+      <div class="sched-day film-day">
+        <div class="sched-day-name">SUN</div>
+        <div class="sched-time">12 PM</div>
+        <div class="sched-type">✂️ Edit</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:15px;color:var(--text-dim);font-style:italic;line-height:1.7;">
+      🎬 <strong style="color:var(--text);">Film Saturday</strong> — batch record 3-4 videos in one session<br>
+      ✂️ <strong style="color:var(--text);">Edit Sunday</strong> — edit, add captions, schedule the whole week<br>
+      📤 <strong style="color:var(--text);">Post weekdays</strong> — TikTok scheduler does the work while you're at work
+    </div>
+  </div>
 </div>
 
-<!-- ═══════════════════════════ -->
-<!-- PANEL 2: FOLLOWER TRACKER  -->
-<!-- ═══════════════════════════ -->
 <!-- ═══════════════════════════ -->
 <!-- PANEL 4: ARC TRACKER       -->
 <!-- ═══════════════════════════ -->
@@ -1283,66 +1325,6 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
     <div id="qna-list"></div>
   </div>
 </div>
-
-<!-- ═══════════════════════════ -->
-<!-- PANEL 7: POST SCHEDULE     -->
-<!-- ═══════════════════════════ -->
-<div class="panel" id="panel-schedule">
-  <div class="section-title">⏰ Post Schedule & Reminders</div>
-
-  <div class="card-box" style="margin-bottom:16px;">
-    <div class="label-sm">Your Weekly Rhythm — Built Around Your 5:30 Workday</div>
-    <div class="schedule-grid" style="margin-top:12px;">
-      <div class="sched-day post-day">
-        <div class="sched-day-name">MON</div>
-        <div class="sched-time">7:00 PM</div>
-        <div class="sched-type">📤 Post</div>
-      </div>
-      <div class="sched-day post-day">
-        <div class="sched-day-name">TUE</div>
-        <div class="sched-time">7:00 PM</div>
-        <div class="sched-type">📤 Post</div>
-      </div>
-      <div class="sched-day post-day">
-        <div class="sched-day-name">WED</div>
-        <div class="sched-time">7:30 PM</div>
-        <div class="sched-type">📤 Post</div>
-      </div>
-      <div class="sched-day post-day">
-        <div class="sched-day-name">THU</div>
-        <div class="sched-time">7:00 PM</div>
-        <div class="sched-type">📤 Post</div>
-      </div>
-      <div class="sched-day post-day">
-        <div class="sched-day-name">FRI</div>
-        <div class="sched-time">8:00 PM</div>
-        <div class="sched-type">📤 Post</div>
-      </div>
-      <div class="sched-day film-day">
-        <div class="sched-day-name">SAT</div>
-        <div class="sched-time">10 AM</div>
-        <div class="sched-type">🎬 Film</div>
-      </div>
-      <div class="sched-day film-day">
-        <div class="sched-day-name">SUN</div>
-        <div class="sched-time">12 PM</div>
-        <div class="sched-type">✂️ Edit</div>
-      </div>
-    </div>
-    <div style="margin-top:10px;font-size:15px;color:var(--text-dim);font-style:italic;line-height:1.7;">
-      🎬 <strong style="color:var(--text);">Film Saturday</strong> — batch record 3-4 videos in one session<br>
-      ✂️ <strong style="color:var(--text);">Edit Sunday</strong> — edit, add captions, schedule the whole week<br>
-      📤 <strong style="color:var(--text);">Post weekdays</strong> — TikTok scheduler does the work while you're at work
-    </div>
-  </div>
-
-  <div class="card-box" style="margin-top:4px;">
-    <div style="font-size:14px;color:var(--text-dim);font-style:italic;line-height:1.7;">
-      💡 Your reminders have moved to the <strong style="color:var(--text);">📅 Calendar</strong> tab — scroll to the bottom of it to set them up.
-    </div>
-  </div>
-</div>
-
 
 <!-- ═══════════════════════════════════════════ -->
 <!-- PANEL 8: MY PLANNER                         -->
@@ -3495,7 +3477,6 @@ var DRAWER_PANELS=[
   {icon:'🏠',name:'Dashboard',panel:'dashboard',group:'Home'},
   {icon:'📅',name:'Calendar',panel:'calendar',group:'Home'},
   {icon:'📆',name:'Planner',panel:'planner',group:'Home'},
-  {icon:'⏰',name:'Schedule',panel:'schedule',group:'Home'},
   {icon:'📚',name:'My Shelf',panel:'shelf',group:'Reading'},
   {icon:'📖',name:'Scorecard',panel:'scorecard',group:'Reading'},
   {icon:'📚',name:'Monthly Picks',panel:'monthlypicks',group:'Reading'},
@@ -3553,7 +3534,7 @@ function drawerSearch(q){
 
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={dashboard:'home',calendar:'home',planner:'home',schedule:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',analytics:'growth',spending:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
+var PANEL_GROUP={dashboard:'home',calendar:'home',planner:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',analytics:'growth',spending:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -3589,9 +3570,8 @@ function showPanel(id){
     if(recFormUrl){var qr=document.getElementById('qr-result');if(qr)qr.style.display='none';}
   }
   if(id==='dashboard'){renderDashboard();}
-  if(id==='calendar'){renderCalendar();renderNowReading();}
+  if(id==='calendar'){renderCalendar();renderNowReading();renderAlarms();}
   if(id==='arc')renderARC();
-  if(id==='schedule')renderAlarms();
   if(id==='planner'){initPlanner();renderPlanner();}
   if(id==='shelf'){renderShelf();renderShelfGoodreadsBtn();}
   if(id==='scorecard'){initScorecard();}
@@ -6418,7 +6398,7 @@ function clearCCalDay(){
 // ══════════════════════════════════════════
 // SWIPE GESTURES (between panels)
 // ══════════════════════════════════════════
-var PANEL_ORDER=['calendar','arc','ideas','schedule','planner','scorecard','wins','monthlypicks','analytics','timer','spending','pipeline','mood','spin','thumbnails','replies','collabwish','ratecard'];
+var PANEL_ORDER=['calendar','arc','ideas','planner','scorecard','wins','monthlypicks','analytics','timer','spending','pipeline','mood','spin','thumbnails','replies','collabwish','ratecard'];
 var _currentPanel='calendar', _touchX=0, _touchY=0;
 document.addEventListener('touchstart',e=>{_touchX=e.touches[0].clientX;_touchY=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchend',e=>{
