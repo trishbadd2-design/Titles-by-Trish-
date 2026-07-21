@@ -956,12 +956,8 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
 </div>
 
 <div class="sub-nav" id="subnav-growth">
-  <button class="nav-btn" data-panel="followers" onclick="showPanel('followers')">📈 Followers</button>
-  <button class="nav-btn" data-panel="engagement" onclick="showPanel('engagement')">🎯 Engagement</button>
   <button class="nav-btn" data-panel="analytics" onclick="showPanel('analytics')">📊 Analytics</button>
   <button class="nav-btn" data-panel="spending" onclick="showPanel('spending')">💰 Spending</button>
-  <button class="nav-btn" data-panel="videoperf" onclick="showPanel('videoperf')">📊 Video Performance</button>
-  <button class="nav-btn" data-panel="milestones" onclick="showPanel('milestones')">🎯 Milestones</button>
   <button class="nav-btn" data-panel="posttimes" onclick="showPanel('posttimes')">⏰ Post Times</button>
 </div>
 
@@ -1117,95 +1113,6 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
 <!-- ═══════════════════════════ -->
 <!-- PANEL 2: FOLLOWER TRACKER  -->
 <!-- ═══════════════════════════ -->
-<div class="panel" id="panel-followers">
-  <div class="section-title">📈 Follower Growth Tracker</div>
-
-  <div class="stats-row">
-    <div class="stat-box"><div class="stat-num" id="fol-current">—</div><div class="stat-label">Current</div></div>
-    <div class="stat-box"><div class="stat-num" id="fol-gain">—</div><div class="stat-label">Total Gained</div></div>
-    <div class="stat-box"><div class="stat-num" id="fol-best">—</div><div class="stat-label">Best Week</div></div>
-  </div>
-
-  <div class="card-box">
-    <div class="label-sm">Log Your Follower Count</div>
-    <div class="grid-2" style="gap:10px;margin-top:8px;">
-      <div>
-        <div class="label-sm">Date</div>
-        <input type="date" id="fol-date">
-      </div>
-      <div>
-        <div class="label-sm">Follower Count</div>
-        <input type="number" id="fol-count" placeholder="e.g. 4250">
-      </div>
-    </div>
-    <input type="text" id="fol-note" placeholder="Note (e.g. 'Chevy Stevens video went live')" style="margin-top:8px;">
-    <button class="btn btn-primary btn-full" onclick="addFollowerLog()">✦ Log Count</button>
-  </div>
-
-  <div class="card-box">
-    <div class="label-sm">Growth Chart</div>
-    <div class="chart-wrap"><canvas id="fol-chart"></canvas><div class="chart-no-data" id="fol-no-data">Log your first count above to start tracking 🖤</div></div>
-  </div>
-
-  <div class="card-box">
-    <div class="label-sm">History</div>
-    <div class="follower-log" id="fol-log"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No entries yet</div></div>
-  </div>
-
-  <div class="card-box" style="margin-top:16px;">
-    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:14px;">🎯 FOLLOWER GOALS</div>
-    <div id="fol-goals-bars" style="margin-bottom:16px;"></div>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <div class="label-sm">Add a Milestone</div>
-      <div style="display:flex;gap:8px;">
-        <input type="number" id="fol-goal-target" placeholder="e.g. 10000" class="input-field" style="flex:1;">
-        <input type="text" id="fol-goal-label" placeholder="Label (e.g. 10k! 🎉)" class="input-field" style="flex:1.2;">
-      </div>
-      <button class="btn btn-primary" onclick="addFollowerGoal()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Add Goal</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════ -->
-<!-- PANEL 3: ENGAGEMENT        -->
-<!-- ═══════════════════════════ -->
-<div class="panel" id="panel-engagement">
-  <div class="section-title">🎯 Video Engagement Tracker</div>
-
-  <div class="stats-row">
-    <div class="stat-box"><div class="stat-num" id="eng-total-vids">0</div><div class="stat-label">Videos Logged</div></div>
-    <div class="stat-box"><div class="stat-num" id="eng-avg-views">—</div><div class="stat-label">Avg Views</div></div>
-    <div class="stat-box"><div class="stat-num" id="eng-best-vid">—</div><div class="stat-label">Best Views</div></div>
-  </div>
-
-  <div class="card-box">
-    <div class="label-sm">Log a Video's Performance</div>
-    <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;">
-      <input type="text" id="eng-title" placeholder="Video title">
-      <div class="grid-2">
-        <div><div class="label-sm">Views</div><input type="number" id="eng-views" placeholder="e.g. 2400"></div>
-        <div><div class="label-sm">Likes</div><input type="number" id="eng-likes" placeholder="e.g. 340"></div>
-      </div>
-      <div class="grid-2">
-        <div><div class="label-sm">Comments</div><input type="number" id="eng-comments" placeholder="e.g. 45"></div>
-        <div><div class="label-sm">Video Type</div>
-          <select id="eng-type">
-            <option>Book Review</option><option>Author Spotlight</option><option>Book Haul</option>
-            <option>TBR</option><option>Wrap Up</option><option>Ranking</option>
-            <option>Recommendations</option><option>Educational</option><option>Engagement</option>
-          </select>
-        </div>
-      </div>
-      <button class="btn btn-primary" onclick="addEngLog()">✦ Log Video</button>
-    </div>
-  </div>
-
-  <div class="card-box">
-    <div class="label-sm">Top Performing Videos</div>
-    <div class="eng-log" id="eng-log"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No videos logged yet</div></div>
-  </div>
-</div>
-
 <!-- ═══════════════════════════ -->
 <!-- PANEL 4: ARC TRACKER       -->
 <!-- ═══════════════════════════ -->
@@ -2434,6 +2341,9 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <div class="an-tabs">
     <button class="an-tab active" id="an-tab-growth" onclick="switchAnTab('growth',this)">📈 Growth Log</button>
     <button class="an-tab" id="an-tab-videos" onclick="switchAnTab('videos',this)">🎬 Video Stats</button>
+    <button class="an-tab" id="an-tab-followers" onclick="switchAnTab('followers',this)">📊 Followers</button>
+    <button class="an-tab" id="an-tab-engagement" onclick="switchAnTab('engagement',this)">🎯 Engagement</button>
+    <button class="an-tab" id="an-tab-milestones" onclick="switchAnTab('milestones',this)">🏁 Milestones</button>
     <button class="an-tab" id="an-tab-tips" onclick="switchAnTab('tips',this)">💡 Growth Tips</button>
     <button class="an-tab" id="an-tab-shoot" onclick="switchAnTab('shoot',this)">🎥 Shoot Guide</button>
     <button class="an-tab" id="an-tab-capcut" onclick="switchAnTab('capcut',this)">✂️ CapCut</button>
@@ -2526,6 +2436,103 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
     <div id="an-vid-insight"></div>
     <div id="an-vid-book-chart"></div>
     <div id="an-vid-list"></div>
+  </div>
+
+  <!-- FOLLOWERS -->
+  <div id="an-section-followers" class="an-section">
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num" id="fol-current">—</div><div class="stat-label">Current</div></div>
+      <div class="stat-box"><div class="stat-num" id="fol-gain">—</div><div class="stat-label">Total Gained</div></div>
+      <div class="stat-box"><div class="stat-num" id="fol-best">—</div><div class="stat-label">Best Week</div></div>
+    </div>
+    <div class="card-box">
+      <div class="label-sm">Log Your Follower Count</div>
+      <div class="grid-2" style="gap:10px;margin-top:8px;">
+        <div>
+          <div class="label-sm">Date</div>
+          <input type="date" id="fol-date">
+        </div>
+        <div>
+          <div class="label-sm">Follower Count</div>
+          <input type="number" id="fol-count" placeholder="e.g. 4250">
+        </div>
+      </div>
+      <input type="text" id="fol-note" placeholder="Note (e.g. 'Chevy Stevens video went live')" style="margin-top:8px;">
+      <button class="btn btn-primary btn-full" onclick="addFollowerLog()">✦ Log Count</button>
+    </div>
+    <div class="card-box">
+      <div class="label-sm">Growth Chart</div>
+      <div class="chart-wrap"><canvas id="fol-chart"></canvas><div class="chart-no-data" id="fol-no-data">Log your first count above to start tracking 🖤</div></div>
+    </div>
+    <div class="card-box">
+      <div class="label-sm">History</div>
+      <div class="follower-log" id="fol-log"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No entries yet</div></div>
+    </div>
+    <div class="card-box" style="margin-top:16px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold);margin-bottom:14px;">🎯 FOLLOWER GOALS</div>
+      <div id="fol-goals-bars" style="margin-bottom:16px;"></div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="label-sm">Add a Milestone</div>
+        <div style="display:flex;gap:8px;">
+          <input type="number" id="fol-goal-target" placeholder="e.g. 10000" class="input-field" style="flex:1;">
+          <input type="text" id="fol-goal-label" placeholder="Label (e.g. 10k! 🎉)" class="input-field" style="flex:1.2;">
+        </div>
+        <button class="btn btn-primary" onclick="addFollowerGoal()" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✦ Add Goal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENGAGEMENT -->
+  <div id="an-section-engagement" class="an-section">
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num" id="eng-total-vids">0</div><div class="stat-label">Videos Logged</div></div>
+      <div class="stat-box"><div class="stat-num" id="eng-avg-views">—</div><div class="stat-label">Avg Views</div></div>
+      <div class="stat-box"><div class="stat-num" id="eng-best-vid">—</div><div class="stat-label">Best Views</div></div>
+    </div>
+    <div class="card-box">
+      <div class="label-sm">Log a Video's Performance</div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px;">
+        <input type="text" id="eng-title" placeholder="Video title">
+        <div class="grid-2">
+          <div><div class="label-sm">Views</div><input type="number" id="eng-views" placeholder="e.g. 2400"></div>
+          <div><div class="label-sm">Likes</div><input type="number" id="eng-likes" placeholder="e.g. 340"></div>
+        </div>
+        <div class="grid-2">
+          <div><div class="label-sm">Comments</div><input type="number" id="eng-comments" placeholder="e.g. 45"></div>
+          <div><div class="label-sm">Video Type</div>
+            <select id="eng-type">
+              <option>Book Review</option><option>Author Spotlight</option><option>Book Haul</option>
+              <option>TBR</option><option>Wrap Up</option><option>Ranking</option>
+              <option>Recommendations</option><option>Educational</option><option>Engagement</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="addEngLog()">✦ Log Video</button>
+      </div>
+    </div>
+    <div class="card-box">
+      <div class="label-sm">Top Performing Videos</div>
+      <div class="eng-log" id="eng-log"><div style="font-style:italic;color:var(--text-dim);font-size:15px;padding:10px 0;">No videos logged yet</div></div>
+    </div>
+  </div>
+
+  <!-- MILESTONES -->
+  <div id="an-section-milestones" class="an-section">
+    <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Celebrate your follower milestones and remember what got you there.</p>
+    <button class="sc-add-btn" onclick="openMilestoneForm()">✦ Log a Milestone</button>
+    <div id="milestone-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
+      <div class="sc-two-col">
+        <div class="sc-field"><label>Followers *</label><input type="number" id="ms-f-followers" placeholder="e.g. 10000"/></div>
+        <div class="sc-field"><label>Platform</label><select id="ms-f-platform"><option>TikTok</option><option>Instagram</option><option>YouTube</option></select></div>
+      </div>
+      <div class="sc-field"><label>Date Achieved</label><input type="date" id="ms-f-date"/></div>
+      <div class="sc-field"><label>What Helped You Get Here</label><textarea id="ms-f-note" rows="3" placeholder="What video blew up? What changed?" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;"></textarea></div>
+      <div class="sc-modal-actions" style="margin-top:10px;">
+        <button class="sc-btn-cancel" onclick="closeMilestoneForm()">Cancel</button>
+        <button class="sc-btn-save" onclick="saveMilestone()">✦ Save Milestone</button>
+      </div>
+    </div>
+    <div id="milestone-list"></div>
   </div>
 
   <!-- GROWTH TIPS -->
@@ -3509,12 +3516,8 @@ var DRAWER_PANELS=[
   {icon:'📋',name:'Checklist',panel:'checklist',group:'Content'},
   {icon:'💌',name:'DM Templates',panel:'dmtemplates',group:'Content'},
   {icon:'⚡',name:'Quick Script',panel:'contentgen',group:'Content'},
-  {icon:'📈',name:'Followers',panel:'followers',group:'Growth'},
-  {icon:'🎯',name:'Engagement',panel:'engagement',group:'Growth'},
   {icon:'📊',name:'Analytics',panel:'analytics',group:'Growth'},
   {icon:'💰',name:'Spending',panel:'spending',group:'Growth'},
-  {icon:'📊',name:'Video Performance',panel:'videoperf',group:'Growth'},
-  {icon:'🎯',name:'Milestones',panel:'milestones',group:'Growth'},
   {icon:'⏰',name:'Post Times',panel:'posttimes',group:'Growth'},
   {icon:'🤝',name:'Pipeline',panel:'pipeline',group:'Business'},
   {icon:'📬',name:'ARCs & Collabs',panel:'arc',group:'Business'},
@@ -3550,7 +3553,7 @@ function drawerSearch(q){
 
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={dashboard:'home',calendar:'home',planner:'home',schedule:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',followers:'growth',engagement:'growth',analytics:'growth',spending:'growth',videoperf:'growth',milestones:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
+var PANEL_GROUP={dashboard:'home',calendar:'home',planner:'home',schedule:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',analytics:'growth',spending:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -3587,8 +3590,6 @@ function showPanel(id){
   }
   if(id==='dashboard'){renderDashboard();}
   if(id==='calendar'){renderCalendar();renderNowReading();}
-  if(id==='followers')renderFollowers();
-  if(id==='engagement')renderEngagement();
   if(id==='arc')renderARC();
   if(id==='schedule')renderAlarms();
   if(id==='planner'){initPlanner();renderPlanner();}
@@ -3615,10 +3616,8 @@ function showPanel(id){
   if(id==='contentgen'){renderCgenBooks();}
   if(id==='filmsession'){renderFilmSessions();}
   if(id==='commentmine'){renderCommentMine();}
-  if(id==='videoperf'){renderVideoPerfLog();}
   if(id==='affiliates'){renderAffiliates();}
   if(id==='collabwish'){renderCollabWish();}
-  if(id==='milestones'){renderMilestones();}
   if(id==='posttimes'){renderPostTimes();}
   if(id==='ratecard'){renderRateCard();}
   _currentPanel=id;
@@ -6419,7 +6418,7 @@ function clearCCalDay(){
 // ══════════════════════════════════════════
 // SWIPE GESTURES (between panels)
 // ══════════════════════════════════════════
-var PANEL_ORDER=['calendar','followers','engagement','arc','ideas','schedule','planner','scorecard','wins','monthlypicks','analytics','timer','spending','pipeline','mood','spin','thumbnails','replies','collabwish','ratecard'];
+var PANEL_ORDER=['calendar','arc','ideas','schedule','planner','scorecard','wins','monthlypicks','analytics','timer','spending','pipeline','mood','spin','thumbnails','replies','collabwish','ratecard'];
 var _currentPanel='calendar', _touchX=0, _touchY=0;
 document.addEventListener('touchstart',e=>{_touchX=e.touches[0].clientX;_touchY=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchend',e=>{
@@ -7652,6 +7651,9 @@ function switchAnTab(tab,btn){
   document.getElementById('an-section-'+tab).classList.add('active');
   if(tab==='growth')renderGrowthLog();
   if(tab==='videos')renderVidLog();
+  if(tab==='followers')renderFollowers();
+  if(tab==='engagement')renderEngagement();
+  if(tab==='milestones')renderMilestones();
   if(tab==='tips')renderGrowthTips();
   if(tab==='shoot')renderShootGuide();
   if(tab==='capcut')renderCapCutGuide();
@@ -12516,26 +12518,6 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   <div id="collabwish-list"></div>
 </div>
 
-<!-- MILESTONES -->
-<div class="panel" id="panel-milestones">
-  <div class="section-title">🎯 Milestones</div>
-  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Celebrate your follower milestones and remember what got you there.</p>
-  <button class="sc-add-btn" onclick="openMilestoneForm()">✦ Log a Milestone</button>
-  <div id="milestone-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
-    <div class="sc-two-col">
-      <div class="sc-field"><label>Followers *</label><input type="number" id="ms-f-followers" placeholder="e.g. 10000"/></div>
-      <div class="sc-field"><label>Platform</label><select id="ms-f-platform"><option>TikTok</option><option>Instagram</option><option>YouTube</option></select></div>
-    </div>
-    <div class="sc-field"><label>Date Achieved</label><input type="date" id="ms-f-date"/></div>
-    <div class="sc-field"><label>What Helped You Get Here</label><textarea id="ms-f-note" rows="3" placeholder="What video blew up? What changed?" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:15px;resize:vertical;font-family:inherit;"></textarea></div>
-    <div class="sc-modal-actions" style="margin-top:10px;">
-      <button class="sc-btn-cancel" onclick="closeMilestoneForm()">Cancel</button>
-      <button class="sc-btn-save" onclick="saveMilestone()">✦ Save Milestone</button>
-    </div>
-  </div>
-  <div id="milestone-list"></div>
-</div>
-
 <!-- POST TIMES -->
 <div class="panel" id="panel-posttimes">
   <div class="section-title">⏰ Best Posting Times</div>
@@ -13082,39 +13064,6 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <button class="cm-filter-btn" data-f="Collab Request" onclick="setCommentFilter('Collab Request')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🤝 Collab</button>
   </div>
   <div id="commentmine-list"></div>
-</div>
-
-<!-- VIDEO PERFORMANCE LOG -->
-<div class="panel" id="panel-videoperf">
-  <div class="section-title">📊 Video Performance</div>
-  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Log each video's numbers. Switch to Stats view to see your average performance by content type.</p>
-  <button class="sc-add-btn" onclick="openVideoPerfForm()">✦ Log a Video</button>
-  <div id="videoperf-form" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:16px;">
-    <div class="sc-two-col">
-      <div class="sc-field"><label>Video Title *</label><input id="vp-f-title" placeholder="e.g. 5 Books I Read in June..."/></div>
-      <div class="sc-field"><label>Content Type</label><select id="vp-f-type"><option>Book Haul</option><option>Wrap-Up</option><option>Book Review</option><option>TBR</option><option>Recommendation</option><option>Ranking</option><option>Reading Vlog</option><option>Storytime</option><option>Other</option></select></div>
-    </div>
-    <div class="sc-field"><label>Date Posted</label><input type="date" id="vp-f-date"/></div>
-    <div class="sc-two-col">
-      <div class="sc-field"><label>Views</label><input type="number" id="vp-f-views" placeholder="0"/></div>
-      <div class="sc-field"><label>Likes</label><input type="number" id="vp-f-likes" placeholder="0"/></div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
-      <div class="sc-field"><label>Saves</label><input type="number" id="vp-f-saves" placeholder="0"/></div>
-      <div class="sc-field"><label>Shares</label><input type="number" id="vp-f-shares" placeholder="0"/></div>
-      <div class="sc-field"><label>Comments</label><input type="number" id="vp-f-comments" placeholder="0"/></div>
-    </div>
-    <div class="sc-field"><label>Notes</label><input id="vp-f-notes" placeholder="what worked, what didn't..."/></div>
-    <div class="sc-modal-actions" style="margin-top:10px;">
-      <button class="sc-btn-cancel" onclick="closeVideoPerfForm()">Cancel</button>
-      <button class="sc-btn-save" onclick="saveVideoPerf()">✦ Log Video</button>
-    </div>
-  </div>
-  <div style="display:flex;gap:8px;margin-bottom:14px;">
-    <button class="vp-view-btn" data-v="log" onclick="setVideoPerfView('log')" style="font-size:13px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:rgba(42,92,34,.15);color:var(--gold);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📋 Log</button>
-    <button class="vp-view-btn" data-v="stats" onclick="setVideoPerfView('stats')" style="font-size:13px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">📊 Stats by Type</button>
-  </div>
-  <div id="videoperf-list"></div>
 </div>
 
 <!-- AFFILIATE LINKS -->
