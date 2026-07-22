@@ -11460,11 +11460,13 @@ document.addEventListener('DOMContentLoaded',function(){
   if(!shelfBooks||shelfBooks.length===0){
     try{
       idbLoad('tbtrish_shelf',function(raw){
+        var restoredLocally=false;
         if(raw){
           try{
             var books=JSON.parse(raw);
             if(Array.isArray(books)&&books.length>0){
               shelfBooks=books;
+              restoredLocally=true;
               localStorage.setItem('tbtrish_shelf',raw);
               toast('✦ Restored '+books.length+' books from backup storage');
               try{renderShelf();}catch(e){}
@@ -11472,6 +11474,10 @@ document.addEventListener('DOMContentLoaded',function(){
             }
           }catch(ex){}
         }
+        // Still nothing locally at all — this device's storage was wiped.
+        // Reassure the user this isn't permanent: the cloud pull in
+        // initShelfSync() is about to run and should bring it all back.
+        if(!restoredLocally)toast('☁️ Your shelf looks empty here — restoring from the cloud…');
         initShelfSync();
       });
     }catch(e){initShelfSync();}
