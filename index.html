@@ -6135,6 +6135,7 @@ document.getElementById('win-date').value=new Date().toISOString().split('T')[0]
 try{showPanel('dashboard');}catch(e){}
 // ── BACKUP / RESTORE ──
 var ALL_BACKUP_KEYS=[
+  'tbtrish_shelf','tbtrish_shelf_goal',
   'tbtrish_done','tbtrish_fol','tbtrish_eng','tbtrish_arc',
   'tbtrish_ideas','tbtrish_savedbooks','tbtrish_alarms','tbtrish_planner',
   'sc3_books','sc3_tbr','sc3_goal','sc3_notes','sc3_streak','sc3_lastread',
@@ -6328,7 +6329,7 @@ function openStatsCard(){
   const avg=ratings.length?(Math.round(ratings.reduce((a,b)=>a+b,0)/ratings.length*10)/10):'—';
   const gc={};scBooks.forEach(b=>{if(b.genre)gc[b.genre]=(gc[b.genre]||0)+1;});
   const topGenre=Object.keys(gc).sort((a,b)=>gc[b]-gc[a])[0]||'—';
-  const curReading=JSON.parse(localStorage.getItem('sc3_currently')||'[]');
+  const curReading=safeJSON('sc3_currently',[]);
   const curText=curReading.length?curReading.map(b=>b.title).join(' · '):'Nothing at the moment';
   document.getElementById('scard-read').textContent=scBooks.length;
   document.getElementById('scard-rating').textContent=avg!=='—'?avg+'⭐':avg;
@@ -6951,7 +6952,7 @@ function showMoodResult(){
     var moodData=books[mood];
     var pool=(moodData&&moodData[time])||[];
     var tbr=[];
-    try{tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');}catch(e2){tbr=[];}
+    try{tbr=safeJSON('sc3_tbr',[]);}catch(e2){tbr=[];}
     var pick;
     if(tbr.length){
       var t=tbr[Math.floor(Math.random()*tbr.length)];
@@ -7068,7 +7069,7 @@ function renderMonthlyPicks(){
   const el=document.getElementById('mp-grid');
   const key=MP_KEY_NAMES[mpMonth]||'july';
   const picks=(monthlyPicks[key]||monthlyPicks.july).filter(p=>mpGenre==='all'||p.genre===mpGenre);
-  const tbrSaved=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  const tbrSaved=safeJSON('sc3_tbr',[]);
   el.innerHTML=picks.map(p=>{
     const inTBR=tbrSaved.some(t=>t.title===p.title);
     const badgeClass=p.genre==='psych'?'mp-badge-psych':p.genre==='thriller'?'mp-badge-thriller':'mp-badge-fantasy';
@@ -7084,7 +7085,7 @@ function renderMonthlyPicks(){
   }).join('');
 }
 function mpAddTBR(title,author,btn){
-  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  const tbr=safeJSON('sc3_tbr',[]);
   if(tbr.some(t=>t.title===title)){toast('Already in your TBR!');return;}
   tbr.unshift({id:Date.now(),title,author,genre:'',notes:'',addedFrom:'Monthly Picks'});
   localStorage.setItem('sc3_tbr',JSON.stringify(tbr));
@@ -7178,7 +7179,7 @@ function renderSeriesView(){
 }
 function setMsGenre(g,btn){msGenre=g;document.querySelectorAll('.ms-genre-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSeriesGrid();}
 function renderSeriesGrid(){
-  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  const tbr=safeJSON('sc3_tbr',[]);
   const filtered=authorSeries.filter(s=>msGenre==='all'||s.genre===msGenre);
   const el=document.getElementById('ms-grid');
   el.innerHTML=filtered.map(s=>{
@@ -7203,7 +7204,7 @@ function renderSeriesGrid(){
 function addSeriesToTBR(seriesId,btn){
   const series=authorSeries.find(s=>s.id===seriesId);
   if(!series)return;
-  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  const tbr=safeJSON('sc3_tbr',[]);
   let added=0;
   series.books.filter(b=>!b.includes('upcoming')).forEach(title=>{
     if(!tbr.some(t=>t.title===title)){
@@ -7523,7 +7524,7 @@ function saveWishlistItem(){
 }
 function moveWishlistToTBR(id){
   const item=scWishlist.find(w=>w.id===id); if(!item) return;
-  const tbr=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  const tbr=safeJSON('sc3_tbr',[]);
   if(!tbr.some(t=>t.title===item.title)){
     tbr.unshift({id:Date.now(),title:item.title,author:item.author,genre:'',notes:item.notes,addedFrom:'Wishlist'});
     localStorage.setItem('sc3_tbr',JSON.stringify(tbr));
@@ -8288,7 +8289,7 @@ function renderCollabList(){
     {title:'Plain Bad Heroines',author:'Emily M. Danforth',genre:'Horror',why:'Do Not Read Alone series — cursed girls school, wasps, rot'},
     {title:'The Fisherman',author:'John Langan',genre:'Horror',why:'Do Not Read Alone series — cosmic horror masterpiece'},
   ];
-  const existing=JSON.parse(localStorage.getItem('sc3_tbr')||'[]');
+  const existing=safeJSON('sc3_tbr',[]);
   const existingTitles=new Set(existing.map(b=>b.title.toLowerCase()));
   const toAdd=dnraBooks.filter(b=>!existingTitles.has(b.title.toLowerCase()));
   const newTBR=[...toAdd.map(b=>({id:Date.now()+Math.random(),title:b.title,author:b.author,genre:b.genre,why:b.why,interest:5,priority:'🔴 High — need it now',coverUrl:''})),...existing];
@@ -8665,7 +8666,7 @@ function _esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
 
 var _wupMonth=null,_wupYear=null,_wupSort='date';
 var _awupYear=null,_awupSort='date';
-var scMonthlyGoals=JSON.parse(localStorage.getItem('sc3_monthly_goals')||'{}');
+var scMonthlyGoals=safeJSON('sc3_monthly_goals',{});
 function _saveMonthlyGoals(){localStorage.setItem('sc3_monthly_goals',JSON.stringify(scMonthlyGoals));}
 
 function _fmtDate(ds){
@@ -8861,8 +8862,8 @@ async function shareWrapupCard(elId){
 // ══════════════════════════════════════════
 // FEATURE 1: READING TIMER
 // ══════════════════════════════════════════
-var scTimerSessions = JSON.parse(localStorage.getItem('sc3_timer_sessions')||'[]');
-var scTimerActive = JSON.parse(localStorage.getItem('sc3_timer_active')||'null');
+var scTimerSessions = safeJSON('sc3_timer_sessions',[]);
+var scTimerActive = safeJSON('sc3_timer_active',null);
 var _timerInterval = null, _timerPaused = false, _timerPausedAt = 0, _timerPausedTotal = 0;
 
 function _fmtTime(secs){
@@ -8957,7 +8958,7 @@ function renderTimerPanel(){
 // ══════════════════════════════════════════
 // FEATURE 2: BOOK SPENDING TRACKER
 // ══════════════════════════════════════════
-var scSpending = JSON.parse(localStorage.getItem('sc3_spending')||'[]');
+var scSpending = safeJSON('sc3_spending',[]);
 
 function addSpending(){
   var store=document.getElementById('spend-store').value;
@@ -8984,7 +8985,7 @@ function renderSpending(){
   var thisYear=String(now.getFullYear());
   var monthTotal=scSpending.filter(function(s){return (s.date||'').startsWith(thisMonth);}).reduce(function(a,s){return a+(s.amount||0);},0);
   var yearTotal=scSpending.filter(function(s){return (s.date||'').startsWith(thisYear);}).reduce(function(a,s){return a+(s.amount||0);},0);
-  var booksRead=JSON.parse(localStorage.getItem('sc3_books')||'[]').length;
+  var booksRead=safeJSON('sc3_books',[]).length;
   var allTotal=scSpending.reduce(function(a,s){return a+(s.amount||0);},0);
   var booksPerDollar=allTotal>0?(booksRead/allTotal).toFixed(2):0;
   var statsEl=document.getElementById('spending-stats');
@@ -9072,8 +9073,8 @@ function checkNotifBtn(){
 // FEATURE 4: VIDEO IDEAS FROM READS
 // ══════════════════════════════════════════
 function generateIdeasFromReads(){
-  var books=JSON.parse(localStorage.getItem('sc3_books')||'[]');
-  var dnf=JSON.parse(localStorage.getItem('sc3_dnf')||'[]');
+  var books=safeJSON('sc3_books',[]);
+  var dnf=safeJSON('sc3_dnf',[]);
   var recent=books.slice(0,10);
   var ideas=[];
   if(!recent.length){
@@ -9137,7 +9138,7 @@ function _fallbackCopy(text){
 // ══════════════════════════════════════════
 // FEATURE 5: COLLAB PIPELINE
 // ══════════════════════════════════════════
-var scPipeline = JSON.parse(localStorage.getItem('sc3_pipeline')||'[]');
+var scPipeline = safeJSON('sc3_pipeline',[]);
 var _pipelineEditId = null;
 
 function openPipelineAdd(){
@@ -9291,7 +9292,7 @@ function exportAllData(){
   toast('✦ All data exported!');
 }
 function exportBooksCSV(){
-  var books=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var books=safeJSON('sc3_books',[]);
   if(!books.length){toast('No books to export');return;}
   var headers=['Title','Author','Genre','Rating','Mind Scale','Date Started','Date Finished','Pages','Review','TikTok Status','Recommendation'];
   function csvEsc(v){var s=String(v||'');return '"'+s.replace(/"/g,'""')+'"';}
@@ -9327,7 +9328,7 @@ function exportShelfData(){
 // ══════════════════════════════════════════
 // BOOK QUOTE JOURNAL
 // ══════════════════════════════════════════
-var scBookQuotes = JSON.parse(localStorage.getItem('tbtrish_bookquotes')||'[]');
+var scBookQuotes = safeJSON('tbtrish_bookquotes',[]);
 function saveBookQuotes(){localStorage.setItem('tbtrish_bookquotes',JSON.stringify(scBookQuotes));}
 function openBQForm(){
   document.getElementById('bq-f-booktitle').value='';
@@ -9504,8 +9505,8 @@ function renderVidBookChart(){
 // ══════════════════════════════════════════
 // SCORECARD EXTRA VARS
 // ══════════════════════════════════════════
-var scRereads=JSON.parse(localStorage.getItem('sc3_rereads')||'[]');
-var scPredictions=JSON.parse(localStorage.getItem('sc3_predictions')||'[]');
+var scRereads=safeJSON('sc3_rereads',[]);
+var scPredictions=safeJSON('sc3_predictions',[]);
 var _predRight='unread';
 
 // ══════════════════════════════════════════
@@ -9610,7 +9611,7 @@ function renderPredictions(){
 // ══════════════════════════════════════════
 // THUMBNAIL IDEAS
 // ══════════════════════════════════════════
-var thumbIdeas=JSON.parse(localStorage.getItem('tbtrish_thumbnails')||'[]');
+var thumbIdeas=safeJSON('tbtrish_thumbnails',[]);
 function openThumbForm(){document.getElementById('thumb-form').style.display='block';}
 function closeThumbForm(){document.getElementById('thumb-form').style.display='none';}
 function saveThumbIdea(){
@@ -9643,7 +9644,7 @@ function renderThumbIdeas(){
 // ══════════════════════════════════════════
 // SAVED REPLIES
 // ══════════════════════════════════════════
-var savedReplies=JSON.parse(localStorage.getItem('tbtrish_replies')||'[]');
+var savedReplies=safeJSON('tbtrish_replies',[]);
 var _replyFilter='all';
 function openReplyForm(){document.getElementById('reply-form').style.display='block';}
 function closeReplyForm(){document.getElementById('reply-form').style.display='none';}
@@ -9681,7 +9682,7 @@ function renderReplies(){
 // ══════════════════════════════════════════
 // HOOK BANK
 // ══════════════════════════════════════════
-var hookBank=JSON.parse(localStorage.getItem('tbtrish_hookbank')||'[]');
+var hookBank=safeJSON('tbtrish_hookbank',[]);
 var _hookFilter='all';
 function setHookFilter(cat,btn){_hookFilter=cat;document.querySelectorAll('#panel-hookbank .idea-filter-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderHookBank();}
 function addHook(){
@@ -9721,7 +9722,7 @@ function renderHookBank(){
 // ══════════════════════════════════════════
 // READING JOURNAL
 // ══════════════════════════════════════════
-var readJournal=JSON.parse(localStorage.getItem('tbtrish_readjournal')||'[]');
+var readJournal=safeJSON('tbtrish_readjournal',[]);
 var RJ_TYPES={'First Look':{e:'👁️',c:'rgba(80,180,120,.7)'},'Midpoint Reaction':{e:'😰',c:'rgba(200,140,60,.7)'},'Plot Twist Moment':{e:'🤯',c:'rgba(200,60,100,.7)'},'Final Thoughts':{e:'📖',c:'rgba(140,80,220,.7)'},'Random Thought':{e:'💭',c:'rgba(100,160,220,.7)'},'Quote Moment':{e:'✍️',c:'var(--gold)'}};
 function addJournalEntry(){
   var book=(document.getElementById('rj-book').value||'').trim();
@@ -9785,7 +9786,7 @@ var _ctaDefaults=[
   {id:'cta_d23',text:"Save this for your next book shopping trip 📚",cat:'General',date:'Starter'},
   {id:'cta_d24',text:"Comment 'RECS' and I'll drop my full list",cat:'General',date:'Starter'}
 ];
-var ctaBank=localStorage.getItem('tbtrish_ctabank')?JSON.parse(localStorage.getItem('tbtrish_ctabank')):_ctaDefaults.slice();
+var ctaBank=safeJSON('tbtrish_ctabank',null)||_ctaDefaults.slice();
 if(!localStorage.getItem('tbtrish_ctabank'))localStorage.setItem('tbtrish_ctabank',JSON.stringify(ctaBank));
 var _ctaFilter='all';
 function setCtaFilter(cat,btn){_ctaFilter=cat;document.querySelectorAll('#panel-ctabank .idea-filter-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderCtas();}
@@ -9829,7 +9830,7 @@ function renderCtas(){
 // ══════════════════════════════════════════
 // TRENDING SOUNDS BANK
 // ══════════════════════════════════════════
-var soundsBank=JSON.parse(localStorage.getItem('tbtrish_soundsbank')||'[]');
+var soundsBank=safeJSON('tbtrish_soundsbank',[]);
 var _soundFilter='all';
 function setSoundFilter(cat,btn){_soundFilter=cat;document.querySelectorAll('#panel-sounds .idea-filter-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');renderSounds();}
 function addSound(){
@@ -9949,7 +9950,7 @@ var _vsDefaults=[
   {id:'vs_s20',name:'Spring Cleaning My TBR',cadence:'One-off',ep:0,next:'Decluttering the TBR pile ruthlessly',status:'Paused',notes:'SPRING — satisfying + relatable, good engagement',created:'Starter'},
   {id:'vs_s21',name:'Fresh Start Reads',cadence:'One-off',ep:0,next:'Books to reset your mind and reading mood',status:'Paused',notes:'SPRING — good after a reading slump or rough winter',created:'Starter'}
 ];
-var videoSeriesList=JSON.parse(localStorage.getItem('tbtrish_serieslist')||'[]');
+var videoSeriesList=safeJSON('tbtrish_serieslist',[]);
 _vsDefaults.forEach(function(d){if(!videoSeriesList.find(function(s){return s.id===d.id;})){videoSeriesList.push(d);}});
 localStorage.setItem('tbtrish_serieslist',JSON.stringify(videoSeriesList));
 function openVideoSeriesForm(){document.getElementById('vseries-form').style.display='block';document.getElementById('vseries-edit-id').value='';}
@@ -10154,7 +10155,7 @@ function addBulkToTBR(){
 
 // UPCOMING RELEASES TRACKER
 // ══════════════════════════════════════════
-var upcomingList=JSON.parse(localStorage.getItem('tbtrish_upcoming')||'[]');
+var upcomingList=safeJSON('tbtrish_upcoming',[]);
 function openUpcomingForm(){document.getElementById('upcoming-form').style.display='block';}
 function closeUpcomingForm(){document.getElementById('upcoming-form').style.display='none';document.getElementById('up-f-editid').value='';}
 function saveUpcoming(){
@@ -10209,7 +10210,7 @@ function renderUpcoming(){
 
 // READING CHALLENGE TRACKER
 // ══════════════════════════════════════════
-var challengeList=JSON.parse(localStorage.getItem('tbtrish_challenges')||'[]');
+var challengeList=safeJSON('tbtrish_challenges',[]);
 var _challengeDefaults=[
   {id:'ch_d1',name:'Goodreads Reading Goal',type:'count',target:52,books:[],notes:'Read 52 books this year — one a week!'},
   {id:'ch_d2',name:'12 Genres in 12 Months',type:'list',target:12,books:[],notes:'Read one new genre each month of the year.'},
@@ -10287,10 +10288,10 @@ var _checklistDefaults=[
   {id:'cl_d14',text:'Hashtags copied',category:'After'},
   {id:'cl_d15',text:'Thumbnail text decided',category:'After'}
 ];
-var checklistItems=JSON.parse(localStorage.getItem('tbtrish_checklist_items')||'null');
+var checklistItems=safeJSON('tbtrish_checklist_items',null);
 if(!checklistItems){checklistItems=_checklistDefaults.slice();localStorage.setItem('tbtrish_checklist_items',JSON.stringify(checklistItems));}
 else{_checklistDefaults.forEach(function(d){if(!checklistItems.find(function(c){return c.id===d.id;}))checklistItems.push(d);});}
-var checklistDone=new Set(JSON.parse(localStorage.getItem('tbtrish_checklist_done')||'[]'));
+var checklistDone=new Set(safeJSON('tbtrish_checklist_done',[]));
 function saveChecklistItems(){localStorage.setItem('tbtrish_checklist_items',JSON.stringify(checklistItems));}
 function saveChecklistDone(){localStorage.setItem('tbtrish_checklist_done',JSON.stringify([...checklistDone]));}
 function toggleChecklistItem(id){if(checklistDone.has(id))checklistDone.delete(id);else checklistDone.add(id);saveChecklistDone();renderChecklist();}
@@ -10344,7 +10345,7 @@ var _dmDefaults=[
   {id:'dm_d11',category:'ARCs',title:'Requesting an ARC',text:'Hi! I\'m a BookTok creator with [X] followers and would love to be considered for an early copy of [BOOK TITLE]. I post consistent book content and my audience loves [GENRE]. Happy to share my media kit — just let me know!'},
   {id:'dm_d12',category:'General',title:'Thank you for the follow!',text:'Thank you so much for following! 🖤 Welcome to the little corner of BookTok! I hope I can put some great reads on your radar. What\'s the last book you absolutely loved?'}
 ];
-var dmTemplates=JSON.parse(localStorage.getItem('tbtrish_dmtemplates')||'null');
+var dmTemplates=safeJSON('tbtrish_dmtemplates',null);
 if(!dmTemplates){dmTemplates=_dmDefaults.slice();localStorage.setItem('tbtrish_dmtemplates',JSON.stringify(dmTemplates));}
 else{_dmDefaults.forEach(function(d){if(!dmTemplates.find(function(t){return t.id===d.id;}))dmTemplates.push(d);});localStorage.setItem('tbtrish_dmtemplates',JSON.stringify(dmTemplates));}
 var dmFilter='all';
@@ -10395,7 +10396,7 @@ function renderDMTemplates(){
 
 // NOW READING WIDGET
 // ══════════════════════════════════════════
-var nowReadingData=JSON.parse(localStorage.getItem('tbtrish_nowreading')||'null');
+var nowReadingData=safeJSON('tbtrish_nowreading',null);
 function openNowReadingEdit(){
   document.getElementById('nr-inp-title').value=nowReadingData?nowReadingData.title:'';
   document.getElementById('nr-inp-author').value=nowReadingData?nowReadingData.author:'';
@@ -10427,7 +10428,7 @@ function renderNowReading(){
 
 // CUSTOM CALENDAR ENTRIES
 // ══════════════════════════════════════════
-var customCalEntries=JSON.parse(localStorage.getItem('tbtrish_customcal')||'[]');
+var customCalEntries=safeJSON('tbtrish_customcal',[]);
 function openCustomCalForm(){document.getElementById('custom-cal-form').style.display='block';}
 function closeCustomCalForm(){document.getElementById('custom-cal-form').style.display='none';}
 function saveCustomCalEntry(){
@@ -10455,7 +10456,7 @@ function updateChallengeTarget(id,val){var c=challengeList.find(function(x){retu
 // BOOK QUOTES AUTOCOMPLETE
 function populateBQBookList(){
   var dl=document.getElementById('bq-books-list');if(!dl)return;
-  var books=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var books=safeJSON('sc3_books',[]);
   dl.innerHTML=books.map(function(b){return'<option value="'+b.title.replace(/"/g,'&quot;')+'">';}).join('');
 }
 
@@ -10561,7 +10562,7 @@ function renderReviewDrafts(){
 function populateReviewBookList(){
   var sel=document.getElementById('rb-book-select');if(!sel)return;
   // Merge shelf books + scorecard books
-  var scBooks=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var scBooks=safeJSON('sc3_books',[]);
   var shelfBks=safeJSON('tbtrish_shelf',[]);
   var all=[];
   scBooks.forEach(function(b){if(b.title)all.push({title:b.title,author:b.author||'',genre:b.genre||'',pages:b.pages||'',rating:b.rating||'',src:'scorecard'});});
@@ -11565,7 +11566,7 @@ function resetCgen(){cgenBooks=[];cgenBookId=0;renderCgenBooks();var ex=document
 // ══════════════════════════════════════════
 function renderHallOfFame(){
   var el=document.getElementById('hof-list');if(!el)return;
-  var allBooks=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var allBooks=safeJSON('sc3_books',[]);
   var stars=allBooks.filter(function(b){return b.rating===5;}).sort(function(a,b){return (b.dateEnd||'').localeCompare(a.dateEnd||'');});
   if(!stars.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-dim);font-style:italic;">No 5-star reads yet — they\'ll appear here automatically when you rate a book 5 stars in your Scorecard.</div>';return;}
   el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;">'+stars.map(function(b){
@@ -11582,7 +11583,7 @@ function renderHallOfFame(){
 // TROPE TRACKER
 // ══════════════════════════════════════════
 var _tropeDefaults=['Enemies to Lovers','Slow Burn','Forced Proximity','Dark Romance','Found Family','Chosen One','Redemption Arc','Second Chance','Forbidden Love','Unreliable Narrator','Morally Grey Hero','Villain Love Interest','Friends to Lovers','Fake Dating','One Bed','Grumpy × Sunshine','Age Gap','Revenge Arc','Political Intrigue','Secret Identity','Twisted Love Triangle','Gothic Romance','Psychological Thriller Twists','Sibling Rivalry','Mentor × Student'];
-var tropeData=JSON.parse(localStorage.getItem('tbtrish_tropes')||'null');
+var tropeData=safeJSON('tbtrish_tropes',null);
 if(!tropeData){tropeData={custom:[],bookTropes:{}};localStorage.setItem('tbtrish_tropes',JSON.stringify(tropeData));}
 function saveTropeData(){localStorage.setItem('tbtrish_tropes',JSON.stringify(tropeData));}
 function addCustomTrope(){
@@ -11595,7 +11596,7 @@ function addCustomTrope(){
 function renderTropes(){
   var el=document.getElementById('tropes-body');if(!el)return;
   var allTropes=_tropeDefaults.concat(tropeData.custom||[]);
-  var books=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var books=safeJSON('sc3_books',[]);
   // Build trope counts from book tropes field
   var tropeCounts={};
   books.forEach(function(b){
@@ -11674,7 +11675,7 @@ function renderWrapped(){
   var el=document.getElementById('wrapped-body');if(!el)return;
   var yearSel=document.getElementById('wrapped-year');
   var year=yearSel?parseInt(yearSel.value):new Date().getFullYear();
-  var allBooks=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var allBooks=safeJSON('sc3_books',[]);
   var books=allBooks.filter(function(b){if(!b.dateEnd)return false;return new Date(b.dateEnd+'T12:00').getFullYear()===year;});
   if(!books.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-dim);font-style:italic;">No books logged for '+year+' yet. Log books in your Scorecard first!</div>';return;}
   var rated=books.filter(function(b){return b.rating>0;});
@@ -11720,7 +11721,7 @@ function renderWrapped(){
     +'<div style="font-size:12px;color:var(--text-dim);text-align:center;font-style:italic;">📸 Screenshot this panel to share your reading wrapped!</div>';
 }
 function copyWrappedStats(year){
-  var allBooks=JSON.parse(localStorage.getItem('sc3_books')||'[]');
+  var allBooks=safeJSON('sc3_books',[]);
   var books=allBooks.filter(function(b){return b.dateEnd&&new Date(b.dateEnd+'T12:00').getFullYear()===year;});
   if(!books.length){toast('No books logged for '+year);return;}
   var rated=books.filter(function(b){return b.rating>0;});
@@ -11751,7 +11752,7 @@ function copyWrappedStats(year){
 
 // FILMING SESSION PLANNER
 // ══════════════════════════════════════════
-var filmSessions=JSON.parse(localStorage.getItem('tbtrish_filmsessions')||'[]');
+var filmSessions=safeJSON('tbtrish_filmsessions',[]);
 function openFilmSessionForm(){document.getElementById('filmsession-form').style.display='block';}
 function closeFilmSessionForm(){document.getElementById('filmsession-form').style.display='none';}
 function saveFilmSession(){
@@ -11772,9 +11773,9 @@ function toggleFilmSlot(sessionId,slotId){var s=filmSessions.find(function(x){re
 function deleteFilmSlot(sessionId,slotId){var s=filmSessions.find(function(x){return x.id===sessionId;});if(!s)return;s.slots=s.slots.filter(function(x){return x.id!==slotId;});localStorage.setItem('tbtrish_filmsessions',JSON.stringify(filmSessions));renderFilmSessions();}
 function renderFilmSessions(){
   var el=document.getElementById('filmsession-list');if(!el)return;
-  var hooks=JSON.parse(localStorage.getItem('tbtrish_hookbank')||'[]');
-  var ctas=JSON.parse(localStorage.getItem('tbtrish_ctabank')||'[]');
-  var sounds=JSON.parse(localStorage.getItem('tbtrish_soundsbank')||'[]');
+  var hooks=safeJSON('tbtrish_hookbank',[]);
+  var ctas=safeJSON('tbtrish_ctabank',[]);
+  var sounds=safeJSON('tbtrish_soundsbank',[]);
   var hookOpts=hooks.map(function(h){return'<option value="'+h.text.replace(/"/g,'&quot;')+'">'; }).join('');
   var ctaOpts=ctas.map(function(c){return'<option value="'+c.text.replace(/"/g,'&quot;')+'">'; }).join('');
   var soundOpts=sounds.map(function(s){return'<option value="'+s.name.replace(/"/g,'&quot;')+'">'; }).join('');
@@ -11816,7 +11817,7 @@ function renderFilmSessions(){
 
 // COMMENT MINING
 // ══════════════════════════════════════════
-var commentMineList=JSON.parse(localStorage.getItem('tbtrish_commentmine')||'[]');
+var commentMineList=safeJSON('tbtrish_commentmine',[]);
 var commentMineFilter='all';
 function openCommentForm(){document.getElementById('commentmine-form').style.display='block';}
 function closeCommentForm(){document.getElementById('commentmine-form').style.display='none';}
@@ -11850,7 +11851,7 @@ function renderCommentMine(){
 
 // PER-VIDEO PERFORMANCE LOG
 // ══════════════════════════════════════════
-var videoPerfList=JSON.parse(localStorage.getItem('tbtrish_videoperf')||'[]');
+var videoPerfList=safeJSON('tbtrish_videoperf',[]);
 var videoPerfView='log';
 function openVideoPerfForm(){document.getElementById('videoperf-form').style.display='block';}
 function closeVideoPerfForm(){document.getElementById('videoperf-form').style.display='none';}
@@ -11893,7 +11894,7 @@ function renderVideoPerfLog(){
 
 // AFFILIATE LINK MANAGER
 // ══════════════════════════════════════════
-var affiliateList=JSON.parse(localStorage.getItem('tbtrish_affiliates')||'[]');
+var affiliateList=safeJSON('tbtrish_affiliates',[]);
 function openAffiliateForm(){document.getElementById('affiliate-form').style.display='block';}
 function closeAffiliateForm(){document.getElementById('affiliate-form').style.display='none';document.getElementById('af-f-editid').value='';}
 function saveAffiliate(){
@@ -11941,7 +11942,7 @@ function renderAffiliates(){
 
 // COLLAB WISHLIST
 // ══════════════════════════════════════════
-var collabWish=JSON.parse(localStorage.getItem('tbtrish_collabwish')||'[]');
+var collabWish=safeJSON('tbtrish_collabwish',[]);
 function openCollabWishForm(){document.getElementById('collabwish-form').style.display='block';}
 function closeCollabWishForm(){document.getElementById('collabwish-form').style.display='none';}
 function saveCollabWish(){
@@ -11979,7 +11980,7 @@ function renderCollabWish(){
 // ══════════════════════════════════════════
 // MILESTONE TRACKER
 // ══════════════════════════════════════════
-var milestones=JSON.parse(localStorage.getItem('tbtrish_milestones')||'[]');
+var milestones=safeJSON('tbtrish_milestones',[]);
 function openMilestoneForm(){document.getElementById('milestone-form').style.display='block';}
 function closeMilestoneForm(){document.getElementById('milestone-form').style.display='none';}
 function saveMilestone(){
@@ -12012,7 +12013,7 @@ function renderMilestones(){
 // ══════════════════════════════════════════
 // BEST POSTING TIMES
 // ══════════════════════════════════════════
-var postTimes=JSON.parse(localStorage.getItem('tbtrish_posttimes')||'[]');
+var postTimes=safeJSON('tbtrish_posttimes',[]);
 function openPostTimeForm(){document.getElementById('posttime-form').style.display='block';}
 function closePostTimeForm(){document.getElementById('posttime-form').style.display='none';}
 function savePostTime(){
@@ -12061,7 +12062,7 @@ function renderPostTimes(){
 // ══════════════════════════════════════════
 // RATE CARD
 // ══════════════════════════════════════════
-var rateCard=JSON.parse(localStorage.getItem('tbtrish_ratecard')||'[]');
+var rateCard=safeJSON('tbtrish_ratecard',[]);
 function openRateForm(){document.getElementById('rate-form').style.display='block';}
 function closeRateForm(){document.getElementById('rate-form').style.display='none';}
 function saveRate(){
