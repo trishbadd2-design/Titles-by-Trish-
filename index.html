@@ -2981,9 +2981,15 @@ function _shelfDiffPush(){
       dirty=true;
       _syncDot('syncing');
       fetch(FIREBASE_URL+'/shelf/'+encodeURIComponent(key)+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:json,keepalive:true})
-        .then(function(r){_syncDot(r.ok?'ok':'offline');})
+        .then(function(r){
+          // Only mark this book as "pushed" once the cloud actually
+          // confirms it — otherwise a failed/timed-out request would
+          // silently never be retried, since future diffs would see
+          // no change and assume it already succeeded.
+          if(r.ok){_shelfPushed[key]=json;_syncDot('ok');}
+          else{_syncDot('offline');}
+        })
         .catch(function(){_syncDot('offline');});
-      _shelfPushed[key]=json;
     }
   });
   if(!dirty)_syncDot('ok');
