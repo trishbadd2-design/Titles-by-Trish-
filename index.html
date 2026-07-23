@@ -10761,6 +10761,19 @@ function openBatchAdd(){
 function closeBatchAdd(){document.getElementById('batch-modal').style.display='none';}
 function parseBatchLine(line){
   line=(line||'').trim();if(!line)return null;
+  // Pasting rows from a spreadsheet/notes table usually preserves tabs
+  // between columns — handle that as [title, author, status, dateAdded]
+  // before falling back to the plain "Title - Author" style parsing,
+  // otherwise the whole row (title+author+status+date) gets swallowed
+  // into the title with no way to recover the other fields.
+  if(line.indexOf('\t')>-1){
+    var parts=line.split('\t').map(function(p){return p.trim();});
+    var status=(parts[2]||'').toLowerCase();
+    if(status==='reading'||status==='currently reading')status='reading';
+    else if(status==='finished'||status==='done'||status==='read')status='finished';
+    else status='tbr';
+    return {title:parts[0]||'',author:parts[1]||'',status:status,dateAdded:parts[3]||''};
+  }
   var title='',author='';
   var dashIdx=line.indexOf(' - ');
   var emIdx=line.indexOf(' — ');
@@ -10783,6 +10796,8 @@ function previewBatch(){
     return '<div style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:13px;">'
       +'<span style="font-weight:700;color:var(--text);">'+escHtml(b.title)+'</span>'
       +(b.author?'<span style="color:var(--text-dim);"> — '+escHtml(b.author)+'</span>':'')
+      +(b.status?'<span style="color:var(--gold);"> · '+escHtml(b.status)+'</span>':'')
+      +(b.dateAdded?'<span style="color:var(--text-dim);"> · '+escHtml(b.dateAdded)+'</span>':'')
       +'</div>';
   }).join('');
   stat.textContent=lines.length+' book'+(lines.length===1?'':'s')+' ready to add to TBR';
@@ -10810,7 +10825,7 @@ async function addBatchBooks(){
         cover=(il.thumbnail||il.smallThumbnail||'').replace('http://','https://');
       }
     }catch(e){}
-    shelfBooks.push({id:Date.now()+i,title:b.title,author:b.author,cover:cover,status:'tbr',rating:'',notes:'',dateAdded:new Date().toISOString().slice(0,10),dateFinished:''});
+    shelfBooks.push({id:Date.now()+i,title:b.title,author:b.author,cover:cover,status:b.status||'tbr',rating:'',notes:'',dateAdded:b.dateAdded||new Date().toISOString().slice(0,10),dateFinished:''});
     added++;
     if(btn)btn.textContent='Added '+added+' of '+lines.length+'…';
   }
