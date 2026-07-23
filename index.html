@@ -3139,6 +3139,7 @@ function _startShelfStream(){
 }
 
 function initShelfSync(){
+  try{_repairDuplicateIds();}catch(e){}
   _migrateShelfIfNeeded(function(){
     // Immediate plain-fetch pull first — don't rely solely on the
     // real-time stream (EventSource) succeeding, since long-lived
@@ -10898,6 +10899,33 @@ function dedupeShelf(){
   try{renderShelf();}catch(e){}
   try{renderDashboard();}catch(e){}
   toast('✦ Removed '+removedCount+' duplicate'+(removedCount===1?'':'s')+'!');
+}
+// Books added quickly in succession (Batch Add, CSV import) generate their
+// id from the current timestamp, so two DIFFERENT books can end up sharing
+// the same id. Since Firebase stores books keyed by id, a collision means
+// two different local books collapse onto a single cloud record — which
+// looks exactly like "the cloud is missing some books" even though nothing
+// was ever deleted. This finds and fixes any such collisions.
+function _repairDuplicateIds(){
+  if(!Array.isArray(shelfBooks)||!shelfBooks.length)return;
+  var seen={};
+  var changed=false;
+  shelfBooks.forEach(function(b,idx){
+    if(!b||b.id===undefined||b.id===null)return;
+    var key=String(b.id);
+    if(seen[key]){
+      b.id=Date.now()+idx+Math.floor(Math.random()*10000);
+      changed=true;
+    }else{
+      seen[key]=true;
+    }
+  });
+  if(changed){
+    localStorage.setItem('tbtrish_shelf',JSON.stringify(shelfBooks));
+    try{sessionStorage.setItem('tbtrish_shelf_ss',JSON.stringify(shelfBooks));}catch(e){}
+    try{idbSave('tbtrish_shelf',JSON.stringify(shelfBooks));}catch(e){}
+    _shelfDiffPush();
+  }
 }
 function checkCloudStatus(){
   toast('Checking cloud…');
