@@ -950,8 +950,6 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <button class="nav-btn" data-panel="filmsession" onclick="showPanel('filmsession')">🎥 Film Sessions</button>
   <button class="nav-btn" data-panel="commentmine" onclick="showPanel('commentmine')">💎 Comment Mining</button>
   <button class="nav-btn" data-panel="checklist" onclick="showPanel('checklist')">📋 Checklist</button>
-  <button class="nav-btn" data-panel="dmtemplates" onclick="showPanel('dmtemplates')">💌 DM Templates</button>
-  <button class="nav-btn" data-panel="contentgen" onclick="showPanel('contentgen')">⚡ Quick Script</button>
 </div>
 
 <div class="sub-nav" id="subnav-growth">
@@ -967,6 +965,7 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <button class="nav-btn" data-panel="wins" onclick="showPanel('wins')">🏆 Wins</button>
   <button class="nav-btn" data-panel="collabwish" onclick="showPanel('collabwish')">🌟 Collab Wishlist</button>
   <button class="nav-btn" data-panel="affiliates" onclick="showPanel('affiliates')">🔗 Affiliate Links</button>
+  <button class="nav-btn" data-panel="dmtemplates" onclick="showPanel('dmtemplates')">💌 DM Templates</button>
 </div>
 
 <!-- ═══════════════════════════ -->
@@ -3533,8 +3532,6 @@ var DRAWER_PANELS=[
   {icon:'🎥',name:'Film Sessions',panel:'filmsession',group:'Content'},
   {icon:'💎',name:'Comment Mining',panel:'commentmine',group:'Content'},
   {icon:'📋',name:'Checklist',panel:'checklist',group:'Content'},
-  {icon:'💌',name:'DM Templates',panel:'dmtemplates',group:'Content'},
-  {icon:'⚡',name:'Quick Script',panel:'contentgen',group:'Content'},
   {icon:'📊',name:'Analytics',panel:'analytics',group:'Growth'},
   {icon:'💰',name:'Spending',panel:'spending',group:'Growth'},
   {icon:'⏰',name:'Post Times',panel:'posttimes',group:'Growth'},
@@ -3544,6 +3541,7 @@ var DRAWER_PANELS=[
   {icon:'🏆',name:'Wins',panel:'wins',group:'Business'},
   {icon:'🌟',name:'Collab Wishlist',panel:'collabwish',group:'Business'},
   {icon:'🔗',name:'Affiliate Links',panel:'affiliates',group:'Business'},
+  {icon:'💌',name:'DM Templates',panel:'dmtemplates',group:'Business'},
   {icon:'⚙️',name:'Settings',panel:'settings',group:'Settings'},
 ];
 function drawerSearch(q){
@@ -3572,7 +3570,7 @@ function drawerSearch(q){
 
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={dashboard:'home',calendar:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',dmtemplates:'content',contentgen:'content',analytics:'growth',spending:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business'};
+var PANEL_GROUP={dashboard:'home',calendar:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',analytics:'growth',spending:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business',dmtemplates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -3630,7 +3628,6 @@ function showPanel(id){
   if(id==='readnext'){renderReadNext();}
   if(id==='checklist'){renderChecklist();}
   if(id==='dmtemplates'){renderDMTemplates();}
-  if(id==='contentgen'){renderCgenBooks();}
   if(id==='filmsession'){renderFilmSessions();}
   if(id==='commentmine'){renderCommentMine();}
   if(id==='affiliates'){renderAffiliates();}
@@ -11477,7 +11474,7 @@ function renderDashboard(){
       {icon:'📅',label:'Calendar',fn:"showPanel('calendar')"},
       {icon:'✍️',label:'Content',fn:"showGroup('content')"},
       {icon:'📖',label:'Scorecard',fn:"showPanel('scorecard')"},
-      {icon:'⚡',label:'Quick Script',fn:"showPanel('contentgen')"},
+      {icon:'📊',label:'Analytics',fn:"showPanel('analytics')"},
       {icon:'💡',label:'Ideas',fn:"showPanel('ideas')"}
     ].map(function(s){
       return '<button onclick="'+s.fn+'" style="padding:13px 6px;border:1px solid var(--border);border-radius:10px;background:var(--gold-faint);color:var(--text);font-family:Cinzel,serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.04em;touch-action:manipulation;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;">'
@@ -11536,10 +11533,8 @@ document.addEventListener('DOMContentLoaded',function(){
   }
 });
 
-// QUICK VIDEO SCRIPT GENERATOR
+// CONTENT GENERATOR DATA — used by the Ideas tab's inline generator
 // ══════════════════════════════════════════
-var cgenBooks=[];
-var cgenBookId=0;
 var CGEN_HOOKS={
   'Book Haul':['I went book shopping and I have absolutely no regrets — new haul just dropped 🖤','New books just landed on my shelf and we need to talk about all of them','I may have had a tiny book shopping situation and I need to show you everything','The book haul is here and my wallet is officially in crisis mode'],
   'TBR Reveal':['Here\'s what I\'m reading this month — and I already know at least one of these is going to wreck me','Monthly TBR reveal and I am fully prepared to be emotionally destroyed','This is what I am reading this month and I have very high hopes for my own suffering'],
@@ -11556,60 +11551,6 @@ var CGEN_CTAS={
   'Recommendations':['Tell me which one is already on your TBR','Which one are you adding first — comment below 🖤','Have you read any of these? Drop your Mind Scale rating'],
   'Ranking':['Tell me if you agree with my rankings or I got it completely wrong','Drop your hot take — which book deserves to be higher?','Do you agree or am I completely wrong — comment below 🖤']
 };
-function cgenAddBook(){var id=++cgenBookId;cgenBooks.push({id:id});renderCgenBooks();}
-function cgenRemoveBook(id){cgenBooks=cgenBooks.filter(function(b){return b.id!==id;});renderCgenBooks();}
-function renderCgenBooks(){
-  var el=document.getElementById('cgen-books');if(!el)return;
-  if(!cgenBooks.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-dim);font-style:italic;font-size:14px;">No books added yet — tap + Add Book above.</div>';return;}
-  el.innerHTML=cgenBooks.map(function(b){
-    return '<div style="background:rgba(255,255,255,.6);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px;position:relative;">'
-      +'<button onclick="cgenRemoveBook('+b.id+')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;line-height:1;">✕</button>'
-      +'<div class="sc-two-col" style="padding-right:24px;">'
-      +'<div class="sc-field"><label>Book Title *</label><input id="cgen-title-'+b.id+'" placeholder="e.g. The Body"/></div>'
-      +'<div class="sc-field"><label>Author</label><input id="cgen-author-'+b.id+'" placeholder="e.g. Bethany"/></div>'
-      +'</div>'
-      +'<div class="sc-field"><label>Your excitement / vibe on this one</label><input id="cgen-vibe-'+b.id+'" placeholder="e.g. been on my radar for months, sounds completely unhinged..."/></div>'
-      +'</div>';
-  }).join('');
-}
-function generateContent(){
-  var type=document.getElementById('cgen-type').value;
-  var extra=document.getElementById('cgen-extra').value.trim();
-  var books=cgenBooks.map(function(b){
-    return {
-      title:(document.getElementById('cgen-title-'+b.id)||{value:''}).value.trim(),
-      author:(document.getElementById('cgen-author-'+b.id)||{value:''}).value.trim(),
-      vibe:(document.getElementById('cgen-vibe-'+b.id)||{value:''}).value.trim()
-    };
-  }).filter(function(b){return b.title;});
-  if(!books.length){toast('Add at least one book first!');return;}
-  var hooks=CGEN_HOOKS[type]||CGEN_HOOKS['Book Haul'];
-  var hook=hooks[Math.floor(Math.random()*hooks.length)];
-  var ctas=CGEN_CTAS[type]||CGEN_CTAS['Book Haul'];
-  var cta=ctas[Math.floor(Math.random()*ctas.length)];
-  var bookList=books.map(function(b){return b.title+(b.author?' by '+b.author:'');}).join(' + ');
-  var bookLines=books.map(function(b){var line='📖 '+b.title+(b.author?' by '+b.author:'');if(b.vibe)line+='\n'+b.vibe;return line;}).join('\n\n');
-  var script='🎬 OPENING HOOK:\n"'+hook+'"\n\n';
-  if(type==='Book Haul'){script+='📚 THE BOOKS:\n\n'+bookLines+'\n\n';}
-  else if(type==='TBR Reveal'){script+='📚 THIS MONTH I\'M READING:\n\n'+books.map(function(b,i){var l=(i+1)+'. '+b.title+(b.author?' by '+b.author:'');if(b.vibe)l+='\n   '+b.vibe;return l;}).join('\n\n')+'\n\n';}
-  else if(type==='Monthly Wrap-Up'){script+='📊 THE READS:\n\n'+books.map(function(b){var l='✦ '+b.title+(b.author?' — '+b.author:'');if(b.vibe)l+='\n  '+b.vibe;return l;}).join('\n\n')+'\n\n';}
-  else{script+='📚 THE BOOKS:\n\n'+bookLines+'\n\n';}
-  if(extra)script+='💬 EXTRA NOTES:\n'+extra+'\n\n';
-  script+='📣 CALL TO ACTION:\n"'+cta+'"';
-  var caption='';
-  if(type==='Book Haul'){caption='Book haul 🖤 '+bookList+' just joined the shelf.'+(books.length>1?' I have a feeling at least one of these is going to absolutely destroy me.':' I cannot wait to start this one.')+'\n\n'+cta+'\n\n#BookHaul #BookTok #DarkFiction #TitlesByTrish';}
-  else if(type==='TBR Reveal'){caption='Monthly TBR 📚 '+bookList+'. My expectations are high and I am fully prepared to be emotionally wrecked.\n\n'+cta+'\n\n#TBR #BookTok #DarkFiction #TitlesByTrish';}
-  else if(type==='Monthly Wrap-Up'){caption=books.length+' book'+(books.length!==1?'s':'')+' read this month. I have survived — barely. Full wrap up now live 🖤\n\n'+cta+'\n\n#MonthlyWrapUp #BookTok #DarkFiction #TitlesByTrish';}
-  else if(type==='Book Review'){caption=books[0].title+(books[0].author?' by '+books[0].author:'')+' 🖤 I need to talk about this book. Full review now live.\n\n'+cta+'\n\n#BookReview #BookTok #DarkFiction #TitlesByTrish';}
-  else{caption='Dark fiction that will ruin your life in the best way 🖤 '+bookList+'\n\n'+cta+'\n\n#DarkFiction #BookRecommendations #BookTok #TitlesByTrish';}
-  document.getElementById('cgen-output').style.display='block';
-  document.getElementById('cgen-out-script').value=script;
-  document.getElementById('cgen-out-caption').value=caption;
-  document.getElementById('cgen-output').scrollIntoView({behavior:'smooth',block:'nearest'});
-  toast('✦ Script generated!');
-}
-function copyCgenSection(id){var el=document.getElementById(id);if(!el)return;navigator.clipboard.writeText(el.value).then(function(){toast('📋 Copied!');}).catch(function(){toast('Copy failed.');});}
-function resetCgen(){cgenBooks=[];cgenBookId=0;renderCgenBooks();var ex=document.getElementById('cgen-extra');if(ex)ex.value='';document.getElementById('cgen-output').style.display='none';toast('✦ Reset!');}
 
 // HALL OF FAME
 // ══════════════════════════════════════════
@@ -12842,17 +12783,6 @@ function resetQuiz(){quizAnswers={};initQuiz();}
     <button class="dm-filter-btn" data-f="Negative" onclick="setDMFilter('Negative')" style="font-size:12px;padding:5px 12px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">🛡️ Negative</button>
   </div>
   <div id="dm-list"></div>
-</div>
-
-<!-- QUICK VIDEO SCRIPT GENERATOR — redirects to Ideas tab -->
-<div class="panel" id="panel-contentgen">
-  <div class="section-title">⚡ Quick Script</div>
-  <div style="text-align:center;padding:32px 16px;">
-    <div style="font-size:44px;margin-bottom:14px;">💡</div>
-    <div style="font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px;">Script Generation Has Moved</div>
-    <div style="font-size:14px;color:var(--text-dim);line-height:1.8;margin-bottom:24px;">Generate your script, caption, hashtags, and CTAs directly inside the <strong>Ideas</strong> tab — get a video idea and build all your content in one place.</div>
-    <button onclick="showPanel('ideas')" style="padding:14px 32px;background:var(--gold);border:none;border-radius:8px;color:#fffdf4;font-family:'Cinzel',serif;font-size:14px;font-weight:700;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Go to Ideas →</button>
-  </div>
 </div>
 
 <!-- SETTINGS -->
