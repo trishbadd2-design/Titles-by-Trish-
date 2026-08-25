@@ -3286,7 +3286,7 @@ function renderReadNext(){
       +'<div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:700;">Read this next</div>'
       +'</div>'
       +'<div style="display:flex;gap:14px;align-items:flex-start;">'
-      +'<img src="'+coverUrl+'" alt="" onerror="this.style.display=\'none\'" style="width:70px;flex-shrink:0;border-radius:5px;box-shadow:0 3px 12px rgba(0,0,0,.22);aspect-ratio:2/3;object-fit:cover;">'
+      +'<img loading="lazy" src="'+coverUrl+'" alt="" onerror="this.style.display=\'none\'" style="width:70px;flex-shrink:0;border-radius:5px;box-shadow:0 3px 12px rgba(0,0,0,.22);aspect-ratio:2/3;object-fit:cover;">'
       +'<div style="flex:1;min-width:0;">'
       +'<div style="font-family:Cinzel,serif;font-size:15px;font-weight:900;color:var(--gold);line-height:1.3;">'+escHtml(p.thenRead)+'</div>'
       +(p.author?'<div style="font-size:12px;color:var(--text-dim);margin-top:2px;font-style:italic;">by '+escHtml(p.author)+'</div>':'')
@@ -5511,7 +5511,7 @@ function scRenderBooks() {
         <button onclick="event.stopPropagation();scEditBook('${b.id}')" style="background:var(--gold-faint);color:var(--gold);border:1px solid var(--border);border-radius:2px;padding:2px 7px;font-size:16px;cursor:pointer;font-family:'IM Fell English SC',serif;">edit</button>
         <button onclick="event.stopPropagation();scDeleteBook('${b.id}')" style="background:transparent;color:var(--text-dim);border:none;border-radius:2px;padding:2px 6px;font-size:15px;cursor:pointer;">✕</button>
       </div>
-      ${b.coverUrl ? `<img src="${b.coverUrl}" style="width:52px;height:76px;object-fit:cover;border-radius:3px;margin-bottom:6px;border:1px solid var(--border);" onerror="this.style.display='none'"/>` : ''}
+      ${b.coverUrl ? `<img loading="lazy" src="${b.coverUrl}" style="width:52px;height:76px;object-fit:cover;border-radius:3px;margin-bottom:6px;border:1px solid var(--border);" onerror="this.style.display='none'"/>` : ''}
       ${b.botm ? `<div style="font-family:'IM Fell English SC',serif;font-size:16px;letter-spacing:2px;color:rgba(200,160,40,.9);margin-bottom:3px;">🏆 Best of Month</div>` : ''}
       <div class="sc-book-title">${b.title}</div>
       <div class="sc-book-author">${b.author}</div>
@@ -5556,7 +5556,7 @@ function scRenderTBR() {
   if(!filtered.length){l.innerHTML=`<div style="text-align:center;padding:20px;color:var(--text-dim);font-style:italic;">No ${tbrGenreFilter} books in your TBR yet.</div>`;return;}
   l.innerHTML = filtered.map(t => `
     <div class="sc-tbr-card">
-      ${t.coverUrl?`<img src="${t.coverUrl}" style="width:52px;height:76px;object-fit:cover;border-radius:3px;flex-shrink:0;border:1px solid var(--border);" onerror="this.style.display='none'"/>`:''}
+      ${t.coverUrl?`<img loading="lazy" src="${t.coverUrl}" style="width:52px;height:76px;object-fit:cover;border-radius:3px;flex-shrink:0;border:1px solid var(--border);" onerror="this.style.display='none'"/>`:''}
       <div style="flex:1;min-width:0;">
         <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--text);">${t.title}</div>
         <div style="font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:2px;color:var(--text-dim);">${t.author}</div>
@@ -6073,7 +6073,7 @@ function scOpenDetail(id) {
   const de = b.dateEnd ? new Date(b.dateEnd+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
   const dateStr = ds && de ? `${ds} → ${de}` : de || ds;
   document.getElementById('sc-detail-content').innerHTML = `
-    ${b.coverUrl ? `<div style="text-align:center;margin-bottom:12px;"><img src="${b.coverUrl}" style="max-height:140px;max-width:96px;object-fit:cover;border-radius:4px;border:1px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,.4);" onerror="this.parentElement.style.display='none'"/></div>` : ''}
+    ${b.coverUrl ? `<div style="text-align:center;margin-bottom:12px;"><img loading="lazy" src="${b.coverUrl}" style="max-height:140px;max-width:96px;object-fit:cover;border-radius:4px;border:1px solid var(--border);box-shadow:0 4px 16px rgba(0,0,0,.4);" onerror="this.parentElement.style.display='none'"/></div>` : ''}
     <div style="font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:2px;padding-right:26px;">${b.title}</div>
     <div style="font-family:'IM Fell English SC',serif;font-size:15px;letter-spacing:2px;color:var(--text-dim);margin-bottom:10px;">by ${b.author}</div>
     <hr style="border:none;border-top:1px solid var(--border);margin:8px 0;"/>
@@ -7362,7 +7362,7 @@ function renderPhotoResults(results){
   document.getElementById('photo-hint').textContent='Tap the right book to fill in the form 🖤';
   document.getElementById('photo-results').innerHTML=`<div style="font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:10px;">SELECT THE CORRECT BOOK</div>`+
     results.map((r,i)=>`<div class="photo-result-card" onclick="selectPhotoResult(${i})" style="display:flex;gap:10px;align-items:center;">
-      ${r.coverUrl?`<img src="${r.coverUrl}" style="width:44px;height:64px;object-fit:cover;border-radius:2px;flex-shrink:0;" onerror="this.style.display='none'"/>`:''}
+      ${r.coverUrl?`<img loading="lazy" src="${r.coverUrl}" style="width:44px;height:64px;object-fit:cover;border-radius:2px;flex-shrink:0;" onerror="this.style.display='none'"/>`:''}
       <div>
         <div class="photo-result-title">${r.title}</div>
         ${r.author?`<div class="photo-result-author">by ${r.author}</div>`:''}
@@ -10087,7 +10087,7 @@ function renderBulkQueue(){
     else if(item.status==='scanning')statusHtml='<span style="color:var(--gold);font-size:13px;">Scanning image...</span>';
     else if(item.status==='found'){
       statusHtml='<div style="display:flex;align-items:flex-start;gap:8px;">'
-        +(item.coverUrl?'<img src="'+item.coverUrl+'" style="width:34px;height:50px;object-fit:cover;border-radius:2px;flex-shrink:0;"/>':'')
+        +(item.coverUrl?'<img loading="lazy" src="'+item.coverUrl+'" style="width:34px;height:50px;object-fit:cover;border-radius:2px;flex-shrink:0;"/>':'')
         +'<div><div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.4;">'+item.title+'</div>'
         +'<div style="font-size:12px;color:var(--gold);">'+item.author+'</div></div></div>';
     }else if(item.status==='notfound'){
@@ -10104,7 +10104,7 @@ function renderBulkQueue(){
     var borderCol=isReady?'var(--gold)':item.status==='notfound'?'rgba(200,100,100,.3)':'var(--border)';
     var opacity=(item.status==='found'&&!item.keep)?'opacity:0.4;':'';
     return '<div style="display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:6px;margin-bottom:8px;background:var(--bg2);border:1px solid '+borderCol+';'+opacity+'">'
-      +'<img src="'+item.thumb+'" style="width:48px;height:64px;object-fit:cover;border-radius:3px;flex-shrink:0;background:var(--bg3);"/>'
+      +'<img loading="lazy" src="'+item.thumb+'" style="width:48px;height:64px;object-fit:cover;border-radius:3px;flex-shrink:0;background:var(--bg3);"/>'
       +'<div style="flex:1;min-width:0;">'+statusHtml+'</div>'
       +(item.status==='found'?'<button onclick="toggleBulkKeep(\''+item.id+'\')" style="background:'+(item.keep?'var(--gold)':'var(--bg3)')+';border:1px solid var(--border);color:'+(item.keep?'#000':'var(--text-dim)')+';font-size:13px;font-weight:700;padding:5px 10px;border-radius:4px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+(item.keep?'✓ Add':'✕')+'</button>':'')
       +(item.status==='notfound'&&item.manualTitle?'<button onclick="clearBulkManual(\''+item.id+'\')" style="background:transparent;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>':'')
@@ -10412,7 +10412,7 @@ function renderNowReading(){
     document.getElementById('nr-author').textContent=nowReadingData.author?'by '+nowReadingData.author:'';
     var cover=document.getElementById('nr-cover');
     var found=scBooks.find(function(b){return b.title&&b.title.toLowerCase()===nowReadingData.title.toLowerCase();});
-    cover.innerHTML=found&&found.coverUrl?'<img src="'+found.coverUrl+'" style="width:100%;height:100%;object-fit:cover;">':'';
+    cover.innerHTML=found&&found.coverUrl?'<img loading="lazy" src="'+found.coverUrl+'" style="width:100%;height:100%;object-fit:cover;">':'';
     widget.style.display='flex';if(empty)empty.style.display='none';
   }else{
     widget.style.display='none';if(empty)empty.style.display='block';
@@ -10727,7 +10727,7 @@ function generateRecQR(){
   var container=document.getElementById('qr-container');
   if(!container)return;
   var encoded=encodeURIComponent(url);
-  container.innerHTML='<img src="https://chart.googleapis.com/chart?chs=220x220&cht=qr&chl='+encoded+'&choe=UTF-8&chld=M|2" alt="QR Code" style="width:220px;height:220px;border-radius:8px;">';
+  container.innerHTML='<img loading="lazy" src="https://chart.googleapis.com/chart?chs=220x220&cht=qr&chl='+encoded+'&choe=UTF-8&chld=M|2" alt="QR Code" style="width:220px;height:220px;border-radius:8px;">';
   document.getElementById('qr-result').style.display='block';
   var disp=document.getElementById('qr-url-display');
   if(disp)disp.textContent=url;
@@ -11019,6 +11019,14 @@ function _shelfGenreChips(){
   keys.sort().forEach(function(g){var on=shelfGenreFilter===g;html+='<button onclick="setShelfGenreFilter(\''+escHtml(g)+'\')" style="padding:4px 10px;border:1px solid '+(on?'var(--gold)':'var(--border)')+';border-radius:20px;font-size:12px;font-weight:700;background:'+(on?'var(--gold)':'#fffdf4')+';color:'+(on?'#fffdf4':'var(--text-dim)')+';cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'+escHtml(g)+'</button>';});
   return html+'</div>';
 }
+var _shelfSearchDebounce=null;
+function shelfSearchInput(val){
+  shelfSearch=val;
+  var cl=document.getElementById('shelf-search-clear');
+  if(cl)cl.style.display=val?'block':'none';
+  if(_shelfSearchDebounce)clearTimeout(_shelfSearchDebounce);
+  _shelfSearchDebounce=setTimeout(function(){renderShelf();},220);
+}
 function renderShelf(){
   if(!Array.isArray(shelfBooks))shelfBooks=[];
   ['tbr','reading','finished'].forEach(function(t){
@@ -11055,10 +11063,11 @@ function renderShelf(){
       nr.innerHTML='<div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#c8a030;font-weight:700;margin-bottom:8px;font-family:Cinzel,serif;">📖 Now Reading</div>'
         +'<div style="display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;">'+readingBooks.map(function(b){
           var pct=b.totalPages?Math.min(100,Math.round((parseInt(b.currentPage)||0)/b.totalPages*100)):0;
-          var cs=b.cover?'background:url(\''+b.cover+'\') center/cover no-repeat;':'background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;padding:6px;';
+          var cs='background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;padding:6px;';
           return '<div onclick="openShelfDetail('+b.id+')" style="flex:0 0 72px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
-            +'<div style="'+cs+'width:72px;height:108px;border-radius:6px;position:relative;box-shadow:0 3px 12px rgba(0,0,0,.22);border:2px solid #c8a030;">'
-            +(b.cover?'':'<span style="font-family:Cinzel,serif;font-size:8px;font-weight:700;color:#fff;text-align:center;line-height:1.2;text-shadow:0 1px 4px rgba(0,0,0,.9);">'+escHtml(b.title)+'</span>')
+            +'<div style="'+cs+'width:72px;height:108px;border-radius:6px;overflow:hidden;position:relative;box-shadow:0 3px 12px rgba(0,0,0,.22);border:2px solid #c8a030;">'
+            +'<span style="font-family:Cinzel,serif;font-size:8px;font-weight:700;color:#fff;text-align:center;line-height:1.2;text-shadow:0 1px 4px rgba(0,0,0,.9);">'+escHtml(b.title)+'</span>'
+            +(b.cover?'<img loading="lazy" src="'+b.cover+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.remove();">':'')
             +(b.totalPages?'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.65);border-radius:0 0 4px 4px;padding:10px 5px 4px;"><div style="background:rgba(255,255,255,.25);border-radius:100px;height:3px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:#f0c040;border-radius:100px;"></div></div></div>':'')
             +'</div>'
             +'<div style="font-size:9px;font-weight:700;font-family:Cinzel,serif;color:var(--text);margin-top:4px;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;width:72px;">'+escHtml(b.title)+'</div>'
@@ -11082,7 +11091,7 @@ function renderShelf(){
   }
   if(shelfView==='covers'){
     grid.innerHTML='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding-bottom:12px;">'+books.map(function(b){
-      var cs=b.cover?'background:url(\''+b.cover+'\') center/cover no-repeat;':'background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;padding:6px;';
+      var cs='background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;padding:6px;';
       var pct=b.totalPages?Math.min(100,Math.round((parseInt(b.currentPage)||0)/b.totalPages*100)):0;
       var sc=_shelfStatusColor(b);
       var overlay='';
@@ -11098,20 +11107,22 @@ function renderShelf(){
         overlay='<div style="position:absolute;top:4px;right:4px;background:#b43c3c;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.5);">!</div>';
       }
       return '<div onclick="openShelfDetail('+b.id+')" style="cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
-        +'<div style="'+cs+'aspect-ratio:2/3;border-radius:4px;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.22);'+(sc?'outline:2.5px solid '+sc+';':'')+'">'
-        +(b.cover?'':'<div style="font-family:Cinzel,serif;font-size:7px;font-weight:700;color:#fff;text-align:center;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.9);">'+escHtml(b.title)+'</div>')
+        +'<div style="'+cs+'aspect-ratio:2/3;border-radius:4px;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.22);'+(sc?'outline:2.5px solid '+sc+';':'')+'">'
+        +'<div style="font-family:Cinzel,serif;font-size:7px;font-weight:700;color:#fff;text-align:center;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,.9);">'+escHtml(b.title)+'</div>'
+        +(b.cover?'<img loading="lazy" src="'+b.cover+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.remove();">':'')
         +overlay
         +'</div>'
         +'</div>';
     }).join('')+'</div>';
   } else {
     grid.innerHTML=books.map(function(b){
-      var cs=b.cover?'background:url(\''+b.cover+'\') center/cover no-repeat;':'background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;';
+      var cs='background:'+shelfColor(b.title)+';display:flex;align-items:center;justify-content:center;';
       var pct=b.totalPages?Math.min(100,Math.round((parseInt(b.currentPage)||0)/b.totalPages*100)):0;
       var sc=_shelfStatusColor(b);
       var leftBorder=sc?'border-left:4px solid '+sc+';padding-left:10px;':'padding-left:0;';
       return '<div onclick="openShelfDetail('+b.id+')" style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;">'
-        +'<div style="width:52px;flex-shrink:0;aspect-ratio:2/3;'+cs+'border-radius:5px;box-shadow:0 2px 10px rgba(0,0,0,.15);position:relative;">'
+        +'<div style="width:52px;flex-shrink:0;aspect-ratio:2/3;'+cs+'border-radius:5px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.15);position:relative;">'
+        +(b.cover?'<img loading="lazy" src="'+b.cover+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.remove();">':'')
         +(b.status==='finished'?'<div style="position:absolute;top:4px;right:4px;background:#2a7a2a;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;">✓</div>':'')
         +(b.priority&&b.status==='tbr'?'<div style="position:absolute;top:4px;right:4px;background:#b43c3c;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;">!</div>':'')
         +'</div>'
@@ -11183,7 +11194,7 @@ function openShelfDetail(id){
   var book=shelfBooks.find(function(b){return b.id===id;});if(!book)return;
   var m=document.getElementById('shelf-detail-modal');if(!m)return;
   var coverHtml=book.cover
-    ?'<img src="'+escHtml(book.cover)+'" style="width:110px;flex-shrink:0;aspect-ratio:2/3;object-fit:cover;border-radius:6px;box-shadow:0 4px 18px rgba(0,0,0,.2);" onerror="this.outerHTML=\'<div style=width:110px;flex-shrink:0;aspect-ratio:2/3;background:'+shelfColor(book.title)+';border-radius:6px;\></div>\'"/>'
+    ?'<img loading="lazy" src="'+escHtml(book.cover)+'" style="width:110px;flex-shrink:0;aspect-ratio:2/3;object-fit:cover;border-radius:6px;box-shadow:0 4px 18px rgba(0,0,0,.2);" onerror="this.outerHTML=\'<div style=width:110px;flex-shrink:0;aspect-ratio:2/3;background:'+shelfColor(book.title)+';border-radius:6px;\></div>\'"/>'
     :'<div style="width:110px;flex-shrink:0;aspect-ratio:2/3;background:'+shelfColor(book.title)+';border-radius:6px;box-shadow:0 4px 18px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;padding:10px;"><span style="font-family:Cinzel,serif;font-size:11px;color:#fff;text-align:center;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.8);">'+escHtml(book.title)+'</span></div>';
   var stars=parseInt(book.rating)||0;
   document.getElementById('shelf-detail-content').innerHTML=
@@ -11306,7 +11317,7 @@ function _renderShelfSearchResults(res){
   }
   if(res)res.innerHTML='<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;">'+shelfSearchResults.map(function(b,i){
     return '<div onclick="shelfPickBook('+i+')" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;background:#fffdf4;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
-      +(b.cover?'<img src="'+b.cover+'" style="width:36px;height:54px;object-fit:cover;border-radius:3px;flex-shrink:0;box-shadow:0 1px 6px rgba(0,0,0,.15);" onerror="this.style.visibility=\'hidden\'">':'<div style="width:36px;height:54px;background:var(--gold-faint);border-radius:3px;flex-shrink:0;border:1px solid var(--border);"></div>')
+      +(b.cover?'<img loading="lazy" src="'+b.cover+'" style="width:36px;height:54px;object-fit:cover;border-radius:3px;flex-shrink:0;box-shadow:0 1px 6px rgba(0,0,0,.15);" onerror="this.style.visibility=\'hidden\'">':'<div style="width:36px;height:54px;background:var(--gold-faint);border-radius:3px;flex-shrink:0;border:1px solid var(--border);"></div>')
       +'<div style="flex:1;min-width:0;">'
       +'<div style="font-family:Cinzel,serif;font-size:13px;font-weight:700;color:var(--text);line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">'+escHtml(b.title)+'</div>'
       +(b.author?'<div style="font-size:12px;color:var(--text-dim);margin-top:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">'+escHtml(b.author)+'</div>':'')
@@ -11353,13 +11364,13 @@ function shelfPickBook(idx){
   if(b.genre){document.getElementById('shelf-f-genre').value=b.genre;}
   var res=document.getElementById('shelf-s-results');
   if(res)res.innerHTML='<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--gold-faint);border:1px solid var(--border);border-radius:8px;">'
-    +(b.cover?'<img src="'+b.cover+'" style="width:36px;height:54px;object-fit:cover;border-radius:3px;flex-shrink:0;">':'')
+    +(b.cover?'<img loading="lazy" src="'+b.cover+'" style="width:36px;height:54px;object-fit:cover;border-radius:3px;flex-shrink:0;">':'')
     +'<div><div style="font-family:Cinzel,serif;font-size:13px;font-weight:700;color:var(--gold);">'+escHtml(b.title)+'</div>'
     +(b.author?'<div style="font-size:11px;color:var(--text-dim);margin-top:2px;">'+escHtml(b.author)+'</div>':'')
     +'<div style="font-size:10px;color:var(--text-dim);margin-top:4px;letter-spacing:.06em;">Search again to pick a different book</div>'
     +'</div></div>';
   var prev=document.getElementById('shelf-cover-preview');
-  if(prev)prev.innerHTML=b.cover?'<img src="'+b.cover+'" style="height:80px;border-radius:5px;border:2px solid var(--gold);box-shadow:0 0 0 3px rgba(26,72,20,.2);">':'';
+  if(prev)prev.innerHTML=b.cover?'<img loading="lazy" src="'+b.cover+'" style="height:80px;border-radius:5px;border:2px solid var(--gold);box-shadow:0 0 0 3px rgba(26,72,20,.2);">':'';
   var qi=document.getElementById('shelf-s-input');if(qi)qi.value='';
   toast('❖ Book selected!');
 }
@@ -11377,7 +11388,7 @@ function shelfFetchCover(){
       if(!items.length){if(preview)preview.innerHTML='<div style="font-size:12px;color:var(--text-dim);padding:6px 0;">No covers found — try a different spelling.</div>';return;}
       if(preview)preview.innerHTML=items.map(function(i){
         var thumb=(i.volumeInfo.imageLinks.thumbnail||i.volumeInfo.imageLinks.smallThumbnail||'').replace('http:','https:').replace('&edge=curl','').replace('zoom=1','zoom=2');
-        return '<img src="'+thumb+'" onclick="shelfSelectCover(\''+thumb+'\')" style="height:90px;width:auto;border-radius:5px;cursor:pointer;border:2px solid transparent;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.18);" onerror="this.style.display=\'none\'" title="Tap to select">';
+        return '<img loading="lazy" src="'+thumb+'" onclick="shelfSelectCover(\''+thumb+'\')" style="height:90px;width:auto;border-radius:5px;cursor:pointer;border:2px solid transparent;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.18);" onerror="this.style.display=\'none\'" title="Tap to select">';
       }).join('');
     })
     .catch(function(){if(preview)preview.innerHTML='<div style="font-size:12px;color:var(--text-dim);padding:6px 0;">Search failed — paste a cover URL manually.</div>';});
@@ -11445,7 +11456,7 @@ function renderDashboard(){
       ?'<div style="background:#fffdf4;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:18px;">'
       +'<div style="font-family:Cinzel,serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px;">📖 Currently Reading</div>'
       +readingNow.slice(0,3).map(function(b){
-        var cov=b.cover?'<img src="'+escHtml(b.cover)+'" style="width:46px;height:69px;object-fit:cover;border-radius:4px;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,.18);" onerror="this.style.display=\'none\'">':'<div style="width:46px;height:69px;background:'+shelfColor(b.title)+';border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:4px;"><span style="font-size:8px;color:#fff;font-weight:700;text-align:center;line-height:1.2;">'+escHtml(b.title)+'</span></div>';
+        var cov=b.cover?'<img loading="lazy" src="'+escHtml(b.cover)+'" style="width:46px;height:69px;object-fit:cover;border-radius:4px;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,.18);" onerror="this.style.display=\'none\'">':'<div style="width:46px;height:69px;background:'+shelfColor(b.title)+';border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:4px;"><span style="font-size:8px;color:#fff;font-weight:700;text-align:center;line-height:1.2;">'+escHtml(b.title)+'</span></div>';
         return '<div onclick="showPanel(\'shelf\')" style="display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
           +cov+'<div style="flex:1;min-width:0;">'
           +'<div style="font-family:Cinzel,serif;font-size:14px;font-weight:700;color:var(--text);line-height:1.3;">'+escHtml(b.title)+'</div>'
@@ -11550,7 +11561,7 @@ function renderHallOfFame(){
   if(!stars.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-dim);font-style:italic;">No 5-star reads yet — they\'ll appear here automatically when you rate a book 5 stars in your Scorecard.</div>';return;}
   el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;">'+stars.map(function(b){
     return '<div style="background:var(--bg2);border:1px solid rgba(42,92,34,.3);border-radius:8px;padding:12px;text-align:center;">'
-      +(b.coverUrl?'<img src="'+b.coverUrl+'" style="width:100%;height:140px;object-fit:cover;border-radius:4px;margin-bottom:8px;">':'<div style="width:100%;height:140px;background:var(--bg3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:8px;">📚</div>')
+      +(b.coverUrl?'<img loading="lazy" src="'+b.coverUrl+'" style="width:100%;height:140px;object-fit:cover;border-radius:4px;margin-bottom:8px;">':'<div style="width:100%;height:140px;background:var(--bg3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:8px;">📚</div>')
       +'<div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:4px;">'+b.title+'</div>'
       +(b.author?'<div style="font-size:11px;color:var(--text-dim);">'+b.author+'</div>':'')
       +'<div style="color:var(--gold);margin-top:4px;font-size:14px;">⭐⭐⭐⭐⭐</div>'
@@ -12898,8 +12909,8 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   <!-- Search bar -->
   <div style="position:relative;margin-bottom:12px;">
     <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:17px;pointer-events:none;opacity:.5;">🔍</span>
-    <input id="shelf-search-input" type="text" placeholder="Search your shelf by title or author…" oninput="shelfSearch=this.value;renderShelf();var cl=document.getElementById('shelf-search-clear');if(cl)cl.style.display=this.value?'block':'none';" style="width:100%;box-sizing:border-box;padding:13px 44px 13px 42px;border:2px solid var(--gold);border-radius:14px;font-size:15px;font-family:inherit;background:#fffdf4;color:var(--text);box-shadow:0 2px 12px rgba(26,72,20,.10);">
-    <button onclick="shelfSearch='';document.getElementById('shelf-search-input').value='';renderShelf();" id="shelf-search-clear" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:18px;color:var(--text-dim);cursor:pointer;line-height:1;display:none;padding:4px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>
+    <input id="shelf-search-input" type="text" placeholder="Search your shelf by title or author…" oninput="shelfSearchInput(this.value)" style="width:100%;box-sizing:border-box;padding:13px 44px 13px 42px;border:2px solid var(--gold);border-radius:14px;font-size:15px;font-family:inherit;background:#fffdf4;color:var(--text);box-shadow:0 2px 12px rgba(26,72,20,.10);">
+    <button onclick="if(_shelfSearchDebounce)clearTimeout(_shelfSearchDebounce);shelfSearch='';document.getElementById('shelf-search-input').value='';renderShelf();" id="shelf-search-clear" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:18px;color:var(--text-dim);cursor:pointer;line-height:1;display:none;padding:4px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">✕</button>
   </div>
 
   <!-- Year filter (finished tab only) -->
