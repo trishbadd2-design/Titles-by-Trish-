@@ -4130,7 +4130,7 @@ function generateIdeaContent(){
   var hooks=CGEN_HOOKS[type]||CGEN_HOOKS['Book Haul'];
   // Use the idea's own hook first, then a random one as fallback
   var hook=currentIdea.hook||hooks[Math.floor(Math.random()*hooks.length)];
-  var ctas=CGEN_CTAS[type]||CGEN_CTAS['Book Haul'];
+  var ctas=genre==='psych'?CGEN_REDFLAG_CTAS:(CGEN_CTAS[type]||CGEN_CTAS['Book Haul']);
   var cta=ctas[Math.floor(Math.random()*ctas.length)];
   var bookList=books.map(function(b){return b.title+(b.author?' by '+b.author:'');}).join(' + ');
   var bookLines=books.map(function(b){return '📖 '+b.title+(b.author?' by '+b.author:'');}).join('\n\n');
@@ -11551,6 +11551,15 @@ var CGEN_CTAS={
   'Recommendations':['Which one\'s already on your TBR, be honest','Tell me what you\'re reading right now so I can add it to my pile 🖤','Which of these have you already read? Rate it for me'],
   'Ranking':['Tell me if I got this wrong because I probably did','Drop your hot take, which book deserves way higher','Fight me in the comments, I can take it']
 };
+// Recurring bit for psych thrillers with a toxic/obsessive lead — rate his
+// behavior 1-10 in the comments. Gives every psych thriller review the same
+// easy, game-like CTA instead of a generic "let me know your thoughts."
+var CGEN_REDFLAG_CTAS=[
+  'Rate his behavior 1-10 on the red flag scale, go',
+  'Give me a red flag rating in the comments, I need to know I\'m not alone in judging him',
+  'Comment your red flag number for this one, no in-betweens',
+  'Red flag rating, drop it below — and defend your number'
+];
 
 // HALL OF FAME
 // ══════════════════════════════════════════
