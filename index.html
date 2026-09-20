@@ -3147,8 +3147,8 @@ function initShelfSync(){
     // that already works everywhere else in this app.
     fetch(FIREBASE_URL+'/shelf.json',{cache:'no-store'})
       .then(function(r){return r.ok?r.json():null;})
-      .then(function(data){if(data)_mergeShelfSnapshot(data);_syncDot('ok');})
-      .catch(function(){_syncDot('offline');});
+      .then(function(data){if(data)_mergeShelfSnapshot(data);_syncDot('ok');try{_seedObsessionOctoberRecs();}catch(e){}})
+      .catch(function(){_syncDot('offline');try{_seedObsessionOctoberRecs();}catch(e){}});
     _startShelfStream();
   });
 }
@@ -10911,6 +10911,50 @@ function _repairDuplicateIds(){
     try{sessionStorage.setItem('tbtrish_shelf_ss',JSON.stringify(shelfBooks));}catch(e){}
     try{idbSave('tbtrish_shelf',JSON.stringify(shelfBooks));}catch(e){}
     _shelfDiffPush();
+  }
+}
+// One-time seed: 20 newer obsession/toxic-lead psych thrillers for the
+// Obsession October series, added to TBR the first time the app loads
+// after this was shipped. Skips anything already on the shelf by title.
+function _seedObsessionOctoberRecs(){
+  if(localStorage.getItem('tbtrish_seeded_oct2026_recs'))return;
+  if(!Array.isArray(shelfBooks))shelfBooks=[];
+  var recs=[
+    {title:'None of This Is True',author:'Lisa Jewell'},
+    {title:'The Teacher',author:'Freida McFadden'},
+    {title:'Never Lie',author:'Freida McFadden'},
+    {title:'The Housemaid\'s Secret',author:'Freida McFadden'},
+    {title:'The Housemaid Is Watching',author:'Freida McFadden'},
+    {title:'The Boyfriend',author:'Freida McFadden'},
+    {title:'The Coworker',author:'Freida McFadden'},
+    {title:'First Lie Wins',author:'Ashley Elston'},
+    {title:'Bright Young Women',author:'Jessica Knoll'},
+    {title:'A Flicker in the Dark',author:'Stacy Willingham'},
+    {title:'All the Dangerous Things',author:'Stacy Willingham'},
+    {title:'The Only One Left',author:'Riley Sager'},
+    {title:'The Fury',author:'Alex Michaelides'},
+    {title:'The Villa',author:'Rachel Hawkins'},
+    {title:'The Mystery Guest',author:'Nita Prose'},
+    {title:'The Better Sister',author:'Alafair Burke'},
+    {title:'I Have Some Questions for You',author:'Rebecca Makkai'},
+    {title:'End of Story',author:'A.J. Finn'},
+    {title:'Listen for the Lie',author:'Amy Tintera'},
+    {title:'Don\'t Let Him In',author:'Lisa Jewell'}
+  ];
+  var existing={};
+  shelfBooks.forEach(function(b){if(b&&b.title)existing[b.title.toLowerCase().trim()]=true;});
+  var added=0;
+  recs.forEach(function(r,i){
+    if(existing[r.title.toLowerCase().trim()])return;
+    shelfBooks.push({id:Date.now()+i,title:r.title,author:r.author,cover:'',status:'tbr',rating:'',notes:'',dateFinished:'',dateAdded:new Date().toISOString().slice(0,10),totalPages:0,currentPage:0,genre:'Psychological Thriller',series:''});
+    added++;
+  });
+  localStorage.setItem('tbtrish_seeded_oct2026_recs','1');
+  if(added>0){
+    saveShelf();
+    try{renderShelf();}catch(e){}
+    try{renderDashboard();}catch(e){}
+    toast('✦ Added '+added+' new Obsession October picks to your TBR!');
   }
 }
 function checkCloudStatus(){
