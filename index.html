@@ -950,6 +950,7 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <button class="nav-btn" data-panel="filmsession" onclick="showPanel('filmsession')">🎥 Film Sessions</button>
   <button class="nav-btn" data-panel="commentmine" onclick="showPanel('commentmine')">💎 Comment Mining</button>
   <button class="nav-btn" data-panel="checklist" onclick="showPanel('checklist')">📋 Checklist</button>
+  <button class="nav-btn" data-panel="analogbag" onclick="showPanel('analogbag')">🎒 Analog Bag</button>
 </div>
 
 <div class="sub-nav" id="subnav-growth">
@@ -3532,6 +3533,7 @@ var DRAWER_PANELS=[
   {icon:'🎥',name:'Film Sessions',panel:'filmsession',group:'Content'},
   {icon:'💎',name:'Comment Mining',panel:'commentmine',group:'Content'},
   {icon:'📋',name:'Checklist',panel:'checklist',group:'Content'},
+  {icon:'🎒',name:'Analog Bag',panel:'analogbag',group:'Content'},
   {icon:'📊',name:'Analytics',panel:'analytics',group:'Growth'},
   {icon:'💰',name:'Spending',panel:'spending',group:'Growth'},
   {icon:'⏰',name:'Post Times',panel:'posttimes',group:'Growth'},
@@ -3570,7 +3572,7 @@ function drawerSearch(q){
 
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={dashboard:'home',calendar:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',analytics:'growth',spending:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business',dmtemplates:'business'};
+var PANEL_GROUP={dashboard:'home',calendar:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',analogbag:'content',analytics:'growth',spending:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business',dmtemplates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -3627,6 +3629,7 @@ function showPanel(id){
   if(id==='reviewbuilder'){populateReviewBookList();setTimeout(function(){renderReviewDrafts();renderPostChecklist();initWrapupSelects();},50);}
   if(id==='readnext'){renderReadNext();}
   if(id==='checklist'){renderChecklist();}
+  if(id==='analogbag'){renderAnalogBag();}
   if(id==='dmtemplates'){renderDMTemplates();}
   if(id==='filmsession'){renderFilmSessions();}
   if(id==='commentmine'){renderCommentMine();}
@@ -10322,6 +10325,107 @@ function renderChecklist(){
     +'<div style="display:flex;gap:6px;margin-top:8px;"><input id="cl-new-item" placeholder="Add your own item..." style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;font-family:inherit;" onkeydown="if(event.key===\'Enter\')addChecklistItem()"/><button onclick="addChecklistItem()" style="padding:10px 16px;background:var(--gold);border:none;color:#000;font-family:\'Cinzel\',serif;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">+ Add</button></div>';
 }
 
+// ══════════════════════════════════════════
+// ANALOG BAG TRACKER
+// ══════════════════════════════════════════
+var ANALOGBAG_ITEMS=[
+  {id:'book',label:'Physical book'},
+  {id:'kindle',label:'Kindle'},
+  {id:'headphones',label:'Headphones'},
+  {id:'crossword',label:'Crossword book'},
+  {id:'puzzle',label:'Mystery or logic puzzles'},
+  {id:'journal',label:'Reading journal'},
+  {id:'pens',label:'Pens and pencils'},
+  {id:'bookmarks',label:'Bookmarks and tabs'},
+  {id:'light',label:'Book light'},
+  {id:'activity',label:'Small creative activity'},
+  {id:'pouch',label:'Pencil pouch'},
+  {id:'balm',label:'Lip balm and hand cream'}
+];
+var analogBagPacked=new Set(safeJSON('tbtrish_analogbag_packed',[]));
+var analogBagSessions=safeJSON('tbtrish_analogbag_sessions',[]);
+function saveAnalogBagPacked(){localStorage.setItem('tbtrish_analogbag_packed',JSON.stringify([...analogBagPacked]));}
+function saveAnalogBagSessions(){localStorage.setItem('tbtrish_analogbag_sessions',JSON.stringify(analogBagSessions));}
+function toggleAnalogBagItem(id){
+  if(analogBagPacked.has(id))analogBagPacked.delete(id);else analogBagPacked.add(id);
+  saveAnalogBagPacked();renderAnalogBagChecklist();
+}
+function resetAnalogBagChecklist(){
+  analogBagPacked.clear();saveAnalogBagPacked();renderAnalogBagChecklist();toast('✦ Checklist reset!');
+}
+function renderAnalogBagChecklist(){
+  var el=document.getElementById('analogbag-checklist-items');if(!el)return;
+  var packed=ANALOGBAG_ITEMS.filter(function(i){return analogBagPacked.has(i.id);}).length;
+  var total=ANALOGBAG_ITEMS.length;
+  var countEl=document.getElementById('analogbag-checklist-count');
+  if(countEl)countEl.textContent=packed+' of '+total+' packed';
+  var bar=document.getElementById('analogbag-checklist-bar');
+  if(bar)bar.style.width=(total?Math.round(packed/total*100):0)+'%';
+  el.innerHTML=ANALOGBAG_ITEMS.map(function(i){
+    var checked=analogBagPacked.has(i.id);
+    return '<div onclick="toggleAnalogBagItem(\''+i.id+'\')" style="display:flex;align-items:center;gap:8px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">'
+      +'<div style="width:18px;height:18px;border-radius:5px;border:2px solid '+(checked?'var(--gold)':'var(--border)')+';background:'+(checked?'var(--gold)':'transparent')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;color:#fff;">'+(checked?'✓':'')+'</div>'
+      +'<div style="font-size:13px;color:var(--text);text-decoration:'+(checked?'line-through':'none')+';opacity:'+(checked?'0.6':'1')+';">'+i.label+'</div>'
+      +'</div>';
+  }).join('');
+}
+function addAnalogBagSession(){
+  var date=document.getElementById('analogbag-f-date').value||new Date().toISOString().slice(0,10);
+  var activity=document.getElementById('analogbag-f-activity').value;
+  var minutes=parseInt(document.getElementById('analogbag-f-minutes').value)||0;
+  var note=document.getElementById('analogbag-f-note').value.trim();
+  analogBagSessions.unshift({id:Date.now().toString(),date:date,activity:activity,minutes:minutes,note:note});
+  saveAnalogBagSessions();
+  document.getElementById('analogbag-f-minutes').value='';
+  document.getElementById('analogbag-f-note').value='';
+  renderAnalogBagSessions();
+  toast('✦ Session logged!');
+}
+function deleteAnalogBagSession(id){
+  analogBagSessions=analogBagSessions.filter(function(s){return s.id!==id;});
+  saveAnalogBagSessions();renderAnalogBagSessions();
+}
+function _analogBagStreak(){
+  if(!analogBagSessions.length)return 0;
+  var days={};
+  analogBagSessions.forEach(function(s){if(s.date)days[s.date]=true;});
+  var streak=0;
+  var cursor=new Date();
+  while(true){
+    var key=cursor.toISOString().slice(0,10);
+    if(days[key]){streak++;cursor.setDate(cursor.getDate()-1);}
+    else break;
+  }
+  return streak;
+}
+function renderAnalogBagSessions(){
+  var list=document.getElementById('analogbag-session-list');if(!list)return;
+  var totalMinutes=analogBagSessions.reduce(function(sum,s){return sum+(parseInt(s.minutes)||0);},0);
+  var se=document.getElementById('analogbag-stat-sessions');if(se)se.textContent=analogBagSessions.length;
+  var me=document.getElementById('analogbag-stat-minutes');if(me)me.textContent=totalMinutes;
+  var ste=document.getElementById('analogbag-stat-streak');if(ste)ste.textContent=_analogBagStreak();
+  if(!analogBagSessions.length){
+    list.innerHTML='<div style="text-align:center;padding:24px;color:var(--text-dim);font-style:italic;font-size:14px;">No sessions logged yet — log your first one above 🖤</div>';
+    return;
+  }
+  list.innerHTML=analogBagSessions.map(function(s){
+    return '<div style="display:flex;align-items:flex-start;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:8px;">'
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-size:13px;font-weight:700;color:var(--text);">'+escHtml(s.activity||'')+(s.minutes?' · '+s.minutes+' min':'')+'</div>'
+      +'<div style="font-size:11px;color:var(--text-dim);margin-top:2px;">'+escHtml(s.date||'')+'</div>'
+      +(s.note?'<div style="font-size:13px;color:var(--text-dim);margin-top:4px;font-style:italic;">'+escHtml(s.note)+'</div>':'')
+      +'</div>'
+      +'<button onclick="deleteAnalogBagSession(\''+s.id+'\')" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;opacity:0.5;flex-shrink:0;">✕</button>'
+      +'</div>';
+  }).join('');
+}
+function renderAnalogBag(){
+  var d=document.getElementById('analogbag-f-date');
+  if(d&&!d.value)d.value=new Date().toISOString().slice(0,10);
+  renderAnalogBagChecklist();
+  renderAnalogBagSessions();
+}
+
 // DM TEMPLATES
 // ══════════════════════════════════════════
 var _dmDefaults=[
@@ -12808,6 +12912,47 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   <div class="section-title">📋 Filming Checklist</div>
   <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Run through this before every filming session. Tap any item to check it off. Hit Reset when you start a new session.</p>
   <div id="checklist-body"></div>
+</div>
+
+<!-- ANALOG BAG -->
+<div class="panel" id="panel-analogbag">
+  <div class="section-title">🎒 Analog Bag</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:16px;line-height:1.7;">Track what's in the bag, log your offline sessions, and build proof for your "this actually worked" videos.</p>
+
+  <div class="card-box" style="margin-bottom:16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);">PACKING CHECKLIST</div>
+      <button onclick="resetAnalogBagChecklist()" style="font-size:11px;padding:4px 10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Reset</button>
+    </div>
+    <div id="analogbag-checklist-count" style="font-size:12px;color:var(--text-dim);margin-bottom:10px;">0 of 12 packed</div>
+    <div style="background:var(--border);border-radius:100px;height:6px;overflow:hidden;margin-bottom:14px;"><div id="analogbag-checklist-bar" style="height:100%;width:0%;background:var(--gold);border-radius:100px;transition:width .3s;"></div></div>
+    <div id="analogbag-checklist-items" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+  </div>
+
+  <div class="card-box" style="margin-bottom:16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);">YOUR STATS</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num" id="analogbag-stat-sessions">0</div><div class="stat-label">Sessions</div></div>
+      <div class="stat-box"><div class="stat-num" id="analogbag-stat-minutes">0</div><div class="stat-label">Minutes</div></div>
+      <div class="stat-box"><div class="stat-num" id="analogbag-stat-streak">0</div><div class="stat-label">Day Streak</div></div>
+    </div>
+  </div>
+
+  <div class="card-box">
+    <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin-bottom:12px;">LOG A SESSION</div>
+    <div class="sc-two-col">
+      <div class="sc-field"><label>Date</label><input type="date" id="analogbag-f-date"/></div>
+      <div class="sc-field"><label>Activity</label><select id="analogbag-f-activity"><option>Reading</option><option>Crossword</option><option>Mystery/Logic Puzzle</option><option>Audiobook / Immersive Reading</option><option>Journaling</option><option>Other</option></select></div>
+    </div>
+    <div class="sc-field"><label>Minutes (optional)</label><input type="number" min="0" id="analogbag-f-minutes" placeholder="e.g. 30"/></div>
+    <div class="sc-field"><label>Note (optional)</label><input id="analogbag-f-note" placeholder="e.g. finished chapter 12, solved the Sunday crossword..."/></div>
+    <button class="sc-add-btn" style="margin-top:4px;" onclick="addAnalogBagSession()">✦ Log Session</button>
+  </div>
+
+  <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin:20px 0 10px;">SESSION HISTORY</div>
+  <div id="analogbag-session-list"></div>
 </div>
 
 <!-- DM TEMPLATES -->
