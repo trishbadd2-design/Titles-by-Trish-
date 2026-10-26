@@ -11061,6 +11061,53 @@ function _seedObsessionOctoberRecs(){
     toast('✦ Added '+added+' new Obsession October picks to your TBR!');
   }
 }
+// One-time seed: the 20-piece "Offline With Trish" analog bag content
+// schedule (10 videos + 10 photo dumps, 3x/week) added to the main
+// Calendar as dated entries.
+function _seedOfflineWithTrishSchedule(){
+  if(localStorage.getItem('tbtrish_seeded_offlinewithtrish_v1'))return;
+  if(!Array.isArray(customCalEntries))customCalEntries=[];
+  var plan=[
+    {date:'2026-10-26',fmt:'🎥',title:'Bag Reveal',note:'Offline With Trish ep.1 — what\'s actually in this bag'},
+    {date:'2026-10-28',fmt:'📸',title:'Flat-lay of Bag Contents',note:'My analog bag said no more doom scrolling 📵🖤'},
+    {date:'2026-10-30',fmt:'🎥',title:'Rating My Analog Bag Supplies',note:'Rating everything on how well it kept me off my phone'},
+    {date:'2026-11-02',fmt:'📸',title:'Book Mid-Read, Cozy Setting',note:'Found my phone replacement and it\'s just... a book 🖤'},
+    {date:'2026-11-04',fmt:'🎥',title:'Day Without Scrolling Challenge',note:'I tried a full day with this bag instead of my phone'},
+    {date:'2026-11-06',fmt:'📸',title:'Screen Time vs. the Bag',note:'My screen time screenshot said I needed this more than I thought'},
+    {date:'2026-11-09',fmt:'🎥',title:'Analog Bag Essentials for Thriller Readers',note:'If you\'re a thriller girlie your bag needs these'},
+    {date:'2026-11-11',fmt:'📸',title:'Crossword/Puzzle Mid-Solve',note:'Turns out my brain still works without TikTok'},
+    {date:'2026-11-13',fmt:'🎥',title:'Built Around My Worst Scrolling Habits',note:'I built my bag around the exact apps I scroll too much'},
+    {date:'2026-11-16',fmt:'📸',title:'Kindle + Headphones, Immersive Reading',note:'Immersive reading is cheating but I\'ll allow it 🎧📖'},
+    {date:'2026-11-18',fmt:'🎥',title:'Pack an Analog Bag With Me',note:'Packing my bag before I leave the house unbothered'},
+    {date:'2026-11-20',fmt:'📸',title:'Pinterest vs. Real Life',note:'What Pinterest shows vs. what my bag looks like by Tuesday'},
+    {date:'2026-11-23',fmt:'🎥',title:'Analog Bag Emergency Kit',note:'POV: stuck in a waiting room and this bag just saved me'},
+    {date:'2026-11-25',fmt:'📸',title:'Mystery Notebook Suspect Notes',note:'My suspect list is probably wrong but I\'m committed 🔍'},
+    {date:'2026-11-27',fmt:'🎥',title:'Reacting to Followers\' Suggestions',note:'Y\'all gave me analog bag ideas and I actually tried them'},
+    {date:'2026-11-30',fmt:'📸',title:'Bag Packed, Ready by the Door',note:'Leaving the house a little more offline today 🖤'},
+    {date:'2026-12-02',fmt:'🎥',title:'Analog Bag, Travel Day Edition',note:'This bag is doing the most work today'},
+    {date:'2026-12-04',fmt:'📸',title:'Current Book + Page Marker',note:'Page 142 and no regrets 🖤'},
+    {date:'2026-12-07',fmt:'📸',title:'Bag Contents by Pocket',note:'Everything has a place, even my chaos 🖤'},
+    {date:'2026-12-09',fmt:'🎥',title:'Proof It Worked — 3 Books Finished',note:'This bag made me finish 3 books this month, here\'s the proof'}
+  ];
+  var dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var added=0;
+  plan.forEach(function(p){
+    var d=new Date(p.date+'T12:00');
+    var monthKey=monthNames[d.getMonth()].toLowerCase();
+    var displayDate=dayNames[d.getDay()]+' '+monthNames[d.getMonth()].slice(0,3)+' '+d.getDate();
+    var weekLabel=monthNames[d.getMonth()]+' '+d.getFullYear()+' — Custom';
+    customCalEntries.push({id:'cc_owt_'+p.date,date:displayDate,sortDate:p.date,week:weekLabel,month:monthKey,title:'[Offline With Trish] '+p.fmt+' '+p.title,type:'Other',notes:p.note,custom:true});
+    added++;
+  });
+  customCalEntries.sort(function(a,b){return a.sortDate.localeCompare(b.sortDate);});
+  localStorage.setItem('tbtrish_customcal',JSON.stringify(customCalEntries));
+  localStorage.setItem('tbtrish_seeded_offlinewithtrish_v1','1');
+  if(added>0){
+    try{renderCalendar();}catch(e){}
+    toast('✦ Added your 20-post Offline With Trish schedule to the Calendar!');
+  }
+}
 function checkCloudStatus(){
   toast('Checking cloud…');
   var localCount=Array.isArray(shelfBooks)?shelfBooks.length:0;
@@ -11650,6 +11697,7 @@ function renderDashboard(){
 }
 document.addEventListener('DOMContentLoaded',function(){
   try{renderDashboard();}catch(e){}
+  try{_seedOfflineWithTrishSchedule();}catch(e){}
 
   // If localStorage is empty, try IndexedDB before starting shelf sync
   if(!shelfBooks||shelfBooks.length===0){
