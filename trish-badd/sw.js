@@ -1,5 +1,5 @@
 const CACHE = 'trishbad-v1';
-const BASE = '/Titles-by-Trish-/trish-bad/';
+const BASE = '/Titles-by-Trish-/trish-badd/';
 const STATIC = [
   BASE + 'manifest.json',
   BASE + 'icons/icon-192.png',
