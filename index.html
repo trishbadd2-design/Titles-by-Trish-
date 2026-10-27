@@ -11065,29 +11065,30 @@ function _seedObsessionOctoberRecs(){
 // schedule (10 videos + 10 photo dumps, 3x/week) added to the main
 // Calendar as dated entries.
 function _seedOfflineWithTrishSchedule(){
-  if(localStorage.getItem('tbtrish_seeded_offlinewithtrish_v1'))return;
+  if(localStorage.getItem('tbtrish_seeded_baggedunbothered_v1'))return;
   if(!Array.isArray(customCalEntries))customCalEntries=[];
+  // Remove the earlier "Offline With Trish" seed — replaced by the fuller,
+  // deduplicated plan below under the finalized series name.
+  customCalEntries=customCalEntries.filter(function(e){return !e.id||e.id.indexOf('cc_owt_')!==0;});
   var plan=[
-    {date:'2026-10-26',fmt:'🎥',title:'Bag Reveal',note:'Offline With Trish ep.1 — what\'s actually in this bag'},
-    {date:'2026-10-28',fmt:'📸',title:'Flat-lay of Bag Contents',note:'My analog bag said no more doom scrolling 📵🖤'},
-    {date:'2026-10-30',fmt:'🎥',title:'Rating My Analog Bag Supplies',note:'Rating everything on how well it kept me off my phone'},
-    {date:'2026-11-02',fmt:'📸',title:'Book Mid-Read, Cozy Setting',note:'Found my phone replacement and it\'s just... a book 🖤'},
-    {date:'2026-11-04',fmt:'🎥',title:'Day Without Scrolling Challenge',note:'I tried a full day with this bag instead of my phone'},
-    {date:'2026-11-06',fmt:'📸',title:'Screen Time vs. the Bag',note:'My screen time screenshot said I needed this more than I thought'},
-    {date:'2026-11-09',fmt:'🎥',title:'Analog Bag Essentials for Thriller Readers',note:'If you\'re a thriller girlie your bag needs these'},
-    {date:'2026-11-11',fmt:'📸',title:'Crossword/Puzzle Mid-Solve',note:'Turns out my brain still works without TikTok'},
-    {date:'2026-11-13',fmt:'🎥',title:'Built Around My Worst Scrolling Habits',note:'I built my bag around the exact apps I scroll too much'},
-    {date:'2026-11-16',fmt:'📸',title:'Kindle + Headphones, Immersive Reading',note:'Immersive reading is cheating but I\'ll allow it 🎧📖'},
-    {date:'2026-11-18',fmt:'🎥',title:'Pack an Analog Bag With Me',note:'Packing my bag before I leave the house unbothered'},
-    {date:'2026-11-20',fmt:'📸',title:'Pinterest vs. Real Life',note:'What Pinterest shows vs. what my bag looks like by Tuesday'},
-    {date:'2026-11-23',fmt:'🎥',title:'Analog Bag Emergency Kit',note:'POV: stuck in a waiting room and this bag just saved me'},
-    {date:'2026-11-25',fmt:'📸',title:'Mystery Notebook Suspect Notes',note:'My suspect list is probably wrong but I\'m committed 🔍'},
-    {date:'2026-11-27',fmt:'🎥',title:'Reacting to Followers\' Suggestions',note:'Y\'all gave me analog bag ideas and I actually tried them'},
-    {date:'2026-11-30',fmt:'📸',title:'Bag Packed, Ready by the Door',note:'Leaving the house a little more offline today 🖤'},
-    {date:'2026-12-02',fmt:'🎥',title:'Analog Bag, Travel Day Edition',note:'This bag is doing the most work today'},
-    {date:'2026-12-04',fmt:'📸',title:'Current Book + Page Marker',note:'Page 142 and no regrets 🖤'},
-    {date:'2026-12-07',fmt:'📸',title:'Bag Contents by Pocket',note:'Everything has a place, even my chaos 🖤'},
-    {date:'2026-12-09',fmt:'🎥',title:'Proof It Worked — 3 Books Finished',note:'This bag made me finish 3 books this month, here\'s the proof'}
+    {date:'2026-10-28',seg:'main',title:'What\'s in My Analog Bag?',note:'So apparently we\'re bringing hobbies back, and I\'m here for it 🎒'},
+    {date:'2026-10-30',seg:'detective',title:'Solving Mysteries Is My Hobby',note:'One thing about me, I will find the suspect before chapter 3'},
+    {date:'2026-11-02',seg:'main',title:'Pack My Analog Bag With Me',note:'Pack my bag with me because apparently I need hobbies outside of TikTok'},
+    {date:'2026-11-04',seg:'main',title:'Reading vs. Scrolling Challenge',note:'Every time I want to open TikTok, I\'m reading five pages instead'},
+    {date:'2026-11-06',seg:'detective',title:'Detective for a Day',note:'I\'ve read enough thrillers. Surely I can solve the case.'},
+    {date:'2026-11-09',seg:'main',title:'Rating Everything in My Analog Bag',note:'I\'ve been using this bag and some of these hobbies are better than others'},
+    {date:'2026-11-11',seg:'main',title:'Can I Finish This Crossword Without Cheating?',note:'Let\'s see if I\'m actually smart or if Google\'s been carrying me'},
+    {date:'2026-11-13',seg:'detective',title:'My Thriller Detective Notebook',note:'I started tracking suspects because these authors are NOT fooling me again'},
+    {date:'2026-11-16',seg:'main',title:'A Rainy Day With My Analog Bag',note:'It\'s raining, my plans are canceled, and I\'m perfectly fine with that'},
+    {date:'2026-11-18',seg:'main',title:'Trying a New Offline Hobby Every Week',note:'Episode one of finding hobbies that don\'t involve scrolling'},
+    {date:'2026-11-20',seg:'main',title:'Take My Analog Bag on a Date',note:'Taking myself on a little date with my books and puzzles'},
+    {date:'2026-11-23',seg:'main',title:'One Hour Unplugged With Me',note:'I spent one hour entertaining myself without social media, here\'s what happened'},
+    {date:'2026-11-25',seg:'main',title:'Analog Bag Emergency Kit',note:'POV: stuck in a waiting room and this bag just saved me'},
+    {date:'2026-11-27',seg:'main',title:'Built Around My Worst Scrolling Habits',note:'I built my bag around the exact apps I scroll too much'},
+    {date:'2026-11-30',seg:'main',title:'Reacting to Followers\' Suggestions',note:'Y\'all gave me analog bag ideas and I actually tried them'},
+    {date:'2026-12-02',seg:'main',title:'Analog Bag, Travel Day Edition',note:'This bag is doing the most work today'},
+    {date:'2026-12-04',seg:'main',title:'Proof It Worked — Books Finished This Month',note:'This bag made me finish books this month, here\'s the proof'},
+    {date:'2026-12-07',seg:'main',title:'Essentials for Thriller Readers Specifically',note:'If you\'re a thriller girlie your bag needs these'}
   ];
   var dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   var monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -11097,15 +11098,16 @@ function _seedOfflineWithTrishSchedule(){
     var monthKey=monthNames[d.getMonth()].toLowerCase();
     var displayDate=dayNames[d.getDay()]+' '+monthNames[d.getMonth()].slice(0,3)+' '+d.getDate();
     var weekLabel=monthNames[d.getMonth()]+' '+d.getFullYear()+' — Custom';
-    customCalEntries.push({id:'cc_owt_'+p.date,date:displayDate,sortDate:p.date,week:weekLabel,month:monthKey,title:'[Offline With Trish] '+p.fmt+' '+p.title,type:'Other',notes:p.note,custom:true});
+    var label=p.seg==='detective'?'[The Armchair Detective] 🔎 ':'[Bagged & Unbothered] 🎥 ';
+    customCalEntries.push({id:'cc_bu_'+p.date,date:displayDate,sortDate:p.date,week:weekLabel,month:monthKey,title:label+p.title,type:'Other',notes:p.note,custom:true});
     added++;
   });
   customCalEntries.sort(function(a,b){return a.sortDate.localeCompare(b.sortDate);});
   localStorage.setItem('tbtrish_customcal',JSON.stringify(customCalEntries));
-  localStorage.setItem('tbtrish_seeded_offlinewithtrish_v1','1');
+  localStorage.setItem('tbtrish_seeded_baggedunbothered_v1','1');
   if(added>0){
     try{renderCalendar();}catch(e){}
-    toast('✦ Added your 20-post Offline With Trish schedule to the Calendar!');
+    toast('✦ Added your Bagged & Unbothered schedule — 18 videos — to the Calendar!');
   }
 }
 function checkCloudStatus(){
