@@ -952,6 +952,7 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <button class="nav-btn" data-panel="commentmine" onclick="showPanel('commentmine')">💎 Comment Mining</button>
   <button class="nav-btn" data-panel="checklist" onclick="showPanel('checklist')">📋 Checklist</button>
   <button class="nav-btn" data-panel="analogbag" onclick="showPanel('analogbag')">🎒 Analog Bag</button>
+  <button class="nav-btn" data-panel="tropeseries" onclick="showPanel('tropeseries')">🎯 Trope → 5 Videos</button>
 </div>
 
 <div class="sub-nav" id="subnav-growth">
@@ -2764,7 +2765,6 @@ var videos=[
 {id:29,date:"Sun Aug 24",week:"August — Week 4: Dark Fiction Variety",month:"august",title:"Week 3 & 4 August Reading Wrap Up",type:"Wrap Up",thumbnail:"August weeks 3 & 4 🖤",hook:"The final stretch of August and I have a lot to say",body:"Mind Scale ratings for all week 3 and 4 reads.\n\nHighlight the best crossover read, the biggest surprise, and quick Still Missing reaction.\n\nTease August monthly wrap up and book of the month reveal.",cta:"What was your best read of August so far?",hashtags:["#ReadingWrapUp","#BookTok","#DarkFiction","#PsychologicalThriller","#TitlesByTrish"]},
 {id:30,date:"Thu Aug 28",week:"August — Finale",month:"august",title:"August Book Haul",type:"Book Haul",thumbnail:"August haul & my wallet is crying 📚💸",hook:"August haul is here and my wallet is crying but my shelf is absolutely thriving",body:"Every book bought in August shown on camera.\n\nFor each: hold it up, one sentence on why you got it, excitement rating.\n\nClose with your most anticipated read and why it might be a Need Therapy situation.",cta:"Tell me which book from my August haul you're most interested in",hashtags:["#BookHaul","#BookTok","#DarkFiction","#ThrillerBooks","#TitlesByTrish"]},
 {id:31,date:"Sun Aug 31",week:"August — Finale",month:"august",title:"AUGUST MONTHLY WRAP UP + Favorite Book of the Month",type:"Monthly Wrap Up",thumbnail:"August wrap up + book of the month 🖤",hook:"August reading wrap up — one of these books completely broke me and I need to talk about it",body:"Full August breakdown:\n• Mind Scale rating for every book read\n• The disappointment of August\n• The surprise of August\n• Most commented video of the month\n• September TBR preview\n\nBuild to FAVORITE BOOK OF AUGUST reveal — make it a full moment.\n\nClose with: '60 days in. This is just the beginning.'",cta:"Tell me your favorite book of August",hashtags:["#MonthlyWrapUp","#BookTok","#FavoriteBook","#DarkFiction","#TitlesByTrish"]},
-,
 // JUNE
 {id:101,date:"Thu Jun 4",week:"June — Launch Week",month:"june",title:"Introducing TitlesByTrish",type:"Reintroduction",thumbnail:"Dark fiction is my whole personality 🖤📚",hook:"I read books that mess with your mind and I'm finally talking about them on here",body:"Quick intro — who I am, what I read, and why I started this account.\n\nShow your shelf backdrop. Tell people your niche is psychological thrillers, dark fiction, true crime and dark fantasy.\n\nTease the Mind Scale rating system — every book you review gets a rating.\n\nThis is your soft launch before the July 1st full relaunch.",cta:"Follow along — July is going to be unhinged",hashtags:["#BookTok","#PsychologicalThriller","#DarkFiction","#NewBookTok","#TitlesByTrish"]},
 {id:102,date:"Sat Jun 6",week:"June — Launch Week",month:"june",title:"June Book Haul",type:"Book Haul",thumbnail:"June book haul 📚🖤",hook:"I may have gone a little overboard at Barnes and Noble and I regret absolutely nothing",body:"Show every book you picked up in June. For each:\n• Hold it up to camera\n• One sentence on why you got it\n• Excitement rating out of 5 on the Mind Scale\n\nClose with your most anticipated read from the haul.",cta:"Tell me which one you'd read first — drop it in the comments",hashtags:["#BookHaul","#BookTok","#DarkFiction","#ThrillerBooks","#TitlesByTrish"]},
@@ -3535,6 +3535,7 @@ var DRAWER_PANELS=[
   {icon:'💎',name:'Comment Mining',panel:'commentmine',group:'Content'},
   {icon:'📋',name:'Checklist',panel:'checklist',group:'Content'},
   {icon:'🎒',name:'Analog Bag',panel:'analogbag',group:'Content'},
+  {icon:'🎯',name:'Trope → 5 Videos',panel:'tropeseries',group:'Content'},
   {icon:'📊',name:'Analytics',panel:'analytics',group:'Growth'},
   {icon:'💰',name:'Spending',panel:'spending',group:'Growth'},
   {icon:'⏰',name:'Post Times',panel:'posttimes',group:'Growth'},
@@ -3573,7 +3574,7 @@ function drawerSearch(q){
 
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={dashboard:'home',calendar:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',analogbag:'content',analytics:'growth',spending:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business',dmtemplates:'business'};
+var PANEL_GROUP={dashboard:'home',calendar:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',analogbag:'content',tropeseries:'content',analytics:'growth',spending:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business',dmtemplates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -3631,6 +3632,7 @@ function showPanel(id){
   if(id==='readnext'){renderReadNext();}
   if(id==='checklist'){renderChecklist();}
   if(id==='analogbag'){renderAnalogBag();}
+  if(id==='tropeseries'){renderTropeSeries();}
   if(id==='dmtemplates'){renderDMTemplates();}
   if(id==='filmsession'){renderFilmSessions();}
   if(id==='commentmine'){renderCommentMine();}
@@ -3701,20 +3703,21 @@ function renderCalendar(){
       const done=doneSet.has(v.id);
       const wkList=weeks[week];
       const canUp=vi>0;const canDown=vi<wkList.length-1;
+      const vid=typeof v.id==='number'?v.id:"'"+v.id+"'";
       html+=`<div class="video-card${done?' done':''}" id="card-${v.id}">
-        <div class="card-top" onclick="toggleCard(${v.id})">
+        <div class="card-top" onclick="toggleCard(${vid})">
           <div class="card-date">${v.date}</div>
           <div class="card-info"><div class="card-title">${v.title}</div><div class="card-type">${v.type}</div></div>
           <div class="card-actions" onclick="event.stopPropagation()">
-            <button class="btn-mv" onclick="moveCalCard(${v.id},'up')" title="Move up" style="opacity:${canUp?1:.25};cursor:${canUp?'pointer':'default'};">↑</button>
-            <button class="btn-mv" onclick="moveCalCard(${v.id},'down')" title="Move down" style="opacity:${canDown?1:.25};cursor:${canDown?'pointer':'default'};">↓</button>
-            <button class="btn-done" onclick="toggleDone(${v.id})" title="${done?'Mark pending':'Mark posted'}">${done?'✓':'○'}</button>
+            <button class="btn-mv" onclick="moveCalCard(${vid},'up')" title="Move up" style="opacity:${canUp?1:.25};cursor:${canUp?'pointer':'default'};">↑</button>
+            <button class="btn-mv" onclick="moveCalCard(${vid},'down')" title="Move down" style="opacity:${canDown?1:.25};cursor:${canDown?'pointer':'default'};">↓</button>
+            <button class="btn-done" onclick="toggleDone(${vid})" title="${done?'Mark pending':'Mark posted'}">${done?'✓':'○'}</button>
             ${calTab==='archived'
-              ?`<button class="btn-script" onclick="unarchiveCalCard(${v.id})" title="Restore to calendar" style="font-size:12px;">↩ Restore</button>`
-              :`<button class="btn-script" onclick="archiveCalCard(${v.id})" title="Archive this entry" style="font-size:12px;">🗂 Archive</button>`
+              ?`<button class="btn-script" onclick="unarchiveCalCard(${vid})" title="Restore to calendar" style="font-size:12px;">↩ Restore</button>`
+              :`<button class="btn-script" onclick="archiveCalCard(${vid})" title="Archive this entry" style="font-size:12px;">🗂 Archive</button>`
             }
             ${v.custom?`<button class="btn-script" onclick="deleteCustomCalEntry('${v.id}')" title="Delete entry" style="font-size:12px;color:rgba(255,100,100,.8);">✕ Delete</button>`:`<button class="btn-script" onclick="openModal(${v.id})">Script</button>`}
-            <button class="btn-expand" onclick="toggleCard(${v.id})">▾</button>
+            <button class="btn-expand" onclick="toggleCard(${vid})">▾</button>
           </div>
         </div>
         <div class="card-details">
@@ -10548,6 +10551,153 @@ function saveCustomCalEntry(){
 }
 function deleteCustomCalEntry(id){if(!confirm('Remove this entry?'))return;customCalEntries=customCalEntries.filter(function(e){return e.id!==id;});localStorage.setItem('tbtrish_customcal',JSON.stringify(customCalEntries));renderCalendar();}
 
+// ══════════════════════════════════════════
+// TROPE → 5 VIDEOS
+// One trope becomes a 5-part series: recs, ranking, hot take, favorite
+// scene, and an ask (whose comments feed reply videos). Each slot has a
+// few title/hook variants so Shuffle gives fresh angles on the same trope.
+// ══════════════════════════════════════════
+var TROPE_LIST=['Enemies to Lovers','Friends to Lovers','Grumpy x Sunshine','Forced Proximity','Fake Dating','Second Chance','Slow Burn','Forbidden Love','Morally Gray Love Interest','Unreliable Narrator','The Twist You Never Saw Coming','Locked-Room Mystery','Small-Town Secrets','Domestic Thriller','The Perfect Couple Isn\'t Perfect','Revenge','Cat and Mouse','Dark Academia','Found Family','Who Can You Trust?'];
+var TROPE_SLOTS=[
+  {label:'The Recs',type:'Recommendation',
+   titles:['If you love {T}, read these 3 books','3 {T} books you haven\'t heard of','{T} books that ruined me (in the best way)'],
+   hooks:['If {T} is your weakness, stop scrolling','You say you love {T}? Read these first','The {T} books nobody is talking about'],
+   film:'Hold up each cover for 2–3 seconds with one line on why it\'s {T} done right.',
+   cta:'Which one are you reading first? 👇'},
+  {label:'The Ranking',type:'Ranking',
+   titles:['Ranking every {T} book I\'ve read','{T} books, worst to best','Tier-ranking {T} books — no mercy'],
+   hooks:['I ranked every {T} book I\'ve read and someone\'s going to be mad','Worst to best. Let\'s fight in the comments.','My #1 {T} book will surprise you'],
+   film:'Stack the books, pull them out worst to best, and save #1 for the last 3 seconds.',
+   cta:'Tell me where I got it wrong 👀'},
+  {label:'The Hot Take',type:'Engagement',
+   titles:['Unpopular opinion: {T} is ruined when…','{T} done right vs. done wrong','The {T} red flags I can\'t forgive'],
+   hooks:['Unpopular opinion about {T} and I\'m not taking it back','{T} girlies, we need to talk','Nobody wants to admit this about {T}'],
+   film:'Talk straight to camera with one book on screen as your example. Keep it under 45 seconds.',
+   cta:'Agree or disagree? Defend yourself 👇'},
+  {label:'The Scene',type:'Storytime',
+   titles:['The moment {T} hit different in {B}','Reading you the {T} scene I can\'t stop thinking about','The line that made me obsessed with {T}'],
+   hooks:['This is the exact page where I lost it','If this scene doesn\'t sell you on {T}, nothing will','I\'ve reread this part 10 times'],
+   film:'Show the page (blur any spoilers), read the line or act it out, then react.',
+   cta:'Send me the scene that wrecked YOU'},
+  {label:'The Ask',type:'Engagement',
+   titles:['Give me your best {T} rec — I\'ve read them all','Name one {T} book I haven\'t read. I\'ll wait.','You pick: which {T} book do I read next?'],
+   hooks:['I\'ve read every {T} book. Prove me wrong.','Your turn — what\'s the best {T} book?','I need a new {T} book and I\'m trusting you'],
+   film:'Short and direct, with your {T} reads stacked in the background. Reply to the best comments with videos.',
+   cta:'Drop it in the comments — I\'ll reply with a video to the best ones'}
+];
+var tropeState=Object.assign({trope:'Enemies to Lovers',custom:'',books:['','',''],start:'',every:'3x',picks:[0,0,0,0,0],titles:['','','','','']},safeJSON('tbtrish_tropeseries',{}));
+function saveTropeState(){localStorage.setItem('tbtrish_tropeseries',JSON.stringify(tropeState));}
+function tropeName(){return (tropeState.trope==='__custom'?tropeState.custom.trim():tropeState.trope)||'your trope';}
+function tropeFill(str){
+  var b=tropeState.books.filter(function(x){return x&&x.trim();});
+  return str.replace(/\{T\}/g,tropeName()).replace(/\{B\}/g,b[0]?b[0].trim():'this book');
+}
+function _tropeYmd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function tropeDates(){
+  var d=tropeState.start?new Date(tropeState.start+'T12:00'):new Date();
+  d.setHours(12,0,0,0);
+  var out=[];
+  if(tropeState.every==='3x'){
+    while(out.length<5){if([1,3,5].indexOf(d.getDay())>=0)out.push(_tropeYmd(d));d.setDate(d.getDate()+1);}
+  }else{
+    var step=tropeState.every==='2days'?2:1;
+    for(var i=0;i<5;i++){out.push(_tropeYmd(d));d.setDate(d.getDate()+step);}
+  }
+  return out;
+}
+function tropePlan(){
+  var dates=tropeDates(), t=tropeName();
+  return TROPE_SLOTS.map(function(sl,n){
+    var k=tropeState.picks[n]%sl.titles.length;
+    return {n:n+1,label:sl.label,type:sl.type,date:dates[n],
+      title:tropeState.titles[n]||tropeFill(sl.titles[k]),
+      hook:tropeFill(sl.hooks[k]),
+      opener:t+' week, part '+(n+1)+'…',
+      film:tropeFill(sl.film),cta:sl.cta};
+  });
+}
+function tropePinned(){
+  var t=tropeName();
+  return '📌 '+t+' week! Part 1: recs · Part 2: the ranking · Part 3: hot take · Part 4: my favorite scene · Part 5: your recs. Follow so you don\'t miss one 🖤';
+}
+function renderTropeSeries(){
+  var sel=document.getElementById('trope-f-trope');if(!sel)return;
+  sel.innerHTML=TROPE_LIST.map(function(t){return '<option value="'+escHtml(t)+'"'+(t===tropeState.trope?' selected':'')+'>'+escHtml(t)+'</option>';}).join('')+'<option value="__custom"'+(tropeState.trope==='__custom'?' selected':'')+'>✏️ Type my own…</option>';
+  document.getElementById('trope-custom-wrap').style.display=tropeState.trope==='__custom'?'block':'none';
+  document.getElementById('trope-f-custom').value=tropeState.custom;
+  [0,1,2].forEach(function(i){document.getElementById('trope-f-b'+i).value=tropeState.books[i]||'';});
+  document.getElementById('trope-f-start').value=tropeState.start||_tropeYmd(new Date());
+  document.getElementById('trope-f-every').value=tropeState.every;
+  var dl=document.getElementById('trope-books');
+  if(dl){
+    var seen={},titles=[];
+    (Array.isArray(shelfBooks)?shelfBooks:[]).concat(safeJSON('sc3_books',[])).forEach(function(b){if(b&&b.title&&!seen[b.title]){seen[b.title]=1;titles.push(b.title);}});
+    dl.innerHTML=titles.map(function(t){return '<option value="'+escHtml(t)+'">';}).join('');
+  }
+  renderTropePlan();
+}
+function renderTropePlan(){
+  var el=document.getElementById('trope-plan');if(!el)return;
+  var books=tropeState.books.filter(function(x){return x&&x.trim();});
+  el.innerHTML='<div class="card-box" style="margin-bottom:12px;"><div style="font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;">📌 PIN THIS COMMENT ON PART 1</div><div style="font-size:14px;line-height:1.6;">'+escHtml(tropePinned())+'</div><button class="btn" style="margin-top:8px;font-size:11px;padding:5px 12px;" onclick="copyPkgSection(tropePinned())">📋 Copy</button></div>'+
+  tropePlan().map(function(v,i){
+    var d=new Date(v.date+'T12:00');
+    return '<div class="card-box" style="margin-bottom:12px;">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">'+
+        '<div style="font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:2px;color:var(--gold);">PART '+v.n+' · '+v.label.toUpperCase()+' · '+d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+'</div>'+
+        '<button class="btn" style="font-size:11px;padding:4px 10px;" onclick="tropeShuffle('+i+')" title="Try a different angle">🔄</button>'+
+      '</div>'+
+      '<textarea rows="2" oninput="tropeSetTitle('+i+',this.value)" style="width:100%;margin:8px 0;border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-family:\'Playfair Display\',serif;font-size:16px;font-weight:700;line-height:1.35;background:transparent;color:var(--text);resize:none;">'+escHtml(v.title)+'</textarea>'+
+      '<div style="font-size:14px;line-height:1.7;">'+
+        '<div><b>Say first:</b> “'+escHtml(v.opener)+'”</div>'+
+        '<div><b>Hook:</b> “'+escHtml(v.hook)+'”</div>'+
+        '<div><b>Film:</b> '+escHtml(v.film)+(i===0&&books.length?' Books: '+escHtml(books.join(', '))+'.':'')+'</div>'+
+        '<div><b>CTA:</b> '+escHtml(v.cta)+'</div>'+
+      '</div></div>';
+  }).join('');
+}
+function tropeSet(k,v){
+  tropeState[k]=v;
+  // A new trope gets fresh titles; edits made for the old one wouldn't fit
+  if(k==='trope'||k==='custom')tropeState.titles=['','','','',''];
+  saveTropeState();
+  if(k==='trope')document.getElementById('trope-custom-wrap').style.display=v==='__custom'?'block':'none';
+  renderTropePlan();
+}
+function tropeSetBook(i,v){tropeState.books[i]=v;saveTropeState();renderTropePlan();}
+function tropeSetTitle(i,v){tropeState.titles[i]=v;saveTropeState();}
+function tropeShuffle(i){tropeState.picks[i]=(tropeState.picks[i]+1)%TROPE_SLOTS[i].titles.length;tropeState.titles[i]='';saveTropeState();renderTropePlan();}
+function tropeShuffleAll(){
+  tropeState.picks=tropeState.picks.map(function(p,i){var len=TROPE_SLOTS[i].titles.length,r;do{r=Math.floor(Math.random()*len);}while(len>1&&r===p);return r;});
+  tropeState.titles=['','','','',''];saveTropeState();renderTropePlan();
+}
+function tropeCopyAll(){
+  var books=tropeState.books.filter(function(x){return x&&x.trim();});
+  var txt=tropeName().toUpperCase()+' WEEK — 5-VIDEO SERIES\n\n'+tropePlan().map(function(v,i){
+    return 'PART '+v.n+' · '+v.label+' · '+v.date+'\n'+v.title+'\nSay first: "'+v.opener+'"\nHook: "'+v.hook+'"\nFilm: '+v.film+(i===0&&books.length?' Books: '+books.join(', ')+'.':'')+'\nCTA: '+v.cta;
+  }).join('\n\n')+'\n\nPinned comment:\n'+tropePinned();
+  copyPkgSection(txt);
+}
+function tropeAddToCalendar(){
+  if(tropeState.trope==='__custom'&&!tropeState.custom.trim()){toast('Type your trope first!');return;}
+  var t=tropeName();
+  if(!confirm('Add all 5 '+t+' videos to your Calendar?'))return;
+  var dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var books=tropeState.books.filter(function(x){return x&&x.trim();});
+  var stamp=Date.now();
+  tropePlan().forEach(function(v,i){
+    var d=new Date(v.date+'T12:00');
+    var notes=['<b>Say first:</b> “'+escHtml(v.opener)+'”','<b>Hook:</b> “'+escHtml(v.hook)+'”','<b>Film:</b> '+escHtml(v.film)+(i===0&&books.length?' Books: '+escHtml(books.join(', '))+'.':''),'<b>CTA:</b> '+escHtml(v.cta)];
+    if(i===0)notes.push('<b>Pin this comment:</b> '+escHtml(tropePinned()));
+    customCalEntries.push({id:'cc_tr_'+stamp+'_'+v.n,date:dayNames[d.getDay()]+' '+monthNames[d.getMonth()].slice(0,3)+' '+d.getDate(),sortDate:v.date,week:monthNames[d.getMonth()]+' '+d.getFullYear()+' — Custom',month:monthNames[d.getMonth()].toLowerCase(),title:'[🎯 '+escHtml(t)+' Week] Part '+v.n+': '+escHtml(v.title),type:v.type,notes:notes.join('<br>'),custom:true});
+  });
+  customCalEntries.sort(function(a,b){return a.sortDate.localeCompare(b.sortDate);});
+  localStorage.setItem('tbtrish_customcal',JSON.stringify(customCalEntries));
+  try{renderCalendar();}catch(e){}
+  toast('📅 Added '+t+' week — 5 videos — to your Calendar!');
+}
+
 // CHALLENGE TARGET EDIT
 function updateChallengeTarget(id,val){var c=challengeList.find(function(x){return x.id===id;});if(c){c.target=parseInt(val)||0;localStorage.setItem('tbtrish_challenges',JSON.stringify(challengeList));renderChallenges();}}
 
@@ -12966,6 +13116,31 @@ function resetQuiz(){quizAnswers={};initQuiz();}
 </div>
 
 <!-- ANALOG BAG -->
+<div class="panel" id="panel-tropeseries">
+  <div class="section-title">🎯 Trope → 5 Videos</div>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:16px;line-height:1.7;">Pick one trope and get a 5-part series: recs, a ranking, a hot take, your favorite scene, and an ask that gets people commenting. Film all five in one sitting, then post them across the week.</p>
+  <div class="card-box" style="margin-bottom:16px;">
+    <div class="sc-field"><label>Trope</label><select id="trope-f-trope" onchange="tropeSet('trope',this.value)"></select></div>
+    <div class="sc-field" id="trope-custom-wrap" style="display:none;"><label>Your Trope</label><input id="trope-f-custom" oninput="tropeSet('custom',this.value)" placeholder="e.g. Small-town secrets" autocomplete="off"></div>
+    <div class="sc-field"><label>Books to Feature (optional)</label>
+      <input id="trope-f-b0" list="trope-books" oninput="tropeSetBook(0,this.value)" placeholder="Book 1" autocomplete="off" style="margin-bottom:6px;">
+      <input id="trope-f-b1" list="trope-books" oninput="tropeSetBook(1,this.value)" placeholder="Book 2" autocomplete="off" style="margin-bottom:6px;">
+      <input id="trope-f-b2" list="trope-books" oninput="tropeSetBook(2,this.value)" placeholder="Book 3" autocomplete="off">
+      <datalist id="trope-books"></datalist>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="sc-field"><label>Start Date</label><input type="date" id="trope-f-start" onchange="tropeSet('start',this.value)"></div>
+      <div class="sc-field"><label>Post</label><select id="trope-f-every" onchange="tropeSet('every',this.value)"><option value="daily">Every day</option><option value="2days">Every other day</option><option value="3x">Mon / Wed / Fri</option></select></div>
+    </div>
+  </div>
+  <div id="trope-plan"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+    <button class="btn btn-primary" onclick="tropeAddToCalendar()">📅 Add All 5 to Calendar</button>
+    <button class="btn" onclick="tropeShuffleAll()">🔄 Shuffle All</button>
+    <button class="btn" onclick="tropeCopyAll()">📋 Copy Plan</button>
+  </div>
+</div>
+
 <div class="panel" id="panel-analogbag">
   <div class="section-title">🎒 Analog Bag</div>
   <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:16px;line-height:1.7;">Track what's in the bag, log your offline sessions, and build proof for your "this actually worked" videos.</p>
