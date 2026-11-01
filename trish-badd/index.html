@@ -166,6 +166,41 @@ body.dark .btn.gold{color:#141210;}
 .ck .tx{flex:1;}
 .ck.done .tx{text-decoration:line-through;color:var(--dim);}
 
+/* ── XXL NAIL DIARIES ── */
+.xxl-hero{background:var(--head-bg);color:var(--head-ink);border-radius:18px;padding:18px 16px;margin-bottom:14px;}
+body.dark .xxl-hero{border:1px solid rgba(201,166,107,.35);}
+.xxl-hero .eyebrow{font-size:10.5px;letter-spacing:4px;}
+.xxl-hero h2{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;line-height:1.05;margin:4px 0 6px;color:var(--head-ink);}
+.xxl-hero p{font-size:13.5px;color:rgba(243,234,217,.72);}
+.xxl-prog{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:12px;}
+.xxl-prog div{text-align:center;border:1px solid rgba(201,166,107,.35);border-radius:8px;padding:5px 2px;}
+.xxl-prog b{display:block;font-family:'Cormorant Garamond',serif;font-size:20px;line-height:1.1;color:#e2c58f;}
+.xxl-prog span{font-size:9.5px;letter-spacing:.3px;color:rgba(243,234,217,.65);}
+.seg{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:10px;padding-bottom:2px;}
+.seg::-webkit-scrollbar{display:none;}
+.seg button{flex:none;border:1px solid var(--line-hi);background:var(--card);border-radius:999px;padding:6px 12px;font-size:13px;white-space:nowrap;}
+.seg button.active{background:var(--gold);border-color:var(--gold);color:#fff;}
+body.dark .seg button.active{color:#141210;}
+details.ep{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;box-shadow:var(--shadow);}
+details.ep[open]{border-color:var(--gold2);}
+details.ep summary{list-style:none;padding:14px;cursor:pointer;}
+details.ep summary::-webkit-details-marker{display:none;}
+details.ep .ser{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);font-weight:600;}
+details.ep .et{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;line-height:1.2;margin:2px 0 4px;word-wrap:break-word;}
+details.ep .eh{font-size:13.5px;color:var(--dim);font-style:italic;word-wrap:break-word;}
+details.ep .ebody{padding:0 14px 14px;border-top:1px solid var(--line);}
+.ep .lbl{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);font-weight:600;margin:12px 0 4px;}
+.ep ol{padding-left:20px;font-size:14px;}
+.ep ol li{margin-bottom:3px;}
+.ep .cap{font-size:14px;white-space:pre-wrap;word-wrap:break-word;}
+.ep select{border:1px solid var(--line-hi);background:var(--card);border-radius:8px;padding:6px 8px;font-size:14px;max-width:100%;}
+.ep .ctrls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.ep .ctrls label{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:3px;}
+.ep .ctrls select{width:100%;}
+.verdict-Easy{background:var(--ok-bg);color:var(--ok);}
+.verdict-Takes{background:var(--warn-bg);color:var(--warn);}
+.verdict-Not{background:var(--bad-bg);color:var(--bad);}
+
 /* ── TOAST ── */
 #toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:99;max-width:90vw;text-align:center;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -183,7 +218,7 @@ body.dark .btn.gold{color:#141210;}
   <div class="tagline">Lifestyle · GRWM · Nails · Hauls</div>
   <div class="head-row">
     <a class="switch-pill" href="../">📚 Switch to Titles by Trish</a>
-    <span class="sync"><span id="sync-dot"></span><span id="sync-txt">Syncing across devices</span></span>
+    <span class="sync"><span id="sync-dot"></span><span id="sync-txt">Connecting…</span></span>
   </div>
 </header>
 
@@ -205,7 +240,7 @@ body.dark .btn.gold{color:#141210;}
 const PILLARS = [
 {
   id:'nails', name:'Nails', emoji:'💅', star:true,
-  blurb:'Appointments, sets, inspo and come-with-me nail days.',
+  blurb:'XXL sets, appointments, real-life demos and come-with-me nail days.',
   formats:['Come with me (full appointment)','Before → after transition','Set reveal + close-ups','Storytime over hand shots','Ranking / rating','Poll → follow-up video'],
   ideas:[
     'Come with me to get my nails done — the whole appointment, start to finish',
@@ -249,7 +284,11 @@ const PILLARS = [
     'Self-care Saturday: nails, coffee run, errands',
     'I let my followers design my nails',
     'Nail ASMR close-ups — filing, tapping, buffing',
-    'Neutral nail shades for every skin tone I\'ve tried'
+    'Neutral nail shades for every skin tone I\'ve tried',
+    'Matching my XXL set to my perfume, outfit and bag',
+    'GRWM before my nail appointment',
+    'Manicure-to-OOTD transition — fresh set, full fit',
+    'Running errands with XXL nails — what I can and can\'t do'
   ],
   hooks:[
     'Come with me to get my nails done because I have no idea what I want',
@@ -261,7 +300,7 @@ const PILLARS = [
     'How much I actually pay for my nails',
     'Don\'t book your next nail appointment until you see this'
   ],
-  tags:'#nails #nailsoftiktok #nailappointment #comewithme #nailinspo #naildesign #gelx #frenchtips #nailtok #manicure'
+  tags:'#xxlnails #longnails #nails #nailsoftiktok #nailappointment #comewithme #nailinspo #naildesign #nailtok #manicure'
 },
 {
   id:'grwm', name:'GRWM', emoji:'🪞', star:true,
@@ -598,6 +637,91 @@ const DEFAULT_CHECKLIST = [
 ];
 
 // ═══════════════════════════════════════════════
+// THE XXL NAIL DIARIES — series library
+// Built-in episodes are read-only templates. Progress lives in the synced
+// "episodes" collection: one record per episode you start (ep = template id),
+// plus any custom episodes you add yourself.
+// Keys: s=series t=title h=hook sh=shots c=caption tg=5 hashtags cta f=format
+// ═══════════════════════════════════════════════
+const XXL_SERIES = [
+  {id:'can', name:'Can I Do It With XXL Nails?', short:'Can I Do It?', emoji:'🤔'},
+  {id:'qa', name:'Questions I Always Get', short:'Questions', emoji:'❓'},
+  {id:'sets', name:'Nail Set Diaries', short:'Set Diaries', emoji:'💎'},
+  {id:'dumps', name:'Photo Dumps', short:'Photo Dumps', emoji:'📸'}
+];
+const EP_STATUSES = ['Idea','Scripted','Filmed','Edited','Scheduled','Posted'];
+const VERDICTS = ['Easy','Takes Practice','Not Happening'];
+const CAN_SHOTS = t => [`Set the scene: ${t} with your nails in frame. Ask the camera "Can I do it?"`, 'The attempt: one real-time close-up, no cuts. Let the struggle (or the flex) show.', 'The verdict: face to camera + text overlay — Easy / Takes Practice / Not Happening.'];
+const CAN_CTA = 'What should I try next? Comment an everyday task 👇';
+const XXL_EPISODES = [
+  // ── Can I Do It With XXL Nails? ──
+  {id:'can01', s:'can', t:'Can I open a soda can with XXL nails?', h:'Everyone says it\'s impossible. Let\'s see.', sh:CAN_SHOTS('a cold soda can on the counter'), c:'Can I open a soda can with XXL nails? Verdict: ___ 🥤💅', tg:['#xxlnails','#longnails','#nailtok','#canidoit','#nailchallenge'], cta:CAN_CTA, f:'Challenge · 3 shots + verdict'},
+  {id:'can02', s:'can', t:'Can I pick up a coin with XXL nails?', h:'A penny on a flat table. My final boss.', sh:CAN_SHOTS('a single coin on a flat table'), c:'Picking up a coin with XXL nails — verdict: ___ 🪙', tg:['#xxlnails','#longnails','#nailtok','#canidoit','#longnailproblems'], cta:CAN_CTA, f:'Challenge · 3 shots + verdict'},
+  {id:'can03', s:'can', t:'Can I type a full text with XXL nails?', h:'Watch me send a whole paragraph with these.', sh:CAN_SHOTS('your phone with a blank message'), c:'Typing with XXL nails — verdict: ___ 📱', tg:['#xxlnails','#longnails','#nailtok','#canidoit','#typingwithlongnails'], cta:CAN_CTA, f:'Challenge · 3 shots + verdict'},
+  {id:'can04', s:'can', t:'Can I put on my own jewelry with XXL nails?', h:'Lobster clasp vs. me. Place your bets.', sh:CAN_SHOTS('a necklace with a tiny clasp and a pair of earrings'), c:'Putting on jewelry with XXL nails — verdict: ___ 💎', tg:['#xxlnails','#longnails','#nailtok','#canidoit','#jewelrytok'], cta:CAN_CTA, f:'Challenge · 3 shots + verdict'},
+  {id:'can05', s:'can', t:'Can I button my jeans with XXL nails?', h:'High-waisted jeans have been warned.', sh:CAN_SHOTS('your stiffest pair of jeans'), c:'Buttoning jeans with XXL nails — verdict: ___ 👖', tg:['#xxlnails','#longnails','#nailtok','#canidoit','#longnailproblems'], cta:CAN_CTA, f:'Challenge · 3 shots + verdict'},
+  {id:'can06', s:'can', t:'Can I get a card out of my wallet with XXL nails?', h:'The line behind me is watching. No pressure.', sh:CAN_SHOTS('a full wallet with a tight card slot'), c:'Getting a card out of my wallet with XXL nails — verdict: ___ 💳', tg:['#xxlnails','#longnails','#nailtok','#canidoit','#nailchallenge'], cta:CAN_CTA, f:'Challenge · 3 shots + verdict'},
+  {id:'can07', s:'can', t:'Can I put on lip gloss with XXL nails?', h:'Doe-foot applicator, XXL nails, zero mess. Allegedly.', sh:CAN_SHOTS('your favorite lip gloss and a mirror'), c:'Lip gloss with XXL nails — verdict: ___ 💋', tg:['#xxlnails','#longnails','#nailtok','#canidoit','#lipgloss'], cta:CAN_CTA, f:'Challenge · 3 shots + verdict'},
+  {id:'can08', s:'can', t:'Can I make my bed with XXL nails?', h:'Fitted sheet corners. With these. Pray for me.', sh:CAN_SHOTS('an unmade bed and a fitted sheet'), c:'Making the bed with XXL nails — verdict: ___ 🛏️', tg:['#xxlnails','#longnails','#nailtok','#canidoit','#cleantok'], cta:CAN_CTA, f:'Challenge · 3 shots + verdict'},
+  {id:'can09', s:'can', t:'Can I open a package with XXL nails?', h:'Taped box. No scissors. Let\'s go.', sh:CAN_SHOTS('a well-taped delivery box'), c:'Opening a package with XXL nails — verdict: ___ 📦', tg:['#xxlnails','#longnails','#nailtok','#canidoit','#unboxing'], cta:CAN_CTA, f:'Challenge · 3 shots + verdict'},
+  {id:'can10', s:'can', t:'Can I use my keys with XXL nails?', h:'Getting into my own house shouldn\'t be this dramatic.', sh:CAN_SHOTS('your keyring at the front door'), c:'Using keys with XXL nails — verdict: ___ 🔑', tg:['#xxlnails','#longnails','#nailtok','#canidoit','#longnailproblems'], cta:CAN_CTA, f:'Challenge · 3 shots + verdict'},
+  {id:'can11', s:'can', t:'Running errands with XXL nails — what I can and can\'t do', h:'Come run errands with me and my XXL nails.', sh:['Car keys, seatbelt and the coffee drive-thru — nails front and center.','Store: pick up items, tap to pay, grab the receipt.','End with a verdict list on screen: what\'s easy, what takes practice, what\'s not happening.'], c:'A whole errand day with XXL nails. The verdicts are in 🛒💅', tg:['#xxlnails','#longnails','#nailtok','#errandswithme','#dayinmylife'], cta:'Which errand should I test next? 👇', f:'Vlog · errands + verdicts'},
+
+  // ── Questions I Always Get ──
+  {id:'qa01', s:'qa', t:'How do you wipe with nails that long?', h:'The question everyone wants to ask… I\'m answering it. No demo — relax.', sh:['Talk to camera, nails framing your face, one eyebrow raised.','Tasteful prop only: a pack of flushable wipes on the counter.','Laugh + "next question" wave.'], c:'Yes, I get this every single day. The answer: technique, patience and wipes 😌', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#longnailproblems'], cta:'Drop the question you\'re scared to ask 👇', f:'Talking head · no demo'},
+  {id:'qa02', s:'qa', t:'How do you type or use your phone?', h:'Y\'all think I can\'t use my phone with these? Watch.', sh:['Over-the-shoulder: phone screen while you scroll and tap.','Close-up: typing with the pads and sides, not the tips.','Speed round: type a full sentence on a timer.'], c:'Pads, sides and pure confidence. My thumbs adapted 💅📱', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#typingwithlongnails'], cta:'Should I do a typing race next?', f:'Demo'},
+  {id:'qa03', s:'qa', t:'How do you put in contact lenses?', h:'Contacts with XXL nails? Yes — and safely.', sh:['Wash hands on camera — clean hands, clean nails first.','Show the fingertip-pad method with nails angled away (no close-up eye shots).','Blink test + thumbs up.'], c:'Clean hands, pads not tips, nails pointed away. Always check with your eye doctor 👁️', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#contactlenses'], cta:'What should I show you next?', f:'Demo · safety first'},
+  {id:'qa04', s:'qa', t:'How do you open a soda can?', h:'The soda can struggle is a myth. Watch.', sh:['Can on the counter, nails tapping the top.','Close-up: the side-nail slide — or a spoon under the tab.','The satisfying psst + first sip.'], c:'Spoon, key or the side-nail slide. I have never lost to a can 🥤', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#lifehack'], cta:'Rate my technique 1–10', f:'Demo'},
+  {id:'qa05', s:'qa', t:'How do you pick up coins or a credit card?', h:'Picking up a coin with XXL nails is a sport.', sh:['Coin on a flat table — dramatic zoom.','Slide it to the edge of the table and pinch.','Same move with a credit card + victory pose.'], c:'The edge of the table is my best friend 🪙💳', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#longnailproblems'], cta:'Give me a harder challenge 👇', f:'Demo'},
+  {id:'qa06', s:'qa', t:'How do you button jeans or zip clothes?', h:'How I button jeans with these. Spoiler: patience.', sh:['Mirror shot in jeans, nails in frame.','Close-up: thumb pad pushes the button through.','Zipper: hook a nail through the pull tab — done.'], c:'Pads push, nails guide. High-waisted jeans trained me 👖', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#ootd'], cta:'What\'s the hardest piece of clothing for you?', f:'Demo'},
+  {id:'qa07', s:'qa', t:'How do you put on necklaces and earrings?', h:'Putting on jewelry with XXL nails ✨', sh:['Jewelry flat lay — make it pretty.','Close-up: use a nail tip as a lever on the clasp.','Earring back on + final mirror check.'], c:'Lobster clasps were the final boss. I won 💎', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#jewelrytok'], cta:'Necklace or earrings — which is harder?', f:'Demo'},
+  {id:'qa08', s:'qa', t:'How do you wash your hair?', h:'How I wash my hair without scratching my scalp.', sh:['Show your shampoo + a silicone scalp brush.','Demo the pad-massage technique (dry, or shoulders-up in the shower).','Hair flip + nails still perfect.'], c:'Pads, not tips — and a scalp brush does the heavy lifting 🚿', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#washday'], cta:'Want my full wash-day routine?', f:'Demo'},
+  {id:'qa09', s:'qa', t:'How do you cook, clean or do dishes?', h:'Can I cook and clean with these? Come watch.', sh:['Dish gloves on over the XXL nails.','Chopping / stirring close-up.','Clean kitchen reveal + nail flex.'], c:'Gloves are non-negotiable. Pretty nails, clean kitchen 🧽', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#cleantok'], cta:'Which chore should I attempt next?', f:'Demo'},
+  {id:'qa10', s:'qa', t:'How do you work with nails like that?', h:'"How do you work with nails like that?" Very well, thank you.', sh:['Desk setup: typing, mouse, clicking a pen.','Close-up: grabbing paper and flipping pages.','Look to camera: "next question."'], c:'Laptop, phone, paperwork — the nails come to work too 💼💅', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#worklife'], cta:'What\'s your job? Could you do it with these?', f:'Talking head + B-roll'},
+  {id:'qa11', s:'qa', t:'How do you use an ATM or card reader?', h:'Card readers with XXL nails = my origin story.', sh:['Walk up to the checkout (or a card reader at home).','Close-up: knuckle on the keypad + tap to pay.','Receipt + smug smile.'], c:'Tap to pay was made for us. Keypads get the knuckle 💳', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#longnailproblems'], cta:'What should I demo next?', f:'Demo'},
+  {id:'qa12', s:'qa', t:'How do you text so fast?', h:'You think I text slow? Time me.', sh:['Phone timer on screen.','Speed-typing close-up.','Show the finished message + your time.'], c:'Faster than your short-nail friends 😏⚡', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#typingchallenge'], cta:'Duet me with your time ⏱️', f:'Demo · timed'},
+  {id:'qa13', s:'qa', t:'Do they ever break? How do you keep them on?', h:'Do my XXL nails ever break? Here\'s the truth.', sh:['Show a fresh set (or an honest chip, if you have one).','Aftercare: cuticle oil, gloves, the no-picking rule.','Week-3 still-intact flex.'], c:'A great tech + cuticle oil + not using them as tools. Mostly 😅', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#nailcare'], cta:'Want my full aftercare routine?', f:'Talking head + demo'},
+  {id:'qa14', s:'qa', t:'How much does an XXL set cost and how long does it take?', h:'What an XXL set really costs — and how long I sit there.', sh:['Bare nails + a clock at the start.','Time-lapse at the salon.','Final reveal with price, tip and total time on screen.'], c:'Price, tip and hours — the full receipt 🧾💅', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#nailprices'], cta:'Would you pay this? Be honest 👇', f:'Breakdown · text overlays'},
+  {id:'qa15', s:'qa', t:'How do you sleep with them?', h:'How do I sleep with XXL nails? Very carefully.', sh:['Night routine: cuticle oil + silk pillowcase.','Funny "sleeping beauty" pose, hands on top of the covers.','Morning: nails intact, hair a disaster.'], c:'Silk pillowcase, hands on top, zero scratching 😴', tg:['#xxlnails','#longnails','#nailtok','#questionsiget','#nightroutine'], cta:'What should I answer next?', f:'Skit'},
+
+  // ── Nail Set Diaries ──
+  {id:'sets01', s:'sets', t:'New XXL set reveal', h:'The XXL set of my dreams just dropped.', sh:['Hands hidden under a cloth / behind your back.','The reveal — slow pan across both hands.','Tap ASMR on a glass or phone case.'], c:'New set, who dis 💅✨', tg:['#xxlnails','#longnails','#nailtok','#newnails','#nailreveal'], cta:'Rate this set 1–10', f:'Reveal'},
+  {id:'sets02', s:'sets', t:'Left hand vs. right hand — be honest', h:'My left hand vs. my right hand. Pick one.', sh:['Left hand alone — slow turn.','Right hand alone — same angle and light.','Both hands together + "left or right?" overlay.'], c:'Same set, two personalities. Left or right? 👈👉', tg:['#xxlnails','#longnails','#nailtok','#naildesign','#nailart'], cta:'Comment LEFT or RIGHT 👇', f:'Comparison'},
+  {id:'sets03', s:'sets', t:'Every finger, up close', h:'Every single finger, because the details deserve it.', sh:['Macro close-up of each finger, one by one.','Catch the shine: tilt toward the light.','Finish with a full-hand slow pan.'], c:'The details on this set 😮‍💨 Every finger is a moment.', tg:['#xxlnails','#longnails','#nailtok','#nailart','#naildetails'], cta:'Which finger is your favorite?', f:'Close-up series'},
+  {id:'sets04', s:'sets', t:'Come with me to get my XXL nails done', h:'Come with me to get my XXL nails done.', sh:['Pull up to the salon + bare-nails check.','Process highlights: shaping, length, design, gold accents.','Final reveal in natural light outside.'], c:'Appointment day is the best day 💅', tg:['#xxlnails','#longnails','#nailtok','#nailappointment','#comewithme'], cta:'Should I show the full appointment next time?', f:'Vlog'},
+  {id:'sets05', s:'sets', t:'Inspo vs. result', h:'I showed my tech this… and she gave me THIS.', sh:['Screenshot of the inspo pic on screen.','Your hands mirroring the same pose.','Side-by-side + your honest reaction.'], c:'Inspo vs. reality. Did my tech nail it? 😏', tg:['#xxlnails','#longnails','#nailtok','#nailinspo','#inspovsreality'], cta:'Did she nail it? Yes or no 👇', f:'Comparison'},
+  {id:'sets06', s:'sets', t:'XXL set breakdown — shape, length, price, time', h:'Everything about this XXL set, broken down.', sh:['Shape + length close-up with text overlay.','Design details: colors, beads, charms.','Price, tip and time on screen.'], c:'The full breakdown of this set 🧾💅', tg:['#xxlnails','#longnails','#nailtok','#nailprices','#naildesign'], cta:'What else do you want to know about this set?', f:'Breakdown · text overlays'},
+  {id:'sets07', s:'sets', t:'Fill vs. fresh set', h:'Fill or fresh set? Here\'s what I get and why.', sh:['Grown-out nails close-up.','Fill process highlights (or the soak-off for a fresh set).','Before/after side by side.'], c:'Fill vs. fresh set — when I do each 💅', tg:['#xxlnails','#longnails','#nailtok','#nailfill','#nailcare'], cta:'Team fill or team fresh set?', f:'Comparison'},
+  {id:'sets08', s:'sets', t:'Nail tech Q&A', h:'I asked my nail tech the questions you always ask me.', sh:['Ask the tech your top 3 follower questions.','B-roll of her working while she answers.','Finished set + a shout-out to the tech.'], c:'My tech answers your XXL questions 🗣️💅', tg:['#xxlnails','#longnails','#nailtok','#nailtech','#questionsiget'], cta:'What should I ask her next time?', f:'Interview'},
+  {id:'sets09', s:'sets', t:'Day 1 vs. week 3', h:'Day 1 vs. week 3 — how my XXL set actually holds up.', sh:['Day 1 clip (film it at the appointment).','Week 3 clip, same angle and light.','Side by side + honest rating.'], c:'Day 1 vs. week 3. The honest truth 👀', tg:['#xxlnails','#longnails','#nailtok','#nailcare','#growout'], cta:'Would you still wear them at week 3?', f:'Comparison'},
+  {id:'sets10', s:'sets', t:'Seasonal / holiday XXL set', h:'My holiday set is here and I\'m obsessed.', sh:['Seasonal props: candles, ornaments, festive drink.','Hands interacting with the props.','Full reveal + slow pan.'], c:'Holiday set unlocked 🎄💅 (swap for the season)', tg:['#xxlnails','#longnails','#nailtok','#holidaynails','#seasonalnails'], cta:'What theme should my next set be?', f:'Reveal'},
+  {id:'sets11', s:'sets', t:'Two hands, two vibes (mirror-swap set)', h:'Each hand is the other one\'s opposite.', sh:['Left hand: e.g. green with animal-print accents and gold beads.','Right hand: the same design with the placement reversed.','Hands together — show the swap.'], c:'Mirror-swap set — the details flip hand to hand 🐆💚 (one example design)', tg:['#xxlnails','#longnails','#nailtok','#nailart','#naildesign'], cta:'Which hand wins?', f:'Reveal · comparison'},
+  {id:'sets12', s:'sets', t:'Matching my nails to my perfume, outfit & bag', h:'When the nails, the perfume and the bag all match.', sh:['Flat lay: perfume, bag and outfit pieces.','Hand holding each item — nails next to the colors.','Full outfit check with the bag.'], c:'Everything matches and I planned it 😌💅👜', tg:['#xxlnails','#longnails','#ootd','#perfumetok','#bagtok'], cta:'Should I do this for every set?', f:'Styling'},
+  {id:'sets13', s:'sets', t:'GRWM before my nail appointment', h:'Get ready with me for my nail appointment.', sh:['GRWM at the mirror — old set visible.','Pack the inspo pics + the drive.','End on the new-set reveal.'], c:'GRWM for the most important appointment of the month 💅', tg:['#xxlnails','#grwm','#nailtok','#nailappointment','#getreadywithme'], cta:'GRWM for the appointment or the reveal — which do you want more?', f:'GRWM'},
+  {id:'sets14', s:'sets', t:'Manicure-to-OOTD transition', h:'Fresh set → full fit.', sh:['Hands-only shot of the new set.','Snap/clap transition.','Full outfit that matches the set.'], c:'The nails picked the outfit today 💅👗', tg:['#xxlnails','#longnails','#ootd','#transition','#outfitinspo'], cta:'Rate the fit and the nails',  f:'Transition'},
+  {id:'sets15', s:'sets', t:'XXL nail ASMR + jewelry styling', h:'Turn your sound on 🎧', sh:['Nail tapping on glass, a phone case, a perfume bottle.','Slow pan as you stack rings and bracelets.','Final hand pose in soft light.'], c:'Tap tap tap 💅🎧', tg:['#xxlnails','#longnails','#nailasmr','#asmr','#jewelrytok'], cta:'What should I tap next?', f:'ASMR'},
+
+  // ── Photo Dumps ──
+  {id:'dump01', s:'dumps', t:'Nail appointment photo dump', h:'Appointment day, in pictures.', sh:['Salon exterior or sign','Bare nails before','Inspo screenshot','Mid-process shot','Polish/color wall','Tech at work (with permission)','Finished set in natural light','Hand-on-steering-wheel exit shot'], c:'Caption prompt: describe the vibe of the appointment in one line + the set name. e.g. "Another set, another obsession 💅"', tg:['#xxlnails','#longnails','#nailappointment','#photodump','#nailtok'], cta:'Which slide is your favorite? 1–8 👇', f:'Photo carousel · 8 slides'},
+  {id:'dump02', s:'dumps', t:'Fresh-set detail dump', h:'Every angle of the new set.', sh:['Both hands, full set','Left hand close-up','Right hand close-up','Macro on the best detail','Side profile showing the length','Holding a coffee / perfume','Jewelry styled with the set'], c:'Caption prompt: the set name + one detail you love. e.g. "The gold beads did not have to go this hard ✨"', tg:['#xxlnails','#longnails','#nailart','#photodump','#naildesign'], cta:'Rate the set 1–10 👇', f:'Photo carousel · 7 slides'},
+  {id:'dump03', s:'dumps', t:'XXL nails in everyday life', h:'Real life, XXL nails.', sh:['Typing on the phone','Holding car keys','Grocery store / Target cart','Coffee order','Opening a door','Cooking or cleaning with gloves','Signing a receipt'], c:'Caption prompt: a funny line about doing normal things with long nails. e.g. "Proof I can, in fact, function 💅"', tg:['#xxlnails','#longnails','#longnaillife','#photodump','#dayinmylife'], cta:'What everyday task should I photograph next?', f:'Photo carousel · 7 slides'},
+  {id:'dump04', s:'dumps', t:'Nail color & design inspo', h:'Sets I\'m considering next.', sh:['Saved inspo screenshot #1','Saved inspo screenshot #2','Color swatch / polish bottles','Your past set in a similar color','Charms, beads or gold accents','Your hands next to the swatches'], c:'Caption prompt: "Help me pick my next set — 1, 2 or 3?"', tg:['#xxlnails','#nailinspo','#naildesign','#photodump','#nailtok'], cta:'Vote for my next set in the comments 👇', f:'Photo carousel · 6 slides'},
+  {id:'dump05', s:'dumps', t:'Week in my life — XXL nail edition', h:'This week, featuring the nails.', sh:['Monday coffee + nails','Work / laptop shot','Outfit of the day with hands visible','Perfume of the week','Dinner or night out','Self-care night (cuticle oil, face mask)','Weekend errand shot'], c:'Caption prompt: three words for your week + the set name. e.g. "Busy. Cute. Unbothered. 💅"', tg:['#xxlnails','#longnails','#weekinmylife','#photodump','#lifestyle'], cta:'Which day looked the best?', f:'Photo carousel · 7 slides'}
+];
+const XXL_CHECKLIST = [
+  'Cuticle oil on — nails glossy for camera',
+  'Clean, simple background',
+  'Light angled to catch the shine',
+  'Phone on tripod at hand height',
+  'Test shot: nails fully in frame',
+  'Jewelry picked to match the set',
+  'Props ready for the task (can, coins, wallet…)',
+  'Verdict / text overlay planned',
+  'Three shots: setup, attempt, reaction',
+  'Slow pan + tapping B-roll'
+];
+
+// ═══════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════
 const PILLAR_NAMES = PILLARS.map(p=>p.name);
@@ -654,6 +778,9 @@ const COLS = {
     fields:[{k:'title',l:'Video',t:'textarea',req:1},{k:'date',l:'Date',t:'date',req:1},{k:'time',l:'Time',t:'time'},{k:'pillar',l:'Pillar',t:'select',o:PILLAR_NAMES},{k:'status',l:'Status',t:'select',o:['Planned','Filmed','Posted']},{k:'notes',l:'Notes',t:'textarea'}],
     title:r=>r.title, line:r=>[fmtDate(r.date),r.time].filter(Boolean).join(' · '), chips:['pillar','status'],
     sort:(a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||''))},
+  episodes:{label:'XXL Nail Diaries episodes', noun:'episode', hidden:true,
+    fields:[{k:'title',l:'Episode title',t:'textarea',req:1},{k:'series',l:'Series',t:'select',o:XXL_SERIES.map(x=>x.name),req:1},{k:'status',l:'Progress',t:'select',o:EP_STATUSES},{k:'verdict',l:'Verdict (Can I Do It?)',t:'select',o:VERDICTS},{k:'format',l:'Format',t:'text'},{k:'hook',l:'Hook',t:'textarea'},{k:'shots',l:'Shot list (one per line)',t:'textarea'},{k:'caption',l:'Caption',t:'textarea'},{k:'tags',l:'5 hashtags',t:'text'},{k:'cta',l:'Call to action',t:'text'},{k:'nailSet',l:'Nail set (from Nail Log)',t:'select',o:()=>nailSetOptions()},{k:'notes',l:'Notes',t:'textarea'}],
+    title:r=>r.title},
   hooks:{label:'Custom hooks', noun:'hook', hidden:true,
     fields:[{k:'text',l:'Hook',t:'textarea',req:1},{k:'pillar',l:'Pillar',t:'select',o:PILLAR_NAMES}], title:r=>r.text},
   sessions:{label:'🎥 Film Sessions', sub:'Plan batch-filming days so one fresh set = several videos.', noun:'session',
@@ -722,6 +849,7 @@ const COL_KEYS = Object.keys(COLS);
 // ═══════════════════════════════════════════════
 const GROUPS = [
   {id:'home', name:'🏠 Home', panels:['dashboard','calendar']},
+  {id:'xxl', name:'💅 XXL Nail Diaries', panels:['xxl']},
   {id:'ideas', name:'💡 Ideas', panels:['pillars','generator','ideas','hooks']},
   {id:'create', name:'🎥 Create', panels:['sessions','checklist','sounds','ctas']},
   {id:'collect', name:'👜 Collections', panels:['nails','ootd','perfume','purses','hauls','beauty']},
@@ -735,6 +863,7 @@ const PANELS = {
   generator:{label:'✨ Generator', render:renderGenerator},
   hooks:{label:'🪝 Hooks', render:renderHooks},
   checklist:{label:'📋 Checklist', render:renderChecklist},
+  xxl:{label:'💅 XXL Nail Diaries', render:renderXXL},
   settings:{label:'⚙️ Settings', render:renderSettings}
 };
 COL_KEYS.forEach(k=>{ if(!COLS[k].hidden) PANELS[k]={label:COLS[k].label, render:el=>renderCollection(k,el)}; });
@@ -817,17 +946,18 @@ function recCard(col, r){
 
 // ── Add / edit form ──
 let formCtx = null;
-function openForm(col, id, defaults){
+function openForm(col, id, defaults, after){
   const c = COLS[col];
   const rec = id ? load(col).find(r=>r.id===id) : Object.assign({}, defaults||{});
   if(!rec) return;
-  formCtx = {col, id, photos:{}};
+  formCtx = {col, id, photos:{}, after};
   const fieldHTML = c.fields.map(f=>{
     const v = rec[f.k]; const nm = `name="${f.k}"`;
     let input;
     switch(f.t){
       case 'textarea': input=`<textarea ${nm}>${esc(v)}</textarea>`; break;
-      case 'select': input=`<select ${nm}><option value="">—</option>${f.o.map(o=>`<option ${v===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`; break;
+      case 'select': { const opts = typeof f.o==='function' ? f.o() : f.o;
+        input=`<select ${nm}><option value="">—</option>${opts.map(o=>{ const [ov,ol]=Array.isArray(o)?o:[o,o]; return `<option value="${esc(ov)}" ${v===ov?'selected':''}>${esc(ol)}</option>`; }).join('')}</select>`; break; }
       case 'rating': input=`<select ${nm}><option value="">—</option>${[5,4,3,2,1].map(n=>`<option value="${n}" ${+v===n?'selected':''}>${'★'.repeat(n)}</option>`).join('')}</select>`; break;
       case 'check': return `<div class="field"><label class="check"><input type="checkbox" ${nm} ${v?'checked':''}> ${esc(f.l)}</label></div>`;
       case 'photo':
@@ -850,7 +980,7 @@ function photoInner(k){
 }
 function closeForm(){ $('#modal-root').innerHTML=''; formCtx=null; document.body.style.overflow=''; }
 function saveForm(){
-  const {col,id} = formCtx; const c = COLS[col];
+  const {col,id,after} = formCtx; const c = COLS[col];
   const form = $('#rec-form');
   const arr = load(col);
   const rec = id ? Object.assign({}, arr.find(r=>r.id===id)) : {id:uid(), c:Date.now()};
@@ -867,7 +997,9 @@ function saveForm(){
   if(i>=0) arr[i]=r; else arr.push(r);
   if(!save(col,arr)) return;
   pushRecord(col,r);
-  closeForm(); rerender();
+  closeForm();
+  if(after) after(r);
+  rerender();
   toast(id?'Saved ✓':'Added ✓');
 }
 function compressImage(file, cb){
@@ -961,6 +1093,7 @@ function renderDashboard(el){
       ${picks.map(k=>`<div class="card"><div class="pick-label">${k.p.emoji} ${esc(k.label)}</div><div class="pick-idea">${esc(k.p.ideas[k.i])}</div>
         <div class="row"><button class="btn sm" data-act="save-idea" data-p="${k.p.id}" data-i="${k.i}">⭐ Save</button><button class="btn sm" data-act="sched" data-p="${k.p.id}" data-i="${k.i}">📅 Schedule</button></div></div>`).join('')}
       <div class="card">${nailHTML}</div>
+      ${xxlDashCard()}
     </div>
     <h3 class="sec">Next 7 days <span class="spacer"></span><button class="btn sm" data-act="panel" data-id="calendar">Calendar →</button></h3>
     ${week.length ? week.map(r=>recCard('posts',r)).join('') : `<div class="empty">Nothing scheduled this week. <br><br><button class="btn sm" data-act="panel" data-id="generator">✨ Generate an idea</button></div>`}
@@ -1084,12 +1217,147 @@ function renderHooks(el){
 // ═══════════════════════════════════════════════
 // CHECKLIST (device-only)
 // ═══════════════════════════════════════════════
-function getChecklist(){ const v=lsGet('trishbad__checklist',null); return Array.isArray(v)?v:DEFAULT_CHECKLIST.map(t=>({t,d:false})); }
+const CHECKLISTS = {film:{key:'trishbad__checklist', def:DEFAULT_CHECKLIST}, xxl:{key:'trishbad__xxlchecklist', def:XXL_CHECKLIST}};
+function getChecklist(name){ const c=CHECKLISTS[name||'film']; const v=lsGet(c.key,null); return Array.isArray(v)?v:c.def.map(t=>({t,d:false})); }
+function setChecklist(name, list){ lsSet(CHECKLISTS[name||'film'].key, list); }
+function checklistHTML(name){
+  const list = getChecklist(name);
+  return `<div class="card">${list.map((x,i)=>`<label class="ck ${x.d?'done':''}"><input type="checkbox" data-input="ck" data-list="${name}" data-i="${i}" ${x.d?'checked':''}><span class="tx">${esc(x.t)}</span><button class="icon-btn" data-act="ckdel" data-list="${name}" data-i="${i}">✕</button></label>`).join('')}</div>
+    <div class="toolbar" style="margin-top:12px"><input id="ck-new-${name}" data-cknew="${name}" placeholder="Add an item…"><button class="btn" data-act="ckadd" data-list="${name}">Add</button><button class="btn ghost" data-act="ckreset" data-list="${name}">Uncheck all</button></div>`;
+}
 function renderChecklist(el){
-  const list = getChecklist(), done = list.filter(x=>x.d).length;
-  el.innerHTML = `<h2 class="ptitle">📋 Before-I-Film Checklist</h2><div class="psub">${done}/${list.length} done</div>
-    <div class="card">${list.map((x,i)=>`<label class="ck ${x.d?'done':''}"><input type="checkbox" data-input="ck" data-i="${i}" ${x.d?'checked':''}><span class="tx">${esc(x.t)}</span><button class="icon-btn" data-act="ckdel" data-i="${i}">✕</button></label>`).join('')}</div>
-    <div class="toolbar" style="margin-top:12px"><input id="ck-new" placeholder="Add an item…"><button class="btn" data-act="ckadd">Add</button><button class="btn ghost" data-act="ckreset">Uncheck all</button></div>`;
+  const list = getChecklist('film'), done = list.filter(x=>x.d).length;
+  el.innerHTML = `<h2 class="ptitle">📋 Before-I-Film Checklist</h2><div class="psub">${done}/${list.length} done</div>${checklistHTML('film')}`;
+}
+
+// ═══════════════════════════════════════════════
+// THE XXL NAIL DIARIES — hub
+// ═══════════════════════════════════════════════
+let xxlSeries = '', xxlStatus = '', xxlQ = '';
+const xxlOpen = new Set();
+const seriesById = id => XXL_SERIES.find(x=>x.id===id);
+const seriesByName = n => XXL_SERIES.find(x=>x.name===n) || {id:'', name:n||'Custom', short:n||'Custom', emoji:'💅'};
+function nailSetOptions(){
+  return load('nails').filter(r=>r.date).sort(COLS.nails.sort).map(r=>[r.id, fmtDate(r.date)+' · '+(r.color||r.type||'Nail set')]);
+}
+function epFromTemplate(e){
+  return {ep:e.id, series:seriesById(e.s).name, title:e.t, hook:e.h, shots:e.sh.join('\n'), caption:e.c, tags:e.tg.join(' '), cta:e.cta, format:e.f};
+}
+// Every episode to show: built-in templates merged with your progress, plus custom ones.
+// If two devices both started the same template before syncing, the newest edit wins.
+function xxlEpisodes(){
+  const tracked = load('episodes'), byEp = {};
+  tracked.forEach(r=>{ if(r.ep && (!byEp[r.ep] || (r.u||0)>(byEp[r.ep].u||0))) byEp[r.ep]=r; });
+  const out = XXL_EPISODES.map(e=>{
+    const r = byEp[e.id];
+    return r ? Object.assign(epFromTemplate(e), r, {key:r.id, tracked:true}) : Object.assign(epFromTemplate(e), {key:'b:'+e.id, tracked:false, status:''});
+  });
+  tracked.forEach(r=>{ if(!r.ep || !XXL_EPISODES.some(e=>e.id===r.ep)) out.push(Object.assign({}, r, {key:r.id, tracked:true, custom:true})); });
+  return out;
+}
+// Turn a built-in template into a tracked record the first time you act on it.
+function ensureEpisode(key){
+  if(!key.startsWith('b:')) return key;
+  const e = XXL_EPISODES.find(x=>x.id===key.slice(2)); if(!e) return null;
+  const existing = load('episodes').filter(r=>r.ep===e.id).sort((a,b)=>(b.u||0)-(a.u||0))[0];
+  if(existing) return existing.id;
+  return addRec('episodes', Object.assign(epFromTemplate(e), {id:'ep-'+e.id+'-'+Date.now().toString(36), status:'Idea'})).id;
+}
+function updateEpisode(id, patch){
+  const arr = load('episodes'), i = arr.findIndex(r=>r.id===id); if(i<0) return;
+  const r = norm(Object.assign({}, arr[i], patch, {u:Date.now()}));
+  arr[i] = r; save('episodes', arr); pushRecord('episodes', r);
+}
+function epCaption(ep){ return [ep.caption, ep.cta, ep.tags].filter(Boolean).join('\n\n'); }
+function xxlDashCard(){
+  const eps = xxlEpisodes(), posted = eps.filter(e=>e.status==='Posted').length;
+  const order = ['Edited','Filmed','Scripted','Scheduled','Idea'];
+  let next = null;
+  for(const st of order){ next = eps.find(e=>e.status===st); if(next) break; }
+  if(!next) next = eps.find(e=>!e.status);
+  return `<div class="card"><div class="pick-label">💅 The XXL Nail Diaries</div>
+    <div class="pick-idea">${next?esc(next.title):'Every episode posted. Iconic.'}</div>
+    <div class="small muted" style="margin-bottom:10px">${next&&next.status?'Up next · '+esc(next.status):'Up next'} · ${posted}/${eps.length} posted</div>
+    <button class="btn sm" data-act="panel" data-id="xxl">Open the Diaries →</button></div>`;
+}
+function renderXXL(el){
+  const all = xxlEpisodes();
+  const counts = EP_STATUSES.map(st=>all.filter(e=>e.status===st).length);
+  let list = all;
+  if(xxlSeries) list = list.filter(e=>seriesByName(e.series).id===xxlSeries);
+  if(xxlStatus) list = list.filter(e=>xxlStatus==='new' ? !e.status : e.status===xxlStatus);
+  el.innerHTML = `
+    <div class="xxl-hero"><div class="eyebrow">✦ Series ✦</div><h2>The XXL Nail Diaries</h2>
+      <p>Luxe XXL sets + funny, real-life proof that I can (mostly) do it all.</p>
+      <div class="xxl-prog">${EP_STATUSES.map((st,i)=>`<div><b>${counts[i]}</b><span>${st}</span></div>`).join('')}</div></div>
+    <div class="seg">${[['','All'],...XXL_SERIES.map(x=>[x.id,x.emoji+' '+x.short])].map(([v,l])=>`<button class="${xxlSeries===v?'active':''}" data-act="xxlseries" data-id="${v}">${esc(l)}</button>`).join('')}</div>
+    <div class="toolbar">
+      <input type="search" placeholder="Search episodes, hashtags…" value="${esc(xxlQ)}" data-input="xxlq">
+      <select data-input="xxlstatus"><option value="">Any progress</option><option value="new" ${xxlStatus==='new'?'selected':''}>Not started</option>${EP_STATUSES.map(st=>`<option ${xxlStatus===st?'selected':''}>${st}</option>`).join('')}</select>
+      <button class="btn primary" data-act="xxladd">+ Episode</button>
+    </div>
+    <div id="xxl-list"></div>
+    <h3 class="sec">🎬 XXL filming checklist</h3>
+    ${checklistHTML('xxl')}`;
+  renderXXLList(list);
+}
+function renderXXLList(list){
+  const box = $('#xxl-list'); if(!box) return;
+  const q = xxlQ.trim().toLowerCase();
+  if(q) list = list.filter(e=>[e.title,e.hook,e.caption,e.tags,e.series,e.format,e.notes].some(v=>typeof v==='string' && v.toLowerCase().includes(q)));
+  const nails = {}; load('nails').forEach(r=>nails[r.id]=r);
+  box.innerHTML = list.length ? list.map(e=>epCard(e, nails)).join('') : '<div class="empty">No episodes match.</div>';
+}
+function epCard(e, nails){
+  const ser = seriesByName(e.series), k = esc(e.key);
+  const shots = String(e.shots||'').split('\n').map(x=>x.trim()).filter(Boolean);
+  const set = e.nailSet && nails[e.nailSet];
+  const vClass = e.verdict ? 'verdict-'+e.verdict.split(' ')[0] : '';
+  return `<details class="ep" data-key="${k}" ${xxlOpen.has(e.key)?'open':''}>
+    <summary>
+      <div class="ser">${ser.emoji} ${esc(ser.name)}${e.custom?' · mine':''}</div>
+      <div class="et">${esc(e.title)}</div>
+      ${e.hook?`<div class="eh">“${esc(e.hook)}”</div>`:''}
+      <div class="chips">
+        <span class="chip ${e.status?chipClass(e.status==='Edited'?'Filmed':e.status==='Scheduled'?'Planned':e.status):''}">${e.status?esc(e.status):'Not started'}</span>
+        ${e.verdict?`<span class="chip ${vClass}">${esc(e.verdict)}</span>`:''}
+        ${e.format?`<span class="chip">${esc(e.format)}</span>`:''}
+        ${set?`<span class="chip">💅 ${esc(set.color||set.type||'Nail set')}</span>`:''}
+      </div>
+    </summary>
+    <div class="ebody">
+      <div class="ctrls">
+        <div><label>Progress</label><select data-input="epstatus" data-key="${k}"><option value="">Not started</option>${EP_STATUSES.map(st=>`<option ${e.status===st?'selected':''}>${st}</option>`).join('')}</select></div>
+        ${ser.id==='can'?`<div><label>Verdict</label><select data-input="epverdict" data-key="${k}"><option value="">—</option>${VERDICTS.map(v=>`<option ${e.verdict===v?'selected':''}>${v}</option>`).join('')}</select></div>`:
+          `<div><label>Nail set</label><select data-input="epnail" data-key="${k}"><option value="">—</option>${nailSetOptions().map(([v,l])=>`<option value="${esc(v)}" ${e.nailSet===v?'selected':''}>${esc(l)}</option>`).join('')}</select></div>`}
+      </div>
+      ${ser.id==='can'?`<div class="ctrls" style="grid-template-columns:1fr"><div><label>Nail set</label><select data-input="epnail" data-key="${k}"><option value="">—</option>${nailSetOptions().map(([v,l])=>`<option value="${esc(v)}" ${e.nailSet===v?'selected':''}>${esc(l)}</option>`).join('')}</select></div></div>`:''}
+      ${shots.length?`<div class="lbl">${ser.id==='dumps'?'Slides':'Shot list'}</div><ol>${shots.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`:''}
+      ${e.caption?`<div class="lbl">Caption</div><div class="cap">${esc(e.caption)}</div>`:''}
+      ${e.cta?`<div class="lbl">CTA</div><div class="cap">${esc(e.cta)}</div>`:''}
+      ${e.tags?`<div class="lbl">Hashtags</div><div class="tags">${esc(e.tags)}</div>`:''}
+      ${e.notes?`<div class="lbl">Notes</div><div class="cap">${esc(e.notes)}</div>`:''}
+      ${e.date?`<div class="small muted" style="margin-top:8px">📅 Scheduled for ${fmtDate(e.date)}</div>`:''}
+      <div class="row" style="margin-top:14px">
+        <button class="btn sm primary" data-act="epcopy" data-key="${k}">📋 Copy caption</button>
+        <button class="btn sm" data-act="epsave" data-key="${k}">⭐ Idea Bank</button>
+        <button class="btn sm" data-act="epsched" data-key="${k}">📅 Schedule</button>
+        <button class="btn sm ghost" data-act="epedit" data-key="${k}">✏️ Edit</button>
+        ${e.tracked?`<button class="btn sm ghost" data-act="epreset" data-key="${k}">${e.custom?'🗑️ Delete':'↺ Reset'}</button>`:''}
+      </div>
+    </div>
+  </details>`;
+}
+function epByKey(key){ return xxlEpisodes().find(e=>e.key===key); }
+function xxlRefresh(){ if(curPanel==='xxl'){ const y=window.scrollY; PANELS.xxl.render($('#panel')); window.scrollTo(0,y); } }
+function epReset(key){
+  const e = epByKey(key); if(!e||!e.tracked) return;
+  if(!confirm(e.custom?'Delete this episode?':'Reset this episode\'s progress and edits?')) return;
+  const ids = e.custom ? [e.id] : load('episodes').filter(r=>r.ep===e.ep).map(r=>r.id);
+  save('episodes', load('episodes').filter(r=>!ids.includes(r.id)));
+  ids.forEach(id=>deleteRemote('episodes', id));
+  xxlOpen.delete(key); if(!e.custom) xxlOpen.add('b:'+e.ep);
+  xxlRefresh(); toast(e.custom?'Deleted':'Reset ✓');
 }
 
 // ═══════════════════════════════════════════════
@@ -1100,7 +1368,7 @@ function renderSettings(el){
   el.innerHTML = `<h2 class="ptitle">⚙️ Settings</h2><div class="psub">Trish Badd Content Studio</div>
     <div class="card"><div class="field"><label>Appearance</label><select data-input="theme">${[['auto','Match my phone'],['light','Light (ivory)'],['dark','Dark (black & gold)']].map(([v,l])=>`<option value="${v}" ${theme===v?'selected':''}>${l}</option>`).join('')}</select></div>
     <div class="field"><label>Days between nail appointments</label><input type="number" inputmode="numeric" min="5" max="60" value="${+lsGet('trishbad__fillDays',21)||21}" data-input="filldays"></div></div>
-    <div class="card"><b>Sync</b><div class="small muted" style="margin:4px 0 10px">Everything you add syncs to your other devices automatically (the before-filming checklist stays on this phone).</div><button class="btn" data-act="syncnow">🔄 Sync now</button></div>
+    <div class="card"><b>Sync</b><div class="small muted" style="margin:4px 0 10px">Your entries sync to your other devices whenever you're online — the dot at the top shows green when synced and grey when it couldn't reach the cloud (your entries stay saved on this phone and sync next time). The filming checklists stay on this phone.</div><button class="btn" data-act="syncnow">🔄 Sync now</button></div>
     <div class="card"><b>Backup</b><div class="small muted" style="margin:4px 0 10px">Download a copy of everything, or restore from one.</div>
       <div class="row"><button class="btn" data-act="export">⬇️ Download backup</button><label class="btn">⬆️ Restore backup<input type="file" accept="application/json,.json" data-input="import" style="display:none"></label></div></div>
     <div class="card"><b>Other channel</b><div class="small muted" style="margin:4px 0 10px">Jump over to your BookTok app.</div><a class="btn" href="../">📚 Open Titles by Trish</a></div>`;
@@ -1286,9 +1554,27 @@ document.addEventListener('click', e=>{
     case 'calday': calSel=d.id; rerender(); break;
     case 'calnav': calMonth=new Date(calMonth.getFullYear(), calMonth.getMonth()+(+d.id), 1); rerender(); break;
     case 'addpost': openForm('posts', null, {date:calSel, status:'Planned'}); break;
-    case 'ckadd': { const v=$('#ck-new').value.trim(); if(!v) return; const l=getChecklist(); l.push({t:v,d:false}); lsSet('trishbad__checklist',l); rerender(); break; }
-    case 'ckdel': { e.preventDefault(); const l=getChecklist(); l.splice(+d.i,1); lsSet('trishbad__checklist',l); rerender(); break; }
-    case 'ckreset': { lsSet('trishbad__checklist', getChecklist().map(x=>({t:x.t,d:false}))); rerender(); break; }
+    case 'ckadd': { const inp=$('#ck-new-'+d.list), v=inp?inp.value.trim():''; if(!v) return; const l=getChecklist(d.list); l.push({t:v,d:false}); setChecklist(d.list,l); xxlRefresh(); if(curPanel!=='xxl') rerender(); break; }
+    case 'ckdel': { e.preventDefault(); const l=getChecklist(d.list); l.splice(+d.i,1); setChecklist(d.list,l); xxlRefresh(); if(curPanel!=='xxl') rerender(); break; }
+    case 'ckreset': { setChecklist(d.list, getChecklist(d.list).map(x=>({t:x.t,d:false}))); xxlRefresh(); if(curPanel!=='xxl') rerender(); break; }
+    case 'xxlseries': xxlSeries=d.id; rerender(); break;
+    case 'xxladd': openForm('episodes', null, {status:'Idea', series:xxlSeries?seriesById(xxlSeries).name:XXL_SERIES[0].name}, r=>{ xxlOpen.add(r.id); }); break;
+    case 'epcopy': { const ep=epByKey(d.key); if(ep) copyText(epCaption(ep)); break; }
+    case 'epsave': { const ep=epByKey(d.key); if(ep) saveIdea(ep.title, 'Nails', ep.hook); break; }
+    case 'epsched': {
+      const ep=epByKey(d.key); if(!ep) break;
+      openForm('posts', null, {title:'[XXL Nail Diaries] '+ep.title, pillar:'Nails', date:todayStr(), status:'Planned', notes:[ep.hook&&('Hook: '+ep.hook), ep.caption].filter(Boolean).join('\n')}, post=>{
+        const id = ensureEpisode(d.key); if(!id) return;
+        const cur = (load('episodes').find(r=>r.id===id)||{}).status;
+        const patch = {date:post.date};
+        if(EP_STATUSES.indexOf(cur) < EP_STATUSES.indexOf('Scheduled')) patch.status='Scheduled';
+        updateEpisode(id, patch);
+        xxlOpen.delete(d.key); xxlOpen.add(id);
+      });
+      break;
+    }
+    case 'epedit': { const id=ensureEpisode(d.key); if(!id) break; xxlOpen.delete(d.key); xxlOpen.add(id); openForm('episodes', id); break; }
+    case 'epreset': epReset(d.key); break;
     case 'syncnow': pullAll(); toast('Syncing…'); break;
     case 'export': exportBackup(); break;
   }
@@ -1297,6 +1583,7 @@ let qT;
 document.addEventListener('input', e=>{
   const t = e.target, k = t.dataset && t.dataset.input; if(!k) return;
   if(k==='colq'){ colState[t.dataset.col].q=t.value; clearTimeout(qT); qT=setTimeout(()=>renderColList(t.dataset.col),150); }
+  if(k==='xxlq'){ xxlQ=t.value; clearTimeout(qT); qT=setTimeout(()=>{ const all=xxlEpisodes(); let l=all; if(xxlSeries) l=l.filter(e=>seriesByName(e.series).id===xxlSeries); if(xxlStatus) l=l.filter(e=>xxlStatus==='new'?!e.status:e.status===xxlStatus); renderXXLList(l); },150); }
 });
 document.addEventListener('change', e=>{
   const t = e.target, k = t.dataset && t.dataset.input; if(!k) return;
@@ -1304,7 +1591,17 @@ document.addEventListener('change', e=>{
     case 'colf': colState[t.dataset.col].f[t.dataset.k]=t.value; renderColList(t.dataset.col); break;
     case 'genp': genPillar=t.value; break;
     case 'hookf': hookFilter=t.value; rerender(); break;
-    case 'ck': { const l=getChecklist(); l[+t.dataset.i].d=t.checked; lsSet('trishbad__checklist',l); rerender(); break; }
+    case 'ck': { const n=t.dataset.list, l=getChecklist(n); l[+t.dataset.i].d=t.checked; setChecklist(n,l); if(curPanel==='xxl') xxlRefresh(); else rerender(); break; }
+    case 'xxlstatus': xxlStatus=t.value; rerender(); break;
+    case 'epstatus': case 'epverdict': case 'epnail': {
+      const key=t.dataset.key, field={epstatus:'status',epverdict:'verdict',epnail:'nailSet'}[k];
+      if(k==='epstatus' && !t.value && key.startsWith('b:')) break;
+      const id=ensureEpisode(key); if(!id) break;
+      updateEpisode(id, {[field]:t.value});
+      xxlOpen.delete(key); xxlOpen.add(id);
+      xxlRefresh(); toast('Saved ✓');
+      break;
+    }
     case 'theme': lsSet('trishbad__theme',t.value); applyTheme(); break;
     case 'filldays': lsSet('trishbad__fillDays', Math.max(1,+t.value||21)); toast('Saved ✓'); break;
     case 'photo': { const f=t.files&&t.files[0]; if(!f) return; compressImage(f, url=>{ formCtx.photos[t.dataset.k]=url; $('#ph-'+t.dataset.k).innerHTML=photoInner(t.dataset.k); }); break; }
@@ -1313,8 +1610,12 @@ document.addEventListener('change', e=>{
 });
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape' && formCtx) closeForm();
-  if(e.key==='Enter' && e.target.id==='ck-new'){ e.preventDefault(); document.querySelector('[data-act="ckadd"]').click(); }
+  if(e.key==='Enter' && e.target.dataset && e.target.dataset.cknew){ e.preventDefault(); const b=document.querySelector(`[data-act="ckadd"][data-list="${e.target.dataset.cknew}"]`); if(b) b.click(); }
 });
+document.addEventListener('toggle', e=>{
+  const el = e.target; if(!el.classList || !el.classList.contains('ep')) return;
+  if(el.open) xxlOpen.add(el.dataset.key); else xxlOpen.delete(el.dataset.key);
+}, true);
 document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') pullAll(); });
 if(window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
 
