@@ -1,4 +1,4 @@
-const CACHE = 'trishbad-v1';
+const CACHE = 'trishbad-v2';
 const BASE = '/Titles-by-Trish-/trish-badd/';
 const STATIC = [
   BASE + 'manifest.json',
@@ -25,12 +25,19 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   // Never cache cloud sync traffic
   if (url.origin !== self.location.origin) return;
-  // Always fetch HTML fresh so updates show up right away
-  const isHtml = url.pathname.endsWith('.html')
+  // Always fetch HTML and data (like weekly-ideas.json) fresh so updates show up right away;
+  // fall back to the last saved copy when offline
+  const isFresh = url.pathname.endsWith('.html')
+    || url.pathname.endsWith('.json')
     || url.pathname.endsWith('/')
     || (e.request.headers.get('accept') || '').includes('text/html');
-  if (isHtml) {
-    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+  if (isFresh) {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (res.ok) { const clone = res.clone(); caches.open(CACHE).then(c => c.put(e.request, clone)); }
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
     return;
   }
   e.respondWith(

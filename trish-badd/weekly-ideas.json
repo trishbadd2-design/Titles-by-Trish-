@@ -1,0 +1,59 @@
+{
+  "about": "Fresh XXL Nail Diaries ideas, three added every week. Newest week last. s = series (can, qa, sets, dumps); t = title; h = hook; sh = shot list or slides; c = caption; tg = 5 hashtags; cta = call to action; f = format.",
+  "weeks": [
+    {
+      "week": "2026-11-02",
+      "ideas": [
+        {
+          "id": "w20261102-1",
+          "s": "can",
+          "t": "Can I peel a clementine with XXL nails?",
+          "h": "Clementine season vs. my XXL nails. Somebody's losing.",
+          "sh": [
+            "A clementine on a clean counter, gold rings on, nails tapping the peel. Ask: \"Can I do it?\"",
+            "The attempt: one real-time close-up, going for a single long spiral of peel.",
+            "Verdict + hand a slice to the camera — Easy / Takes Practice / Not Happening."
+          ],
+          "c": "Clementine vs. XXL nails 🍊💅 Verdict: ___",
+          "tg": ["#xxlnails", "#longnails", "#nailtok", "#canidoit", "#clementine"],
+          "cta": "What should I peel next? Pomegranate is NOT an option 👇",
+          "f": "Challenge · 3 shots + verdict"
+        },
+        {
+          "id": "w20261102-2",
+          "s": "qa",
+          "t": "Do you ever accidentally scratch people?",
+          "h": "The question I get every single time I go in for a hug.",
+          "sh": [
+            "Skit: go in for a hug with a friend, hands hovering dramatically, palms only.",
+            "Close-up: the knuckle-scratch and pads-only tuck-your-hair technique.",
+            "Talk to camera: the house rules (pads only, nails pointed out, hugs given with care)."
+          ],
+          "c": "Hugs are given with ✨care✨ Pads only, nails pointed out 💅",
+          "tg": ["#xxlnails", "#longnails", "#nailtok", "#questionsiget", "#longnailproblems"],
+          "cta": "Tag the friend who's scared to hug me 😂",
+          "f": "Skit + talking head"
+        },
+        {
+          "id": "w20261102-3",
+          "s": "dumps",
+          "t": "Holiday season, XXL nail edition",
+          "h": "Holiday season but make it XXL.",
+          "sh": [
+            "Holding a festive coffee cup",
+            "Curling gift ribbon with a nail",
+            "Lighting a candle",
+            "Sweater sleeve + nails close-up",
+            "Ornament or twinkle-light close-up",
+            "Shopping bags in hand",
+            "Final: both hands framing a wrapped gift"
+          ],
+          "c": "Caption prompt: rate your holiday energy in one line + the set name. e.g. \"Holiday mode: activated. Nails: XXL. 🎄💅\"",
+          "tg": ["#xxlnails", "#holidaynails", "#photodump", "#nailtok", "#holidayseason"],
+          "cta": "Which slide is the most \"me\"? 1–7 👇",
+          "f": "Photo carousel · 7 slides"
+        }
+      ]
+    }
+  ]
+}

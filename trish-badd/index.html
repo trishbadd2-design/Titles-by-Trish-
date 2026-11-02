@@ -1235,30 +1235,56 @@ function renderChecklist(el){
 // ═══════════════════════════════════════════════
 let xxlSeries = '', xxlStatus = '', xxlQ = '';
 const xxlOpen = new Set();
+// Fresh ideas added every week to weekly-ideas.json (same shape as XXL_EPISODES,
+// plus wk = the week they were added). Cached on the phone for offline use.
+let WEEKLY_EPISODES = [], WEEKLY_LATEST = '';
+const xxlTemplates = () => XXL_EPISODES.concat(WEEKLY_EPISODES);
+function setWeekly(data){
+  const valid = e => e && typeof e.id==='string' && XXL_SERIES.some(x=>x.id===e.s) && typeof e.t==='string' && Array.isArray(e.sh) && Array.isArray(e.tg);
+  const eps = [];
+  ((data&&data.weeks)||[]).forEach(w=>{ if(w && typeof w.week==='string') (w.ideas||[]).forEach(e=>{ if(valid(e) && !XXL_EPISODES.some(b=>b.id===e.id)) eps.push(Object.assign({}, e, {wk:w.week, h:e.h||'', c:e.c||'', cta:e.cta||'', f:e.f||''})); }); });
+  WEEKLY_EPISODES = eps;
+  WEEKLY_LATEST = eps.reduce((m,e)=>e.wk>m?e.wk:m, '');
+}
+function loadWeekly(){
+  setWeekly(lsGet('trishbad__weekly', null));
+  fetch('weekly-ideas.json', {cache:'no-store'})
+    .then(r=>r.ok?r.json():Promise.reject())
+    .then(data=>{ const before=WEEKLY_EPISODES.length+WEEKLY_LATEST; setWeekly(data); lsSet('trishbad__weekly', data); if(WEEKLY_EPISODES.length+WEEKLY_LATEST!==before && (curPanel==='xxl'||curPanel==='dashboard')) softRender(); })
+    .catch(()=>{});
+}
+function xxlFilter(list){
+  if(xxlSeries==='week') list = list.filter(e=>e.wk && e.wk===WEEKLY_LATEST);
+  else if(xxlSeries) list = list.filter(e=>seriesByName(e.series).id===xxlSeries);
+  if(xxlStatus) list = list.filter(e=>xxlStatus==='new' ? !e.status : e.status===xxlStatus);
+  return list;
+}
 const seriesById = id => XXL_SERIES.find(x=>x.id===id);
 const seriesByName = n => XXL_SERIES.find(x=>x.name===n) || {id:'', name:n||'Custom', short:n||'Custom', emoji:'💅'};
 function nailSetOptions(){
   return load('nails').filter(r=>r.date).sort(COLS.nails.sort).map(r=>[r.id, fmtDate(r.date)+' · '+(r.color||r.type||'Nail set')]);
 }
 function epFromTemplate(e){
-  return {ep:e.id, series:seriesById(e.s).name, title:e.t, hook:e.h, shots:e.sh.join('\n'), caption:e.c, tags:e.tg.join(' '), cta:e.cta, format:e.f};
+  return {ep:e.id, wk:e.wk||'', series:seriesById(e.s).name, title:e.t, hook:e.h, shots:e.sh.join('\n'), caption:e.c, tags:e.tg.join(' '), cta:e.cta, format:e.f};
 }
 // Every episode to show: built-in templates merged with your progress, plus custom ones.
 // If two devices both started the same template before syncing, the newest edit wins.
 function xxlEpisodes(){
   const tracked = load('episodes'), byEp = {};
   tracked.forEach(r=>{ if(r.ep && (!byEp[r.ep] || (r.u||0)>(byEp[r.ep].u||0))) byEp[r.ep]=r; });
-  const out = XXL_EPISODES.map(e=>{
+  const out = xxlTemplates().map(e=>{
     const r = byEp[e.id];
-    return r ? Object.assign(epFromTemplate(e), r, {key:r.id, tracked:true}) : Object.assign(epFromTemplate(e), {key:'b:'+e.id, tracked:false, status:''});
+    return r ? Object.assign(epFromTemplate(e), r, {wk:e.wk||'', key:r.id, tracked:true}) : Object.assign(epFromTemplate(e), {key:'b:'+e.id, tracked:false, status:''});
   });
-  tracked.forEach(r=>{ if(!r.ep || !XXL_EPISODES.some(e=>e.id===r.ep)) out.push(Object.assign({}, r, {key:r.id, tracked:true, custom:true})); });
-  return out;
+  const tpl = xxlTemplates();
+  tracked.forEach(r=>{ if(!r.ep || !tpl.some(e=>e.id===r.ep)) out.push(Object.assign({}, r, {key:r.id, tracked:true, custom:true})); });
+  // This week's fresh ideas first
+  return out.filter(e=>e.wk&&e.wk===WEEKLY_LATEST).concat(out.filter(e=>!(e.wk&&e.wk===WEEKLY_LATEST)));
 }
 // Turn a built-in template into a tracked record the first time you act on it.
 function ensureEpisode(key){
   if(!key.startsWith('b:')) return key;
-  const e = XXL_EPISODES.find(x=>x.id===key.slice(2)); if(!e) return null;
+  const e = xxlTemplates().find(x=>x.id===key.slice(2)); if(!e) return null;
   const existing = load('episodes').filter(r=>r.ep===e.id).sort((a,b)=>(b.u||0)-(a.u||0))[0];
   if(existing) return existing.id;
   return addRec('episodes', Object.assign(epFromTemplate(e), {id:'ep-'+e.id+'-'+Date.now().toString(36), status:'Idea'})).id;
@@ -1271,6 +1297,7 @@ function updateEpisode(id, patch){
 function epCaption(ep){ return [ep.caption, ep.cta, ep.tags].filter(Boolean).join('\n\n'); }
 function xxlDashCard(){
   const eps = xxlEpisodes(), posted = eps.filter(e=>e.status==='Posted').length;
+  const fresh = eps.filter(e=>e.wk && e.wk===WEEKLY_LATEST && !e.status).length;
   const order = ['Edited','Filmed','Scripted','Scheduled','Idea'];
   let next = null;
   for(const st of order){ next = eps.find(e=>e.status===st); if(next) break; }
@@ -1278,19 +1305,19 @@ function xxlDashCard(){
   return `<div class="card"><div class="pick-label">💅 The XXL Nail Diaries</div>
     <div class="pick-idea">${next?esc(next.title):'Every episode posted. Iconic.'}</div>
     <div class="small muted" style="margin-bottom:10px">${next&&next.status?'Up next · '+esc(next.status):'Up next'} · ${posted}/${eps.length} posted</div>
-    <button class="btn sm" data-act="panel" data-id="xxl">Open the Diaries →</button></div>`;
+    ${fresh?`<div class="small" style="margin-bottom:10px">✨ <b>${fresh} fresh idea${fresh===1?'':'s'}</b> added this week</div>`:''}
+    <button class="btn sm" data-act="${fresh?'xxlweek':'panel'}" data-id="xxl">${fresh?'See this week\'s ideas →':'Open the Diaries →'}</button></div>`;
 }
 function renderXXL(el){
   const all = xxlEpisodes();
   const counts = EP_STATUSES.map(st=>all.filter(e=>e.status===st).length);
   let list = all;
-  if(xxlSeries) list = list.filter(e=>seriesByName(e.series).id===xxlSeries);
-  if(xxlStatus) list = list.filter(e=>xxlStatus==='new' ? !e.status : e.status===xxlStatus);
+  list = xxlFilter(list);
   el.innerHTML = `
     <div class="xxl-hero"><div class="eyebrow">✦ Series ✦</div><h2>The XXL Nail Diaries</h2>
       <p>Luxe XXL sets + funny, real-life proof that I can (mostly) do it all.</p>
       <div class="xxl-prog">${EP_STATUSES.map((st,i)=>`<div><b>${counts[i]}</b><span>${st}</span></div>`).join('')}</div></div>
-    <div class="seg">${[['','All'],...XXL_SERIES.map(x=>[x.id,x.emoji+' '+x.short])].map(([v,l])=>`<button class="${xxlSeries===v?'active':''}" data-act="xxlseries" data-id="${v}">${esc(l)}</button>`).join('')}</div>
+    <div class="seg">${[['','All'],...(WEEKLY_LATEST?[['week','✨ New This Week']]:[]),...XXL_SERIES.map(x=>[x.id,x.emoji+' '+x.short])].map(([v,l])=>`<button class="${xxlSeries===v?'active':''}" data-act="xxlseries" data-id="${v}">${esc(l)}</button>`).join('')}</div>
     <div class="toolbar">
       <input type="search" placeholder="Search episodes, hashtags…" value="${esc(xxlQ)}" data-input="xxlq">
       <select data-input="xxlstatus"><option value="">Any progress</option><option value="new" ${xxlStatus==='new'?'selected':''}>Not started</option>${EP_STATUSES.map(st=>`<option ${xxlStatus===st?'selected':''}>${st}</option>`).join('')}</select>
@@ -1315,7 +1342,7 @@ function epCard(e, nails){
   const vClass = e.verdict ? 'verdict-'+e.verdict.split(' ')[0] : '';
   return `<details class="ep" data-key="${k}" ${xxlOpen.has(e.key)?'open':''}>
     <summary>
-      <div class="ser">${ser.emoji} ${esc(ser.name)}${e.custom?' · mine':''}</div>
+      <div class="ser">${e.wk?(e.wk===WEEKLY_LATEST?'✨ New this week · ':'✨ Week of '+fmtDate(e.wk)+' · '):''}${ser.emoji} ${esc(ser.name)}${e.custom?' · mine':''}</div>
       <div class="et">${esc(e.title)}</div>
       ${e.hook?`<div class="eh">“${esc(e.hook)}”</div>`:''}
       <div class="chips">
@@ -1558,7 +1585,8 @@ document.addEventListener('click', e=>{
     case 'ckdel': { e.preventDefault(); const l=getChecklist(d.list); l.splice(+d.i,1); setChecklist(d.list,l); xxlRefresh(); if(curPanel!=='xxl') rerender(); break; }
     case 'ckreset': { setChecklist(d.list, getChecklist(d.list).map(x=>({t:x.t,d:false}))); xxlRefresh(); if(curPanel!=='xxl') rerender(); break; }
     case 'xxlseries': xxlSeries=d.id; rerender(); break;
-    case 'xxladd': openForm('episodes', null, {status:'Idea', series:xxlSeries?seriesById(xxlSeries).name:XXL_SERIES[0].name}, r=>{ xxlOpen.add(r.id); }); break;
+    case 'xxlweek': xxlSeries='week'; xxlStatus=''; showPanel('xxl'); break;
+    case 'xxladd': openForm('episodes', null, {status:'Idea', series:(xxlSeries&&xxlSeries!=='week')?seriesById(xxlSeries).name:XXL_SERIES[0].name}, r=>{ xxlOpen.add(r.id); }); break;
     case 'epcopy': { const ep=epByKey(d.key); if(ep) copyText(epCaption(ep)); break; }
     case 'epsave': { const ep=epByKey(d.key); if(ep) saveIdea(ep.title, 'Nails', ep.hook); break; }
     case 'epsched': {
@@ -1583,7 +1611,7 @@ let qT;
 document.addEventListener('input', e=>{
   const t = e.target, k = t.dataset && t.dataset.input; if(!k) return;
   if(k==='colq'){ colState[t.dataset.col].q=t.value; clearTimeout(qT); qT=setTimeout(()=>renderColList(t.dataset.col),150); }
-  if(k==='xxlq'){ xxlQ=t.value; clearTimeout(qT); qT=setTimeout(()=>{ const all=xxlEpisodes(); let l=all; if(xxlSeries) l=l.filter(e=>seriesByName(e.series).id===xxlSeries); if(xxlStatus) l=l.filter(e=>xxlStatus==='new'?!e.status:e.status===xxlStatus); renderXXLList(l); },150); }
+  if(k==='xxlq'){ xxlQ=t.value; clearTimeout(qT); qT=setTimeout(()=>renderXXLList(xxlFilter(xxlEpisodes())),150); }
 });
 document.addEventListener('change', e=>{
   const t = e.target, k = t.dataset && t.dataset.input; if(!k) return;
@@ -1624,6 +1652,7 @@ if(window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListene
 // ═══════════════════════════════════════════════
 applyTheme();
 seedDefaults();
+loadWeekly();
 showPanel(lsGet('trishbad__panel','dashboard'));
 pullAll();
 setInterval(()=>{ if(document.visibilityState==='visible') pullAll(); }, 60000);
