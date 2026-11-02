@@ -1,0 +1,37 @@
+{
+  "about": "Weekly Pinterest pin ideas for Titles by Trish, three added every Sunday. Newest week last. Each pin: id, title (keyword first), board (one of the app's 8 board names), type, image (text to put on the pin image + how to build it), desc (keyword-rich description), day (YYYY-MM-DD to pin).",
+  "weeks": [
+    {
+      "week": "2026-11-02",
+      "pins": [
+        {
+          "id": "tp20261102-1",
+          "title": "Books Like Gone Girl: Twisty Domestic Thrillers to Read Next",
+          "board": "Books Like Gone Girl",
+          "type": "Image pin (2:3, 1000×1500) — book list",
+          "image": "If you loved Gone Girl, read these 🖤 — grid of 5–7 of your favorite domestic-thriller covers",
+          "desc": "Books like Gone Girl for when you need another unreliable narrator and a marriage you would never want. Twisty domestic thriller recommendations from a psychological thriller girlie. Save this for your next TBR.",
+          "day": "2026-11-04"
+        },
+        {
+          "id": "tp20261102-2",
+          "title": "Cozy Winter Books: Dark Thrillers to Read Under a Blanket",
+          "board": "Fall & Winter Reading Lists",
+          "type": "Image pin (2:3) — reading nook photo with text",
+          "image": "Dark thrillers for cozy nights ❄️ — your reading nook, a candle and 3 covers stacked",
+          "desc": "Cozy winter books with a dark twist — snowed-in thrillers, holiday mysteries and psychological suspense for long nights. A winter reading list for thriller lovers.",
+          "day": "2026-11-06"
+        },
+        {
+          "id": "tp20261102-3",
+          "title": "Books With Plot Twists You Won't See Coming",
+          "board": "Books With Crazy Plot Twists",
+          "type": "Video pin — reuse your twist ranking TikTok (no watermark)",
+          "image": "Twists that broke me 🤯 — first frame: you holding the #1 book",
+          "desc": "Books with plot twists that will make you throw the book across the room. Shocking endings, mind-blowing thrillers and twisty psychological suspense recommendations.",
+          "day": "2026-11-08"
+        }
+      ]
+    }
+  ]
+}

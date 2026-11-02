@@ -959,6 +959,7 @@ input,select,textarea{background:#fffdf4;color:var(--text);}
   <button class="nav-btn" data-panel="analytics" onclick="showPanel('analytics')">📊 Analytics</button>
   <button class="nav-btn" data-panel="spending" onclick="showPanel('spending')">💰 Spending</button>
   <button class="nav-btn" data-panel="posttimes" onclick="showPanel('posttimes')">⏰ Post Times</button>
+  <button class="nav-btn" data-panel="pinterest" onclick="showPanel('pinterest')">📌 Pinterest</button>
 </div>
 
 <div class="sub-nav" id="subnav-business">
@@ -3539,6 +3540,7 @@ var DRAWER_PANELS=[
   {icon:'📊',name:'Analytics',panel:'analytics',group:'Growth'},
   {icon:'💰',name:'Spending',panel:'spending',group:'Growth'},
   {icon:'⏰',name:'Post Times',panel:'posttimes',group:'Growth'},
+  {icon:'📌',name:'Pinterest',panel:'pinterest',group:'Growth'},
   {icon:'🤝',name:'Pipeline',panel:'pipeline',group:'Business'},
   {icon:'📬',name:'ARCs & Collabs',panel:'arc',group:'Business'},
   {icon:'💰',name:'Rate Card',panel:'ratecard',group:'Business'},
@@ -3574,7 +3576,7 @@ function drawerSearch(q){
 
 // NAVIGATION
 // ═══════════════════════════════════════════════
-var PANEL_GROUP={dashboard:'home',calendar:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',analogbag:'content',tropeseries:'content',analytics:'growth',spending:'growth',posttimes:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business',dmtemplates:'business'};
+var PANEL_GROUP={dashboard:'home',calendar:'home',shelf:'reading',scorecard:'reading',monthlypicks:'reading',spin:'reading',readjournal:'reading',wrapped:'reading',upcoming:'reading',challenges:'reading',readnext:'reading',reviewbuilder:'reading',ideas:'content',thumbnails:'content',replies:'content',seriestracker:'content',timer:'content',mood:'content',filmsession:'content',commentmine:'content',checklist:'content',analogbag:'content',tropeseries:'content',analytics:'growth',spending:'growth',posttimes:'growth',pinterest:'growth',pipeline:'business',arc:'business',ratecard:'business',wins:'business',collabwish:'business',affiliates:'business',dmtemplates:'business'};
 
 function showGroup(group,btn){
   document.querySelectorAll('.group-btn').forEach(function(b){b.classList.remove('active');});
@@ -3639,6 +3641,7 @@ function showPanel(id){
   if(id==='affiliates'){renderAffiliates();}
   if(id==='collabwish'){renderCollabWish();}
   if(id==='posttimes'){renderPostTimes();}
+  if(id==='pinterest'){renderPinterest();}
   if(id==='ratecard'){renderRateCard();}
   _currentPanel=id;
   localStorage.setItem('tbtrish_lastpanel',id);
@@ -3728,6 +3731,7 @@ function renderCalendar(){
           <div class="detail-section"><div class="detail-label">✦ Call to Action</div><div class="detail-text">"${v.cta}"</div></div>
           <div class="detail-section"><div class="detail-label">✦ Hashtags</div><div class="hashtag-row">${v.hashtags.map(h=>`<span class="hashtag">${h}</span>`).join('')}</div></div>`
           }
+          ${tbtPlatformHTML(v)}
         </div>
       </div>`;
     });
@@ -6157,7 +6161,8 @@ var ALL_BACKUP_KEYS=[
   'tbtrish_quotes','tbtrish_contentcal',
   'tbtrish_bookquotes','sc3_releases','sc3_rereads','sc3_predictions',
   'tbtrish_thumbnails','tbtrish_replies','tbtrish_collabwish',
-  'tbtrish_milestones','tbtrish_posttimes','tbtrish_ratecard','tbtrish_quizzes'
+  'tbtrish_milestones','tbtrish_posttimes','tbtrish_ratecard','tbtrish_quizzes',
+  'tbtrish_pins','tbtrish_platform','tbtrish_pinsetup'
 ];
 function buildBackupBlob(){
   const backup={_version:2,_date:new Date().toISOString()};
@@ -10698,6 +10703,176 @@ function tropeAddToCalendar(){
   toast('📅 Added '+t+' week — 5 videos — to your Calendar!');
 }
 
+// ══════════════════════════════════════════
+// POST IT ON + PINTEREST
+// Every calendar video gets a TikTok / Instagram / Pinterest version, with
+// posting times. Pinterest is a search engine, so pin titles lead with what
+// readers type in (board keywords). Weekly pin ideas come from
+// pinterest-ideas.json, added every Sunday.
+// ══════════════════════════════════════════
+function tbt_boards(){return [
+  {id:'psych',name:'Psychological Thriller Books',desc:'The best psychological thriller books — dark, twisty reads with unreliable narrators and endings you won\'t see coming.',kw:['psychological thriller books','best thriller books','thriller book recommendations','dark books to read']},
+  {id:'twists',name:'Books With Crazy Plot Twists',desc:'Books with plot twists that will blow your mind — shocking endings and twisty thrillers.',kw:['books with plot twists','books with shocking endings','twisty thrillers','mind blowing books']},
+  {id:'gonegirl',name:'Books Like Gone Girl',desc:'Books like Gone Girl: domestic thrillers, unreliable narrators and toxic marriages in fiction.',kw:['books like gone girl','domestic thriller books','unreliable narrator books','books for gone girl fans']},
+  {id:'seasonal',name:'Fall & Winter Reading Lists',desc:'Seasonal reading lists: spooky October reads, cozy winter books and dark holiday thrillers.',kw:['fall reading list','spooky books to read in october','cozy winter books','dark christmas books']},
+  {id:'mystery',name:'Mystery & Dark Academia',desc:'Mystery books, whodunits and dark academia novels for armchair detectives.',kw:['mystery books','dark academia books','whodunit books','books for true crime lovers']},
+  {id:'tropes',name:'Book Recs by Trope',desc:'Book recommendations by trope — enemies to lovers, unreliable narrator, revenge, locked-room mysteries and more.',kw:['book tropes','book recommendations by trope','enemies to lovers books','revenge books']},
+  {id:'aesthetic',name:'Bookish Aesthetic',desc:'Bookish aesthetic, reading nook ideas, book hauls and gifts for book lovers.',kw:['bookish aesthetic','reading nook ideas','book lover gifts','bookshelf aesthetic']},
+  {id:'challenges',name:'Reading Challenges & Tips',desc:'Reading challenges, reading trackers and tips to read more books (and scroll less).',kw:['reading challenge','how to read more books','reading tracker ideas','tbr ideas']}
+];}
+function tbt_pin_setup(){return [
+  'Switch to a free business account (Settings → Account management → Convert to a business account)',
+  'Make your old personal boards secret so your profile looks on-brand',
+  'Profile name: "Titles by Trish | Psychological Thriller Book Recs"',
+  'Bio with keywords: psychological thrillers, books with twists, BookTok recs',
+  'Add your Amazon storefront or LTK link as your profile website',
+  'Create the 8 boards below (copy each name + description)',
+  'Link your Instagram and TikTok in Pinterest settings',
+  'Pin 3–5 times a week (this tab shows this week\'s pins)'
+];}
+function tbt_default_times(){return {tiktok:'19:00',instagram:'19:30',pinterest:'20:30'};}
+function tbtPlatform(){var v=safeJSON('tbtrish_platform',{});return {times:Object.assign({},tbt_default_times(),v.times||{}),ltk:v.ltk||'',amazon:v.amazon||''};}
+function tbtSavePlatform(k,val){var v=safeJSON('tbtrish_platform',{});if(k==='ltk'||k==='amazon')v[k]=val.trim();else{v.times=v.times||{};v.times[k]=val||tbt_default_times()[k];}localStorage.setItem('tbtrish_platform',JSON.stringify(v));toast('✦ Saved');}
+function tbtYmd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function tbtFmtTime(t){if(!/^\d{1,2}:\d{2}$/.test(t||''))return t||'';var p=t.split(':'),h=+p[0],m=+p[1],ap=h>=12?'PM':'AM';h=h%12||12;return h+(m?':'+String(m).padStart(2,'0'):'')+' '+ap;}
+function tbtStrip(html){var d=document.createElement('div');d.innerHTML=String(html||'').replace(/<br\s*\/?>/gi,'\n');return (d.textContent||'').trim();}
+function tbtBoardFor(text){
+  var t=String(text||'').toLowerCase(),id='psych';
+  if(/gone girl|domestic|marriage|husband|wife|unreliable/.test(t))id='gonegirl';
+  else if(/twist|shock|ending/.test(t))id='twists';
+  else if(/fall|autumn|october|spooky|halloween|winter|christmas|holiday|december|cozy/.test(t))id='seasonal';
+  else if(/trope|enemies|lovers|revenge|forbidden|slow burn/.test(t))id='tropes';
+  else if(/mystery|detective|whodunit|academia|true crime|armchair/.test(t))id='mystery';
+  else if(/aesthetic|nook|haul|shelf|analog|bag|gift/.test(t))id='aesthetic';
+  else if(/challenge|goal|tracker|wrap|scroll|tbr|read more/.test(t))id='challenges';
+  return tbt_boards().find(function(b){return b.id===id;});
+}
+function tbtTitleCase(s){return s.replace(/\b\w/g,function(c){return c.toUpperCase();});}
+// v = a calendar entry (built-in or custom)
+function tbtPlan(v){
+  var pf=tbtPlatform(),notes=v.custom?tbtStrip(v.notes):'';
+  var title=String(tbtStrip(v.title)||'').replace(/^\[[^\]]*\]\s*/,'').replace(/^[^A-Za-z0-9"'“(]+/,'').replace(/[?!.]+$/,'');
+  var hook=v.hook||(notes.match(/Hook:\s*[“"]?([^”"\n]+)/)||[])[1]||(notes&&!/^\w+:/.test(notes)?notes.split('\n')[0]:'');
+  var cta=v.cta||(notes.match(/CTA:\s*([^\n]+)/)||[])[1]||'';
+  var tags=(v.hashtags&&v.hashtags.length?v.hashtags:['#booktok','#thrillerbooks','#bookrecommendations','#psychologicalthriller','#booktoker']).slice(0,5);
+  var board=tbtBoardFor(title+' '+(v.type||'')+' '+hook);
+  var pinTitle=title.toLowerCase().indexOf(board.kw[0].split(' ')[0])>=0?title:tbtTitleCase(board.kw[0])+': '+title;
+  if(pinTitle.length>100)pinTitle=pinTitle.slice(0,97).replace(/\s+\S*$/,'')+'…';
+  var link=pf.amazon||pf.ltk;
+  var desc=[hook,cta,'More '+board.kw.slice(0,3).join(', ')+' on my boards.',link?'Shop my book picks: '+link:''].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+  return {
+    tiktok:{when:tbtFmtTime(pf.times.tiktok),text:[hook&&('On-screen text: '+hook),[title,cta].filter(Boolean).join(' — '),tags.join(' ')].filter(Boolean).join('\n')},
+    instagram:{when:tbtFmtTime(pf.times.instagram),type:'Reel',text:[title+(hook?' — '+hook:''),cta,'.',tags.join(' ')].filter(Boolean).join('\n'),extra:'Share to your Story with a poll: "Read it or skip it?"'},
+    pinterest:{when:'Next day '+tbtFmtTime(pf.times.pinterest),board:board.name,title:pinTitle,desc:desc,image:v.thumbnail||title,link:link}
+  };
+}
+function tbtPlatformHTML(v){
+  var pl=tbtPlan(v);
+  var row=function(icon,name,when,sub,text,extra){
+    return '<div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-top:8px;">'
+      +'<div style="display:flex;align-items:center;gap:8px;"><span>'+icon+'</span><b style="flex:1;font-size:14px;">'+name+'</b><span style="font-size:12px;color:var(--gold);">'+escHtml(when)+'</span>'
+      +'<button class="btn-script" style="font-size:12px;" data-text="'+escHtml(text)+'" onclick="event.stopPropagation();copyPkgSection(this.dataset.text)">📋</button></div>'
+      +(sub?'<div style="font-size:12px;color:var(--text-dim);">'+escHtml(sub)+'</div>':'')
+      +'<div style="font-size:13.5px;white-space:pre-wrap;word-wrap:break-word;margin-top:4px;">'+escHtml(text)+'</div>'
+      +(extra?'<div style="font-size:12px;color:var(--text-dim);margin-top:4px;">'+escHtml(extra)+'</div>':'')+'</div>';
+  };
+  return '<div class="detail-section"><div class="detail-label">✦ Post it on</div>'
+    +row('📱','TikTok',pl.tiktok.when,'Video',pl.tiktok.text)
+    +row('📸','Instagram',pl.instagram.when,pl.instagram.type,pl.instagram.text,pl.instagram.extra)
+    +row('📌','Pinterest',pl.pinterest.when,'Video pin, or a 2:3 image with "'+pl.pinterest.image+'" on it',pl.pinterest.title+'\n\n'+pl.pinterest.desc,'Board: '+pl.pinterest.board+(pl.pinterest.link?'':' · Add your Amazon/LTK link in Pinterest → Your links'))
+    +'</div>';
+}
+// Calendar entries for a given day (built-in entries carry no year, so match by label)
+function tbtEntriesOn(d){
+  var dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var label=dayNames[d.getDay()]+' '+mon[d.getMonth()]+' '+d.getDate();
+  var iso=tbtYmd(d);
+  var arch=(typeof calArchiveSet!=='undefined'&&calArchiveSet)?calArchiveSet:new Set();
+  var all=videos.filter(function(v){return v;}).concat(((typeof customCalEntries!=='undefined'&&customCalEntries)||[]).filter(function(ce){return ce&&!videos.some(function(v){return v&&v.id===ce.id;});}));
+  return all.filter(function(v){return (v.sortDate?v.sortDate===iso:v.date===label)&&!arch.has(v.id);});
+}
+function tbtTodayCard(){
+  var pf=tbtPlatform(),where=tbtFmtTime(pf.times.tiktok)+' · TikTok + Instagram · Pinterest next day '+tbtFmtTime(pf.times.pinterest);
+  var day=function(offset,label){
+    var d=new Date();d.setDate(d.getDate()+offset);
+    var list=tbtEntriesOn(d).filter(function(v){return !(typeof doneSet!=='undefined'&&doneSet.has(v.id));});
+    return '<div style="font-family:Cinzel,serif;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:'+(offset?'12px':'0')+' 0 6px;">'+label+' · '+d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+'</div>'
+      +(list.length?list.map(function(v){return '<div style="padding:6px 0;border-top:1px solid var(--border);"><div style="font-weight:700;font-size:16px;line-height:1.3;">'+escHtml(tbtStrip(v.title))+'</div><div style="font-size:12.5px;color:var(--text-dim);">'+escHtml(where)+'</div></div>';}).join(''):'<div style="font-size:13px;color:var(--text-dim);font-style:italic;">Nothing planned.</div>');
+  };
+  return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:18px;">'+day(0,'Today')+day(1,'Tomorrow')
+    +'<button class="btn" style="margin-top:12px;font-size:11px;padding:6px 14px;" onclick="showPanel(\'calendar\')">Open Calendar →</button></div>';
+}
+// Weekly pin ideas (pinterest-ideas.json), cached on the phone for offline use
+var tbtWeeklyPins=safeJSON('tbtrish_weeklypins',null);
+function tbtLoadWeeklyPins(){
+  fetch('pinterest-ideas.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(d){
+    tbtWeeklyPins=d;localStorage.setItem('tbtrish_weeklypins',JSON.stringify(d));
+    var p=document.getElementById('panel-pinterest');if(p&&p.classList.contains('active'))renderPinterest();
+  }).catch(function(){});
+}
+function tbtThisWeekPins(){
+  var out=[],weeks=(tbtWeeklyPins&&Array.isArray(tbtWeeklyPins.weeks))?tbtWeeklyPins.weeks:[];
+  var w=weeks[weeks.length-1];
+  if(w&&Array.isArray(w.pins))w.pins.forEach(function(p){if(p&&p.id&&p.title)out.push({id:p.id,title:p.title,board:p.board||'',desc:p.desc||'',image:p.image||'',type:p.type||'Image pin',date:p.day||''});});
+  // plus the next 7 days of calendar videos, each pinned the day after posting
+  for(var i=0;i<7;i++){var d=new Date();d.setDate(d.getDate()+i);tbtEntriesOn(d).forEach(function(v){var pl=tbtPlan(v).pinterest;var nd=new Date(d);nd.setDate(nd.getDate()+1);out.push({id:'cal-'+v.id,title:pl.title,board:pl.board,desc:pl.desc,image:pl.image,type:'Video pin (from your TikTok) or image pin',date:tbtYmd(nd)});});}
+  return out;
+}
+var tbtPins=safeJSON('tbtrish_pins',[]);
+function tbtSavePins(){localStorage.setItem('tbtrish_pins',JSON.stringify(tbtPins));}
+function tbtLogPin(i){
+  var p=tbtThisWeekPins()[i];if(!p)return;
+  if(tbtPins.some(function(x){return x.src===p.id;})){toast('Already logged');return;}
+  tbtPins.unshift({id:'pin_'+Date.now(),src:p.id,title:p.title,board:p.board,date:tbtYmd(new Date())});tbtSavePins();renderPinterest();toast('📌 Logged!');
+}
+function tbtAddPin(){
+  var t=document.getElementById('pin-f-title'),b=document.getElementById('pin-f-board');
+  if(!t.value.trim()){toast('Add a pin title first');return;}
+  tbtPins.unshift({id:'pin_'+Date.now(),title:t.value.trim(),board:b.value,date:tbtYmd(new Date())});tbtSavePins();renderPinterest();toast('📌 Logged!');
+}
+function tbtDelPin(id){if(!confirm('Delete this pin?'))return;tbtPins=tbtPins.filter(function(p){return p.id!==id;});tbtSavePins();renderPinterest();}
+function tbtSetupToggle(i,on){var l=safeJSON('tbtrish_pinsetup',{});l[i]=on;localStorage.setItem('tbtrish_pinsetup',JSON.stringify(l));renderPinterest();}
+function renderPinterest(){
+  var el=document.getElementById('pinterest-content');if(!el)return;
+  var pf=tbtPlatform(),pins=tbtThisWeekPins(),done={};tbtPins.forEach(function(p){if(p.src)done[p.src]=1;});
+  var weekAgo=new Date();weekAgo.setDate(weekAgo.getDate()-7);var wk=tbtYmd(weekAgo);
+  var setup=safeJSON('tbtrish_pinsetup',{});
+  var card='background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;';
+  var lbl='font-family:Cinzel,serif;font-size:13px;letter-spacing:2px;color:var(--gold);margin:22px 0 10px;';
+  var copyBtn=function(text,label){return '<button class="btn" style="font-size:11px;padding:5px 10px;" data-text="'+escHtml(text)+'" onclick="copyPkgSection(this.dataset.text)">📋 '+label+'</button>';};
+  el.innerHTML='<p style="color:var(--text-dim);font-style:italic;font-size:14px;line-height:1.7;margin-bottom:12px;">Pinterest is a search engine: readers search "books like Gone Girl" and your pin keeps getting found for months. Lead with keywords, pin 3–5 times a week, and link your book picks.</p>'
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px;">'
+    +[[tbtPins.filter(function(p){return p.date>=wk;}).length,'Pinned this week'],[tbtPins.length,'Pinned total'],[tbt_boards().length,'Boards']].map(function(x){return '<div style="'+card+'text-align:center;margin:0;"><div style="font-family:Cinzel,serif;font-size:24px;font-weight:900;color:var(--gold);">'+x[0]+'</div><div style="font-size:11px;color:var(--text-dim);">'+x[1]+'</div></div>';}).join('')+'</div>'
+    // links + times
+    +'<div style="'+lbl+'">YOUR LINKS & POSTING TIMES</div><div style="'+card+'">'
+    +'<div class="sc-field"><label>Amazon storefront</label><input type="url" placeholder="https://www.amazon.com/shop/…" value="'+escHtml(pf.amazon)+'" onchange="tbtSavePlatform(\'amazon\',this.value)"></div>'
+    +'<div class="sc-field"><label>LTK link</label><input type="url" placeholder="https://www.shopltk.com/explore/…" value="'+escHtml(pf.ltk)+'" onchange="tbtSavePlatform(\'ltk\',this.value)"></div>'
+    +'<div class="sc-two-col" style="grid-template-columns:1fr 1fr 1fr;">'+[['tiktok','TikTok'],['instagram','Instagram'],['pinterest','Pinterest']].map(function(x){return '<div class="sc-field"><label>'+x[1]+'</label><input type="time" value="'+pf.times[x[0]]+'" onchange="tbtSavePlatform(\''+x[0]+'\',this.value)"></div>';}).join('')+'</div></div>'
+    // this week's pins
+    +'<div style="'+lbl+'">📌 THIS WEEK\'S PINS</div>'
+    +(pins.length?pins.map(function(p,i){return '<div style="'+card+'"><div style="font-size:11px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;">'+(p.date?new Date(p.date+'T12:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})+' · '+tbtFmtTime(pf.times.pinterest)+' · ':'')+escHtml(p.board)+'</div>'
+      +'<div style="font-weight:700;font-size:17px;line-height:1.3;margin:4px 0;">'+escHtml(p.title)+'</div>'
+      +'<div style="font-size:12.5px;color:var(--text-dim);">'+escHtml(p.type)+(p.image?' · Text on image: “'+escHtml(p.image)+'”':'')+'</div>'
+      +'<div style="font-size:13.5px;margin:6px 0 10px;">'+escHtml(p.desc)+'</div>'
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap;">'+copyBtn(p.title,'Title')+copyBtn(p.desc,'Description')
+      +(done[p.id]?'<span style="font-size:12px;color:var(--gold);align-self:center;">✓ Pinned</span>':'<button class="btn btn-primary" style="font-size:11px;padding:5px 10px;" onclick="tbtLogPin('+i+')">✓ I pinned it</button>')+'</div></div>';}).join('')
+      :'<div style="'+card+'color:var(--text-dim);font-style:italic;">New pin ideas arrive every Sunday, and your next week of calendar videos shows up here too.</div>')
+    // boards
+    +'<div style="'+lbl+'">🗂️ YOUR BOARDS</div>'
+    +tbt_boards().map(function(b){return '<div style="'+card+'"><div style="display:flex;align-items:center;gap:8px;"><b style="flex:1;font-size:15px;">'+escHtml(b.name)+'</b>'+copyBtn(b.name,'Name')+'</div><div style="font-size:13px;color:var(--text-dim);margin:6px 0 8px;">'+escHtml(b.desc)+'</div>'+copyBtn(b.desc,'Description')+'</div>';}).join('')
+    // keywords
+    +'<div style="'+lbl+'">🔑 KEYWORD BANK</div><div style="font-size:13px;color:var(--text-dim);margin-bottom:8px;">Start pin titles with one of these. Tap to copy.</div><div style="display:flex;flex-wrap:wrap;gap:6px;">'
+    +tbt_boards().reduce(function(a,b){return a.concat(b.kw);},[]).filter(function(k,i,a){return a.indexOf(k)===i;}).map(function(k){return '<button class="hashtag" style="cursor:pointer;" data-text="'+escHtml(k)+'" onclick="copyPkgSection(this.dataset.text)">'+escHtml(k)+'</button>';}).join('')+'</div>'
+    // setup
+    +'<div style="'+lbl+'">🚀 SET UP YOUR PINTEREST</div><div style="'+card+'">'
+    +tbt_pin_setup().map(function(t,i){return '<label style="display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-size:14px;'+(setup[i]?'text-decoration:line-through;color:var(--text-dim);':'')+'"><input type="checkbox" '+(setup[i]?'checked':'')+' onchange="tbtSetupToggle('+i+',this.checked)" style="margin-top:3px;"> '+escHtml(t)+'</label>';}).join('')+'</div>'
+    // tracker
+    +'<div style="'+lbl+'">📈 PIN TRACKER</div><div style="'+card+'"><div class="sc-two-col"><div class="sc-field"><label>Pin title</label><input id="pin-f-title" placeholder="e.g. Books Like Gone Girl: 7 Twisty Picks"></div>'
+    +'<div class="sc-field"><label>Board</label><select id="pin-f-board">'+tbt_boards().map(function(b){return '<option>'+escHtml(b.name)+'</option>';}).join('')+'</select></div></div><button class="btn btn-primary" style="font-size:11px;" onclick="tbtAddPin()">✦ Log a Pin</button></div>'
+    +(tbtPins.length?tbtPins.map(function(p){return '<div style="'+card+'display:flex;gap:10px;align-items:center;"><div style="flex:1;"><div style="font-weight:700;font-size:14px;">'+escHtml(p.title)+'</div><div style="font-size:12px;color:var(--text-dim);">'+escHtml(p.date)+' · '+escHtml(p.board)+'</div></div><button class="btn-script" style="font-size:12px;color:rgba(255,100,100,.8);" onclick="tbtDelPin(\''+p.id+'\')">✕</button></div>';}).join(''):'');
+}
+tbtLoadWeeklyPins();
+
 // CHALLENGE TARGET EDIT
 function updateChallengeTarget(id,val){var c=challengeList.find(function(x){return x.id===id;});if(c){c.target=parseInt(val)||0;localStorage.setItem('tbtrish_challenges',JSON.stringify(challengeList));renderChallenges();}}
 
@@ -11785,6 +11960,7 @@ function renderDashboard(){
     +'<div id="dash-time" style="font-family:Cinzel,serif;font-size:42px;font-weight:900;color:var(--text);letter-spacing:.04em;line-height:1;"></div>'
     +'<div id="dash-date" style="font-size:13px;color:var(--text-dim);margin-top:10px;letter-spacing:.05em;"></div>'
     +'</div>'
+    +tbtTodayCard()
     // ── Stats row ────────────────────────────
     +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;">'
     +[
@@ -12944,6 +13120,11 @@ function resetQuiz(){quizAnswers={};initQuiz();}
 </div>
 
 <!-- POST TIMES -->
+<div class="panel" id="panel-pinterest">
+  <div class="section-title">📌 Pinterest</div>
+  <div id="pinterest-content"></div>
+</div>
+
 <div class="panel" id="panel-posttimes">
   <div class="section-title">⏰ Best Posting Times</div>
   <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:14px;line-height:1.7;">Track which days and times your videos perform best.</p>
