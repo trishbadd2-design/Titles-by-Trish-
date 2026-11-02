@@ -211,6 +211,24 @@ details.ep .ebody{padding:0 14px 14px;border-top:1px solid var(--line);}
 .combo .cw{font-size:13px;color:var(--dim);}
 .mine{background:var(--gold-faint);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:14px;}
 
+/* ── PLATFORMS / TODAY / PINTEREST ── */
+.plat{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px;background:var(--bg);}
+.plat .ph{display:flex;align-items:center;gap:8px;}
+.plat .pn{font-weight:600;font-size:14px;flex:1;}
+.plat .pw{font-size:12px;color:var(--gold);font-weight:600;}
+.plat .pt{font-size:13.5px;white-space:pre-wrap;word-wrap:break-word;margin-top:4px;}
+.plat .pm{font-size:12.5px;color:var(--dim);margin-top:4px;}
+.today{background:var(--head-bg);color:var(--head-ink);border-radius:18px;padding:16px;margin-bottom:14px;}
+body.dark .today{border:1px solid rgba(201,166,107,.35);}
+.today .tl{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:#c9a66b;font-weight:600;}
+.today .ti{border-top:1px solid rgba(243,234,217,.14);padding:10px 0;}
+.today .ti:first-of-type{border-top:none;}
+.today .tt{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;line-height:1.2;}
+.today .tw{font-size:13px;color:#e2c58f;margin-top:2px;}
+.today .te{font-size:13.5px;color:rgba(243,234,217,.65);padding:6px 0;}
+.today .btn{background:transparent;color:#e2c58f;border-color:rgba(201,166,107,.6);}
+.kw{display:inline-block;margin:0 6px 6px 0;}
+
 /* ── TOAST ── */
 #toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:99;max-width:90vw;text-align:center;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -851,6 +869,44 @@ const LAYER_RULES = [
 ];
 
 // ═══════════════════════════════════════════════
+// PLATFORMS & PINTEREST
+// Every series idea gets a TikTok / Instagram / Pinterest version. Pinterest is
+// a search engine, so pins lead with what people type in (board keywords).
+// ═══════════════════════════════════════════════
+const PIN_BOARDS = [
+  {id:'xxl-inspo', name:'XXL Nail Inspo', desc:'Extra long nail inspo: long almond nails, XXL acrylic designs, luxury nail art and fresh-set reveals.', kw:['extra long nails','xxl nails','long almond nails','long nail designs','luxury nail art']},
+  {id:'xxl-life', name:'Long Nails in Real Life', desc:'Long nail hacks and tips — how to type, open cans and do everyday things with extra long nails.', kw:['long nail hacks','how to live with long nails','long nails tips','acrylic nail tips','extra long nails']},
+  {id:'vanilla', name:'Vanilla Perfume Aesthetic', desc:'The best vanilla perfumes, vanilla girl aesthetic and how to smell like vanilla all day.', kw:['vanilla perfume','best vanilla perfume','vanilla girl aesthetic','how to smell like vanilla','gourmand perfume']},
+  {id:'layering', name:'Perfume Layering Combos', desc:'Perfume layering combinations for date night, fall, winter, spring and summer.', kw:['perfume layering combos','perfume combinations','date night perfume','fall perfume','winter perfume']},
+  {id:'perfume-tips', name:'Perfume Tips & Hacks', desc:'How to make perfume last longer, where to spray perfume and long lasting perfume tips.', kw:['how to make perfume last longer','perfume tips','long lasting perfume','perfume hacks']},
+  {id:'grwm', name:'GRWM & Makeup Looks', desc:'Get ready with me — everyday makeup, date night makeup, skincare and hair routines.', kw:['everyday makeup look','date night makeup','get ready with me','glam makeup']},
+  {id:'outfits', name:'Outfit Ideas', desc:'Outfit ideas: date night outfits, fall outfits, casual looks, hauls and bags.', kw:['date night outfit','fall outfit ideas','casual outfit ideas','outfit inspo']},
+  {id:'amazon', name:'Amazon Finds', desc:'Amazon must haves — beauty, fashion, nail and home finds worth it.', kw:['amazon must haves','amazon finds','amazon beauty finds','amazon fashion finds']},
+  {id:'lifestyle', name:'Cozy Lifestyle & Self Care', desc:'Self care routines, Sunday resets, cozy aesthetic and day-in-the-life inspo.', kw:['self care routine','cozy aesthetic','sunday reset routine','that girl routine']}
+];
+const SERIES_BOARD = {can:'xxl-life', qa:'xxl-life', sets:'xxl-inspo', dumps:'xxl-inspo', ptest:'perfume-tips', ppair:'layering', pvan:'vanilla', pdump:'vanilla'};
+const DEFAULT_TIMES = {tiktok:'19:00', instagram:'19:30', pinterest:'20:30'};
+function postTimes(){ return Object.assign({}, DEFAULT_TIMES, lsGet('trishbad__times',{})); }
+function myLinks(){ return Object.assign({ltk:'', amazon:''}, lsGet('trishbad__links',{})); }
+const PIN_SETUP = [
+  'Switch to a free business account (Settings → Account management → Convert to a business account)',
+  'Make your old personal boards secret so your profile looks on-brand',
+  'Profile name: "Trish Badd | XXL Nails, Vanilla Perfume & Lifestyle"',
+  'Bio with keywords: long nail inspo, vanilla perfume, perfume layering, GRWM',
+  'Add your LTK link as your profile website',
+  'Create the 9 boards below (copy each name + description)',
+  'Link your Instagram and TikTok in Pinterest settings',
+  'Pin 3–6 times a week (the Calendar tells you when)'
+];
+const LTK_STEPS = [
+  'Open the LTK Creator app and find the product or post you want to share.',
+  'Tap Share, then Copy Link.',
+  'Paste it into Settings → Your links here, so it\'s added to every pin description.',
+  'For a specific product, paste its link into the pin\'s "Link" field when you upload to Pinterest.',
+  'Tip: one LTK post that collects a whole look (outfit, nail kit, vanilla favorites) is easier than linking items one by one.'
+];
+
+// ═══════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════
 const PILLAR_NAMES = PILLARS.map(p=>p.name);
@@ -865,6 +921,7 @@ const todayStr = () => ymd(new Date());
 const parseYmd = s => { const [y,m,d]=String(s).split('-').map(Number); return new Date(y,(m||1)-1,d||1); };
 const daysBetween = (a,b) => Math.round((parseYmd(b)-parseYmd(a))/86400000);
 const fmtDate = s => s ? parseYmd(s).toLocaleDateString(undefined,{month:'short',day:'numeric',year: parseYmd(s).getFullYear()!==new Date().getFullYear()?'numeric':undefined}) : '';
+const fmtTime = t => { if(!/^\d{1,2}:\d{2}$/.test(t||'')) return t||''; let [h,m] = t.split(':').map(Number); const ap = h>=12?'PM':'AM'; h = h%12||12; return h+(m?':'+pad(m):'')+' '+ap; };
 const money = v => v===''||v==null ? '' : '$'+Number(v).toLocaleString(undefined,{maximumFractionDigits:2});
 const stars = n => n ? '<span class="stars">'+'★'.repeat(+n)+'☆'.repeat(5-n)+'</span>' : '';
 const pick = arr => arr[Math.floor(Math.random()*arr.length)];
@@ -904,12 +961,16 @@ const COLS = {
     sort:(a,b)=>(b.c||0)-(a.c||0), extraActs:r=>`<button class="icon-btn" title="Schedule" data-act="sched-idea" data-id="${r.id}">📅</button>`,
     empty:'Save ideas from the Pillars, Generator or Dashboard — or tap + Add to write your own.'},
   posts:{label:'📅 Posts', noun:'post', hidden:true,
-    fields:[{k:'title',l:'Video',t:'textarea',req:1},{k:'date',l:'Date',t:'date',req:1},{k:'time',l:'Time',t:'time'},{k:'pillar',l:'Pillar',t:'select',o:PILLAR_NAMES},{k:'status',l:'Status',t:'select',o:['Planned','Filmed','Posted']},{k:'notes',l:'Notes',t:'textarea'}],
-    title:r=>r.title, line:r=>[fmtDate(r.date),r.time].filter(Boolean).join(' · '), chips:['pillar','status'],
+    fields:[{k:'title',l:'Video',t:'textarea',req:1},{k:'date',l:'Date',t:'date',req:1},{k:'time',l:'Time',t:'time'},{k:'where',l:'Where to post',t:'text'},{k:'pillar',l:'Pillar',t:'select',o:PILLAR_NAMES},{k:'status',l:'Status',t:'select',o:['Planned','Filmed','Posted']},{k:'notes',l:'Notes',t:'textarea'}],
+    title:r=>r.title, line:r=>[fmtDate(r.date),fmtTime(r.time),r.where].filter(Boolean).join(' · '), chips:['pillar','status'],
     sort:(a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||''))},
   episodes:{label:'Series episodes', noun:'episode', hidden:true,
     fields:[{k:'title',l:'Episode title',t:'textarea',req:1},{k:'series',l:'Series',t:'select',o:()=>ALL_SERIES.map(x=>x.name),req:1},{k:'status',l:'Progress',t:'select',o:EP_STATUSES},{k:'verdict',l:'Verdict (test episodes)',t:'select',o:()=>ALL_SERIES.filter(x=>x.verdicts).flatMap(x=>x.verdicts)},{k:'format',l:'Format',t:'text'},{k:'hook',l:'Hook',t:'textarea'},{k:'shots',l:'Shot list (one per line)',t:'textarea'},{k:'caption',l:'Caption',t:'textarea'},{k:'tags',l:'5 hashtags',t:'text'},{k:'cta',l:'Call to action',t:'text'},{k:'nailSet',l:'Nail set (from Nail Log)',t:'select',o:()=>nailSetOptions()},{k:'perfume',l:'Perfume (from your collection)',t:'select',o:()=>perfumeOptions()},{k:'notes',l:'Notes',t:'textarea'}],
     title:r=>r.title},
+  pins:{label:'📌 Pin Tracker', noun:'pin', hidden:true,
+    fields:[{k:'title',l:'Pin title',t:'textarea',req:1},{k:'board',l:'Board',t:'select',o:()=>PIN_BOARDS.map(b=>b.name)},{k:'type',l:'Pin type',t:'select',o:['Video pin','Image pin','Carousel pin']},{k:'status',l:'Status',t:'select',o:['Idea','Designed','Pinned']},{k:'date',l:'Date',t:'date'},{k:'link',l:'Link',t:'url'},{k:'desc',l:'Description',t:'textarea'},{k:'notes',l:'Notes',t:'textarea'}],
+    title:r=>r.title, line:r=>[fmtDate(r.date),r.board,r.type].filter(Boolean).join(' · '), chips:['status'], link:'link', copy:r=>[r.title,r.desc].filter(Boolean).join('\n\n'),
+    sort:(a,b)=>(b.date||'').localeCompare(a.date||'')||(b.c||0)-(a.c||0)},
   hooks:{label:'Custom hooks', noun:'hook', hidden:true,
     fields:[{k:'text',l:'Hook',t:'textarea',req:1},{k:'pillar',l:'Pillar',t:'select',o:PILLAR_NAMES}], title:r=>r.text},
   sessions:{label:'🎥 Film Sessions', sub:'Plan batch-filming days so one fresh set = several videos.', noun:'session',
@@ -983,6 +1044,7 @@ const GROUPS = [
   {id:'ideas', name:'💡 Ideas', panels:['pillars','generator','ideas','hooks']},
   {id:'create', name:'🎥 Create', panels:['sessions','checklist','sounds','ctas']},
   {id:'collect', name:'👜 Collections', panels:['nails','ootd','perfume','purses','hauls','beauty']},
+  {id:'pinterest', name:'📌 Pinterest', panels:['pinterest']},
   {id:'biz', name:'🤝 Business', panels:['deals','affiliates','dms','collabs']},
   {id:'settings', name:'⚙️ Settings', panels:['settings']}
 ];
@@ -995,6 +1057,7 @@ const PANELS = {
   checklist:{label:'📋 Checklist', render:renderChecklist},
   xxl:{label:'💅 XXL Nail Diaries', render:el=>renderHub('xxl',el)},
   scent:{label:'🌸 Scent Diaries', render:el=>renderHub('scent',el)},
+  pinterest:{label:'📌 Pinterest', render:renderPinterest},
   settings:{label:'⚙️ Settings', render:renderSettings}
 };
 COL_KEYS.forEach(k=>{ if(!COLS[k].hidden) PANELS[k]={label:COLS[k].label, render:el=>renderCollection(k,el)}; });
@@ -1212,6 +1275,7 @@ function renderDashboard(el){
   el.innerHTML = `
     <h2 class="ptitle">${hour<12?'Good morning':hour<17?'Good afternoon':'Good evening'}, Trish ✨</h2>
     <div class="psub">${new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}</div>
+    ${todayCard()}
     ${alerts.map(a=>`<div class="alert">${a}</div>`).join('')}
     <div class="stats">
       <div class="stat"><b>${monthPosts.filter(r=>r.status==='Posted').length}/${monthPosts.length}</b><span>posted this month</span></div>
@@ -1349,7 +1413,7 @@ function renderHooks(el){
 // ═══════════════════════════════════════════════
 // CHECKLIST (device-only)
 // ═══════════════════════════════════════════════
-const CHECKLISTS = {film:{key:'trishbad__checklist', def:DEFAULT_CHECKLIST}, xxl:{key:'trishbad__xxlchecklist', def:XXL_CHECKLIST}, scent:{key:'trishbad__scentchecklist', def:SCENT_CHECKLIST}};
+const CHECKLISTS = {film:{key:'trishbad__checklist', def:DEFAULT_CHECKLIST}, xxl:{key:'trishbad__xxlchecklist', def:XXL_CHECKLIST}, scent:{key:'trishbad__scentchecklist', def:SCENT_CHECKLIST}, pinsetup:{key:'trishbad__pinsetup', def:PIN_SETUP}};
 function getChecklist(name){ const c=CHECKLISTS[name||'film']; const v=lsGet(c.key,null); return Array.isArray(v)?v:c.def.map(t=>({t,d:false})); }
 function setChecklist(name, list){ lsSet(CHECKLISTS[name||'film'].key, list); }
 function checklistHTML(name){
@@ -1529,6 +1593,7 @@ function epCard(e, links){
       ${e.tags?`<div class="lbl">Hashtags</div><div class="tags">${esc(e.tags)}</div>`:''}
       ${e.notes?`<div class="lbl">Notes</div><div class="cap">${esc(e.notes)}</div>`:''}
       ${e.date?`<div class="small muted" style="margin-top:8px">📅 Scheduled for ${fmtDate(e.date)}</div>`:''}
+      <div class="lbl">📣 Post it on</div>${platformHTML(platformPlan(e))}
       <div class="row" style="margin-top:14px">
         <button class="btn sm primary" data-act="epcopy" data-key="${k}">📋 Copy caption</button>
         <button class="btn sm" data-act="epsave" data-key="${k}">⭐ Idea Bank</button>
@@ -1617,10 +1682,22 @@ function autoSchedule(){
     const S = SHOWS[sh];
     WEEKLY[sh].forEach(e=>{
       const date = shootDate(sh, e); if(date < cutoff) return;
-      const pid = 'wk-'+e.id;
+      const pid = 'wk-'+e.id, plan = platformPlan(epFromTemplate(e)), times = postTimes();
       if(!blocked(pid)){
-        const notes = ['🎬 Shoot day', e.h&&('Hook: '+e.h), 'Shots:\n'+e.sh.map((x,i)=>(i+1)+'. '+x).join('\n'), e.c&&('Caption: '+e.c), e.cta&&('CTA: '+e.cta), e.tg.join(' ')].filter(Boolean).join('\n');
-        const r = norm({id:pid, c:Date.now(), u:Date.now(), title:S.prefix+' '+e.t, date, pillar:S.pillar, status:'Planned', notes});
+        const notes = ['🎬 Shoot + post day', '📱 '+plan.where, e.h&&('Hook: '+e.h), 'Shots:\n'+e.sh.map((x,i)=>(i+1)+'. '+x).join('\n'), e.c&&('Caption: '+e.c), e.cta&&('CTA: '+e.cta), e.tg.join(' ')].filter(Boolean).join('\n');
+        const r = norm({id:pid, c:Date.now(), u:Date.now(), title:S.prefix+' '+e.t, date, time:times.tiktok, where:'TikTok + Instagram', pillar:S.pillar, status:'Planned', notes});
+        posts.push(r); pushRecord('posts', r); added++;
+      } else {
+        // Shoot days added before posting times existed get them once (never overwrites your edits)
+        const i = posts.findIndex(x=>x.id===pid);
+        if(i>=0 && !posts[i].where && !posts[i].time){ posts[i] = norm(Object.assign({}, posts[i], {time:times.tiktok, where:'TikTok + Instagram', u:Date.now()})); pushRecord('posts', posts[i]); }
+      }
+      const pinId = 'pin-'+e.id;
+      if(!blocked(pinId)){
+        const pd = parseYmd(date); pd.setDate(pd.getDate()+1);
+        const pin = plan.pinterest;
+        const notes = ['📌 Pinterest day', 'Board: '+pin.board, 'Type: '+pin.type, 'Title: '+pin.title, 'Description: '+pin.desc].join('\n');
+        const r = norm({id:pinId, c:Date.now(), u:Date.now(), title:'📌 Pin: '+pin.title, date:ymd(pd), time:times.pinterest, where:'Pinterest', pillar:S.pillar, status:'Planned', notes});
         posts.push(r); pushRecord('posts', r); added++;
       }
       const eid = 'ep-'+e.id+'-cal';
@@ -1631,7 +1708,85 @@ function autoSchedule(){
     });
   });
   save('posts', posts); save('episodes', eps);
-  if(added){ toast('📅 Added '+added+' shoot day'+(added===1?'':'s')+' to your Calendar'); softRender(); }
+  if(added){ toast('📅 Added '+added+' post'+(added===1?'':'s')+' to your Calendar'); softRender(); }
+}
+
+// ═══════════════════════════════════════════════
+// PLATFORM PLANS — one idea, three posts
+// ═══════════════════════════════════════════════
+function platformPlan(ep){
+  const ser = seriesByName(ep.series), times = postTimes(), links = myLinks();
+  const board = PIN_BOARDS.find(b=>b.id===(SERIES_BOARD[ser.id]||'lifestyle'));
+  const isDump = /dump/.test(ser.id) || /carousel/i.test(ep.format||'');
+  const tags = String(ep.tags||'').split(/\s+/).filter(Boolean);
+  const cap = /^caption prompt/i.test(ep.caption||'') ? (ep.hook||'') : String(ep.caption||'').replace(/Verdict:\s*_+/,'Wait for the verdict 👀');
+  const clean = String(ep.title||'').replace(/[?!.]+$/,'');
+  const kw = board.kw[0].replace(/\b\w/g,c=>c.toUpperCase());
+  let pinTitle = clean.toLowerCase().includes(board.kw[0].split(' ')[0]) ? clean : kw+': '+clean;
+  if(pinTitle.length>100) pinTitle = pinTitle.slice(0,97).replace(/\s+\S*$/,'')+'…';
+  const desc = [ep.hook, cap.replace(/\s*#\w+/g,''), 'More '+board.kw.slice(0,3).join(', ')+' ideas on my boards.', links.ltk?'Shop my favorites: '+links.ltk:''].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+  return {
+    where:`TikTok ${fmtTime(times.tiktok)} · Instagram ${fmtTime(times.instagram)} · Pinterest next day ${fmtTime(times.pinterest)}`,
+    tiktok:{when:fmtTime(times.tiktok), type:isDump?'Photo mode carousel':'Video', text:[ep.hook&&('On-screen text: '+ep.hook), [ep.caption&&cap, ep.cta].filter(Boolean).join(' '), tags.join(' ')].filter(Boolean).join('\n')},
+    instagram:{when:fmtTime(times.instagram), type:isDump?'Carousel post':'Reel', text:[cap, ep.cta, '.', tags.slice(0,5).join(' ')].filter(Boolean).join('\n'), extra:isDump?'Share slide 1 to your Story with a poll sticker.':'Share the Reel to your Story with a poll or question sticker.'},
+    pinterest:{when:'Next day '+fmtTime(times.pinterest), type:isDump?'Image pin (2:3) — best slide with title text':'Video pin — upload without the TikTok watermark', board:board.name, title:pinTitle, desc, link:links.ltk||''}
+  };
+}
+function platformHTML(pl){
+  const row = (icon, name, when, type, text, extra) => `<div class="plat"><div class="ph"><span>${icon}</span><span class="pn">${name}</span><span class="pw">${esc(when)}</span><button class="icon-btn" data-act="copy" data-text="${esc(text)}" title="Copy">📋</button></div><div class="pm" style="margin-top:0">${esc(type)}</div><div class="pt">${esc(text)}</div>${extra?`<div class="pm">${esc(extra)}</div>`:''}</div>`;
+  return row('📱','TikTok',pl.tiktok.when,pl.tiktok.type,pl.tiktok.text)
+    + row('📸','Instagram',pl.instagram.when,pl.instagram.type,pl.instagram.text,pl.instagram.extra)
+    + row('📌','Pinterest',pl.pinterest.when,pl.pinterest.type,pl.pinterest.title+'\n\n'+pl.pinterest.desc,'Board: '+pl.pinterest.board+(pl.pinterest.link?' · Link: '+pl.pinterest.link:' · Add your LTK link in Settings'));
+}
+
+// ── Big "Today" card: what to shoot and post, where, and when ──
+function todayCard(){
+  const today = todayStr(), tm = (()=>{ const d=new Date(); d.setDate(d.getDate()+1); return ymd(d); })();
+  const posts = load('posts').filter(r=>r.status!=='Posted');
+  const item = r => `<div class="ti"><div class="tt">${esc(r.title)}</div><div class="tw">${[fmtTime(r.time), r.where].filter(Boolean).map(esc).join(' · ')||'Anytime'}</div></div>`;
+  const day = (d, label) => { const l = posts.filter(r=>r.date===d).sort(COLS.posts.sort); return `<div class="tl" style="margin-top:${label==='Today'?0:12}px">${label} · ${fmtDate(d)}</div>${l.length?l.map(item).join(''):'<div class="te">Nothing planned.</div>'}`; };
+  return `<div class="today">${day(today,'Today')}${day(tm,'Tomorrow')}<div class="row" style="margin-top:10px"><button class="btn sm" data-act="calopen" data-id="${today}">Open Calendar →</button></div></div>`;
+}
+
+// ═══════════════════════════════════════════════
+// PINTEREST TAB
+// ═══════════════════════════════════════════════
+function weekPins(){
+  const out = [];
+  Object.keys(SHOWS).forEach(sh=>{ showEpisodes(sh).filter(e=>e.wk && e.wk===WEEKLY_LATEST[sh]).forEach(e=>{
+    const t = allTemplates().find(x=>x.id===e.ep);
+    out.push({e, date: t ? (()=>{ const d=parseYmd(shootDate(sh,t)); d.setDate(d.getDate()+1); return ymd(d); })() : '', plan:platformPlan(e)});
+  }); });
+  return out.sort((a,b)=>a.date.localeCompare(b.date));
+}
+function renderPinterest(el){
+  const pins = load('pins'), wk = weekPins(), done = new Set(pins.map(p=>p.src).filter(Boolean));
+  const since = (()=>{ const d=new Date(); d.setDate(d.getDate()-7); return ymd(d); })();
+  const links = myLinks();
+  el.innerHTML = `
+    <div class="xxl-hero"><div class="eyebrow">✦ Growth ✦</div><h2>Pinterest</h2>
+      <p>Pinterest is a search engine: pins keep getting found for months. Lead with keywords, pin a little often, and link your LTK.</p>
+      <div class="xxl-prog" style="grid-template-columns:repeat(3,1fr)"><div><b>${pins.filter(p=>p.status==='Pinned'&&(p.date||'')>=since).length}</b><span>pinned this week</span></div><div><b>${pins.filter(p=>p.status==='Pinned').length}</b><span>pinned total</span></div><div><b>${PIN_BOARDS.length}</b><span>boards</span></div></div></div>
+    ${links.ltk?'':`<div class="alert">🛍️ Add your LTK link in <a href="#" data-act="panel" data-id="settings">Settings</a> so every pin can send people to shop.</div>`}
+    <h3 class="sec">📌 This week's pins</h3>
+    ${wk.length?wk.map(x=>`<div class="card"><div class="pick-label">${x.date?fmtDate(x.date)+' · '+fmtTime(postTimes().pinterest)+' · ':''}${esc(x.plan.pinterest.board)}</div>
+      <div class="pick-idea" style="margin-bottom:4px">${esc(x.plan.pinterest.title)}</div>
+      <div class="small muted">${esc(x.plan.pinterest.type)}</div><div class="small" style="margin:6px 0 10px">${esc(x.plan.pinterest.desc)}</div>
+      <div class="row"><button class="btn sm" data-act="copy" data-text="${esc(x.plan.pinterest.title)}">📋 Title</button><button class="btn sm" data-act="copy" data-text="${esc(x.plan.pinterest.desc)}">📋 Description</button>
+      ${done.has(x.e.ep)?'<span class="chip ok">✓ Pinned</span>':`<button class="btn sm primary" data-act="pinlog" data-key="${esc(x.e.key)}">✓ I pinned it</button>`}</div></div>`).join('')
+      :'<div class="empty">Your weekly ideas turn into pins here every Sunday.</div>'}
+    <h3 class="sec">🗂️ Your boards</h3>
+    ${PIN_BOARDS.map(b=>`<div class="card"><div class="row"><b style="flex:1">${esc(b.name)}</b><button class="icon-btn" data-act="copy" data-text="${esc(b.name)}" title="Copy name">📋</button></div>
+      <div class="small muted" style="margin:4px 0 6px">${esc(b.desc)}</div><button class="btn sm ghost" data-act="copy" data-text="${esc(b.desc)}">📋 Copy description</button></div>`).join('')}
+    <h3 class="sec">🔑 Keyword bank</h3>
+    <div class="card small muted" style="margin-bottom:8px">Put one of these at the start of a pin title. Tap to copy.</div>
+    <div>${[...new Set(PIN_BOARDS.flatMap(b=>b.kw))].map(k=>`<button class="chip kw" data-act="copy" data-text="${esc(k)}">${esc(k)}</button>`).join('')}</div>
+    <h3 class="sec">🚀 Set up your Pinterest</h3>
+    ${checklistHTML('pinsetup')}
+    <h3 class="sec">🛍️ LTK, the easy way</h3>
+    <div class="card"><ol style="padding-left:20px;font-size:14px">${LTK_STEPS.map(x=>`<li style="margin-bottom:4px">${esc(x)}</li>`).join('')}</ol></div>
+    <h3 class="sec">📈 Pin tracker <span class="spacer"></span><button class="btn sm primary" data-act="add" data-col="pins">+ Pin</button></h3>
+    ${pins.length?pins.sort(COLS.pins.sort).map(r=>recCard('pins',r)).join(''):'<div class="empty">Tap "I pinned it" on a pin above, or add one here.</div>'}`;
 }
 
 // ═══════════════════════════════════════════════
@@ -1642,6 +1797,11 @@ function renderSettings(el){
   el.innerHTML = `<h2 class="ptitle">⚙️ Settings</h2><div class="psub">Trish Badd Content Studio</div>
     <div class="card"><div class="field"><label>Appearance</label><select data-input="theme">${[['auto','Match my phone'],['light','Light (ivory)'],['dark','Dark (black & gold)']].map(([v,l])=>`<option value="${v}" ${theme===v?'selected':''}>${l}</option>`).join('')}</select></div>
     <div class="field"><label>Days between nail appointments</label><input type="number" inputmode="numeric" min="5" max="60" value="${+lsGet('trishbad__fillDays',21)||21}" data-input="filldays"></div></div>
+    <div class="card"><b>Posting times</b><div class="small muted" style="margin:4px 0 10px">Used for your Calendar and every "Post it on" plan.</div>
+      <div class="ctrls" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">${[['tiktok','📱 TikTok'],['instagram','📸 Instagram'],['pinterest','📌 Pinterest']].map(([k,l])=>`<div class="field" style="margin:0"><label>${l}</label><input type="time" value="${esc(postTimes()[k])}" data-input="ptime" data-k="${k}"></div>`).join('')}</div></div>
+    <div class="card"><b>Your links</b><div class="small muted" style="margin:4px 0 10px">Added to Pinterest pin descriptions so people can shop.</div>
+      <div class="field"><label>LTK link</label><input type="url" placeholder="https://www.shopltk.com/explore/…" value="${esc(myLinks().ltk)}" data-input="mylink" data-k="ltk"></div>
+      <div class="field" style="margin:0"><label>Amazon storefront (optional)</label><input type="url" placeholder="https://www.amazon.com/shop/…" value="${esc(myLinks().amazon)}" data-input="mylink" data-k="amazon"></div></div>
     <div class="card"><b>Sync</b><div class="small muted" style="margin:4px 0 10px">Your entries sync to your other devices whenever you're online — the dot at the top shows green when synced and grey when it couldn't reach the cloud (your entries stay saved on this phone and sync next time). The filming checklists stay on this phone.</div><button class="btn" data-act="syncnow">🔄 Sync now</button></div>
     <div class="card"><b>Backup</b><div class="small muted" style="margin:4px 0 10px">Download a copy of everything, or restore from one.</div>
       <div class="row"><button class="btn" data-act="export">⬇️ Download backup</button><label class="btn">⬆️ Restore backup<input type="file" accept="application/json,.json" data-input="import" style="display:none"></label></div></div>
@@ -1655,7 +1815,8 @@ function applyTheme(){
 function exportBackup(){
   const out = {app:'trishbad', at:new Date().toISOString(), data:{}};
   COL_KEYS.forEach(k=>out.data[k]=load(k));
-  out.checklist = getChecklist();
+  out.checklist = getChecklist('film');
+  out.times = lsGet('trishbad__times', {}); out.links = lsGet('trishbad__links', {});
   const blob = new Blob([JSON.stringify(out)],{type:'application/json'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='trish-badd-backup-'+todayStr()+'.json'; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(a.href),2000);
@@ -1674,6 +1835,8 @@ function importBackup(file){
         save(k, Object.values(byId));
       });
       if(Array.isArray(j.checklist)) lsSet('trishbad__checklist', j.checklist);
+      if(j.times && typeof j.times==='object') lsSet('trishbad__times', j.times);
+      if(j.links && typeof j.links==='object') lsSet('trishbad__links', j.links);
       pushAll(); toast('Backup restored ✓'); rerender();
     }catch(e){ toast('That file isn\'t a Trish Badd backup'); }
   };
@@ -1807,6 +1970,7 @@ function seedDefaults(){
 document.addEventListener('click', e=>{
   const b = e.target.closest('[data-act]'); if(!b) return;
   const a = b.dataset.act, d = b.dataset;
+  if(b.tagName==='A') e.preventDefault();
   if(a==='closeform' && e.target!==b) return; // clicks inside the sheet don't close it
   switch(a){
     case 'group': { const g=GROUPS.find(x=>x.id===d.id); showPanel(g.panels[0]); break; }
@@ -1837,6 +2001,14 @@ document.addEventListener('click', e=>{
     case 'hubweek': hubState[d.show].series='week'; hubState[d.show].status=''; if(d.show==='scent') hubState.scent.view='episodes'; showPanel(d.show); break;
     case 'hubadd': { const st=hubState[d.show], S=SHOWS[d.show]; openForm('episodes', null, {status:'Idea', series:(st.series&&st.series!=='week')?seriesById(st.series).name:S.series[0].name}, r=>{ xxlOpen.add(r.id); }); break; }
     case 'scentview': hubState.scent.view=d.id; rerender(); break;
+    case 'calopen': calSel=d.id; calMonth=null; showPanel('calendar'); break;
+    case 'pinlog': {
+      const ep=epByKey(d.key); if(!ep) break;
+      if(load('pins').some(p=>p.src===ep.ep)){ toast('Already logged'); break; }
+      const pin=platformPlan(ep).pinterest;
+      addRec('pins', {title:pin.title, board:pin.board, type:/Video/.test(pin.type)?'Video pin':'Image pin', status:'Pinned', date:todayStr(), link:pin.link, desc:pin.desc, src:ep.ep});
+      toast('📌 Logged'); rerender(); break;
+    }
     case 'pairocc': hubState.scent.occ=d.id; hubRefresh(); break;
     case 'pairvid': saveIdea(d.text, 'Perfume'); break;
     case 'epcopy': { const ep=epByKey(d.key); if(ep) copyText(epCaption(ep)); break; }
@@ -1885,6 +2057,8 @@ document.addEventListener('change', e=>{
     }
     case 'theme': lsSet('trishbad__theme',t.value); applyTheme(); break;
     case 'filldays': lsSet('trishbad__fillDays', Math.max(1,+t.value||21)); toast('Saved ✓'); break;
+    case 'ptime': { const v=lsGet('trishbad__times',{}); v[t.dataset.k]=t.value||DEFAULT_TIMES[t.dataset.k]; lsSet('trishbad__times',v); toast('Saved ✓'); break; }
+    case 'mylink': { const v=lsGet('trishbad__links',{}); v[t.dataset.k]=t.value.trim(); lsSet('trishbad__links',v); toast('Saved ✓'); break; }
     case 'photo': { const f=t.files&&t.files[0]; if(!f) return; compressImage(f, url=>{ formCtx.photos[t.dataset.k]=url; $('#ph-'+t.dataset.k).innerHTML=photoInner(t.dataset.k); }); break; }
     case 'import': if(t.files&&t.files[0]) importBackup(t.files[0]); t.value=''; break;
   }
