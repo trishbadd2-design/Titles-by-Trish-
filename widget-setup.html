@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trish Today Widget</title>
+<meta name="theme-color" content="#141210">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#f5efe4;--card:#fffcf6;--ink:#17140f;--dim:#6f665a;--gold:#9a7337;--line:rgba(23,20,15,.13);}
+@media (prefers-color-scheme: dark){:root{--bg:#100f0d;--card:#1c1a16;--ink:#f0e7d8;--dim:#a39886;--gold:#d4b27a;--line:rgba(240,231,216,.12);}}
+body{background:var(--bg);color:var(--ink);font-family:'Jost',system-ui,sans-serif;font-size:16px;line-height:1.55;}
+header{background:#141210;color:#f3ead9;text-align:center;padding:28px 16px 22px;}
+header .eb{font-size:11px;letter-spacing:5px;color:#c9a66b;text-transform:uppercase;}
+header h1{font-family:'Cormorant Garamond',serif;font-size:38px;letter-spacing:3px;margin-top:4px;}
+header p{color:rgba(243,234,217,.7);font-size:14px;}
+main{max-width:640px;margin:0 auto;padding:18px 16px 60px;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;}
+h2{font-family:'Cormorant Garamond',serif;font-size:26px;margin:18px 0 8px;}
+ol{padding-left:22px;}
+li{margin-bottom:10px;}
+b{font-weight:600;}
+.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:10px;padding:12px 18px;font:inherit;font-weight:600;background:#141210;color:#e2c58f;cursor:pointer;}
+.btn.alt{background:transparent;color:var(--gold);border:1px solid var(--gold);}
+pre{background:#141210;color:#e2c58f;border-radius:10px;padding:12px;font-size:11px;max-height:220px;overflow:auto;white-space:pre-wrap;word-break:break-word;margin-top:10px;}
+.muted{color:var(--dim);font-size:14px;}
+.ok{color:var(--gold);font-weight:600;margin-left:8px;}
+code{background:var(--line);border-radius:4px;padding:1px 5px;font-size:14px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="eb">✦ Home-screen widget ✦</div>
+  <h1>Trish Today</h1>
+  <p>What you're shooting and posting today and tomorrow, from both apps.</p>
+</header>
+<main>
+  <div class="card">
+    <b>What it shows</b>
+    <div class="muted" style="margin-top:4px">💅 / 🌸 Trish Badd shoot days · 📌 Pinterest pins · 📚 Titles by Trish videos, with the time and where to post. It refreshes about every 30 minutes, and tapping it opens your app.</div>
+  </div>
+
+  <h2>1. Get Scriptable</h2>
+  <div class="card">Install <b>Scriptable</b> (free) from the App Store, then open it once.</div>
+
+  <h2>2. Copy the widget</h2>
+  <div class="card">
+    <button class="btn" id="copy" disabled>📋 Copy widget code</button><span class="ok" id="copied"></span>
+    <pre id="code">Loading…</pre>
+  </div>
+
+  <h2>3. Paste it into Scriptable</h2>
+  <div class="card"><ol>
+    <li>In Scriptable, tap <b>+</b> (top right).</li>
+    <li>Tap the empty page, then <b>Paste</b>.</li>
+    <li>Tap the title at the top and name it <b>Trish Today</b>.</li>
+    <li>Tap <b>Done</b>. Tap the script once to preview it.</li>
+  </ol></div>
+
+  <h2>4. Add it to your home screen</h2>
+  <div class="card"><ol>
+    <li>Press and hold an empty spot on your home screen until the apps jiggle.</li>
+    <li>Tap <b>Edit</b> (or <b>+</b>) → search <b>Scriptable</b>.</li>
+    <li>Pick the <b>large</b> size (today + tomorrow) or <b>medium</b> (today), then <b>Add Widget</b>.</li>
+    <li>Tap the new widget while it's still jiggling → <b>Script</b> → choose <b>Trish Today</b>.</li>
+    <li>Optional: in <b>Parameter</b> type <code>badd</code> for Trish Badd only or <code>books</code> for Titles by Trish only. Leave it empty for both. You can add two widgets, one of each.</li>
+  </ol></div>
+
+  <h2>Good to know</h2>
+  <div class="card muted">
+    <p>• Titles by Trish shares its calendar with the widget each time you open it. If book videos look out of date, open Titles by Trish once.</p>
+    <p style="margin-top:6px">• Trish Badd shows the moment your phone syncs, so changes in the app appear on the next widget refresh.</p>
+    <p style="margin-top:6px">• Offline? It shows the last update it saw.</p>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
+    <a class="btn alt" href="trish-badd/">💅 Open Trish Badd</a>
+    <a class="btn alt" href="./">📚 Open Titles by Trish</a>
+  </div>
+</main>
+<script>
+let code = '';
+fetch('trish-today-widget.js', {cache:'no-store'})
+  .then(r => r.ok ? r.text() : Promise.reject())
+  .then(t => { code = t; document.getElementById('code').textContent = t; document.getElementById('copy').disabled = false; })
+  .catch(() => { document.getElementById('code').textContent = 'Could not load the widget code. Check your connection and reload this page.'; });
+document.getElementById('copy').addEventListener('click', () => {
+  const done = () => { document.getElementById('copied').textContent = '✓ Copied'; };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(code).then(done).catch(fallback);
+  else fallback();
+  function fallback(){ const ta=document.createElement('textarea'); ta.value=code; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); done();}catch(e){} ta.remove(); }
+});
+</script>
+</body>
+</html>

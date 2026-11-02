@@ -1,4 +1,4 @@
-const CACHE = 'titlesbytrish-v6';
+const CACHE = 'titlesbytrish-v7';
 const STATIC = [
   '/Titles-by-Trish-/manifest.json',
   '/Titles-by-Trish-/icons/icon-192.png',
@@ -34,8 +34,8 @@ self.addEventListener('fetch', e => {
     );
     return;
   }
-  // Data files (like pinterest-ideas.json) always fresh, with an offline fallback
-  if (url.origin === self.location.origin && url.pathname.endsWith('.json')) {
+  // Data and script files (pinterest-ideas.json, the widget script) always fresh, with an offline fallback
+  if (url.origin === self.location.origin && (url.pathname.endsWith('.json') || url.pathname.endsWith('.js'))) {
     e.respondWith(
       fetch(e.request).then(res => {
         if (res.ok) { const clone = res.clone(); caches.open(CACHE).then(c => c.put(e.request, clone)); }

@@ -3738,6 +3738,7 @@ function renderCalendar(){
   });
   cal.innerHTML=html;
   updateStats();
+  tbtQueueWidgetFeed();
 }
 
 function toggleCard(id){document.getElementById('card-'+id).classList.toggle('expanded');}
@@ -10872,6 +10873,26 @@ function renderPinterest(){
     +(tbtPins.length?tbtPins.map(function(p){return '<div style="'+card+'display:flex;gap:10px;align-items:center;"><div style="flex:1;"><div style="font-weight:700;font-size:14px;">'+escHtml(p.title)+'</div><div style="font-size:12px;color:var(--text-dim);">'+escHtml(p.date)+' · '+escHtml(p.board)+'</div></div><button class="btn-script" style="font-size:12px;color:rgba(255,100,100,.8);" onclick="tbtDelPin(\''+p.id+'\')">✕</button></div>';}).join(''):'');
 }
 tbtLoadWeeklyPins();
+
+// ── Feed for the "Trish Today" Scriptable widget ──
+// The calendar lives on this phone, so the next 14 days (plus this week's pins)
+// are copied to /widget/tbt in the cloud whenever the calendar changes.
+var _tbtFeedT=null;
+function tbtQueueWidgetFeed(){clearTimeout(_tbtFeedT);_tbtFeedT=setTimeout(tbtPushWidgetFeed,2500);}
+function tbtPushWidgetFeed(){
+  try{
+    var pf=tbtPlatform(),items=[];
+    for(var i=0;i<14;i++){var d=new Date();d.setDate(d.getDate()+i);var iso=tbtYmd(d);
+      tbtEntriesOn(d).forEach(function(v){items.push({d:iso,t:tbtStrip(v.title),k:v.type||'',done:(typeof doneSet!=='undefined'&&doneSet.has(v.id))?1:0,tm:pf.times.tiktok});});}
+    var weeks=(tbtWeeklyPins&&Array.isArray(tbtWeeklyPins.weeks))?tbtWeeklyPins.weeks:[],w=weeks[weeks.length-1];
+    if(w&&Array.isArray(w.pins))w.pins.forEach(function(p){if(p&&p.day&&p.title)items.push({d:p.day,t:p.title,k:'Pinterest',pin:1,tm:pf.times.pinterest});});
+    var json=JSON.stringify(items);
+    if(localStorage.getItem('tbtrish_widgetfeed')===json)return;
+    fetch(FIREBASE_URL+'/widget/tbt.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({updated:Date.now(),items:items})})
+      .then(function(r){if(r.ok)localStorage.setItem('tbtrish_widgetfeed',json);}).catch(function(){});
+  }catch(e){}
+}
+setTimeout(tbtPushWidgetFeed,4000);
 
 // CHALLENGE TARGET EDIT
 function updateChallengeTarget(id,val){var c=challengeList.find(function(x){return x.id===id;});if(c){c.target=parseInt(val)||0;localStorage.setItem('tbtrish_challenges',JSON.stringify(challengeList));renderChallenges();}}

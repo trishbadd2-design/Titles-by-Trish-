@@ -6,5 +6,7 @@
 
 ## [💅 Open Trish Badd App](https://trishbadd2-design.github.io/Titles-by-Trish-/trish-badd/)
 
+## [📱 Set up the Trish Today home-screen widget](https://trishbadd2-design.github.io/Titles-by-Trish-/widget-setup.html)
+
 Once it opens in Safari, tap the Share button ⬆️ → Add to Home Screen → Add
 (do this once for each app so you get two icons)
