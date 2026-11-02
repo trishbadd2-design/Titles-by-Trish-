@@ -201,6 +201,16 @@ details.ep .ebody{padding:0 14px 14px;border-top:1px solid var(--line);}
 .verdict-Takes{background:var(--warn-bg);color:var(--warn);}
 .verdict-Not{background:var(--bad-bg);color:var(--bad);}
 
+/* ── SCENT DIARIES: PAIRING GUIDE ── */
+.occ{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow);}
+.occ .on{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:700;line-height:1.15;}
+.occ .vibe{font-size:13.5px;color:var(--dim);font-style:italic;margin-bottom:6px;}
+.combo{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line);}
+.combo .cx{flex:1;min-width:0;}
+.combo .cn{font-weight:600;font-size:15px;}
+.combo .cw{font-size:13px;color:var(--dim);}
+.mine{background:var(--gold-faint);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:14px;}
+
 /* ── TOAST ── */
 #toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:99;max-width:90vw;text-align:center;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -409,7 +419,7 @@ const PILLARS = [
   tags:'#haul #tryonhaul #clothinghaul #shopwithme #keeporreturn #fashionhaul #shoppinghaul'
 },
 {
-  id:'perfume', name:'Perfume', emoji:'🌸', blurb:'Collection, reviews, layering and scent of the day.',
+  id:'perfume', name:'Perfume', emoji:'🌸', blurb:'Vanilla-forward collection, layering, reviews and scent of the day.',
   formats:['Scent of the day','Collection tour','Honest review','Layering combo','Ranking'],
   ideas:[
     'My perfume collection tour',
@@ -644,7 +654,7 @@ const DEFAULT_CHECKLIST = [
 // Keys: s=series t=title h=hook sh=shots c=caption tg=5 hashtags cta f=format
 // ═══════════════════════════════════════════════
 const XXL_SERIES = [
-  {id:'can', name:'Can I Do It With XXL Nails?', short:'Can I Do It?', emoji:'🤔'},
+  {id:'can', name:'Can I Do It With XXL Nails?', short:'Can I Do It?', emoji:'🤔', verdicts:['Easy','Takes Practice','Not Happening']},
   {id:'qa', name:'Questions I Always Get', short:'Questions', emoji:'❓'},
   {id:'sets', name:'Nail Set Diaries', short:'Set Diaries', emoji:'💎'},
   {id:'dumps', name:'Photo Dumps', short:'Photo Dumps', emoji:'📸'}
@@ -722,6 +732,125 @@ const XXL_CHECKLIST = [
 ];
 
 // ═══════════════════════════════════════════════
+// SCENT DIARIES — perfume series library (vanilla is the signature)
+// Same shape as XXL_EPISODES. Ids start with "pf" so they never collide.
+// ═══════════════════════════════════════════════
+const SCENT_SERIES = [
+  {id:'ptest', name:'Does It Last?', short:'Does It Last?', emoji:'⏱️', verdicts:['Lasted all day','Faded by lunch','Gone in an hour']},
+  {id:'ppair', name:'Scent Pairings', short:'Pairings', emoji:'🧪'},
+  {id:'pvan', name:'The Vanilla Files', short:'Vanilla Files', emoji:'🍦'},
+  {id:'pdump', name:'Scent Photo Dumps', short:'Photo Dumps', emoji:'📸'}
+];
+const TEST_CTA = 'What should I test my perfume against next? 👇';
+const SCENT_EPISODES = [
+  // ── Does It Last? (funny everyday tests) ──
+  {id:'pf-t01', s:'ptest', t:'Does my vanilla perfume survive a 12-hour day?', h:'Sprayed at 8 AM. Let\'s see who\'s still here at 8 PM.', sh:['Spray on camera with the time on screen — 2 sprays, wrists + neck.','Quick sniff check-ins: lunch, errands, after the car.','8 PM sniff test + verdict overlay.'], c:'12 hours, one vanilla. Verdict: ___ ⏱️🍦', tg:['#vanillaperfume','#perfumetok','#longlastingperfume','#perfumetest','#fragrance'], cta:TEST_CTA, f:'Test · time-stamped check-ins'},
+  {id:'pf-t02', s:'ptest', t:'Compliment counter: wearing vanilla to Target', h:'Same perfume, one Target run. Counting every compliment.', sh:['Spray in the car + "compliment counter: 0" overlay.','Walk the aisles, update the counter after every comment.','Final count in the parking lot + reaction.'], c:'Vanilla really said main character energy 🎯🍦', tg:['#vanillaperfume','#perfumetok','#complimentgetter','#targetrun','#perfume'], cta:'What\'s your most complimented scent? 👇', f:'Challenge · counter overlay'},
+  {id:'pf-t03', s:'ptest', t:'Can my perfume survive the gym?', h:'Vanilla vs. a full workout. Who wins?', sh:['Spray before the gym — dramatic slow-mo spritz.','Workout B-roll (keep it cute).','Post-workout sniff + honest verdict.'], c:'Perfume vs. leg day. Verdict: ___ 🏋🏽‍♀️🍦', tg:['#vanillaperfume','#perfumetok','#gymgirl','#perfumetest','#fragrance'], cta:TEST_CTA, f:'Test · before / after'},
+  {id:'pf-t04', s:'ptest', t:'Blind smell test: can my bestie guess my perfume?', h:'If she really knows me, she knows my scent.', sh:['Blindfold your friend — 3 perfumes lined up.','She smells each one and guesses which is "yours".','Reveal + reaction.'], c:'She passed (or did she?) 😂🍦', tg:['#vanillaperfume','#perfumetok','#blindsmelltest','#bestie','#perfume'], cta:'Tag the friend who could pass this test', f:'Challenge · duo'},
+  {id:'pf-t05', s:'ptest', t:'Rating my perfumes by how hungry they make people', h:'Gourmand girlies, this one\'s for you.', sh:['Line up your sweetest perfumes.','Have someone smell each one and rate their hunger 1–10.','Winner reveal: "the snack" award.'], c:'Some of these should come with a dessert menu 🍰🍦', tg:['#vanillaperfume','#gourmandperfume','#perfumetok','#perfumereview','#fragrance'], cta:'Which perfume makes YOU hungry?', f:'Ranking · funny'},
+  {id:'pf-t06', s:'ptest', t:'How the internet says to apply perfume vs. how I actually do it', h:'Perfume tutorials vs. me running late.', sh:['"The internet": calm pulse-point spritzes, elegant.','"Me": spray-and-walk-through cloud, spraying the car.','Look to camera: which one smells better at night?'], c:'Both methods are valid. One is chaos 😂', tg:['#perfumetok','#perfumetips','#vanillaperfume','#relatable','#fragrance'], cta:'Which one are you? 1 or 2?', f:'Skit · split screen'},
+  {id:'pf-t07', s:'ptest', t:'Does it last longer on clothes or skin?', h:'Spraying my sweater vs. my wrist. Checking tomorrow.', sh:['Spray sweater sleeve + wrist, label both on screen.','Check at 4 hours.','Next-morning sniff + verdict.'], c:'Sweater vs. skin — the results surprised me 🧥🍦', tg:['#perfumetok','#perfumetips','#vanillaperfume','#longlastingperfume','#fragrance'], cta:'Do you spray your clothes? Be honest', f:'Test · next-day check'},
+  {id:'pf-t08', s:'ptest', t:'The car test: does my car smell like vanilla now?', h:'One week of vanilla. Let\'s smell the car.', sh:['Day 1: spray before getting in the car.','Day 7: get in and do a dramatic sniff.','Have a passenger rate it.'], c:'My car is a vanilla candle now and I\'m fine with it 🚗🍦', tg:['#vanillaperfume','#perfumetok','#carscent','#relatable','#perfume'], cta:'Should my car get its own signature scent?', f:'Test · week-long'},
+  {id:'pf-t09', s:'ptest', t:'Smell me at the end of the day', h:'I asked everyone I saw today to smell me. For science.', sh:['Morning spray + "the experiment" overlay.','Ask friends / coworkers / family for a sniff + one-word review.','Evening recap of the best reviews.'], c:'The reviews are in… 😂🍦', tg:['#vanillaperfume','#perfumetok','#perfumereview','#scentoftheday','#fragrance'], cta:'Describe your perfume in one word 👇', f:'Vlog · reactions'},
+  {id:'pf-t10', s:'ptest', t:'Perfume vs. a rainy day', h:'Does vanilla still project in the rain?', sh:['Spray at the door, umbrella in hand.','Rainy errand B-roll.','Back home: sniff test + verdict.'], c:'Vanilla in the rain. Verdict: ___ ☔🍦', tg:['#vanillaperfume','#perfumetok','#rainyday','#perfumetest','#fragrance'], cta:TEST_CTA, f:'Test · before / after'},
+
+  // ── Scent Pairings ──
+  {id:'pf-p01', s:'ppair', t:'Date night layering: vanilla + amber', h:'The combo that makes people lean in.', sh:['Both bottles on a vanity, soft lighting.','Layer: vanilla first, amber on top — pulse points.','GRWM finish + "date night ready" pose.'], c:'Vanilla + amber = warm, glowy, expensive 🌙🍦', tg:['#perfumelayering','#vanillaperfume','#datenightperfume','#perfumetok','#fragrance'], cta:'Would you wear this on a date?', f:'Tutorial · layering'},
+  {id:'pf-p02', s:'ppair', t:'Fall layering combo: vanilla + warm spice', h:'This smells like a cinnamon latte in a cashmere sweater.', sh:['Fall flat lay: sweater, latte, both bottles.','Layer on camera + quick explanation.','Walk outside in fall leaves — slow pan.'], c:'Fall in a bottle (well, two bottles) 🍂🍦', tg:['#perfumelayering','#fallperfume','#vanillaperfume','#perfumetok','#cozyseason'], cta:'What\'s your fall signature scent?', f:'Tutorial · layering'},
+  {id:'pf-p03', s:'ppair', t:'Winter cozy combo: vanilla + cashmere musk + amber', h:'If a fireplace was a person.', sh:['Blanket, candle, three bottles.','Layer order on screen: musk → vanilla → amber.','Cozy close-up: wrist to nose.'], c:'Wrapped in vanilla all winter ❄️🍦', tg:['#perfumelayering','#winterperfume','#vanillaperfume','#perfumetok','#cozy'], cta:'Fireplace scent or snow-day scent — which are you?', f:'Tutorial · layering'},
+  {id:'pf-p04', s:'ppair', t:'Spring layering: vanilla + soft florals', h:'Vanilla, but make it spring.', sh:['Fresh flowers + both bottles.','Layer: vanilla first, floral on top.','Outdoor sunny walk + hair flip.'], c:'Vanilla in her soft era 🌸🍦', tg:['#perfumelayering','#springperfume','#vanillaperfume','#perfumetok','#floralperfume'], cta:'Floral or fruity for spring?', f:'Tutorial · layering'},
+  {id:'pf-p05', s:'ppair', t:'Summer layering: vanilla + coconut', h:'Vacation in a bottle. No flight required.', sh:['Beachy flat lay: sunglasses, both bottles.','Layer + spritz on shoulders.','Sunny clip + "smells like vacation" overlay.'], c:'Coconut vanilla summer, no notes 🥥🍦', tg:['#perfumelayering','#summerperfume','#vanillaperfume','#perfumetok','#coconutperfume'], cta:'What does summer smell like to you?', f:'Tutorial · layering'},
+  {id:'pf-p06', s:'ppair', t:'Office-safe vanilla combo (no headaches allowed)', h:'Smell amazing at work without gassing out the meeting.', sh:['Desk setup with both bottles.','One light spray each — show the restraint.','Coworker-safe verdict (or your own sniff test).'], c:'Soft vanilla + clean musk = office approved 💼🍦', tg:['#perfumelayering','#officeperfume','#vanillaperfume','#perfumetok','#skinscent'], cta:'What do you wear to work?', f:'Tutorial · layering'},
+  {id:'pf-p07', s:'ppair', t:'Layering a cheap vanilla with a luxury one', h:'Making my $15 vanilla smell like $150.', sh:['Price tags on screen for both.','Layer and explain the trick.','Blind sniff test with a friend: "how much is this?"'], c:'Budget + bougie = the secret combo 💸🍦', tg:['#perfumelayering','#vanillaperfume','#affordableperfume','#perfumetok','#perfumehack'], cta:'Want more budget layering hacks?', f:'Hack · before / after'},
+  {id:'pf-p08', s:'ppair', t:'You pick my layering combo', h:'You choose. I wear it all day. No take-backs.', sh:['Show 4 options from your collection.','Read the top comment and layer it on camera.','End-of-day review: hit or miss?'], c:'Y\'all picked… and I have thoughts 😂🧪', tg:['#perfumelayering','#vanillaperfume','#perfumetok','#youpick','#fragrance'], cta:'Comment the combo I should try next 👇', f:'Interactive · comment reply'},
+
+  // ── The Vanilla Files ──
+  {id:'pf-v01', s:'pvan', t:'Ranking every vanilla perfume I own', h:'Every vanilla I own, worst to best. No mercy.', sh:['Line up every vanilla on a tray.','Spray card + one-line review for each, worst to best.','Crown the #1 with a dramatic close-up.'], c:'The vanilla ranking you didn\'t know you needed 🍦👑', tg:['#vanillaperfume','#perfumeranking','#perfumecollection','#perfumetok','#fragrance'], cta:'Did I get #1 right?', f:'Ranking'},
+  {id:'pf-v02', s:'pvan', t:'Gourmand vanilla vs. woody vanilla — what\'s the difference?', h:'Not all vanillas are cupcakes.', sh:['Two bottles side by side with labels: "dessert" vs. "dark & woody".','Spray cards + describe each in 3 words.','Which one for which occasion?'], c:'Team cupcake or team cozy cabin? 🍰🌲', tg:['#vanillaperfume','#gourmandperfume','#perfumetok','#perfumeeducation','#fragrance'], cta:'Which vanilla are you?', f:'Explainer · comparison'},
+  {id:'pf-v03', s:'pvan', t:'Cheap vanilla vs. luxury vanilla: blind test', h:'Can anyone actually tell the difference?', sh:['Hide the bottles — label A and B.','Have a friend smell + guess the expensive one.','Reveal the prices + reaction.'], c:'The price reveal had me shook 💸🍦', tg:['#vanillaperfume','#perfumedupe','#blindtest','#perfumetok','#affordableperfume'], cta:'Would you pay for the expensive one?', f:'Challenge · blind test'},
+  {id:'pf-v04', s:'pvan', t:'Vanilla perfumes that don\'t smell like a cupcake', h:'For the girls who love vanilla but not the bakery.', sh:['"Not a cupcake" overlay + your picks lined up.','One-line description each: smoky, boozy, woody, musky.','Your favorite on your wrist, slow pan.'], c:'Grown-up vanilla only 🖤🍦', tg:['#vanillaperfume','#perfumetok','#woodyperfume','#perfumerecommendations','#fragrance'], cta:'Drop your favorite non-sweet vanilla 👇', f:'Recommendations'},
+  {id:'pf-v05', s:'pvan', t:'My vanilla collection tour', h:'Welcome to my vanilla shelf. Yes, it\'s a lot.', sh:['Wide shot of the shelf.','Pick up each bottle + one fun fact.','End with your current daily vanilla.'], c:'A vanilla girl and her shelf 🍦✨', tg:['#vanillaperfume','#perfumecollection','#perfumeshelf','#perfumetok','#fragrance'], cta:'Which one should I review first?', f:'Collection tour'},
+  {id:'pf-v06', s:'pvan', t:'Vanilla for people who think they hate vanilla', h:'"I hate vanilla." Okay, smell this.', sh:['Skit: friend says "I hate vanilla."','Hand them 3 unexpected vanillas to try.','Their reaction + the winner.'], c:'Converting vanilla haters one spray at a time 😌🍦', tg:['#vanillaperfume','#perfumetok','#perfumerecommendations','#fragrance','#scenttok'], cta:'Tag a vanilla hater 😂', f:'Skit + recommendations'},
+  {id:'pf-v07', s:'pvan', t:'The vanilla I\'d wear forever', h:'If I could only keep one vanilla…', sh:['Shelf of vanillas, hand hovering.','Pick the one + explain why (notes, memories, compliments).','Spray + slow pan with the bottle.'], c:'Til death do us part 🍦💍', tg:['#vanillaperfume','#signaturescent','#perfumetok','#perfumecollection','#fragrance'], cta:'What\'s your forever scent?', f:'Story · talking head'},
+  {id:'pf-v08', s:'pvan', t:'Matching my vanilla to my XXL nails', h:'The nails picked the perfume today.', sh:['Close-up: XXL set next to 3 bottles.','Hold each bottle against the nails — color/vibe match.','The winner + full-hand slow pan.'], c:'Nails, perfume, vibe — all matching 💅🍦', tg:['#vanillaperfume','#xxlnails','#perfumetok','#nailtok','#aesthetic'], cta:'Should I match my perfume to every set?', f:'Styling · cross-series'},
+
+  // ── Scent Photo Dumps ──
+  {id:'pf-d01', s:'pdump', t:'Scent of the week dump', h:'This week smelled like vanilla.', sh:['The bottle in morning light','Spray mid-air shot','Coffee + bottle','Outfit with the bottle in hand','Night out shot','Bottle on the nightstand'], c:'Caption prompt: the scent + 3 words for the week. e.g. "Vanilla. Busy. Cozy. 🍦"', tg:['#vanillaperfume','#scentoftheweek','#photodump','#perfumetok','#aesthetic'], cta:'What scent carried your week?', f:'Photo carousel · 6 slides'},
+  {id:'pf-d02', s:'pdump', t:'Perfume shelf flat lay dump', h:'My shelf, but make it editorial.', sh:['Full shelf wide shot','Top-down tray flat lay','Three favorites close-up','Bottle + jewelry styling','Bottle + XXL nails','Your hand reaching for today\'s pick'], c:'Caption prompt: "Pick one for me today — 1 to 6"', tg:['#perfumecollection','#perfumeshelf','#photodump','#vanillaperfume','#flatlay'], cta:'Pick my perfume for today 👇', f:'Photo carousel · 6 slides'},
+  {id:'pf-d03', s:'pdump', t:'Vanilla aesthetic dump', h:'Everything vanilla. Everything cream.', sh:['Vanilla latte','Cream knit sweater','Vanilla candle','Your vanilla bottle on a cream backdrop','Vanilla bean / dessert shot','Soft-light selfie with the bottle'], c:'Caption prompt: "Vanilla girl era, permanently." 🍦🤍', tg:['#vanillagirl','#vanillaperfume','#photodump','#aesthetic','#cozy'], cta:'Are you a vanilla girl too?', f:'Photo carousel · 6 slides'},
+  {id:'pf-d04', s:'pdump', t:'Date night getting-ready dump (perfume edition)', h:'Getting ready, one spray at a time.', sh:['Vanity with your date-night bottles','Makeup mid-way','Outfit on the bed','The layering moment','Final mirror selfie','Bottle by the door'], c:'Caption prompt: the combo you wore + "date night: handled 🌙"', tg:['#datenightperfume','#vanillaperfume','#grwm','#photodump','#perfumelayering'], cta:'Guess what I layered tonight 👀', f:'Photo carousel · 6 slides'},
+  {id:'pf-d05', s:'pdump', t:'My seasonal perfume rotation', h:'The lineup for this season.', sh:['All seasonal picks on a tray','Each bottle with a seasonal prop (leaves, snow, flowers, sun)','Your #1 for the season close-up','A cozy scene with the bottle','Wrist spray close-up'], c:'Caption prompt: the season + your #1. e.g. "Winter rotation is locked in ❄️🍦"', tg:['#perfumerotation','#vanillaperfume','#photodump','#perfumetok','#seasonalperfume'], cta:'What\'s in your rotation right now?', f:'Photo carousel · 5 slides'}
+];
+const SCENT_CHECKLIST = [
+  'Bottles wiped — no fingerprints',
+  'Labels turned to face camera',
+  'Spray cards / blotters ready',
+  'Soft, warm light (golden hour or lamp)',
+  'Clean, cream or neutral backdrop',
+  'Props for the vibe (candle, latte, sweater…)',
+  'Slow-mo spray shot',
+  'Wrist-to-nose close-up',
+  'Time stamp or counter overlay planned',
+  'Nails and jewelry camera-ready'
+];
+
+// ── Pairing guide: vanilla-forward layering by occasion & season ──
+// fam = note families that suit the occasion; base/accent drive the
+// "from your collection" matcher (base goes on first, accent on top).
+const SCENT_FAMILIES = {
+  vanilla:['vanilla','vanille','tonka'],
+  gourmand:['caramel','chocolate','cocoa','coffee','praline','honey','sugar','marshmallow','almond','pistachio','cream','dessert','cake','cookie'],
+  amber:['amber','resin','benzoin','labdanum','incense','myrrh'],
+  woody:['sandalwood','cedar','vetiver','oud','wood','patchouli','tobacco','leather'],
+  spicy:['cinnamon','cardamom','clove','pepper','saffron','spice','ginger','chai','nutmeg'],
+  musk:['musk','cashmere','skin','powder','iris'],
+  floral:['rose','jasmine','tuberose','peony','orange blossom','lily','gardenia','floral','magnolia','violet'],
+  fresh:['bergamot','lemon','orange','grapefruit','citrus','mandarin','neroli','tea','mint','green'],
+  fruity:['berry','cherry','peach','pear','apple','fig','plum','raspberry','fruit'],
+  tropical:['coconut','pineapple','mango','solar','sun','salt','sea','marine','aquatic']
+};
+const PAIR_GUIDE = [
+  {id:'date', name:'Date Night', emoji:'🌙', season:'Date night', vibe:'Warm, close-to-skin and a little addictive.',
+   base:['vanilla','amber','woody','gourmand'], accent:['musk','floral','spicy','amber'],
+   combos:[{a:'Vanilla',b:'Amber',why:'Warm, glowy and expensive — the classic date-night base.'},{a:'Vanilla',b:'Rose',why:'Soft and romantic without being sugary.'},{a:'Vanilla',b:'Sandalwood or oud',why:'Smoky, sultry, grown-up vanilla.'},{a:'Vanilla',b:'Cashmere musk',why:'"Your skin but better" — people lean in.'}],
+   tip:'Spray pulse points and a mist over your hair. It should be discovered up close, not announced across the room.',
+   avoid:'Sharp citrus or ocean scents — they read daytime.'},
+  {id:'fall', name:'Fall', emoji:'🍂', season:'Fall/Winter', vibe:'Cozy, spiced and sweater-ready.',
+   base:['vanilla','gourmand','woody','amber'], accent:['spicy','woody','gourmand','fruity'],
+   combos:[{a:'Vanilla',b:'Cinnamon or chai spice',why:'A cinnamon latte in a cashmere sweater.'},{a:'Vanilla',b:'Tobacco or leather',why:'Classic fall pairing — rich and a little edgy.'},{a:'Vanilla',b:'Caramel or praline',why:'Full dessert mode for cozy days.'},{a:'Amber',b:'Cardamom',why:'Warm and spicy without being sweet.'}],
+   tip:'Spray on your scarf or sweater too — fabric holds warm scents beautifully in cool air.',
+   avoid:'Very light, watery florals — they disappear in the cold.'},
+  {id:'winter', name:'Winter', emoji:'❄️', season:'Fall/Winter', vibe:'Rich, enveloping, fireplace energy.',
+   base:['vanilla','amber','woody','gourmand'], accent:['musk','amber','spicy','woody'],
+   combos:[{a:'Vanilla',b:'Amber + cashmere musk',why:'If a fireplace was a person.'},{a:'Vanilla',b:'Incense or resin',why:'Moody, cozy, a little mysterious.'},{a:'Vanilla',b:'Chocolate or cocoa',why:'Hot cocoa by the window.'},{a:'Vanilla',b:'Oud',why:'Bold and luxurious — perfect for holiday parties.'}],
+   tip:'Winter air mutes scent — go one spray heavier than usual, and moisturize first so it lasts.',
+   avoid:'Sheer citrus colognes on their own — they fade fast.'},
+  {id:'spring', name:'Spring', emoji:'🌸', season:'Spring/Summer', vibe:'Soft, fresh and pretty.',
+   base:['vanilla','musk'], accent:['floral','fruity','fresh'],
+   combos:[{a:'Vanilla',b:'Peony or rose',why:'Vanilla in her soft era.'},{a:'Vanilla',b:'Pear',why:'Juicy and light — pastel in a bottle.'},{a:'Vanilla',b:'Orange blossom',why:'Sunny, creamy, wedding-guest pretty.'},{a:'Musk',b:'Iris',why:'Clean, powdery and polished.'}],
+   tip:'Go lighter on the vanilla and let the floral or fruit lead.',
+   avoid:'Heavy oud or incense in warm weather.'},
+  {id:'summer', name:'Summer', emoji:'☀️', season:'Spring/Summer', vibe:'Sun-warmed, beachy and bright.',
+   base:['vanilla','tropical','musk'], accent:['tropical','fresh','fruity'],
+   combos:[{a:'Vanilla',b:'Coconut',why:'Vacation in a bottle.'},{a:'Vanilla',b:'Sea salt',why:'Salty-sweet beach skin.'},{a:'Vanilla',b:'Bergamot or orange',why:'Creamsicle — bright and fun.'},{a:'Coconut',b:'Sandalwood',why:'Warm sand at golden hour.'}],
+   tip:'Heat makes perfume project — fewer sprays, and spray clothes or hair instead of hot skin.',
+   avoid:'Dense gourmands in heavy humidity — they can get cloying.'},
+  {id:'everyday', name:'Everyday & Work', emoji:'💼', season:'Everyday', vibe:'Clean, soft and office-safe.',
+   base:['vanilla','musk'], accent:['musk','fresh','floral'],
+   combos:[{a:'Vanilla',b:'Clean musk',why:'A skin scent that still gets compliments.'},{a:'Vanilla',b:'Iris',why:'Powdery, polished, quietly expensive.'},{a:'Vanilla',b:'Tea',why:'Calm and fresh with a soft finish.'},{a:'Sandalwood',b:'Musk',why:'Warm, close and never overwhelming.'}],
+   tip:'One spray of each. If you can smell yourself all day, it\'s too much for the office.',
+   avoid:'Loud gourmands or oud in shared spaces.'}
+];
+const LAYER_RULES = [
+  'Heavier scent first (vanilla, amber, woods), lighter one on top (florals, fruits, citrus).',
+  'Stick to two perfumes — three max.',
+  'Start 1:1. If one takes over, do 2 sprays of the softer one.',
+  'Test on skin, not paper — vanilla changes a lot on skin.',
+  'Moisturize first (unscented or vanilla lotion) so it lasts longer.'
+];
+
+// ═══════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════
 const PILLAR_NAMES = PILLARS.map(p=>p.name);
@@ -778,8 +907,8 @@ const COLS = {
     fields:[{k:'title',l:'Video',t:'textarea',req:1},{k:'date',l:'Date',t:'date',req:1},{k:'time',l:'Time',t:'time'},{k:'pillar',l:'Pillar',t:'select',o:PILLAR_NAMES},{k:'status',l:'Status',t:'select',o:['Planned','Filmed','Posted']},{k:'notes',l:'Notes',t:'textarea'}],
     title:r=>r.title, line:r=>[fmtDate(r.date),r.time].filter(Boolean).join(' · '), chips:['pillar','status'],
     sort:(a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||''))},
-  episodes:{label:'XXL Nail Diaries episodes', noun:'episode', hidden:true,
-    fields:[{k:'title',l:'Episode title',t:'textarea',req:1},{k:'series',l:'Series',t:'select',o:XXL_SERIES.map(x=>x.name),req:1},{k:'status',l:'Progress',t:'select',o:EP_STATUSES},{k:'verdict',l:'Verdict (Can I Do It?)',t:'select',o:VERDICTS},{k:'format',l:'Format',t:'text'},{k:'hook',l:'Hook',t:'textarea'},{k:'shots',l:'Shot list (one per line)',t:'textarea'},{k:'caption',l:'Caption',t:'textarea'},{k:'tags',l:'5 hashtags',t:'text'},{k:'cta',l:'Call to action',t:'text'},{k:'nailSet',l:'Nail set (from Nail Log)',t:'select',o:()=>nailSetOptions()},{k:'notes',l:'Notes',t:'textarea'}],
+  episodes:{label:'Series episodes', noun:'episode', hidden:true,
+    fields:[{k:'title',l:'Episode title',t:'textarea',req:1},{k:'series',l:'Series',t:'select',o:()=>ALL_SERIES.map(x=>x.name),req:1},{k:'status',l:'Progress',t:'select',o:EP_STATUSES},{k:'verdict',l:'Verdict (test episodes)',t:'select',o:()=>ALL_SERIES.filter(x=>x.verdicts).flatMap(x=>x.verdicts)},{k:'format',l:'Format',t:'text'},{k:'hook',l:'Hook',t:'textarea'},{k:'shots',l:'Shot list (one per line)',t:'textarea'},{k:'caption',l:'Caption',t:'textarea'},{k:'tags',l:'5 hashtags',t:'text'},{k:'cta',l:'Call to action',t:'text'},{k:'nailSet',l:'Nail set (from Nail Log)',t:'select',o:()=>nailSetOptions()},{k:'perfume',l:'Perfume (from your collection)',t:'select',o:()=>perfumeOptions()},{k:'notes',l:'Notes',t:'textarea'}],
     title:r=>r.title},
   hooks:{label:'Custom hooks', noun:'hook', hidden:true,
     fields:[{k:'text',l:'Hook',t:'textarea',req:1},{k:'pillar',l:'Pillar',t:'select',o:PILLAR_NAMES}], title:r=>r.text},
@@ -850,6 +979,7 @@ const COL_KEYS = Object.keys(COLS);
 const GROUPS = [
   {id:'home', name:'🏠 Home', panels:['dashboard','calendar']},
   {id:'xxl', name:'💅 XXL Nail Diaries', panels:['xxl']},
+  {id:'scent', name:'🌸 Scent Diaries', panels:['scent']},
   {id:'ideas', name:'💡 Ideas', panels:['pillars','generator','ideas','hooks']},
   {id:'create', name:'🎥 Create', panels:['sessions','checklist','sounds','ctas']},
   {id:'collect', name:'👜 Collections', panels:['nails','ootd','perfume','purses','hauls','beauty']},
@@ -863,7 +993,8 @@ const PANELS = {
   generator:{label:'✨ Generator', render:renderGenerator},
   hooks:{label:'🪝 Hooks', render:renderHooks},
   checklist:{label:'📋 Checklist', render:renderChecklist},
-  xxl:{label:'💅 XXL Nail Diaries', render:renderXXL},
+  xxl:{label:'💅 XXL Nail Diaries', render:el=>renderHub('xxl',el)},
+  scent:{label:'🌸 Scent Diaries', render:el=>renderHub('scent',el)},
   settings:{label:'⚙️ Settings', render:renderSettings}
 };
 COL_KEYS.forEach(k=>{ if(!COLS[k].hidden) PANELS[k]={label:COLS[k].label, render:el=>renderCollection(k,el)}; });
@@ -1093,7 +1224,8 @@ function renderDashboard(el){
       ${picks.map(k=>`<div class="card"><div class="pick-label">${k.p.emoji} ${esc(k.label)}</div><div class="pick-idea">${esc(k.p.ideas[k.i])}</div>
         <div class="row"><button class="btn sm" data-act="save-idea" data-p="${k.p.id}" data-i="${k.i}">⭐ Save</button><button class="btn sm" data-act="sched" data-p="${k.p.id}" data-i="${k.i}">📅 Schedule</button></div></div>`).join('')}
       <div class="card">${nailHTML}</div>
-      ${xxlDashCard()}
+      ${hubDashCard('xxl')}
+      ${hubDashCard('scent')}
     </div>
     <h3 class="sec">Next 7 days <span class="spacer"></span><button class="btn sm" data-act="panel" data-id="calendar">Calendar →</button></h3>
     ${week.length ? week.map(r=>recCard('posts',r)).join('') : `<div class="empty">Nothing scheduled this week. <br><br><button class="btn sm" data-act="panel" data-id="generator">✨ Generate an idea</button></div>`}
@@ -1217,7 +1349,7 @@ function renderHooks(el){
 // ═══════════════════════════════════════════════
 // CHECKLIST (device-only)
 // ═══════════════════════════════════════════════
-const CHECKLISTS = {film:{key:'trishbad__checklist', def:DEFAULT_CHECKLIST}, xxl:{key:'trishbad__xxlchecklist', def:XXL_CHECKLIST}};
+const CHECKLISTS = {film:{key:'trishbad__checklist', def:DEFAULT_CHECKLIST}, xxl:{key:'trishbad__xxlchecklist', def:XXL_CHECKLIST}, scent:{key:'trishbad__scentchecklist', def:SCENT_CHECKLIST}};
 function getChecklist(name){ const c=CHECKLISTS[name||'film']; const v=lsGet(c.key,null); return Array.isArray(v)?v:c.def.map(t=>({t,d:false})); }
 function setChecklist(name, list){ lsSet(CHECKLISTS[name||'film'].key, list); }
 function checklistHTML(name){
@@ -1231,60 +1363,85 @@ function renderChecklist(el){
 }
 
 // ═══════════════════════════════════════════════
-// THE XXL NAIL DIARIES — hub
+// SERIES HUBS — The XXL Nail Diaries + Scent Diaries
+// One engine drives both. Built-in episodes are read-only templates; progress
+// lives in the synced "episodes" collection (ep = template id). Each record's
+// series name tells which show it belongs to (older records are all XXL).
 // ═══════════════════════════════════════════════
-let xxlSeries = '', xxlStatus = '', xxlQ = '';
-const xxlOpen = new Set();
-// Fresh ideas added every week to weekly-ideas.json (same shape as XXL_EPISODES,
-// plus wk = the week they were added). Cached on the phone for offline use.
-let WEEKLY_EPISODES = [], WEEKLY_LATEST = '';
-const xxlTemplates = () => XXL_EPISODES.concat(WEEKLY_EPISODES);
+const SHOWS = {
+  xxl:{id:'xxl', title:'The XXL Nail Diaries', emoji:'💅', blurb:'Luxe XXL sets + funny, real-life proof that I can (mostly) do it all.',
+       series:XXL_SERIES, episodes:XXL_EPISODES, weeklyKey:'weeks', pillar:'Nails', prefix:'[XXL Nail Diaries]',
+       link:{field:'nailSet', label:'Nail set', opts:()=>nailSetOptions(), col:'nails', chip:r=>'💅 '+(r.color||r.type||'Nail set')},
+       checklistTitle:'🎬 XXL filming checklist', shootDays:[1,3,5]},
+  scent:{id:'scent', title:'Scent Diaries', emoji:'🌸', blurb:'Vanilla-obsessed perfume content — luxe layers, funny tests and pretty dumps.',
+       series:SCENT_SERIES, episodes:SCENT_EPISODES, weeklyKey:'perfumeWeeks', pillar:'Perfume', prefix:'[Scent Diaries]',
+       link:{field:'perfume', label:'Perfume', opts:()=>perfumeOptions(), col:'perfume', chip:r=>'🌸 '+(r.name||'Perfume')},
+       checklistTitle:'🎬 Perfume filming checklist', shootDays:[2,4,6]}
+};
+const ALL_SERIES = XXL_SERIES.map(x=>Object.assign({show:'xxl'},x)).concat(SCENT_SERIES.map(x=>Object.assign({show:'scent'},x)));
+const seriesById = id => ALL_SERIES.find(x=>x.id===id);
+const seriesByName = n => ALL_SERIES.find(x=>x.name===n) || {id:'', show:'xxl', name:n||'Custom', short:n||'Custom', emoji:'💅'};
+const hubState = {xxl:{series:'', status:'', q:''}, scent:{series:'', status:'', q:'', view:'episodes', occ:'date'}};
+const xxlOpen = new Set();   // open episode cards (both hubs)
+
+// Fresh ideas added every week to weekly-ideas.json — "weeks" for XXL nails,
+// "perfumeWeeks" for Scent Diaries. Cached on the phone for offline use.
+const WEEKLY = {xxl:[], scent:[]}, WEEKLY_LATEST = {xxl:'', scent:''};
+const showTemplates = sh => SHOWS[sh].episodes.concat(WEEKLY[sh]);
+const allTemplates = () => showTemplates('xxl').concat(showTemplates('scent'));
 function setWeekly(data){
-  const valid = e => e && typeof e.id==='string' && XXL_SERIES.some(x=>x.id===e.s) && typeof e.t==='string' && Array.isArray(e.sh) && Array.isArray(e.tg);
-  const eps = [];
-  ((data&&data.weeks)||[]).forEach(w=>{ if(w && typeof w.week==='string') (w.ideas||[]).forEach(e=>{ if(valid(e) && !XXL_EPISODES.some(b=>b.id===e.id)) eps.push(Object.assign({}, e, {wk:w.week, h:e.h||'', c:e.c||'', cta:e.cta||'', f:e.f||''})); }); });
-  WEEKLY_EPISODES = eps;
-  WEEKLY_LATEST = eps.reduce((m,e)=>e.wk>m?e.wk:m, '');
+  Object.keys(SHOWS).forEach(sh=>{
+    const S = SHOWS[sh];
+    const valid = e => e && typeof e.id==='string' && S.series.some(x=>x.id===e.s) && typeof e.t==='string' && Array.isArray(e.sh) && Array.isArray(e.tg);
+    const eps = [];
+    ((data&&data[S.weeklyKey])||[]).forEach(w=>{
+      if(!w || typeof w.week!=='string') return;
+      (w.ideas||[]).filter(valid).forEach((e,n)=>{ if(!S.episodes.some(b=>b.id===e.id)) eps.push(Object.assign({}, e, {wk:w.week, n, h:e.h||'', c:e.c||'', cta:e.cta||'', f:e.f||''})); });
+    });
+    WEEKLY[sh] = eps;
+    WEEKLY_LATEST[sh] = eps.reduce((m,e)=>e.wk>m?e.wk:m, '');
+  });
 }
 function loadWeekly(){
   setWeekly(lsGet('trishbad__weekly', null));
   fetch('weekly-ideas.json', {cache:'no-store'})
     .then(r=>r.ok?r.json():Promise.reject())
-    .then(data=>{ const before=WEEKLY_EPISODES.length+WEEKLY_LATEST; setWeekly(data); lsSet('trishbad__weekly', data); if(WEEKLY_EPISODES.length+WEEKLY_LATEST!==before && (curPanel==='xxl'||curPanel==='dashboard')) softRender(); })
+    .then(data=>{
+      const sig = () => JSON.stringify(WEEKLY_LATEST)+WEEKLY.xxl.length+'/'+WEEKLY.scent.length;
+      const before = sig(); setWeekly(data); lsSet('trishbad__weekly', data);
+      if(sig()!==before && (SHOWS[curPanel]||curPanel==='dashboard')) softRender();
+      autoSchedule();
+    })
     .catch(()=>{});
 }
-function xxlFilter(list){
-  if(xxlSeries==='week') list = list.filter(e=>e.wk && e.wk===WEEKLY_LATEST);
-  else if(xxlSeries) list = list.filter(e=>seriesByName(e.series).id===xxlSeries);
-  if(xxlStatus) list = list.filter(e=>xxlStatus==='new' ? !e.status : e.status===xxlStatus);
-  return list;
-}
-const seriesById = id => XXL_SERIES.find(x=>x.id===id);
-const seriesByName = n => XXL_SERIES.find(x=>x.name===n) || {id:'', name:n||'Custom', short:n||'Custom', emoji:'💅'};
 function nailSetOptions(){
   return load('nails').filter(r=>r.date).sort(COLS.nails.sort).map(r=>[r.id, fmtDate(r.date)+' · '+(r.color||r.type||'Nail set')]);
+}
+function perfumeOptions(){
+  return load('perfume').sort(COLS.perfume.sort).map(r=>[r.id, r.name+(r.house?' · '+r.house:'')+(r.status&&r.status!=='Owned'?' ('+r.status+')':'')]);
 }
 function epFromTemplate(e){
   return {ep:e.id, wk:e.wk||'', series:seriesById(e.s).name, title:e.t, hook:e.h, shots:e.sh.join('\n'), caption:e.c, tags:e.tg.join(' '), cta:e.cta, format:e.f};
 }
-// Every episode to show: built-in templates merged with your progress, plus custom ones.
+// Every episode of a show: templates merged with your progress, plus custom ones.
 // If two devices both started the same template before syncing, the newest edit wins.
-function xxlEpisodes(){
+function showEpisodes(sh){
   const tracked = load('episodes'), byEp = {};
   tracked.forEach(r=>{ if(r.ep && (!byEp[r.ep] || (r.u||0)>(byEp[r.ep].u||0))) byEp[r.ep]=r; });
-  const out = xxlTemplates().map(e=>{
+  const out = showTemplates(sh).map(e=>{
     const r = byEp[e.id];
     return r ? Object.assign(epFromTemplate(e), r, {wk:e.wk||'', key:r.id, tracked:true}) : Object.assign(epFromTemplate(e), {key:'b:'+e.id, tracked:false, status:''});
   });
-  const tpl = xxlTemplates();
-  tracked.forEach(r=>{ if(!r.ep || !tpl.some(e=>e.id===r.ep)) out.push(Object.assign({}, r, {key:r.id, tracked:true, custom:true})); });
-  // This week's fresh ideas first
-  return out.filter(e=>e.wk&&e.wk===WEEKLY_LATEST).concat(out.filter(e=>!(e.wk&&e.wk===WEEKLY_LATEST)));
+  const tpl = allTemplates();
+  tracked.forEach(r=>{ if((!r.ep || !tpl.some(e=>e.id===r.ep)) && seriesByName(r.series).show===sh) out.push(Object.assign({}, r, {key:r.id, tracked:true, custom:true})); });
+  const isNew = e => e.wk && e.wk===WEEKLY_LATEST[sh];
+  return out.filter(isNew).concat(out.filter(e=>!isNew(e)));
 }
+const allEpisodes = () => showEpisodes('xxl').concat(showEpisodes('scent'));
 // Turn a built-in template into a tracked record the first time you act on it.
 function ensureEpisode(key){
   if(!key.startsWith('b:')) return key;
-  const e = xxlTemplates().find(x=>x.id===key.slice(2)); if(!e) return null;
+  const e = allTemplates().find(x=>x.id===key.slice(2)); if(!e) return null;
   const existing = load('episodes').filter(r=>r.ep===e.id).sort((a,b)=>(b.u||0)-(a.u||0))[0];
   if(existing) return existing.id;
   return addRec('episodes', Object.assign(epFromTemplate(e), {id:'ep-'+e.id+'-'+Date.now().toString(36), status:'Idea'})).id;
@@ -1295,71 +1452,78 @@ function updateEpisode(id, patch){
   arr[i] = r; save('episodes', arr); pushRecord('episodes', r);
 }
 function epCaption(ep){ return [ep.caption, ep.cta, ep.tags].filter(Boolean).join('\n\n'); }
-function xxlDashCard(){
-  const eps = xxlEpisodes(), posted = eps.filter(e=>e.status==='Posted').length;
-  const fresh = eps.filter(e=>e.wk && e.wk===WEEKLY_LATEST && !e.status).length;
-  const order = ['Edited','Filmed','Scripted','Scheduled','Idea'];
+function hubFilter(sh, list){
+  const st = hubState[sh];
+  if(st.series==='week') list = list.filter(e=>e.wk && e.wk===WEEKLY_LATEST[sh]);
+  else if(st.series) list = list.filter(e=>seriesByName(e.series).id===st.series);
+  if(st.status) list = list.filter(e=>st.status==='new' ? !e.status : e.status===st.status);
+  return list;
+}
+function hubDashCard(sh){
+  const S = SHOWS[sh], eps = showEpisodes(sh), posted = eps.filter(e=>e.status==='Posted').length;
+  const fresh = eps.filter(e=>e.wk && e.wk===WEEKLY_LATEST[sh] && !e.status).length;
   let next = null;
-  for(const st of order){ next = eps.find(e=>e.status===st); if(next) break; }
+  for(const st of ['Edited','Filmed','Scripted','Scheduled','Idea']){ next = eps.find(e=>e.status===st); if(next) break; }
   if(!next) next = eps.find(e=>!e.status);
-  return `<div class="card"><div class="pick-label">💅 The XXL Nail Diaries</div>
+  return `<div class="card"><div class="pick-label">${S.emoji} ${esc(S.title)}</div>
     <div class="pick-idea">${next?esc(next.title):'Every episode posted. Iconic.'}</div>
     <div class="small muted" style="margin-bottom:10px">${next&&next.status?'Up next · '+esc(next.status):'Up next'} · ${posted}/${eps.length} posted</div>
     ${fresh?`<div class="small" style="margin-bottom:10px">✨ <b>${fresh} fresh idea${fresh===1?'':'s'}</b> added this week</div>`:''}
-    <button class="btn sm" data-act="${fresh?'xxlweek':'panel'}" data-id="xxl">${fresh?'See this week\'s ideas →':'Open the Diaries →'}</button></div>`;
+    <button class="btn sm" data-act="${fresh?'hubweek':'panel'}" data-show="${sh}" data-id="${sh}">${fresh?'See this week\'s ideas →':'Open '+esc(S.title)+' →'}</button></div>`;
 }
-function renderXXL(el){
-  const all = xxlEpisodes();
-  const counts = EP_STATUSES.map(st=>all.filter(e=>e.status===st).length);
-  let list = all;
-  list = xxlFilter(list);
-  el.innerHTML = `
-    <div class="xxl-hero"><div class="eyebrow">✦ Series ✦</div><h2>The XXL Nail Diaries</h2>
-      <p>Luxe XXL sets + funny, real-life proof that I can (mostly) do it all.</p>
-      <div class="xxl-prog">${EP_STATUSES.map((st,i)=>`<div><b>${counts[i]}</b><span>${st}</span></div>`).join('')}</div></div>
-    <div class="seg">${[['','All'],...(WEEKLY_LATEST?[['week','✨ New This Week']]:[]),...XXL_SERIES.map(x=>[x.id,x.emoji+' '+x.short])].map(([v,l])=>`<button class="${xxlSeries===v?'active':''}" data-act="xxlseries" data-id="${v}">${esc(l)}</button>`).join('')}</div>
+function renderHub(sh, el){
+  const S = SHOWS[sh], st = hubState[sh];
+  const all = showEpisodes(sh);
+  const counts = EP_STATUSES.map(x=>all.filter(e=>e.status===x).length);
+  const viewToggle = sh==='scent' ? `<div class="seg">${[['episodes','🎬 Episodes'],['pairs','🧪 Pairing Guide']].map(([v,l])=>`<button class="${st.view===v?'active':''}" data-act="scentview" data-id="${v}">${l}</button>`).join('')}</div>` : '';
+  const hero = `<div class="xxl-hero"><div class="eyebrow">✦ Series ✦</div><h2>${esc(S.title)}</h2><p>${esc(S.blurb)}</p>
+      <div class="xxl-prog">${EP_STATUSES.map((x,i)=>`<div><b>${counts[i]}</b><span>${x}</span></div>`).join('')}</div></div>`;
+  if(sh==='scent' && st.view==='pairs'){ el.innerHTML = hero + viewToggle + pairingHTML(); return; }
+  el.innerHTML = hero + viewToggle + `
+    <div class="seg">${[['','All'],...(WEEKLY_LATEST[sh]?[['week','✨ New This Week']]:[]),...S.series.map(x=>[x.id,x.emoji+' '+x.short])].map(([v,l])=>`<button class="${st.series===v?'active':''}" data-act="hubseries" data-show="${sh}" data-id="${v}">${esc(l)}</button>`).join('')}</div>
     <div class="toolbar">
-      <input type="search" placeholder="Search episodes, hashtags…" value="${esc(xxlQ)}" data-input="xxlq">
-      <select data-input="xxlstatus"><option value="">Any progress</option><option value="new" ${xxlStatus==='new'?'selected':''}>Not started</option>${EP_STATUSES.map(st=>`<option ${xxlStatus===st?'selected':''}>${st}</option>`).join('')}</select>
-      <button class="btn primary" data-act="xxladd">+ Episode</button>
+      <input type="search" placeholder="Search episodes, hashtags…" value="${esc(st.q)}" data-input="hubq" data-show="${sh}">
+      <select data-input="hubstatus" data-show="${sh}"><option value="">Any progress</option><option value="new" ${st.status==='new'?'selected':''}>Not started</option>${EP_STATUSES.map(x=>`<option ${st.status===x?'selected':''}>${x}</option>`).join('')}</select>
+      <button class="btn primary" data-act="hubadd" data-show="${sh}">+ Episode</button>
     </div>
-    <div id="xxl-list"></div>
-    <h3 class="sec">🎬 XXL filming checklist</h3>
-    ${checklistHTML('xxl')}`;
-  renderXXLList(list);
+    <div id="hub-list"></div>
+    <h3 class="sec">${S.checklistTitle}</h3>
+    ${checklistHTML(sh)}`;
+  renderHubList(sh, hubFilter(sh, all));
 }
-function renderXXLList(list){
-  const box = $('#xxl-list'); if(!box) return;
-  const q = xxlQ.trim().toLowerCase();
+function renderHubList(sh, list){
+  const box = $('#hub-list'); if(!box) return;
+  const q = hubState[sh].q.trim().toLowerCase();
   if(q) list = list.filter(e=>[e.title,e.hook,e.caption,e.tags,e.series,e.format,e.notes].some(v=>typeof v==='string' && v.toLowerCase().includes(q)));
-  const nails = {}; load('nails').forEach(r=>nails[r.id]=r);
-  box.innerHTML = list.length ? list.map(e=>epCard(e, nails)).join('') : '<div class="empty">No episodes match.</div>';
+  const links = {}; load(SHOWS[sh].link.col).forEach(r=>links[r.id]=r);
+  box.innerHTML = list.length ? list.map(e=>epCard(e, links)).join('') : '<div class="empty">No episodes match.</div>';
 }
-function epCard(e, nails){
-  const ser = seriesByName(e.series), k = esc(e.key);
+function epCard(e, links){
+  const ser = seriesByName(e.series), S = SHOWS[ser.show], L = S.link, k = esc(e.key);
   const shots = String(e.shots||'').split('\n').map(x=>x.trim()).filter(Boolean);
-  const set = e.nailSet && nails[e.nailSet];
-  const vClass = e.verdict ? 'verdict-'+e.verdict.split(' ')[0] : '';
+  const linked = e[L.field] && links[e[L.field]];
+  const vClass = e.verdict ? 'verdict-'+({'Lasted all day':'Easy','Faded by lunch':'Takes','Gone in an hour':'Not'}[e.verdict]||e.verdict.split(' ')[0]) : '';
+  const latest = WEEKLY_LATEST[ser.show];
+  const linkSel = `<div><label>${L.label}</label><select data-input="eplink" data-field="${L.field}" data-key="${k}"><option value="">—</option>${L.opts().map(([v,l])=>`<option value="${esc(v)}" ${e[L.field]===v?'selected':''}>${esc(l)}</option>`).join('')}</select></div>`;
   return `<details class="ep" data-key="${k}" ${xxlOpen.has(e.key)?'open':''}>
     <summary>
-      <div class="ser">${e.wk?(e.wk===WEEKLY_LATEST?'✨ New this week · ':'✨ Week of '+fmtDate(e.wk)+' · '):''}${ser.emoji} ${esc(ser.name)}${e.custom?' · mine':''}</div>
+      <div class="ser">${e.wk?(e.wk===latest?'✨ New this week · ':'✨ Week of '+fmtDate(e.wk)+' · '):''}${ser.emoji} ${esc(ser.name)}${e.custom?' · mine':''}</div>
       <div class="et">${esc(e.title)}</div>
       ${e.hook?`<div class="eh">“${esc(e.hook)}”</div>`:''}
       <div class="chips">
         <span class="chip ${e.status?chipClass(e.status==='Edited'?'Filmed':e.status==='Scheduled'?'Planned':e.status):''}">${e.status?esc(e.status):'Not started'}</span>
         ${e.verdict?`<span class="chip ${vClass}">${esc(e.verdict)}</span>`:''}
         ${e.format?`<span class="chip">${esc(e.format)}</span>`:''}
-        ${set?`<span class="chip">💅 ${esc(set.color||set.type||'Nail set')}</span>`:''}
+        ${linked?`<span class="chip">${esc(L.chip(linked))}</span>`:''}
       </div>
     </summary>
     <div class="ebody">
       <div class="ctrls">
-        <div><label>Progress</label><select data-input="epstatus" data-key="${k}"><option value="">Not started</option>${EP_STATUSES.map(st=>`<option ${e.status===st?'selected':''}>${st}</option>`).join('')}</select></div>
-        ${ser.id==='can'?`<div><label>Verdict</label><select data-input="epverdict" data-key="${k}"><option value="">—</option>${VERDICTS.map(v=>`<option ${e.verdict===v?'selected':''}>${v}</option>`).join('')}</select></div>`:
-          `<div><label>Nail set</label><select data-input="epnail" data-key="${k}"><option value="">—</option>${nailSetOptions().map(([v,l])=>`<option value="${esc(v)}" ${e.nailSet===v?'selected':''}>${esc(l)}</option>`).join('')}</select></div>`}
+        <div><label>Progress</label><select data-input="epstatus" data-key="${k}"><option value="">Not started</option>${EP_STATUSES.map(x=>`<option ${e.status===x?'selected':''}>${x}</option>`).join('')}</select></div>
+        ${ser.verdicts?`<div><label>Verdict</label><select data-input="epverdict" data-key="${k}"><option value="">—</option>${ser.verdicts.map(v=>`<option ${e.verdict===v?'selected':''}>${esc(v)}</option>`).join('')}</select></div>`:linkSel}
       </div>
-      ${ser.id==='can'?`<div class="ctrls" style="grid-template-columns:1fr"><div><label>Nail set</label><select data-input="epnail" data-key="${k}"><option value="">—</option>${nailSetOptions().map(([v,l])=>`<option value="${esc(v)}" ${e.nailSet===v?'selected':''}>${esc(l)}</option>`).join('')}</select></div></div>`:''}
-      ${shots.length?`<div class="lbl">${ser.id==='dumps'?'Slides':'Shot list'}</div><ol>${shots.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`:''}
+      ${ser.verdicts?`<div class="ctrls" style="grid-template-columns:1fr">${linkSel}</div>`:''}
+      ${shots.length?`<div class="lbl">${/dump/.test(ser.id)?'Slides':'Shot list'}</div><ol>${shots.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`:''}
       ${e.caption?`<div class="lbl">Caption</div><div class="cap">${esc(e.caption)}</div>`:''}
       ${e.cta?`<div class="lbl">CTA</div><div class="cap">${esc(e.cta)}</div>`:''}
       ${e.tags?`<div class="lbl">Hashtags</div><div class="tags">${esc(e.tags)}</div>`:''}
@@ -1375,8 +1539,8 @@ function epCard(e, nails){
     </div>
   </details>`;
 }
-function epByKey(key){ return xxlEpisodes().find(e=>e.key===key); }
-function xxlRefresh(){ if(curPanel==='xxl'){ const y=window.scrollY; PANELS.xxl.render($('#panel')); window.scrollTo(0,y); } }
+function epByKey(key){ return allEpisodes().find(e=>e.key===key); }
+function hubRefresh(){ if(SHOWS[curPanel]){ const y=window.scrollY; PANELS[curPanel].render($('#panel')); window.scrollTo(0,y); } }
 function epReset(key){
   const e = epByKey(key); if(!e||!e.tracked) return;
   if(!confirm(e.custom?'Delete this episode?':'Reset this episode\'s progress and edits?')) return;
@@ -1384,7 +1548,90 @@ function epReset(key){
   save('episodes', load('episodes').filter(r=>!ids.includes(r.id)));
   ids.forEach(id=>deleteRemote('episodes', id));
   xxlOpen.delete(key); if(!e.custom) xxlOpen.add('b:'+e.ep);
-  xxlRefresh(); toast(e.custom?'Deleted':'Reset ✓');
+  hubRefresh(); toast(e.custom?'Deleted':'Reset ✓');
+}
+
+// ── Pairing guide ──
+function scentFamilies(text){
+  const t = String(text||'').toLowerCase();
+  return Object.keys(SCENT_FAMILIES).filter(f=>SCENT_FAMILIES[f].some(w=>t.includes(w)));
+}
+// Pairs from your own perfumes: one that suits the occasion as a base, one as the accent.
+function myPairs(occ){
+  const mine = load('perfume').filter(r=>r.status==='Owned'||r.status==='Sample'||!r.status)
+    .map(r=>({r, fam:scentFamilies([r.name,r.house,r.notes_scent,r.notes].join(' '))})).filter(x=>x.fam.length);
+  const fit = (x, fams) => fams.filter(f=>x.fam.includes(f)).length + (x.r.season===occ.season?1:0);
+  const out = [];
+  mine.forEach(a=>{ if(!fit(a,occ.base)) return;
+    mine.forEach(b=>{ if(a===b || !fit(b,occ.accent)) return;
+      const score = fit(a,occ.base)*2 + fit(b,occ.accent) + (a.fam.includes('vanilla')?2:0);
+      out.push({a:a.r, b:b.r, score});
+    });
+  });
+  out.sort((x,y)=>y.score-x.score);
+  const seen = new Set(), res = [];
+  for(const p of out){ const k=[p.a.id,p.b.id].sort().join('|'); if(seen.has(k)) continue; seen.add(k); res.push(p); if(res.length===3) break; }
+  return {pairs:res, withNotes:mine.length, total:load('perfume').length};
+}
+function pairingHTML(){
+  const st = hubState.scent, occ = PAIR_GUIDE.find(o=>o.id===st.occ) || PAIR_GUIDE[0];
+  const mp = myPairs(occ);
+  const mineHTML = mp.pairs.length
+    ? mp.pairs.map((p,i)=>`<div class="combo"><div class="cx"><div class="cn">${esc(p.a.name)} + ${esc(p.b.name)}</div><div class="cw">Base: ${esc(p.a.name)} · Top: ${esc(p.b.name)}</div></div><button class="btn sm" data-act="pairvid" data-text="${esc(occ.name+' layering combo: '+p.a.name+' + '+p.b.name)}">🎬 Video</button></div>`).join('')
+    : `<div class="small muted">${mp.total?'Add scent notes (vanilla, amber, rose…) to your perfumes in Collections → 🌸 Perfume and I\'ll suggest pairings from your own bottles.':'Add your perfumes in Collections → 🌸 Perfume (with their scent notes) and I\'ll suggest pairings from your own bottles.'}</div>`;
+  return `
+    <div class="seg">${PAIR_GUIDE.map(o=>`<button class="${o.id===occ.id?'active':''}" data-act="pairocc" data-id="${o.id}">${o.emoji} ${esc(o.name)}</button>`).join('')}</div>
+    <div class="occ">
+      <div class="on">${occ.emoji} ${esc(occ.name)}</div>
+      <div class="vibe">${esc(occ.vibe)}</div>
+      ${occ.combos.map(c=>`<div class="combo"><div class="cx"><div class="cn">${esc(c.a)} + ${esc(c.b)}</div><div class="cw">${esc(c.why)}</div></div><button class="btn sm" data-act="pairvid" data-text="${esc(occ.name+' layering: '+c.a+' + '+c.b)}">🎬 Video</button></div>`).join('')}
+      <div class="lbl" style="font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);font-weight:600;margin:12px 0 4px">How to wear it</div><div class="small">${esc(occ.tip)}</div>
+      <div class="lbl" style="font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);font-weight:600;margin:12px 0 4px">Skip</div><div class="small">${esc(occ.avoid)}</div>
+    </div>
+    <h3 class="sec">✨ From your collection</h3>
+    <div class="card">${mineHTML}</div>
+    <h3 class="sec">🧪 Layering rules</h3>
+    <div class="card"><ol style="padding-left:20px;font-size:14px">${LAYER_RULES.map(r=>`<li style="margin-bottom:4px">${esc(r)}</li>`).join('')}</ol></div>`;
+}
+
+// ── Weekly ideas → Calendar shoot days ──
+// Each new weekly idea becomes a Planned post on its own day (nails Mon/Wed/Fri,
+// perfume Tue/Thu/Sat after the week's date, or "d" if the idea sets one).
+// Ids are fixed ("wk-<idea id>") so two phones never double-add, and it only runs
+// after a successful sync so a shoot day you deleted never comes back.
+let syncedDead = null;
+function shootDate(sh, e){
+  if(/^\d{4}-\d{2}-\d{2}$/.test(e.d||'')) return e.d;
+  const d = parseYmd(e.wk); d.setDate(d.getDate() + (SHOWS[sh].shootDays[e.n] || SHOWS[sh].shootDays[0] + e.n));
+  return ymd(d);
+}
+function autoSchedule(){
+  if(!syncedDead) return;
+  const posts = load('posts'), have = new Set(posts.map(p=>p.id));
+  const tombs = new Set(localTombs().map(t=>t.id));
+  const eps = load('episodes'), tracked = new Set(eps.map(r=>r.ep).filter(Boolean)), haveEp = new Set(eps.map(r=>r.id));
+  const cutoff = (()=>{ const d=new Date(); d.setDate(d.getDate()-7); return ymd(d); })();
+  const blocked = id => have.has(id) || syncedDead[id] || tombs.has(id);
+  let added = 0;
+  Object.keys(SHOWS).forEach(sh=>{
+    const S = SHOWS[sh];
+    WEEKLY[sh].forEach(e=>{
+      const date = shootDate(sh, e); if(date < cutoff) return;
+      const pid = 'wk-'+e.id;
+      if(!blocked(pid)){
+        const notes = ['🎬 Shoot day', e.h&&('Hook: '+e.h), 'Shots:\n'+e.sh.map((x,i)=>(i+1)+'. '+x).join('\n'), e.c&&('Caption: '+e.c), e.cta&&('CTA: '+e.cta), e.tg.join(' ')].filter(Boolean).join('\n');
+        const r = norm({id:pid, c:Date.now(), u:Date.now(), title:S.prefix+' '+e.t, date, pillar:S.pillar, status:'Planned', notes});
+        posts.push(r); pushRecord('posts', r); added++;
+      }
+      const eid = 'ep-'+e.id+'-cal';
+      if(!tracked.has(e.id) && !haveEp.has(eid) && !syncedDead[eid] && !tombs.has(eid)){
+        const r = norm(Object.assign(epFromTemplate(e), {id:eid, c:Date.now(), u:Date.now(), status:'Scheduled', date}));
+        eps.push(r); pushRecord('episodes', r);
+      }
+    });
+  });
+  save('posts', posts); save('episodes', eps);
+  if(added){ toast('📅 Added '+added+' shoot day'+(added===1?'':'s')+' to your Calendar'); softRender(); }
 }
 
 // ═══════════════════════════════════════════════
@@ -1535,6 +1782,8 @@ function pullAll(){
       });
       flushTombs(); pushAll(); fetchMissingPhotos();
       syncDot('ok');
+      syncedDead = dead;
+      autoSchedule();
       if(changed) softRender();
     })
     .catch(()=>syncDot('off'))
@@ -1581,17 +1830,21 @@ document.addEventListener('click', e=>{
     case 'calday': calSel=d.id; rerender(); break;
     case 'calnav': calMonth=new Date(calMonth.getFullYear(), calMonth.getMonth()+(+d.id), 1); rerender(); break;
     case 'addpost': openForm('posts', null, {date:calSel, status:'Planned'}); break;
-    case 'ckadd': { const inp=$('#ck-new-'+d.list), v=inp?inp.value.trim():''; if(!v) return; const l=getChecklist(d.list); l.push({t:v,d:false}); setChecklist(d.list,l); xxlRefresh(); if(curPanel!=='xxl') rerender(); break; }
-    case 'ckdel': { e.preventDefault(); const l=getChecklist(d.list); l.splice(+d.i,1); setChecklist(d.list,l); xxlRefresh(); if(curPanel!=='xxl') rerender(); break; }
-    case 'ckreset': { setChecklist(d.list, getChecklist(d.list).map(x=>({t:x.t,d:false}))); xxlRefresh(); if(curPanel!=='xxl') rerender(); break; }
-    case 'xxlseries': xxlSeries=d.id; rerender(); break;
-    case 'xxlweek': xxlSeries='week'; xxlStatus=''; showPanel('xxl'); break;
-    case 'xxladd': openForm('episodes', null, {status:'Idea', series:(xxlSeries&&xxlSeries!=='week')?seriesById(xxlSeries).name:XXL_SERIES[0].name}, r=>{ xxlOpen.add(r.id); }); break;
+    case 'ckadd': { const inp=$('#ck-new-'+d.list), v=inp?inp.value.trim():''; if(!v) return; const l=getChecklist(d.list); l.push({t:v,d:false}); setChecklist(d.list,l); if(SHOWS[curPanel]) hubRefresh(); else rerender(); break; }
+    case 'ckdel': { e.preventDefault(); const l=getChecklist(d.list); l.splice(+d.i,1); setChecklist(d.list,l); if(SHOWS[curPanel]) hubRefresh(); else rerender(); break; }
+    case 'ckreset': { setChecklist(d.list, getChecklist(d.list).map(x=>({t:x.t,d:false}))); if(SHOWS[curPanel]) hubRefresh(); else rerender(); break; }
+    case 'hubseries': hubState[d.show].series=d.id; rerender(); break;
+    case 'hubweek': hubState[d.show].series='week'; hubState[d.show].status=''; if(d.show==='scent') hubState.scent.view='episodes'; showPanel(d.show); break;
+    case 'hubadd': { const st=hubState[d.show], S=SHOWS[d.show]; openForm('episodes', null, {status:'Idea', series:(st.series&&st.series!=='week')?seriesById(st.series).name:S.series[0].name}, r=>{ xxlOpen.add(r.id); }); break; }
+    case 'scentview': hubState.scent.view=d.id; rerender(); break;
+    case 'pairocc': hubState.scent.occ=d.id; hubRefresh(); break;
+    case 'pairvid': saveIdea(d.text, 'Perfume'); break;
     case 'epcopy': { const ep=epByKey(d.key); if(ep) copyText(epCaption(ep)); break; }
-    case 'epsave': { const ep=epByKey(d.key); if(ep) saveIdea(ep.title, 'Nails', ep.hook); break; }
+    case 'epsave': { const ep=epByKey(d.key); if(ep) saveIdea(ep.title, SHOWS[seriesByName(ep.series).show].pillar, ep.hook); break; }
     case 'epsched': {
       const ep=epByKey(d.key); if(!ep) break;
-      openForm('posts', null, {title:'[XXL Nail Diaries] '+ep.title, pillar:'Nails', date:todayStr(), status:'Planned', notes:[ep.hook&&('Hook: '+ep.hook), ep.caption].filter(Boolean).join('\n')}, post=>{
+      const S=SHOWS[seriesByName(ep.series).show];
+      openForm('posts', null, {title:S.prefix+' '+ep.title, pillar:S.pillar, date:todayStr(), status:'Planned', notes:[ep.hook&&('Hook: '+ep.hook), ep.caption].filter(Boolean).join('\n')}, post=>{
         const id = ensureEpisode(d.key); if(!id) return;
         const cur = (load('episodes').find(r=>r.id===id)||{}).status;
         const patch = {date:post.date};
@@ -1611,7 +1864,7 @@ let qT;
 document.addEventListener('input', e=>{
   const t = e.target, k = t.dataset && t.dataset.input; if(!k) return;
   if(k==='colq'){ colState[t.dataset.col].q=t.value; clearTimeout(qT); qT=setTimeout(()=>renderColList(t.dataset.col),150); }
-  if(k==='xxlq'){ xxlQ=t.value; clearTimeout(qT); qT=setTimeout(()=>renderXXLList(xxlFilter(xxlEpisodes())),150); }
+  if(k==='hubq'){ const sh=t.dataset.show; hubState[sh].q=t.value; clearTimeout(qT); qT=setTimeout(()=>renderHubList(sh, hubFilter(sh, showEpisodes(sh))),150); }
 });
 document.addEventListener('change', e=>{
   const t = e.target, k = t.dataset && t.dataset.input; if(!k) return;
@@ -1619,15 +1872,15 @@ document.addEventListener('change', e=>{
     case 'colf': colState[t.dataset.col].f[t.dataset.k]=t.value; renderColList(t.dataset.col); break;
     case 'genp': genPillar=t.value; break;
     case 'hookf': hookFilter=t.value; rerender(); break;
-    case 'ck': { const n=t.dataset.list, l=getChecklist(n); l[+t.dataset.i].d=t.checked; setChecklist(n,l); if(curPanel==='xxl') xxlRefresh(); else rerender(); break; }
-    case 'xxlstatus': xxlStatus=t.value; rerender(); break;
-    case 'epstatus': case 'epverdict': case 'epnail': {
-      const key=t.dataset.key, field={epstatus:'status',epverdict:'verdict',epnail:'nailSet'}[k];
+    case 'ck': { const n=t.dataset.list, l=getChecklist(n); l[+t.dataset.i].d=t.checked; setChecklist(n,l); if(SHOWS[curPanel]) hubRefresh(); else rerender(); break; }
+    case 'hubstatus': hubState[t.dataset.show].status=t.value; rerender(); break;
+    case 'epstatus': case 'epverdict': case 'eplink': {
+      const key=t.dataset.key, field={epstatus:'status',epverdict:'verdict',eplink:t.dataset.field}[k];
       if(k==='epstatus' && !t.value && key.startsWith('b:')) break;
       const id=ensureEpisode(key); if(!id) break;
       updateEpisode(id, {[field]:t.value});
       xxlOpen.delete(key); xxlOpen.add(id);
-      xxlRefresh(); toast('Saved ✓');
+      hubRefresh(); toast('Saved ✓');
       break;
     }
     case 'theme': lsSet('trishbad__theme',t.value); applyTheme(); break;

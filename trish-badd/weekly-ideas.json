@@ -1,5 +1,5 @@
 {
-  "about": "Fresh XXL Nail Diaries ideas, three added every week. Newest week last. s = series (can, qa, sets, dumps); t = title; h = hook; sh = shot list or slides; c = caption; tg = 5 hashtags; cta = call to action; f = format.",
+  "about": "Fresh series ideas, three per series added every week. 'weeks' = The XXL Nail Diaries (s: can, qa, sets, dumps); 'perfumeWeeks' = Scent Diaries (s: ptest, ppair, pvan, pdump). Newest week last. t = title; h = hook; sh = shot list or slides; c = caption; tg = 5 hashtags; cta = call to action; f = format. Optional d = shoot date (YYYY-MM-DD); otherwise the app puts nails on Mon/Wed/Fri and perfume on Tue/Thu/Sat after the week's date.",
   "weeks": [
     {
       "week": "2026-11-02",
@@ -15,7 +15,13 @@
             "Verdict + hand a slice to the camera — Easy / Takes Practice / Not Happening."
           ],
           "c": "Clementine vs. XXL nails 🍊💅 Verdict: ___",
-          "tg": ["#xxlnails", "#longnails", "#nailtok", "#canidoit", "#clementine"],
+          "tg": [
+            "#xxlnails",
+            "#longnails",
+            "#nailtok",
+            "#canidoit",
+            "#clementine"
+          ],
           "cta": "What should I peel next? Pomegranate is NOT an option 👇",
           "f": "Challenge · 3 shots + verdict"
         },
@@ -30,7 +36,13 @@
             "Talk to camera: the house rules (pads only, nails pointed out, hugs given with care)."
           ],
           "c": "Hugs are given with ✨care✨ Pads only, nails pointed out 💅",
-          "tg": ["#xxlnails", "#longnails", "#nailtok", "#questionsiget", "#longnailproblems"],
+          "tg": [
+            "#xxlnails",
+            "#longnails",
+            "#nailtok",
+            "#questionsiget",
+            "#longnailproblems"
+          ],
           "cta": "Tag the friend who's scared to hug me 😂",
           "f": "Skit + talking head"
         },
@@ -49,9 +61,88 @@
             "Final: both hands framing a wrapped gift"
           ],
           "c": "Caption prompt: rate your holiday energy in one line + the set name. e.g. \"Holiday mode: activated. Nails: XXL. 🎄💅\"",
-          "tg": ["#xxlnails", "#holidaynails", "#photodump", "#nailtok", "#holidayseason"],
+          "tg": [
+            "#xxlnails",
+            "#holidaynails",
+            "#photodump",
+            "#nailtok",
+            "#holidayseason"
+          ],
           "cta": "Which slide is the most \"me\"? 1–7 👇",
           "f": "Photo carousel · 7 slides"
+        }
+      ]
+    }
+  ],
+  "perfumeWeeks": [
+    {
+      "week": "2026-11-02",
+      "ideas": [
+        {
+          "id": "pw20261102-1",
+          "s": "ptest",
+          "t": "Bonfire test: can my vanilla beat the smoke?",
+          "h": "Vanilla vs. a fall bonfire. Only one of us is leaving with our dignity.",
+          "sh": [
+            "Spray before heading out — bottle + fire pit in frame.",
+            "Bonfire B-roll: s'mores, flannel, sparks (stay a safe distance back).",
+            "Next-morning sniff of your sweater + verdict overlay."
+          ],
+          "c": "Vanilla vs. campfire smoke 🔥🍦 Verdict: ___",
+          "tg": [
+            "#vanillaperfume",
+            "#perfumetok",
+            "#fallperfume",
+            "#perfumetest",
+            "#bonfire"
+          ],
+          "cta": "What should my vanilla go up against next? 👇",
+          "f": "Test · before / after"
+        },
+        {
+          "id": "pw20261102-2",
+          "s": "ppair",
+          "t": "Friendsgiving layering: vanilla + pear (soft enough for the dinner table)",
+          "h": "A perfume combo that won't fight the turkey.",
+          "sh": [
+            "Table setting + both bottles beside a place card.",
+            "One light spray of each — explain why soft scents win at dinner.",
+            "Toast moment, wrist close-up as you raise your glass."
+          ],
+          "c": "Smell amazing, don't overpower the mac & cheese 🍐🍦",
+          "tg": [
+            "#perfumelayering",
+            "#vanillaperfume",
+            "#friendsgiving",
+            "#perfumetok",
+            "#fallperfume"
+          ],
+          "cta": "What do you wear to holiday dinners?",
+          "f": "Tutorial · layering"
+        },
+        {
+          "id": "pw20261102-3",
+          "s": "pdump",
+          "t": "Cozy November vanilla dump",
+          "h": "November, but make it vanilla.",
+          "sh": [
+            "Vanilla latte in a cream mug",
+            "Bottle on a knit blanket",
+            "Candle lit beside the bottle",
+            "Fall leaves + bottle on the porch",
+            "Wrist spray with XXL nails",
+            "Cozy selfie with the bottle by the window"
+          ],
+          "c": "Caption prompt: \"November smells like ___\" — fill it in with your scent. e.g. \"November smells like vanilla and leftovers 🍂🍦\"",
+          "tg": [
+            "#vanillaperfume",
+            "#photodump",
+            "#cozyseason",
+            "#perfumetok",
+            "#vanillagirl"
+          ],
+          "cta": "Fill in the blank: November smells like ___ 👇",
+          "f": "Photo carousel · 6 slides"
         }
       ]
     }
