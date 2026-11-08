@@ -32,6 +32,38 @@
           "day": "2026-11-08"
         }
       ]
+    },
+    {
+      "week": "2026-11-08",
+      "pins": [
+        {
+          "id": "tp20261108-1",
+          "title": "Mystery Books to Read on a Cold November Night",
+          "board": "Mystery & Dark Academia",
+          "type": "Image pin (2:3, 1000×1500) — book list",
+          "image": "Mysteries for cold nights 🕯️ — grid of 5–6 of your favorite mystery covers with a candle in the corner",
+          "desc": "Mystery books for cold November nights: whodunits, dark academia and atmospheric thrillers to read under a blanket. Save this for your fall and winter TBR.",
+          "day": "2026-11-09"
+        },
+        {
+          "id": "tp20261108-2",
+          "title": "Reading Nook Ideas: My Cozy Thriller Corner for Winter",
+          "board": "Bookish Aesthetic",
+          "type": "Image pin (2:3) — reading nook photo with text",
+          "image": "My cozy thriller corner ❄️📚 — your reading spot with a blanket, lamp, and a stack of dark covers",
+          "desc": "Reading nook ideas for winter: a cozy, moody corner for thriller lovers with warm lighting, blankets and a dark bookish aesthetic.",
+          "day": "2026-11-11"
+        },
+        {
+          "id": "tp20261108-3",
+          "title": "How to Read More Books Before the Year Ends (Even If You're Busy)",
+          "board": "Reading Challenges & Tips",
+          "type": "Video pin — reuse your Reading vs. Scrolling TikTok (no watermark)",
+          "image": "Read more, scroll less 📖 — first frame: your analog bag and a half-finished book",
+          "desc": "How to read more books before the year ends: easy reading habits, swapping scrolling for pages, and an analog bag that keeps your book with you. Reading challenge tips for busy people.",
+          "day": "2026-11-13"
+        }
+      ]
     }
   ]
 }
