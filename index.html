@@ -11047,38 +11047,41 @@ function generateReviewScript(){
   var cta=document.getElementById('rb-f-cta').value.trim();
   var stars='⭐'.repeat(parseInt(rating)||0);
   var sep='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-  var s='📚 BOOK REVIEW: '+title.toUpperCase()+(author?' by '+author.toUpperCase():'')+'\n'+sep+'\n';
-  // HOOK
-  s+='🎬 HOOK — say this first (first 3 seconds)\n';
-  s+='"'+(hook||'[Your one-line hook — make them stop scrolling]')+'"\n\n';
-  // BASICS
-  s+='📖 THE BASICS\n';
-  s+='Title: '+title+'\n';
-  if(author)s+='Author: '+author+'\n';
-  if(genre)s+='Genre: '+genre+'\n';
-  if(pages)s+='Pages: '+pages+' pages\n';
+
+  var s='📚 '+title.toUpperCase()+(author?' by '+author.toUpperCase():'')+' — STORYTELLING SCRIPT\n'+sep+'\n';
+
+  // Reference info for your caption — not meant to be spoken on camera
+  s+='📋 QUICK REFERENCE (for your caption — don\'t read this part out loud)\n';
+  s+='Title: '+title+(author?' · Author: '+author:'')+(genre?' · Genre: '+genre:'')+(pages?' · '+pages+' pages':'')+'\n';
+  if(chars)s+='Main character(s): '+chars+'\n';
+  if(tw)s+='⚠️ Trigger warnings: '+tw+'\n';
+  s+='\n'+sep+'\n';
+
+  s+='🎬 THE SCRIPT — read this as one continuous take, no section titles out loud\n\n';
+
+  s+='[COLD OPEN — say this first, never "hey guys today I\'m reviewing..."]\n';
+  s+='"'+(hook||'[Your opening line — drop them into a moment, don\'t announce the book]')+'"\n\n';
+
+  s+='[THE SETUP — just enough to understand the stakes, hold the rest back]\n';
+  s+='"'+(plot||'[One or two sentences of premise — what\'s at stake, not what happens]')+'"\n\n';
+
+  s+='[THE TURN — narrate what happened to YOU reading it, not just the plot]\n';
+  var turnLines=[];
+  if(loved)turnLines.push(loved);
+  if(surprised)turnLines.push('What actually got me was '+surprised.charAt(0).toLowerCase()+surprised.slice(1)+'.');
+  s+='"'+(turnLines.length?turnLines.join(' '):'[The moment that got you — be specific, not just "it was good"]')+'"\n';
+  if(didnt)s+='"If I\'m being honest — '+didnt+' — but it didn\'t change how I felt by the end."\n';
   s+='\n';
-  // CHARACTERS
-  if(chars){s+='👥 MAIN CHARACTERS\n"The main character is '+chars+'"\n\n';}
-  // PLOT
-  if(plot){s+='📖 WHAT IT\'S ABOUT (no spoilers)\n"'+plot+'"\n\n';}
-  // THOUGHTS
-  s+='💬 MY THOUGHTS\n';
-  if(loved)s+='What I loved: "'+loved+'"\n';
-  if(surprised)s+='What surprised me: "'+surprised+'"\n';
-  if(didnt)s+='The only thing I\'ll say: "'+didnt+'"\n';
-  s+='\n';
-  // TRIGGER WARNINGS
-  if(tw)s+='⚠️ TRIGGER WARNINGS\n'+tw+'\n\n';
-  // RATING
-  s+='⭐ MY RATING\n"I\'m giving '+title+' '+(stars||rating+' stars')+' because '+(loved||'[your main reason]')+'."\n\n';
-  // WHO SHOULD READ IT
-  if(perfectfor)s+='🎯 WHO SHOULD READ IT\n"Read this if you love '+perfectfor+'"\n\n';
-  // CTA
+
+  s+='[THE GUT PUNCH — deliver the rating like it matters, don\'t just state a number]\n';
+  s+='"I\'m giving this '+(stars||(rating+' stars'))+', and I don\'t say that lightly.'+(loved?' '+loved:'')+'"\n\n';
+
+  s+='[THE LOOP CLOSE — circle back to your opening line before the ask]\n';
+  s+='"[Echo a phrase from your cold open here — that callback is what makes it feel finished.]'+(perfectfor?' If you love '+perfectfor+', this one\'s for you.':'')+' '+(cta||'Have you read '+title+'? Tell me your rating below.')+'"\n\n';
+
   s+=sep;
-  s+='📣 CALL TO ACTION\n"'+(cta||'Have you read '+title+'? Let me know your rating below. And follow for more reviews every week.')+'"\n\n';
-  // HASHTAGS
   s+='#BookTok #BookReview'+(genre?' #'+genre.replace(/\s+/g,''):'')+(author?' #'+author.split(' ').pop().replace(/\s+/g,''):'')+' #'+title.replace(/[^a-zA-Z0-9]/g,'')+' #TitlesByTrish #BookTokReview';
+
   document.getElementById('rb-script-output').style.display='block';
   document.getElementById('rb-script-text').value=s;
   document.getElementById('rb-script-text').scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -13800,7 +13803,7 @@ function resetQuiz(){quizAnswers={};initQuiz();}
 <!-- BOOK REVIEW BUILDER -->
 <div class="panel" id="panel-reviewbuilder">
   <div class="section-title">📝 Book Review Builder</div>
-  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:4px;line-height:1.7;">Your filming script, every time. Fill in the details below and tap Generate — you'll get a ready-to-film review script that's informative, fun, and keeps viewers hooked.</p>
+  <p style="color:var(--text-dim);font-style:italic;font-size:14px;margin-bottom:4px;line-height:1.7;">Your filming script, every time. Fill in the details below and tap Generate — you'll get a narrative, podcast-style script (cold open → setup → the turn → gut punch → loop close) instead of a list of facts about the book.</p>
   <p style="color:var(--text-dim);font-size:12px;font-style:italic;margin-bottom:18px;">💡 Tip: Select a book from your Scorecard to auto-fill details.</p>
 
   <!-- Saved Drafts -->
