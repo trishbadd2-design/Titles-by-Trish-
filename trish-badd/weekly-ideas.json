@@ -140,6 +140,78 @@
           "f": "Demo · talking head"
         }
       ]
+    },
+    {
+      "week": "2026-11-15",
+      "ideas": [
+        {
+          "id": "w20261115-1",
+          "s": "qa",
+          "t": "How do you do your hair with nails this long?",
+          "h": "\"How do you even do a ponytail?\" Watch and learn.",
+          "sh": [
+            "Hair down, XXL set in frame, hair tie on your wrist.",
+            "Close-up: gather with your palms, twist the tie with your fingertip pads, then a claw clip as the bonus round.",
+            "Finished slick ponytail + a hair flip to camera."
+          ],
+          "c": "Ponytail, claw clip, done. The nails stayed perfect 💅✨",
+          "tg": [
+            "#xxlnails",
+            "#longnails",
+            "#nailtok",
+            "#questionsiget",
+            "#easyhairstyles"
+          ],
+          "cta": "What should I show you next: braids or a bun? 👇",
+          "f": "Demo · close-ups"
+        },
+        {
+          "id": "w20261115-2",
+          "s": "sets",
+          "t": "Fill, but make it festive: turning my fall set into a holiday set",
+          "h": "Same length, brand new energy. Come with me to my fill.",
+          "sh": [
+            "Grown-out fall set close-up before the appointment.",
+            "Fill highlights: the new holiday color or accent nails going on.",
+            "Before/after side by side + slow pan in natural light."
+          ],
+          "c": "Fall set → holiday set in one appointment 🍂➡️🎄💅",
+          "tg": [
+            "#xxlnails",
+            "#holidaynails",
+            "#nailfill",
+            "#nailtransformation",
+            "#nailtok"
+          ],
+          "cta": "Fall set or holiday set: which one wins? 👇",
+          "f": "Before / after · appointment"
+        },
+        {
+          "id": "w20261115-3",
+          "s": "dumps",
+          "t": "Gratitude dump: things my XXL nails survived this year",
+          "h": "Thankful for my nails and everything they've been through.",
+          "sh": [
+            "Typing a long text",
+            "Opening a soda can",
+            "A grocery run",
+            "Putting on jewelry",
+            "Wrapping something",
+            "Holding a coffee",
+            "Final: a fresh set, slow-pan close-up"
+          ],
+          "c": "Caption prompt: one funny thing you're thankful for + the set name. e.g. \"Thankful my nails survived another year of soda cans 🙏🏽💅\"",
+          "tg": [
+            "#xxlnails",
+            "#photodump",
+            "#thankful",
+            "#longnails",
+            "#nailtok"
+          ],
+          "cta": "Which slide surprised you most? 1–7 👇",
+          "f": "Photo carousel · 7 slides"
+        }
+      ]
     }
   ],
   "perfumeWeeks": [
@@ -279,6 +351,77 @@
           ],
           "cta": "Do you layer your body care with your perfume?",
           "f": "Tutorial · layering"
+        }
+      ]
+    },
+    {
+      "week": "2026-11-15",
+      "ideas": [
+        {
+          "id": "pw20261115-1",
+          "s": "ptest",
+          "t": "The hug test: does my vanilla rub off on people?",
+          "h": "I hugged everyone today to find out if my vanilla sticks around.",
+          "sh": [
+            "Spray in the morning with a \"the hug test\" overlay.",
+            "Quick hug montage (friends, family), then ask each one to sniff their sleeve.",
+            "End-of-day verdict with your best quote from the day."
+          ],
+          "c": "Hug test results are in 🤗🍦 Verdict: ___",
+          "tg": [
+            "#vanillaperfume",
+            "#perfumetok",
+            "#perfumetest",
+            "#scentthatlingers",
+            "#relatable"
+          ],
+          "cta": "Do people ever tell you your perfume stuck to them? 👇",
+          "f": "Test · hug montage"
+        },
+        {
+          "id": "pw20261115-2",
+          "s": "pvan",
+          "t": "Vanilla gift guide by personality",
+          "h": "Buying perfume for someone this year? Match the vanilla to the person.",
+          "sh": [
+            "Your bottles lined up with labels: The Cozy Friend, The Baddie, The Minimalist, The Sweet Tooth.",
+            "Pick up each one and give a one-line \"this is for the friend who…\".",
+            "End with a wrapped bottle + the one you'd want for yourself."
+          ],
+          "c": "The vanilla gift guide nobody asked for but everyone needs 🎁🍦",
+          "tg": [
+            "#vanillaperfume",
+            "#perfumegift",
+            "#giftguide",
+            "#perfumetok",
+            "#holidaygifts"
+          ],
+          "cta": "Tag the friend who's \"The Baddie\" 😂👇",
+          "f": "Gift guide · 4 bottles"
+        },
+        {
+          "id": "pw20261115-3",
+          "s": "pdump",
+          "t": "Thanksgiving week, smelling like vanilla",
+          "h": "Thanksgiving week, but make it vanilla.",
+          "sh": [
+            "Your perfume next to a pumpkin pie or candle",
+            "Cozy outfit + bottle in hand",
+            "Table setting with the bottle hidden in the shot",
+            "Wrist spray before dinner, XXL nails in frame",
+            "Bottle on the counter with leftovers in the background",
+            "Night-in shot: blanket, candle, bottle"
+          ],
+          "c": "Caption prompt: \"This Thanksgiving smelled like ___\" plus your scent. e.g. \"This Thanksgiving smelled like vanilla and sweet potato pie 🥧🍦\"",
+          "tg": [
+            "#vanillaperfume",
+            "#photodump",
+            "#thanksgiving",
+            "#cozyseason",
+            "#perfumetok"
+          ],
+          "cta": "Fill in the blank: Thanksgiving smells like ___ 👇",
+          "f": "Photo carousel · 6 slides"
         }
       ]
     }

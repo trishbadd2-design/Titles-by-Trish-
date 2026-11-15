@@ -64,6 +64,38 @@
           "day": "2026-11-13"
         }
       ]
+    },
+    {
+      "week": "2026-11-15",
+      "pins": [
+        {
+          "id": "tp20261115-1",
+          "title": "Psychological Thrillers to Read Over Thanksgiving Break",
+          "board": "Psychological Thriller Books",
+          "type": "Image pin (2:3, 1000×1500) — book list",
+          "image": "Thrillers for Thanksgiving break 🍂🖤 — grid of 5–6 of your favorite psychological thriller covers on a cozy blanket",
+          "desc": "Psychological thrillers to read over Thanksgiving break: twisty, binge-worthy books for long weekends and cozy nights in. Save this for your holiday TBR.",
+          "day": "2026-11-16"
+        },
+        {
+          "id": "tp20261115-2",
+          "title": "Book Tropes for Dark Holiday Reads: Family Secrets, Revenge & More",
+          "board": "Book Recs by Trope",
+          "type": "Image pin (2:3) — trope list with covers",
+          "image": "Dark holiday reads by trope 🎄🔪 — one cover per trope labeled: Family Secrets, Revenge, Snowed In, Unreliable Narrator",
+          "desc": "Book recommendations by trope for the holidays: family secrets, revenge, snowed-in mysteries and unreliable narrators. Dark thriller reads for the most wonderful time of the year.",
+          "day": "2026-11-18"
+        },
+        {
+          "id": "tp20261115-3",
+          "title": "Book Lover Gifts for Thriller Readers: Holiday Gift Guide",
+          "board": "Bookish Aesthetic",
+          "type": "Image pin (2:3) — flat lay gift guide",
+          "image": "Gifts for thriller lovers 🎁📚 — flat lay of a book, candle, reading light, bookmark and cozy socks",
+          "desc": "Book lover gifts for thriller readers: cozy reading accessories, bookish candles and gift ideas for the psychological thriller fan in your life. A holiday gift guide for book lovers.",
+          "day": "2026-11-20"
+        }
+      ]
     }
   ]
 }
