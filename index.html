@@ -11059,25 +11059,27 @@ function generateReviewScript(){
 
   s+='🎬 THE SCRIPT — read this as one continuous take, no section titles out loud\n\n';
 
-  s+='[COLD OPEN — say this first, never "hey guys today I\'m reviewing..."]\n';
-  s+='"'+(hook||'[Your opening line — drop them into a moment, don\'t announce the book]')+'"\n\n';
+  s+='[COLD OPEN — say this first, never "hey guys today I\'m reviewing..." · deliver it a little quieter, like you\'re telling a secret]\n';
+  s+='"'+(hook||'[Your opening line — drop them into a moment, don\'t announce the book]')+'"\n';
+  s+='[...let that sit for half a beat before you keep going]\n\n';
 
   s+='[THE SETUP — just enough to understand the stakes, hold the rest back]\n';
   s+='"'+(plot||'[One or two sentences of premise — what\'s at stake, not what happens]')+'"\n\n';
 
-  s+='[THE TURN — narrate what happened to YOU reading it, not just the plot]\n';
+  s+='[THE TURN — narrate what happened to YOU reading it, not just the plot · this is where your pace can pick up, let yourself get a little worked up]\n';
   var turnLines=[];
   if(loved)turnLines.push(loved);
   if(surprised)turnLines.push('What actually got me was '+surprised.charAt(0).toLowerCase()+surprised.slice(1)+'.');
   s+='"'+(turnLines.length?turnLines.join(' '):'[The moment that got you — be specific, not just "it was good"]')+'"\n';
   if(didnt)s+='"If I\'m being honest — '+didnt+' — but it didn\'t change how I felt by the end."\n';
-  s+='\n';
+  s+='\n[PAUSE — a full second of silence here. Let it land before you say the rating.]\n\n';
 
-  s+='[THE GUT PUNCH — deliver the rating like it matters, don\'t just state a number]\n';
+  s+='[THE GUT PUNCH — deliver the rating like it matters, slow down, don\'t just state a number]\n';
   s+='"I\'m giving this '+(stars||(rating+' stars'))+', and I don\'t say that lightly.'+(loved?' '+loved:'')+'"\n\n';
 
-  s+='[THE LOOP CLOSE — circle back to your opening line before the ask]\n';
-  s+='"[Echo a phrase from your cold open here — that callback is what makes it feel finished.]'+(perfectfor?' If you love '+perfectfor+', this one\'s for you.':'')+' '+(cta||'Have you read '+title+'? Tell me your rating below.')+'"\n\n';
+  s+='[THE LOOP CLOSE — circle back to your opening line, then your sign-off]\n';
+  s+='"[Echo a phrase from your cold open here — that callback is what makes it feel finished.]'+(perfectfor?' If you love '+perfectfor+', this one\'s for you.':'')+'"\n';
+  s+='"That\'s the review. You know what to do. '+(cta||'Tell me your rating below.')+'"\n\n';
 
   s+=sep;
   s+='#BookTok #BookReview'+(genre?' #'+genre.replace(/\s+/g,''):'')+(author?' #'+author.split(' ').pop().replace(/\s+/g,''):'')+' #'+title.replace(/[^a-zA-Z0-9]/g,'')+' #TitlesByTrish #BookTokReview';
@@ -13847,12 +13849,12 @@ function resetQuiz(){quizAnswers={};initQuiz();}
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
     <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">👥 CHARACTERS & PLOT</div>
     <div class="sc-field"><label>Main Characters</label><input id="rb-f-chars" placeholder="e.g. Violet (fierce), Xaden (morally grey villain love interest)..."/></div>
-    <div class="sc-field"><label>What It's About (Spoiler-Free)</label><textarea id="rb-f-plot" rows="3" placeholder="Short, punchy plot summary — tease it, don't spoil it..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+    <div class="sc-field"><label>What It's About (Spoiler-Free)</label><textarea id="rb-f-plot" rows="3" placeholder="What's actually at stake — not what happens, what's at risk..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
   </div>
 
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
     <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">💬 MY THOUGHTS</div>
-    <div class="sc-field"><label>What I Loved</label><textarea id="rb-f-loved" rows="2" placeholder="The specific things that made this unforgettable..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+    <div class="sc-field"><label>What I Loved</label><textarea id="rb-f-loved" rows="2" placeholder="The exact moment or line that got you — be specific, not 'it was good'..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
     <div class="sc-field"><label>What Surprised Me</label><textarea id="rb-f-surprised" rows="2" placeholder="Something unexpected — a twist, a character moment, the ending..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
     <div class="sc-field"><label>The Only Thing I'll Say (mild critique)</label><textarea id="rb-f-didnt" rows="2" placeholder="Even 5-star books have something — your audience trusts honest reviews..." style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
     <div class="sc-field"><label>Trigger Warnings</label><input id="rb-f-tw" placeholder="e.g. violence, addiction, loss — be thorough and kind..."/></div>
@@ -13861,7 +13863,7 @@ function resetQuiz(){quizAnswers={};initQuiz();}
 
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:14px;">
     <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:14px;">🎬 HOOK &amp; CALL TO ACTION</div>
-    <div class="sc-field"><label>Opening Hook — first 3 seconds</label><textarea id="rb-f-hook" rows="2" placeholder="e.g. 'If you like dark thrillers, you need to hear about this book.'" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
+    <div class="sc-field"><label>Opening Hook — first 3 seconds</label><textarea id="rb-f-hook" rows="2" placeholder="e.g. 'There's a manuscript in this house that was never supposed to be read.' — drop them into a moment, don't announce the book" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
     <div class="sc-field"><label>Call to Action — end of video</label><textarea id="rb-f-cta" rows="2" placeholder="e.g. 'Have you read it? Let me know your rating below. Follow for more reviews every week.'" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;color:#fff;font-size:14px;resize:vertical;font-family:inherit;line-height:1.6;"></textarea></div>
   </div>
 
